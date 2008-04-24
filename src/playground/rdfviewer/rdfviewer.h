@@ -6,7 +6,7 @@ class RDFViewer : public QMainWindow {
 
  public:
 
-  RDFViewer();
+  RDFViewer(const QString& service);
   
 };
 

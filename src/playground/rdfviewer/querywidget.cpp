@@ -17,19 +17,19 @@ using namespace Soprano;
 
 
 
-void QueryWidget::connect() {
-  Soprano::Client::DBusClient* client = new Soprano::Client::DBusClient("org.kde.NepomukStorage");
+void QueryWidget::connect(const QString& service) {
+  Client::DBusClient* client = new Client::DBusClient(service);
+  /*
   qDebug() << "Available models:";
   qDebug() << "-----------------";
   qDebug() << client->allModels() << endl;
+  */
 
   qDebug() << "Connecting to main model";
-  //Soprano::Client::DBusModel* model = client->createModel("main");
   _model = client->createModel("main");
 
   if (!_model) {
     qDebug() << "Connection failed...";
-    qDebug() << _model->lastError();
   }
   else {
     qDebug() << "success!";
@@ -48,14 +48,12 @@ void QueryWidget::query(const QString& queryString) {
   _table->setColumnCount(ncols);
 
   QStringList bnames = it.bindingNames();
-  qDebug() << "bnames:" << bnames;
   _table->setHorizontalHeaderLabels(bnames);
 
   QList<BindingSet> bindings = it.allBindings();
   int nrows = bindings.size();
   _table->setRowCount(nrows);
   qDebug() << "got" << nrows << "results";
-
   
   int row = 0;
   foreach (BindingSet bset, bindings) {
@@ -64,23 +62,6 @@ void QueryWidget::query(const QString& queryString) {
     }
     row++;
   }
-  /*
-  while (it.next()) {
-    //Soprano::Node value = it.binding("r");
-    Soprano::BindingSet bindings = *it;
-    QStringList names = bindings.bindingNames();
-    QStringList res;
-    foreach (QString name, names) {
-      QStringList r;
-      r << name << ":" << bindings[name].toString();
-      res << r;
-    }
-    //results << value.toString();
-    results << res.join(" || ");
-  }
-  */
-
-  //_resultText->setText(results.join("\n"));
 }
 
 
@@ -91,7 +72,6 @@ QString QueryWidget::niceify(const QString& queryString) const {
 	      "PREFIX xls: <%3> "
 	      "PREFIX xesam: <%4> ")
     .arg(Soprano::Vocabulary::NAO::naoNamespace().toString())
-    //.arg(Soprano::Vocabulary::RDFS::rdfsNamespace().toString())
     .arg("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
     .arg(Soprano::Vocabulary::XMLSchema::xsdNamespace().toString())
     .arg(Soprano::Vocabulary::Xesam::xesamNamespace().toString());
@@ -103,13 +83,15 @@ void QueryWidget::newQuery() {
   QString queryString
     = QString("select ?subject ?predicate ?object "
 	      "where { ?subject ?predicate ?object . }");
+
   if (!_queryText->text().isEmpty()) {
     queryString = _queryText->text();
   }
+
   query(niceify(queryString));
 }
 
-QueryWidget::QueryWidget() {
+QueryWidget::QueryWidget(const QString& service) {
   _queryText = new QLineEdit();
   _queryButton = new QPushButton("Search now");
 
@@ -120,23 +102,23 @@ QueryWidget::QueryWidget() {
   hlayout->addWidget(_queryText);
   hlayout->addWidget(_queryButton);
 
-  connect();
+  connect(service);
 
   _table = new QTableWidget(0, 3, this);
 
   _table->setSelectionMode(QAbstractItemView::NoSelection);
   _table->verticalHeader()->setVisible(false);
-  QStringList headers;
-  headers << "subject" << "predicate" << "object";
-  _table->setHorizontalHeaderLabels(headers);
 
+  _table->setHorizontalHeaderLabels(QStringList()
+				    << "subject"
+				    << "predicate"
+				    << "object"
+				    );
 
   QVBoxLayout* vlayout = new QVBoxLayout();
   vlayout->addLayout(hlayout);
-  vlayout->addWidget(_table);
-  
+  vlayout->addWidget(_table);  
 
   setLayout(vlayout);
-
 }
 

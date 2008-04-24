@@ -16,11 +16,11 @@ class QueryWidget : public QWidget {
   Soprano::Model* _model;
 
  public:
-  QueryWidget();
+  QueryWidget(const QString& service);
 
 
   QString niceify(const QString& queryString) const;
-  void connect();
+  void connect(const QString& service);
   void query(const QString& queryString);
 
  public slots:
