@@ -1,3 +1,4 @@
+#include <QDebug>
 #include "dljob.h"
 #include <iostream>
 using namespace std;
@@ -9,6 +10,10 @@ int progress(void* data, double dltotal, double dlnow,
   dljob->setMaximum((int)dltotal);
   dljob->emitUpdate((int)dlnow);
 
+  if (dlnow >= dltotal) {
+    qDebug() << "Finished downloading:" << dljob->_local;
+  }
+
   return 0;
 }
 
@@ -18,9 +23,9 @@ void DownloadJob::emitUpdate(int value) {
 
 
 DownloadJob::DownloadJob(const QString& remoteURL, const QString& localURL,
-			 const QString& userpwd, QProgressBar* pbar) :
+			 const QString& userpwd) :
   _remote(remoteURL), _local(localURL), _userpwd(userpwd),
-  _pbar(pbar), _maximumSet(false) {
+  _maximumSet(false) {
 
 }
 

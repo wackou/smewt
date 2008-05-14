@@ -4,7 +4,6 @@
 #include <QApplication>
 #include <QFont>
 #include <QPushButton>
-#include <QProgressBar>
 #include <QVBoxLayout>
 #include <QWidget>
 #include <QThread>
@@ -16,21 +15,22 @@ class DownloadJob : public QThread {
   Q_OBJECT
 
  public:
-  DownloadJob(const QString& remoteURL, const QString& localURL, const QString& userpwd,
-	      QProgressBar* pbar);
+  DownloadJob(const QString& remoteURL, const QString& localURL, const QString& userpwd);
 
   void run();
 
   void emitUpdate(int value);
 
-  void setMaximum(int value) { _pbar->setMaximum(value); }
+  void setMaximum(int value) { _maxValue = value; _maximumSet = true; }
 
   signals: //slots
   void updateProgress(int value);
 
- protected:
+ public:
   QString _remote, _local, _userpwd;
-  QProgressBar* _pbar;
+
+ protected:
+  int _maxValue;
   bool _maximumSet;
 };
 

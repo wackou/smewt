@@ -12,26 +12,27 @@ class Friend {
  public:
   QString name;
   QString ip;
+  QString userpwd;
 };
 
 class Smewtd : public QDBusAbstractAdaptor {
 
   Q_OBJECT
-  Q_CLASSINFO("D-Bus Interface", "com.smewt.Smewt")
-  Q_CLASSINFO("D-Bus Interface", "org.freedesktop.DBus.MainApplication")
-    //Q_PROPERTY(QString caption READ caption WRITE setCaption)
-    //Q_PROPERTY(QString organizationName READ organizationName)
-    //Q_PROPERTY(QString organizationDomain READ organizationDomain)
+  Q_CLASSINFO("D-Bus Interface", "com.smewt.Smewt.Smewtd")
+  Q_PROPERTY(QString organizationName READ organizationName)
+  Q_PROPERTY(QString organizationDomain READ organizationDomain)
 
 
  protected:
   QApplication* _app;
 
+  Friend getFriend(const QString& friendName) const;
+
  public:
 
   // Config property list
   QList<Friend> friends;
-
+  QString incomingFolder;
 
 
   Smewtd(QApplication *app) : QDBusAbstractAdaptor(app), _app(app) {
@@ -46,6 +47,16 @@ class Smewtd : public QDBusAbstractAdaptor {
 
   void readConfig();
   void saveConfig();
+
+ public:
+
+  QString organizationName() {
+    return _app->organizationName();
+  }
+
+  QString organizationDomain() {
+    return _app->organizationDomain();
+  }
 
  public slots:
   void reset();

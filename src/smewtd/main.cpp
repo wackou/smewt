@@ -12,7 +12,6 @@
 #include <QDBusMessage>
 #include <QDBusInterface>
 
-#include "dlwidget.h"
 #include "smewtd.h"
 using namespace smewt;
 
@@ -22,21 +21,32 @@ int main(int argc, char *argv[]) {
   app.setOrganizationDomain("smewt.com");
   app.setApplicationName("Smewt");
 
-  DownloadWidget widget;
   Smewtd* smewtd = new Smewtd(&app);
 
   QDBusConnection sbus = QDBusConnection::sessionBus();
 
-  bool ok = sbus.registerObject("/MainApplication", smewtd);
-
+  bool ok = sbus.registerService("com.smewt.Smewt");
   if (ok) {
-    qDebug() << "dbus registration successful!";
+    qDebug() << "service dbus registration successful!";
   }
   else {
     qDebug() << "could not register dbus service";
     exit(1);
   }
 
+
+  ok = sbus.registerObject("/", smewtd, QDBusConnection::ExportAllSlots | QDBusConnection::ExportAllProperties);
+  //ok = sbus.registerService("com.smewt.Smewt");
+
+  if (ok) {
+    qDebug() << "object dbus registration successful!";
+  }
+  else {
+    qDebug() << "could not register dbus object";
+    exit(1);
+  }
+
+  /*
   smewtd->startDownload("Wackou", "file:///data/Movies/test.avi");
 
   // dbus test interface
@@ -64,35 +74,8 @@ int main(int argc, char *argv[]) {
     qDebug() << reply.error().message();
     exit(1);
   }
-
-
-  // smewt test interface
-  /*
-  QDBusInterface* sinterface = new QDBusInterface("com.smewt.DBus",
-						 "/MainApplication",
-						 "",
-						 sbus,
-						 &app);
-
-  if (!sinterface->isValid()) {
-    qDebug("smewt interface is not valid:");
-    qDebug() << sinterface->lastError().message();
-    exit(1);
-  }
-
-  QDBusReply<int> sreply = sinterface->call("test");
-
-
-  if (sreply.isValid()) {
-    qDebug("smewt reply is valid");
-    qDebug() << sreply.value();
-  }
-  else {
-    qDebug("smewt invalid reply");
-    qDebug() << sreply.error().message();
-    exit(1);
-  }
   */
+
 
   return app.exec();
 }

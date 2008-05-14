@@ -10,5 +10,5 @@ LIBS +=  -lcurl
 QT += dbus
 
 # Input
-HEADERS += dljob.h dlwidget.h smewtd.h
-SOURCES += dljob.cpp dlwidget.cpp main.cpp smewtd.cpp
+HEADERS += dljob.h smewtd.h
+SOURCES += dljob.cpp main.cpp smewtd.cpp
