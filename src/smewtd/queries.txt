@@ -1,0 +1,9 @@
+http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+http://freedesktop.org/standards/xesam/1.0/core#File
+
+select ?r where { ?r rdfs:type xesam:File }
+select ?p ?o where { "file:///data/Movies/Chat noir, chat blanc (1998)" ?p ?o . }
+select ?p ?o where { "file:///home/download/Desktop" ?p ?o . }
+select ?p ?o where { "file:///data/Movies/Baraka (1992)" ?p ?o . }
+select ?p ?o where { "file:///data/Movies/Baraka (1992)"^xls:string ?p ?o . }
+

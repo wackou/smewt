@@ -5,6 +5,7 @@
 #include <QStringList>
 #include <QtDBus>
 #include <QDBusAbstractAdaptor>
+#include "storageproxy.h"
 
 namespace smewt {
 
@@ -25,6 +26,7 @@ class Smewtd : public QDBusAbstractAdaptor {
 
  protected:
   QApplication* _app;
+  StorageProxy* _storage;
 
   Friend getFriend(const QString& friendName) const;
 
@@ -33,12 +35,15 @@ class Smewtd : public QDBusAbstractAdaptor {
   // Config property list
   QList<Friend> friends;
   QString incomingFolder;
+  QString storageDomain;
 
 
   Smewtd(QApplication *app) : QDBusAbstractAdaptor(app), _app(app) {
     connect(app, SIGNAL(aboutToQuit()), SIGNAL(aboutToQuit()));
 
     readConfig();
+
+    _storage = new StorageProxy(storageDomain);
   }
 
   ~Smewtd() {
@@ -64,6 +69,12 @@ class Smewtd : public QDBusAbstractAdaptor {
   int test();
 
   void startDownload(QString friendName, QString filename);
+
+
+  void query(QString query);
+  QStringList queryLucene(const QString& queryString);
+  QStringList queryMovies();
+
 
   Q_NOREPLY void quit();
 

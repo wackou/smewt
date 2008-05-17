@@ -3,6 +3,7 @@
 #include <QDebug>
 #include "smewtd.h"
 #include "dljob.h"
+#include "../smewtexception.h"
 using namespace smewt;
 
 
@@ -19,6 +20,7 @@ void Smewtd::readConfig() {
   friends[1].userpwd = settings.value("friend1/userpwd", friends[1].userpwd).toString();
 
   incomingFolder = settings.value("folders/incoming", incomingFolder).toString();
+  storageDomain = settings.value("general/storagedomain", storageDomain).toString();
 }
 
 
@@ -34,6 +36,7 @@ void Smewtd::saveConfig() {
 
   settings.setValue("friends/number", 100);
   settings.setValue("folders/incoming", incomingFolder);
+  settings.setValue("general/storagedomain", storageDomain);
 }
 
 void Smewtd::reset() {
@@ -50,6 +53,8 @@ void Smewtd::reset() {
   friends[1].userpwd = "download:download!";
 
   incomingFolder = "/tmp";
+
+  storageDomain = "org.kde.NepomukStorage";
 }
 
 
@@ -61,13 +66,25 @@ void Smewtd::quit() {
   _app->quit();
 }
 
+void Smewtd::query(QString query) {
+  _storage->query(query);
+}
+
+QStringList Smewtd::queryMovies() {
+  return _storage->queryMovies();
+}
+
+QStringList Smewtd::queryLucene(const QString& queryString) {
+  return _storage->queryLucene(queryString);
+}
+
 Friend Smewtd::getFriend(const QString& friendName) const {
   for (int i=0; i<friends.size(); i++) {
     if (friends[i].name == friendName) {
       return friends[i];
     }
   }
-  throw QString("cannot get friend") + friendName;
+  throw SmewtException(QString("cannot get friend") + friendName);
 }
 
 void Smewtd::startDownload(QString friendName, QString filename) {
