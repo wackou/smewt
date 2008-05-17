@@ -6,9 +6,9 @@ TEMPLATE = app
 TARGET = 
 DEPENDPATH += .
 INCLUDEPATH += .
-LIBS +=  -lcurl
+LIBS +=  -lcurl -lsoprano -lsopranoclient
 QT += dbus
 
 # Input
 HEADERS += dljob.h smewtd.h
-SOURCES += dljob.cpp main.cpp smewtd.cpp
+SOURCES += dljob.cpp main.cpp smewtd.cpp storageproxy.cpp
