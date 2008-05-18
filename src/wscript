@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
+
+def build_daemon(bld):
+    smewtd = bld.create_obj('qt4', 'program')
+    
+    '''smewtd.source = ''
+    smewtd/main.cpp
+    smewtd/smewtd.cpp
+    smewtd/dljob.cpp
+    smewtd/storageproxy.cpp
+    '''
+    smewtd.find_sources_in_dirs('smewtd')
+    smewtd.uselib   = 'QTCORE QTGUI'
+    smewtd.includes = '. smewtd'
+    smewtd.target   = 'smewtdae'
+    #smewtd.defines="WAF=1" # add a define around foo.moc
+
+
+
+def build(bld):
+    build_daemon(bld)

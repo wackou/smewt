@@ -42,4 +42,7 @@ void DownloadJob::run() {
   curl_easy_setopt(c, CURLOPT_WRITEDATA, fout);
   curl_easy_setopt(c, CURLOPT_USERPWD, "download:download!");
   int success = curl_easy_perform(c);
+  Q_UNUSED(success);
 }
+
+#include "dljob.moc"

@@ -110,3 +110,5 @@ void Smewtd::startDownload(QString friendName, QString filename) {
   dljob->start();
   
 }
+
+#include "smewtd.moc"

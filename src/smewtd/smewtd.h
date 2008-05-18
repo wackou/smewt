@@ -19,6 +19,7 @@ class Friend {
 class Smewtd : public QDBusAbstractAdaptor {
 
   Q_OBJECT
+
   Q_CLASSINFO("D-Bus Interface", "com.smewt.Smewt.Smewtd")
   Q_PROPERTY(QString organizationName READ organizationName)
   Q_PROPERTY(QString organizationDomain READ organizationDomain)
