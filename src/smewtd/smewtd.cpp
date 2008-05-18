@@ -21,6 +21,7 @@ void Smewtd::readConfig() {
 
   incomingFolder = settings.value("folders/incoming", incomingFolder).toString();
   storageDomain = settings.value("general/storagedomain", storageDomain).toString();
+  idKey = settings.value("general/idKey", idKey).toString();
 }
 
 
@@ -37,6 +38,7 @@ void Smewtd::saveConfig() {
   settings.setValue("friends/number", 100);
   settings.setValue("folders/incoming", incomingFolder);
   settings.setValue("general/storagedomain", storageDomain);
+  settings.setValue("general/idKey", idKey);
 }
 
 void Smewtd::reset() {
@@ -55,11 +57,12 @@ void Smewtd::reset() {
   incomingFolder = "/tmp";
 
   storageDomain = "org.kde.NepomukStorage";
+  idKey = "~/.ssh/smewt_id_dsa";
 }
 
 
-int Smewtd::test() {
-  return 23;
+bool Smewtd::ping() {
+  return true;
 }
 
 void Smewtd::quit() {
@@ -76,6 +79,10 @@ QStringList Smewtd::queryMovies() {
 
 QStringList Smewtd::queryLucene(const QString& queryString) {
   return _storage->queryLucene(queryString);
+}
+
+void Smewtd::distantQueryLucene(const QString& host, const QString& queryString) {
+  _storage->distantQueryLucene(host, queryString);
 }
 
 Friend Smewtd::getFriend(const QString& friendName) const {

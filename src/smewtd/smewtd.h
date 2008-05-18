@@ -28,7 +28,6 @@ class Smewtd : public QDBusAbstractAdaptor {
   QApplication* _app;
   StorageProxy* _storage;
 
-  Friend getFriend(const QString& friendName) const;
 
  public:
 
@@ -36,6 +35,7 @@ class Smewtd : public QDBusAbstractAdaptor {
   QList<Friend> friends;
   QString incomingFolder;
   QString storageDomain;
+  QString idKey;
 
 
   Smewtd(QApplication *app) : QDBusAbstractAdaptor(app), _app(app) {
@@ -43,12 +43,14 @@ class Smewtd : public QDBusAbstractAdaptor {
 
     readConfig();
 
-    _storage = new StorageProxy(storageDomain);
+    _storage = new StorageProxy(storageDomain, this);
   }
 
   ~Smewtd() {
     saveConfig();
   }
+
+  Friend getFriend(const QString& friendName) const;
 
   void readConfig();
   void saveConfig();
@@ -66,7 +68,7 @@ class Smewtd : public QDBusAbstractAdaptor {
  public slots:
   void reset();
   
-  int test();
+  bool ping();
 
   void startDownload(QString friendName, QString filename);
 
@@ -74,6 +76,7 @@ class Smewtd : public QDBusAbstractAdaptor {
   void query(QString query);
   QStringList queryLucene(const QString& queryString);
   QStringList queryMovies();
+  void distantQueryLucene(const QString& host, const QString& queryString);
 
 
   Q_NOREPLY void quit();
