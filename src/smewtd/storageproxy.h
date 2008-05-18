@@ -6,13 +6,18 @@
 #include <Soprano/StatementIterator>
 #include <QList>
 
+namespace smewt {
+
+class Smewtd;
+
 class StorageProxy {
   Soprano::Model* _model;
+  Smewtd* _smewtd;
 
   QList<Soprano::BindingSet> executeSparqlQuery(const QString& queryString);
 
  public:
-  StorageProxy(const QString& service);
+  StorageProxy(const QString& service, Smewtd* smewtd);
 
 
   QString niceify(const QString& queryString) const;
@@ -21,6 +26,11 @@ class StorageProxy {
 
   QStringList queryMovies();
   QStringList queryLucene(const QString& queryString);
+
+  void distantQueryLucene(const QString& host, const QString& queryString);
 };
+
+} // namespace smewt
+
 
 #endif // STORAGEPROXY_H

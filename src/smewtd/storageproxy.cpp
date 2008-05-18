@@ -10,7 +10,9 @@
 #include <Soprano/Model>
 #include <Soprano/StatementIterator>
 #include <QDebug>
+#include "smewtd.h"
 using namespace Soprano;
+using namespace smewt;
 
 
 #define horizontalBar QString(100, '-').toUtf8().data()
@@ -68,6 +70,23 @@ QList<BindingSet> StorageProxy::executeSparqlQuery(const QString& queryString) {
   return it.allBindings();
 }
 
+void StorageProxy::distantQueryLucene(const QString& host, const QString& queryString) {
+  QString cmd = QString("qdbus \"com.smewt.Smewt\" \"/\" \"queryLucene\" \"%1\"").arg(queryString);
+  QString shell = QString("ssh -i %1 %2  DISPLAY=:0 ")
+    .arg(_smewtd->idKey)
+    .arg(_smewtd->getFriend(host).ip);
+
+  qDebug() << "executing remote query:" << shell + cmd;
+  QProcess distantQuery;
+  distantQuery.start(shell + cmd);
+  if (!distantQuery.waitForFinished()) {
+    return;
+  }
+
+  QByteArray result = distantQuery.readAll();
+  qDebug() << result;
+}
+
 QString StorageProxy::niceify(const QString& queryString) const {
   QString prefix
     = QString("PREFIX nao: <%1> "
@@ -83,7 +102,7 @@ QString StorageProxy::niceify(const QString& queryString) const {
 }
 
 
-StorageProxy::StorageProxy(const QString& service) {
+StorageProxy::StorageProxy(const QString& service, Smewtd* smewtd) : _smewtd(smewtd) {
   connect(service);
 }
 
