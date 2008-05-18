@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import sys
-import Params
 
 # the following two variables are used by the target "waf dist"
 VERSION = '0.1-dev'

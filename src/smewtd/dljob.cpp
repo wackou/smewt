@@ -1,7 +1,6 @@
 #include <QDebug>
 #include "dljob.h"
-#include <iostream>
-using namespace std;
+
 
 int progress(void* data, double dltotal, double dlnow,
 	     double ultotal, double ulnow) {
@@ -31,7 +30,7 @@ DownloadJob::DownloadJob(const QString& remoteURL, const QString& localURL,
 
 
 void DownloadJob::run() {
-  cout << "Starting dl thread" << endl;
+  qDebug() << "Starting dl thread";
   FILE* fout = fopen(_local.toAscii().data(), "wb");
   CURL* c = curl_easy_init();
   curl_easy_setopt(c, CURLOPT_URL, _remote.toAscii().data());
