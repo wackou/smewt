@@ -14,7 +14,7 @@ def build_daemon(bld):
     smewtd.find_sources_in_dirs('smewtd')
     smewtd.uselib   = 'QTCORE QTGUI'
     smewtd.includes = '. smewtd'
-    smewtd.target   = 'smewtdae'
+    smewtd.target   = 'smewtdaemon'
     #smewtd.defines="WAF=1" # add a define around foo.moc
 
 
