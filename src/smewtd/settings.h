@@ -26,8 +26,6 @@ class Settings : public QDBusAbstractAdaptor {
   Q_OBJECT
 
   Q_CLASSINFO("D-Bus Interface", "com.smewt.Smewt.Settings");
-  Q_PROPERTY(QString organizationName READ organizationName);
-  Q_PROPERTY(QString organizationDomain READ organizationDomain);
 
   //Q_PROPERTY(QString friends READ get_friends WRITE set_friends);
   Q_PROPERTY(QString incomingFolder READ get_incomingFolder WRITE set_incomingFolder);
@@ -53,16 +51,6 @@ class Settings : public QDBusAbstractAdaptor {
   void resetConfig();
   void loadConfig();
   void saveConfig();
-
- public:
-
-  QString organizationName() {
-    return _app->organizationName();
-  }
-
-  QString organizationDomain() {
-    return _app->organizationDomain();
-  }
 
 };
 

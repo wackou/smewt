@@ -28,44 +28,15 @@ class Smewtd : public QDBusAbstractAdaptor {
  public:
 
   Settings* settings;
-  // Config property list
-  /*
-  QList<Friend> friends;
-  QString incomingFolder;
-  QString storageDomain;
-  QString idKey;
-  */
 
 
-  Smewtd(QApplication *app) : QDBusAbstractAdaptor(app), _app(app) {
-    connect(app, SIGNAL(aboutToQuit()), SIGNAL(aboutToQuit()));
-
-    //readConfig();
-    settings = new Settings(app);
-
-    _storage = new StorageProxy(settings->storageDomain, this);
-  }
-
-  ~Smewtd() {
-    //saveConfig();
-    delete settings;
-    delete _storage;
-  }
+  Smewtd(QApplication *app);
+  ~Smewtd();
 
   Friend getFriend(const QString& friendName) const;
 
-  //void readConfig();
-  //void saveConfig();
-
- public:
-
-  QString organizationName() {
-    return _app->organizationName();
-  }
-
-  QString organizationDomain() {
-    return _app->organizationDomain();
-  }
+  QString organizationName() { return _app->organizationName(); }
+  QString organizationDomain() { return _app->organizationDomain(); }
 
  public slots:
  //void reset();

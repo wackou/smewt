@@ -6,60 +6,18 @@
 #include "../smewtexception.h"
 using namespace smewt;
 
-/*
-void Smewtd::readConfig() {
-  reset();
 
-  QSettings settings;
-  qDebug("Loading config");
-  friends[0].name = settings.value("friend0/name", friends[0].name).toString();
-  friends[0].ip = settings.value("friend0/ip", friends[0].ip).toString();
-  friends[0].userpwd = settings.value("friend0/userpwd", friends[0].userpwd).toString();
-  friends[1].name = settings.value("friend1/name", friends[1].name).toString();
-  friends[1].ip = settings.value("friend1/ip", friends[1].ip).toString();
-  friends[1].userpwd = settings.value("friend1/userpwd", friends[1].userpwd).toString();
+Smewtd::Smewtd(QApplication *app) : QDBusAbstractAdaptor(app), _app(app) {
+  connect(app, SIGNAL(aboutToQuit()), SIGNAL(aboutToQuit()));
 
-  incomingFolder = settings.value("folders/incoming", incomingFolder).toString();
-  storageDomain = settings.value("general/storagedomain", storageDomain).toString();
-  idKey = settings.value("general/idKey", idKey).toString();
+  settings = new Settings(app);
+  _storage = new StorageProxy(settings->storageDomain, this);
 }
 
-
-void Smewtd::saveConfig() {
-  QSettings settings;
-  qDebug("Saving config");
-  settings.setValue("friend0/name", friends[0].name);
-  settings.setValue("friend0/ip", friends[0].ip);
-  settings.setValue("friend0/userpwd", friends[0].userpwd);
-  settings.setValue("friend1/name", friends[1].name);
-  settings.setValue("friend1/ip", friends[1].ip);
-  settings.setValue("friend1/userpwd", friends[1].userpwd);
-
-  settings.setValue("friends/number", 100);
-  settings.setValue("folders/incoming", incomingFolder);
-  settings.setValue("general/storagedomain", storageDomain);
-  settings.setValue("general/idKey", idKey);
+Smewtd::~Smewtd() {
+  delete settings;
+  delete _storage;
 }
-
-void Smewtd::reset() {
-  qDebug("resetting");
-  friends.clear();
-  friends << Friend() << Friend();
-
-  friends[0].name = "Wackou";
-  friends[0].ip = "192.168.1.2";
-  friends[0].userpwd = "download:download!";
-
-  friends[1].name = "Ricard";
-  friends[1].ip = "192.168.1.2";
-  friends[1].userpwd = "download:download!";
-
-  incomingFolder = "/tmp";
-
-  storageDomain = "org.kde.NepomukStorage";
-  idKey = "~/.ssh/smewt_id_dsa";
-}
-*/
 
 bool Smewtd::ping() {
   return true;
