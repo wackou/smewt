@@ -24,7 +24,6 @@ class Smewtd : public QDBusAbstractAdaptor {
   QApplication* _app;
   StorageProxy* _storage;
 
-
  public:
 
   Settings* settings;

@@ -19,6 +19,7 @@ Smewtd::~Smewtd() {
   delete _storage;
 }
 
+
 bool Smewtd::ping() {
   return true;
 }
