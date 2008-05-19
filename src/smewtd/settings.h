@@ -16,35 +16,37 @@ class Friend {
   QString userpwd;
 };
 
+#define DEFINE_PROPERTY(type, propertyName)                            \
+  type propertyName;                                                   \
+  type get_##propertyName() const { return propertyName; }             \
+  void set_##propertyName(const type& value) { propertyName = value; }
 
 class Settings : public QDBusAbstractAdaptor {
 
   Q_OBJECT
 
-  Q_CLASSINFO("D-Bus Interface", "com.smewt.Smewt.Settings")
-  Q_PROPERTY(QString organizationName READ organizationName)
-  Q_PROPERTY(QString organizationDomain READ organizationDomain)
+  Q_CLASSINFO("D-Bus Interface", "com.smewt.Smewt.Settings");
+  Q_PROPERTY(QString organizationName READ organizationName);
+  Q_PROPERTY(QString organizationDomain READ organizationDomain);
+
+  //Q_PROPERTY(QString friends READ get_friends WRITE set_friends);
+  Q_PROPERTY(QString incomingFolder READ get_incomingFolder WRITE set_incomingFolder);
+  Q_PROPERTY(QString storageDomain READ get_storageDomain WRITE set_storageDomain);
+  Q_PROPERTY(QString idKey READ get_idKey WRITE set_idKey);
 
   QApplication* _app;
 
  public:
 
+  Settings(QApplication *app);
+  ~Settings();
+
   // Config property list
-  QList<Friend> friends;
-  QString incomingFolder;
-  QString storageDomain;
-  QString idKey;
+  DEFINE_PROPERTY(QList<Friend>, friends);
+  DEFINE_PROPERTY(QString, incomingFolder);
+  DEFINE_PROPERTY(QString, storageDomain);
+  DEFINE_PROPERTY(QString, idKey);
 
-
-  Settings(QApplication *app) : QDBusAbstractAdaptor(app), _app(app) {
-    //connect(app, SIGNAL(aboutToQuit()), SIGNAL(aboutToQuit()));
-
-    loadConfig();
-  }
-
-  ~Settings() {
-    saveConfig();
-  }
 
   Friend getFriend(const QString& friendName) const;
 

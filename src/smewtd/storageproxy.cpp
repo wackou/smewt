@@ -20,9 +20,11 @@ using namespace smewt;
 void StorageProxy::connect(const QString& service) {
   Client::DBusClient* client = new Client::DBusClient(service);
 
+  /*
   qDebug() << "Available models:";
   qDebug() << "-----------------";
   qDebug() << client->allModels() << endl;
+  */
 
   qDebug() << "Connecting to main model";
   _model = client->createModel("main");

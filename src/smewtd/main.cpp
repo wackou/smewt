@@ -35,14 +35,21 @@ int main(int argc, char *argv[]) {
   }
 
 
-  ok = sbus.registerObject("/", smewtd, QDBusConnection::ExportAllSlots | QDBusConnection::ExportAllProperties);
-  //ok = sbus.registerService("com.smewt.Smewt");
-
+  ok = sbus.registerObject("/Smewtd", smewtd, QDBusConnection::ExportAllSlots | QDBusConnection::ExportAllProperties);
   if (ok) {
     qDebug() << "object dbus registration successful!";
   }
   else {
     qDebug() << "could not register dbus object";
+    exit(1);
+  }
+
+  ok = sbus.registerObject("/Settings", smewtd->settings, QDBusConnection::ExportAllSlots | QDBusConnection::ExportAllProperties);
+  if (ok) {
+    qDebug() << "settings dbus registration successful!";
+  }
+  else {
+    qDebug() << "could not register dbus object settings";
     exit(1);
   }
 

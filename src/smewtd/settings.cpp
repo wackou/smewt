@@ -6,6 +6,16 @@
 using namespace smewt;
 
 
+Settings::Settings(QApplication *app) : QDBusAbstractAdaptor(app), _app(app) {
+  //connect(app, SIGNAL(aboutToQuit()), SIGNAL(aboutToQuit()));
+
+  loadConfig();
+}
+
+Settings::~Settings() {
+  saveConfig();
+}
+
 void Settings::loadConfig() {
   resetConfig();
 
