@@ -6,15 +6,10 @@
 #include <QtDBus>
 #include <QDBusAbstractAdaptor>
 #include "storageproxy.h"
+#include "settings.h"
 
 namespace smewt {
 
-class Friend {
- public:
-  QString name;
-  QString ip;
-  QString userpwd;
-};
 
 class Smewtd : public QDBusAbstractAdaptor {
 
@@ -32,29 +27,35 @@ class Smewtd : public QDBusAbstractAdaptor {
 
  public:
 
+  Settings* settings;
   // Config property list
+  /*
   QList<Friend> friends;
   QString incomingFolder;
   QString storageDomain;
   QString idKey;
+  */
 
 
   Smewtd(QApplication *app) : QDBusAbstractAdaptor(app), _app(app) {
     connect(app, SIGNAL(aboutToQuit()), SIGNAL(aboutToQuit()));
 
-    readConfig();
+    //readConfig();
+    settings = new Settings(app);
 
-    _storage = new StorageProxy(storageDomain, this);
+    _storage = new StorageProxy(settings->storageDomain, this);
   }
 
   ~Smewtd() {
-    saveConfig();
+    //saveConfig();
+    delete settings;
+    delete _storage;
   }
 
   Friend getFriend(const QString& friendName) const;
 
-  void readConfig();
-  void saveConfig();
+  //void readConfig();
+  //void saveConfig();
 
  public:
 
@@ -67,7 +68,7 @@ class Smewtd : public QDBusAbstractAdaptor {
   }
 
  public slots:
-  void reset();
+ //void reset();
   
   bool ping();
 

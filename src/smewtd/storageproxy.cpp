@@ -73,7 +73,7 @@ QList<BindingSet> StorageProxy::executeSparqlQuery(const QString& queryString) {
 void StorageProxy::distantQueryLucene(const QString& host, const QString& queryString) {
   QString cmd = QString("qdbus \"com.smewt.Smewt\" \"/\" \"queryLucene\" \"%1\"").arg(queryString);
   QString shell = QString("ssh -i %1 %2  DISPLAY=:0 ")
-    .arg(_smewtd->idKey)
+    .arg(_smewtd->settings->idKey)
     .arg(_smewtd->getFriend(host).ip);
 
   qDebug() << "executing remote query:" << shell + cmd;

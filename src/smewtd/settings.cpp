@@ -1,14 +1,13 @@
 #include <QSettings>
 #include <QList>
 #include <QDebug>
-#include "smewtd.h"
-#include "dljob.h"
+#include "settings.h"
 #include "../smewtexception.h"
 using namespace smewt;
 
-/*
-void Smewtd::readConfig() {
-  reset();
+
+void Settings::loadConfig() {
+  resetConfig();
 
   QSettings settings;
   qDebug("Loading config");
@@ -25,7 +24,7 @@ void Smewtd::readConfig() {
 }
 
 
-void Smewtd::saveConfig() {
+void Settings::saveConfig() {
   QSettings settings;
   qDebug("Saving config");
   settings.setValue("friend0/name", friends[0].name);
@@ -41,7 +40,7 @@ void Smewtd::saveConfig() {
   settings.setValue("general/idKey", idKey);
 }
 
-void Smewtd::reset() {
+void Settings::resetConfig() {
   qDebug("resetting");
   friends.clear();
   friends << Friend() << Friend();
@@ -59,56 +58,16 @@ void Smewtd::reset() {
   storageDomain = "org.kde.NepomukStorage";
   idKey = "~/.ssh/smewt_id_dsa";
 }
-*/
 
-bool Smewtd::ping() {
-  return true;
-}
 
-void Smewtd::quit() {
-  _app->quit();
-}
-
-void Smewtd::query(QString query) {
-  _storage->query(query);
-}
-
-QStringList Smewtd::queryMovies() {
-  return _storage->queryMovies();
-}
-
-QStringList Smewtd::queryLucene(const QString& queryString) {
-  return _storage->queryLucene(queryString);
-}
-
-void Smewtd::distantQueryLucene(const QString& host, const QString& queryString) {
-  _storage->distantQueryLucene(host, queryString);
-}
-
-Friend Smewtd::getFriend(const QString& friendName) const {
-  for (int i=0; i<settings->friends.size(); i++) {
-    if (settings->friends[i].name == friendName) {
-      return settings->friends[i];
+Friend Settings::getFriend(const QString& friendName) const {
+  for (int i=0; i<friends.size(); i++) {
+    if (friends[i].name == friendName) {
+      return friends[i];
     }
   }
   throw SmewtException(QString("cannot get friend") + friendName);
 }
 
-void Smewtd::startDownload(QString friendName, QString filename) {
-  Q_ASSERT(filename.left(7) == "file://");
 
-  Friend source = getFriend(friendName);
-  QString sftpAddress = QString("sftp://") + source.ip + filename.right(filename.size()-7);
-
-  // todo implement me
-  QString localAddress = settings->incomingFolder + "/" + sftpAddress.split("/").back();
-
-  qDebug() << "starting download from: " << sftpAddress << "to:" << localAddress;
-
-  DownloadJob* dljob = new DownloadJob(sftpAddress, localAddress, source.userpwd);
-
-  dljob->start();
-  
-}
-
-#include "smewtd.moc"
+#include "settings.moc"
