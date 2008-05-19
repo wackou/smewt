@@ -1,10 +1,9 @@
 #ifndef SMEWTD_H
 #define SMEWTD_H
 
-#include <QApplication>
 #include <QStringList>
-#include <QtDBus>
 #include <QDBusAbstractAdaptor>
+#include "smewtexception.h"
 #include "storageproxy.h"
 #include "settings.h"
 

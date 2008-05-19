@@ -1,24 +1,11 @@
 #include <QApplication>
-#include <QFont>
-#include <QPushButton>
-#include <QProgressBar>
-#include <QVBoxLayout>
-#include <QWidget>
-#include <QThread>
-#include <QObject>
 #include <QtDBus/QDBusConnection>
-#include <QDebug>
-#include <curl/curl.h>
-#include <QDBusMessage>
-#include <QDBusInterface>
-
 #include "smewtd.h"
-#include "smewtexception.h"
 using namespace smewt;
 
-void registerDBusObjects(Smewtd* smewtd);
 
 #define SERVICE_NAME "com.smewt.Smewt"
+void registerDBusObjects(Smewtd* smewtd);
 
 
 int main(int argc, char *argv[]) {

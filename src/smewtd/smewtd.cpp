@@ -1,9 +1,7 @@
-#include <QSettings>
 #include <QList>
 #include <QDebug>
 #include "smewtd.h"
 #include "dljob.h"
-#include "../smewtexception.h"
 using namespace smewt;
 
 
