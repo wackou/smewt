@@ -60,13 +60,7 @@ QList<BindingSet> StorageProxy::executeSparqlQuery(const QString& queryString) {
   qDebug() << "Doing SPARQL search:" << queryString;
   Soprano::QueryResultIterator it
     = _model->executeQuery(niceify(queryString), Query::QueryLanguageSparql);
-  qDebug() << "  results:";
-
-  //int ncols = it.bindingCount();
-  //_table->setColumnCount(ncols);
-
-  //QStringList bnames = it.bindingNames();
-  //_table->setHorizontalHeaderLabels(bnames);
+  qDebug() << "OK, fetching results...";
 
   return it.allBindings();
 }
@@ -93,11 +87,11 @@ StorageProxy::StorageProxy(const QString& service, Smewtd* smewtd) : _smewtd(sme
 
 QStringList StorageProxy::queryMovies() {
   qDebug() << horizontalBar;
-  QList<BindingSet> results = executeSparqlQuery("select distinct ?filename where { ?filename rdfs:type xesam:File }");
+  QList<QueryResult> results = query("select distinct ?filename where { ?filename rdfs:type xesam:File }");
 
   QStringList movies;
   for (int i=0; i<results.size(); i++) {
-    QString filename = results[i][0].toString();
+    QString filename = results[i]["filename"];
     if (filename.endsWith(".avi")) {
       movies << filename;
     }

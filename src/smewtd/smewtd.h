@@ -43,7 +43,6 @@ class Smewtd : public QDBusAbstractAdaptor {
 
   void startDownload(QString friendName, QString filename);
 
-  //void query(QString query);
   QDBusVariant query(const QString& host, const QString& queryString);
   QStringList queryLucene(const QString& queryString);
   QStringList queryMovies();

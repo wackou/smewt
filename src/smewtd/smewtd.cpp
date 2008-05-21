@@ -26,11 +26,6 @@ void Smewtd::quit() {
   _app->quit();
 }
 
-/*
-void Smewtd::query(QString query) {
-  _storage->query(query);
-}
-*/
 
 QDBusVariant Smewtd::query(const QString& host, const QString& queryString) {
   QList<QVariant> results;
@@ -93,8 +88,6 @@ void Smewtd::startDownload(QString friendName, QString filename) {
 
   Friend source = getFriend(friendName);
   QString sftpAddress = QString("sftp://") + source.ip + filename.right(filename.size()-7);
-
-  // todo implement me
   QString localAddress = settings->incomingFolder + "/" + sftpAddress.split("/").back();
 
   qDebug() << "starting download from: " << sftpAddress << "to:" << localAddress;
