@@ -26,8 +26,32 @@ void Smewtd::quit() {
   _app->quit();
 }
 
+/*
 void Smewtd::query(QString query) {
   _storage->query(query);
+}
+*/
+
+QDBusVariant Smewtd::query(const QString& host, const QString& queryString) {
+  QList<QVariant> results;
+  QList<QueryResult> qresults;
+
+  // is "if (host) {" correct?
+  if (host == "") {
+    qresults = _storage->query(queryString);
+  }
+  else {
+    // perform distant query
+  }
+
+  foreach (QueryResult qresult, qresults) {
+    QMap<QString, QVariant> r;
+    foreach (QString name, qresult.keys()) {
+      r.insert(name, qresult[name]);
+    }
+    results << r;
+  }
+  return QDBusVariant(results);
 }
 
 QStringList Smewtd::queryMovies() {
@@ -39,7 +63,20 @@ QStringList Smewtd::queryLucene(const QString& queryString) {
 }
 
 void Smewtd::distantQueryLucene(const QString& host, const QString& queryString) {
-  _storage->distantQueryLucene(host, queryString);
+  QString cmd = QString("qdbus \"com.smewt.Smewt\" \"/\" \"queryLucene\" \"%1\"").arg(queryString);
+  QString shell = QString("ssh -i %1 %2  DISPLAY=:0 ")
+    .arg(settings->idKey)
+    .arg(getFriend(host).ip);
+
+  qDebug() << "executing remote query:" << shell + cmd;
+  QProcess distantQuery;
+  distantQuery.start(shell + cmd);
+  if (!distantQuery.waitForFinished()) {
+    return;
+  }
+
+  QByteArray result = distantQuery.readAll();
+  qDebug() << result;
 }
 
 Friend Smewtd::getFriend(const QString& friendName) const {

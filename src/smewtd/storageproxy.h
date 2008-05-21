@@ -10,6 +10,8 @@ namespace smewt {
 
 class Smewtd;
 
+typedef QMap<QString, QString> QueryResult;
+
 class StorageProxy {
   Soprano::Model* _model;
   Smewtd* _smewtd;
@@ -18,16 +20,18 @@ class StorageProxy {
 
  public:
   StorageProxy(const QString& service, Smewtd* smewtd);
-
-
-  QString niceify(const QString& queryString) const;
   void connect(const QString& service);
-  void query(const QString& queryString);
 
+  // generic SPARQL query function
+  QList<QueryResult> query(const QString& queryString);
+
+  // specific queries
   QStringList queryMovies();
   QStringList queryLucene(const QString& queryString);
 
-  void distantQueryLucene(const QString& host, const QString& queryString);
+  // utility function to allow nicer queries
+  QString niceify(const QString& queryString) const;
+
 };
 
 } // namespace smewt

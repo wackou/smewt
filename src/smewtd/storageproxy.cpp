@@ -38,23 +38,22 @@ void StorageProxy::connect(const QString& service) {
 
 }
 
-void StorageProxy::query(const QString& queryString) {  
-
+QList<QueryResult> StorageProxy::query(const QString& queryString) {
   qDebug() << horizontalBar;
-  QList<BindingSet> results = executeSparqlQuery(queryString);
-  int nrows = results.size();
+  QList<BindingSet> bresults = executeSparqlQuery(queryString);
+  int nrows = bresults.size();
   qDebug() << "got" << nrows << "results";
   
-  /*
-  int row = 0;
-  foreach (BindingSet bset, results) {
-    for (int col=0; col<ncols; col++) {
-      _table->setItem(row, col, new QTableWidgetItem(bset[col].toString()));
+  QList<QueryResult> results;
+  for (int i=0; i<nrows; i++) {
+    QueryResult qresult;
+    foreach (QString name, bresults[i].bindingNames()) {
+      qresult.insert(name, bresults[i][name].toString());
     }
-    row++;
+    results << qresult;
   }
-  */
-  qDebug() << horizontalBar;
+  
+  return results;
 }
 
 QList<BindingSet> StorageProxy::executeSparqlQuery(const QString& queryString) {
@@ -70,23 +69,6 @@ QList<BindingSet> StorageProxy::executeSparqlQuery(const QString& queryString) {
   //_table->setHorizontalHeaderLabels(bnames);
 
   return it.allBindings();
-}
-
-void StorageProxy::distantQueryLucene(const QString& host, const QString& queryString) {
-  QString cmd = QString("qdbus \"com.smewt.Smewt\" \"/\" \"queryLucene\" \"%1\"").arg(queryString);
-  QString shell = QString("ssh -i %1 %2  DISPLAY=:0 ")
-    .arg(_smewtd->settings->idKey)
-    .arg(_smewtd->getFriend(host).ip);
-
-  qDebug() << "executing remote query:" << shell + cmd;
-  QProcess distantQuery;
-  distantQuery.start(shell + cmd);
-  if (!distantQuery.waitForFinished()) {
-    return;
-  }
-
-  QByteArray result = distantQuery.readAll();
-  qDebug() << result;
 }
 
 QString StorageProxy::niceify(const QString& queryString) const {

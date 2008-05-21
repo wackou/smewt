@@ -4,7 +4,7 @@ import dbus
 
 
 def connect():
-    no = dbus.SessionBus().get_object('com.smewt.Smewt', '/')
+    no = dbus.SessionBus().get_object('com.smewt.Smewt', '/Smewtd')
     return dbus.Interface(no, 'com.smewt.Smewt.Smewtd')
 
 
@@ -14,6 +14,11 @@ def example():
     # basic test
     print server.ping()
 
+    # get movies
+    movies = server.queryMovies()
+    print 'Movies:', movies
+
+    '''
     # perform a lucene query
     query = 'baraka'
     print 'query lucene: ', query
@@ -29,7 +34,7 @@ def example():
     filename = results[-1]
     print 'start downloading from', friend, ':', filename
     server.startDownload(friend, filename)
-
+    '''
 
 if __name__ == '__main__':
     example()
