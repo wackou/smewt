@@ -1,0 +1,15 @@
+<html>
+<head>
+  <title>cheetah test</title>
+</head>
+
+<body>
+#for $serie, $eps in $series.items()
+  <h1>$serie</h1>
+  #for $ep in $eps
+    <div class="episode">$ep.epnumber - $ep.title</div>
+  #end for
+#end for
+
+</body>
+</html>
