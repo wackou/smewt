@@ -10,7 +10,7 @@ namespace smewt {
 
 class Smewtd;
 
-typedef QMap<QString, QString> QueryResult;
+typedef QList<QString> QueryResult;
 
 class StorageProxy {
   Soprano::Model* _model;

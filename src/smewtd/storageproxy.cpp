@@ -45,10 +45,18 @@ QList<QueryResult> StorageProxy::query(const QString& queryString) {
   qDebug() << "got" << nrows << "results";
   
   QList<QueryResult> results;
+
   for (int i=0; i<nrows; i++) {
     QueryResult qresult;
+    if (results.empty()) {
+      foreach (QString bindingName, bresults[i].bindingNames()) {
+	qresult << bindingName;
+      }
+      results << qresult;
+      qresult.clear();
+    }
     foreach (QString name, bresults[i].bindingNames()) {
-      qresult.insert(name, bresults[i][name].toString());
+      qresult << bresults[i][name].toString();
     }
     results << qresult;
   }
@@ -61,6 +69,15 @@ QList<BindingSet> StorageProxy::executeSparqlQuery(const QString& queryString) {
   Soprano::QueryResultIterator it
     = _model->executeQuery(niceify(queryString), Query::QueryLanguageSparql);
   qDebug() << "OK, fetching results...";
+
+  bool tryFaster = false;
+  if (tryFaster) {
+    //return a QList<QueryResult> already, using code like that:
+    //int ncols = it.bindingCount();
+    //QStringList bnames = it.bindingNames();
+    // iterate instead of asking allBindings at once
+    return it.allBindings();
+  }
 
   return it.allBindings();
 }
@@ -87,11 +104,15 @@ StorageProxy::StorageProxy(const QString& service, Smewtd* smewtd) : _smewtd(sme
 
 QStringList StorageProxy::queryMovies() {
   qDebug() << horizontalBar;
-  QList<QueryResult> results = query("select distinct ?filename where { ?filename rdfs:type xesam:File }");
+  QList<QueryResult> results = query("select distinct ?filename where { ?filename rdfs:type xesam:File } limit 10");
 
   QStringList movies;
-  for (int i=0; i<results.size(); i++) {
-    QString filename = results[i]["filename"];
+  int fidx = 0;
+  for (int i=0; i<results[0].size(); i++) {
+    if (results[0][i] == "filename") fidx = i;
+  }
+  for (int i=1; i<results.size(); i++) {
+    QString filename = results[i][fidx];
     if (filename.endsWith(".avi")) {
       movies << filename;
     }

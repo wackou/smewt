@@ -39,12 +39,8 @@ QDBusVariant Smewtd::query(const QString& host, const QString& queryString) {
     // perform distant query
   }
 
-  foreach (QueryResult qresult, qresults) {
-    QMap<QString, QVariant> r;
-    foreach (QString name, qresult.keys()) {
-      r.insert(name, qresult[name]);
-    }
-    results << r;
+  for (int i=0; i<qresults.size(); i++) {
+    results << QVariant(qresults[i]);
   }
   return QDBusVariant(results);
 }
