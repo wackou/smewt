@@ -15,8 +15,11 @@ def example():
     print server.ping()
 
     # get movies
-    movies = server.queryMovies()
-    print 'Movies:', movies
+    #movies = server.queryMovies()
+    #print 'Movies:', movies
+
+    triples = server.query('', 'select ?P ?O ?Q where { $P $O $Q } limit 100')
+    print triples
 
     '''
     # perform a lucene query
