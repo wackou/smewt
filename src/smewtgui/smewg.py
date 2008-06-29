@@ -25,6 +25,8 @@ def result2objects(headers, rows):
         result.append(r)
     return result
 
+def blouh(ok):
+    print 'blouh = ', ok
 
 class SmewtGui(QMainWindow):
 
@@ -39,12 +41,13 @@ class SmewtGui(QMainWindow):
                      self.newSearch)
         self.connect(self.queryTab, SIGNAL('renderTemplate'),
                      self.renderTemplate)
+        self.connect(self.queryTab, SIGNAL('newFolderMetadata'),
+                     self.newFolderMetadata)
 
         self.mainWidget = QTabWidget()
         self.mainWidget.addTab(self.queryTab, 'query')
 
         self.setCentralWidget(self.mainWidget)
-
 
     def newSearch(self, queryString):
         results = self.server.query('', unicode(queryString))
@@ -62,6 +65,14 @@ class SmewtGui(QMainWindow):
         webview.page().mainFrame().setHtml(series.render(objs))
         self.mainWidget.addTab(webview, 'rendered')
         self.mainWidget.setCurrentIndex(self.mainWidget.count() - 1)
+
+    def newFolderMetadata(self):
+        md = self.queryTab.folderMetadata
+        webview = QWebView()
+        webview.page().mainFrame().setHtml(series.render(md))
+        self.mainWidget.addTab(webview, 'folder view')
+        self.mainWidget.setCurrentIndex(self.mainWidget.count() - 1)
+        
 
 
 if __name__ == '__main__':    

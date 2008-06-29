@@ -18,6 +18,16 @@ predefinedResultSets = { 'series1':
                          }
 
 
+def fillBlanks(d):
+    allKeys = set()
+    for elem in d.values():
+        for key in elem.keys():
+            allKeys.add(key)
+    for elem in d.values():
+        for key in allKeys:
+            if key not in elem:
+                elem[key] = ''
+
 class QueryWidget(QWidget):
     def __init__(self):
         super(QueryWidget, self).__init__()
@@ -51,6 +61,14 @@ class QueryWidget(QWidget):
         self.connect(resultSets, SIGNAL('currentIndexChanged(const QString&)'),
                      self.setPredefinedResults)
 
+        folderMetadataSearchButton = QPushButton('Folder search!')
+        self.connect(folderMetadataSearchButton, SIGNAL('clicked()'),
+                     self.folderMetadataSearch)
+
+        from tagger import SeriesTagger
+        self.st = SeriesTagger()
+        self.connect(self.st, SIGNAL('metadataUpdated'),
+                     self.newFolderTab)
 
         self.resultTable = ResultWidget()
 
@@ -69,6 +87,7 @@ class QueryWidget(QWidget):
         layout2_1.addWidget(self.templates)
         layout2_1.addStretch(1)
         layout2_1.addWidget(renderButton)
+        layout2_1.addWidget(folderMetadataSearchButton)
         layout2_2 = QHBoxLayout()
         layout2_2.addWidget(QLabel('Select predefined result sets:'))
         layout2_2.addWidget(resultSets)
@@ -89,6 +108,24 @@ class QueryWidget(QWidget):
         layout.addWidget(self.resultTable)
 
         self.setLayout(layout)
+
+    def folderMetadataSearch(self):
+        filename = str(QFileDialog.getExistingDirectory(self, 'Select directory to search', '/data/Series/Futurama/Season 1',
+                                                        QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
+        print 'selected filename', filename
+
+
+        self.st.tagDirectory(filename)
+
+    def newFolderTab(self):
+        # remove the confidence from the metadata set
+        fm = dict(self.st.metadata)
+        for filename, md in fm.items():
+            for key, (value, confidence) in md.items():
+                md[key] = value
+        fillBlanks(fm)
+        self.folderMetadata = fm.values()
+        self.emit(SIGNAL('newFolderMetadata'))
 
     def newSearch(self):
         print 'emitting newSearch'

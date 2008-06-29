@@ -18,13 +18,14 @@ HTML_SERIES = '''<html>
 '''
 
 
-def render(eps):
+def render(episodes):
+    print episodes
     series = {}
-    for ep in eps:
+    for episode in episodes:
         try:
-            series[ep['serie']].append(ep)
+            series[episode['serie']].append(episode)
         except:
-            series[ep['serie']] = [ ep ]
+            series[episode['serie']] = [ episode ]
 
     html = open('series/template.html').read()
     t = Template(html, searchList = { 'series': series })
