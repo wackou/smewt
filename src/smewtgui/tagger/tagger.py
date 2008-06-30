@@ -6,12 +6,11 @@ import sys
 import re
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from serieobject import *
 
 class MediaTagger:
     pass
 
-# a metadata probability is a dict from name of property to a list of the possible
-# candidates, which are pair of (value, confidence)
 
 
 # @todo put this inside MediaTagger or not?
@@ -41,9 +40,22 @@ def splitFilename(filename):
         result.append(path)
     return result
 
+
+# a metadata probability is a dict from name of property to a list of the possible
+# candidates, which are pair of (value, confidence)
+def newProbabilityFor(cls):
+    mdprob = {}
+    for key in cls.schema:
+        mdprob[key] = []
+    return mdprob
+
+
+
 class SeriesTagger(QObject):
     def __init__(self):
         super(SeriesTagger, self).__init__()
+
+        # a dict from filename to metadata probabilities
         self.metadata = {}
         
         from webplugin_epguides import WebPluginEpGuides
@@ -57,32 +69,44 @@ class SeriesTagger(QObject):
         for root, dirs, files in os.walk(directory[:-1]):
             print 'walking', root
             for filename in files:
-                allFiles.append(join(root, filename))
+                if filename.endswith('.avi'):
+                    allFiles.append(join(root, filename))
+
+        
         return allFiles
 
+    # this function just adds the probabilties for the properties, it is the job
+    # of a solver to decide which one to keep in the end
     def addMetadata(self, item, key, value, confidence):
         try:
             filemd = self.metadata[item]
-            # possible conflict if some other part of the filename already
-            # filled one property: either they're the same (hurray!), or
-            # we will have to somehow adjust the confidence of each of these
-            # NB: maybe keep all possibilities and resolve them at the end using
-            #     a specific solver
-            if key in filemd:
-                # simple heuristic: keep the one with higher confidence
-                # in case of a draw, keep the first one we already had
-                oldValue, oldConfidence = filemd[key]
-                if confidence > oldConfidence:
-                    filemd[key] = (value, confidence)
-            else:
-                # this is new metadata, insert it with given confidence
-                filemd[key] = (value, confidence)
-
         except KeyError:
-            self.metadata[item] = {}
+            self.metadata[item] = newProbabilityFor(EpisodeObject)
             # hack-o-matic
-            self.metadata[item]['filename'] = (item, 1.0)
-            self.metadata[item][key] = (value, confidence)
+            self.metadata[item]['filename'] = [ (item, 1.0) ]
+
+        self.metadata[item][key] = [ (MediaObject.parse(EpisodeObject, key, value), confidence) ]
+
+    def resolveProbabilities(self):
+        result = []
+        print '-'*100
+        print self.metadata
+        print '-'*100
+        #print 'Resolving probs for', self.metadata.values()
+        for mdprobs in self.metadata.values():
+            elem = EpisodeObject()
+            for key, probs in mdprobs.items():
+                if probs:
+                    # simple strategy: keep the one with higher probability
+                    # in case of a draw, keep the first one we already had
+                    bestValue, maxProb = probs[0]
+                    for value, prob in probs[1:]:
+                        if prob > maxProb:
+                            bestValue, maxProb = value, prob
+                    elem[key] = bestValue
+            result.append(elem)
+
+        return result
 
     def tagDirectory(self, directory):
         print 'tagging dir "' + directory + '"'
@@ -106,29 +130,44 @@ class SeriesTagger(QObject):
         # validate the results obtained
         self.applyOnlineHeuristics()
 
+        # now's the moment to decide: use a solver to resolve (possible) conflicts
+        # in metadata and strip the confidence
+        # note: at the moment, solver is called from outside
+
         # print the results
         #print self.metadata
 
     def applyOnlineHeuristics(self):
-        self.web.singleSerieUrl(self.metadata[self.files[0]]['serie'][0])
+        self.web.singleSerieUrl(self.metadata[self.files[0]]['serie'][0][0])
 
     def fetchOnlineMetadata(self):
         # try to find each file in the db we just grabbed from the net
-        for filename, md in self.metadata.items():
+        for md in self.resolveProbabilities():
             # make this into a generic function passing [ 'season', 'epnumber' ] as argument
+            filename = md['filename']
             print filename, md
             try:
-                q = { 'season': str(int(md['season'][0])), 'epNumber': str(int(md['epNumber'][0])) }
+                q = {}
+                for key in EpisodeObject.unique:
+                    q[key] = md[key]
             except KeyError:
+                print 'BAD WARNING: insufficient information for file:', filename
+                continue
+
+            allEpisodes = [ EpisodeObject.fromDict(ep) for ep in self.web.episodes ]
+            result = [ episode for episode in allEpisodes if isIncluded(q, episode) ]
+
+            if len(result) == 0:
                 print 'WARNING: insufficient information for file:', filename
                 continue
 
-            result = [ episode for episode in self.web.episodes if isIncluded(q, episode) ]
-
             if len(result) == 1:
                 print 'updating md for ', filename
-                for key, value in result[0].items():
+                for key, value in result[0].properties.items():
                     self.addMetadata(filename, key, value, 0.8)
+
+            if len(result) > 1:
+                print 'ooh bad', result
 
         self.emit(SIGNAL('metadataUpdated'))
 
@@ -137,7 +176,7 @@ class SeriesTagger(QObject):
         # heuristic 1: try to guess the season
         # this should contain also the confidence...
         rexps = [ 'season (?P<season>[0-9]+)',
-                  '(?P<season>[0-9])x(?P<epNumber>[0-9][0-9])'
+                  '(?P<season>[0-9])x(?P<episodeNumber>[0-9][0-9])'
                   ]
         for n in name:
             result = matchAnyRegexp(n, rexps)
@@ -146,10 +185,12 @@ class SeriesTagger(QObject):
                     self.addMetadata(filename, key, value, confidence = 1.0)
 
         # heuristic 2: try to guess the serie title!
-        if matchAnyRegexp(name[-2], ['season (?P<season>[0-9]+)$']):
-            self.addMetadata(filename, 'serie', name[-3], 0.8)
+        if matchAnyRegexp(name[1], ['season (?P<season>[0-9]+)$']):
+            self.addMetadata(filename, 'serie', name[2], 0.8)
         else:
-            self.addMetadata(filename, 'serie', name[-2], 0.6)
+            print '++++++++++++++++++++', filename
+            print name
+            self.addMetadata(filename, 'serie', name[1], 0.6)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

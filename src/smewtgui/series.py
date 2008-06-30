@@ -19,15 +19,23 @@ HTML_SERIES = '''<html>
 
 
 def render(episodes):
-    print episodes
+    print '---- Rendering episode:', episodes
     series = {}
-    for episode in episodes:
-        try:
-            series[episode['serie']].append(episode)
-        except:
-            series[episode['serie']] = [ episode ]
+    import itertools
+    series = itertools.groupby(episodes, key = lambda x: x['serie'])
+    #for episode in episodes:
+    #    try:
+    #        series[episode['serie']].append(episode.properties)
+    #    except:
+    #        series[episode['serie']] = [ episode.properties ]
+    sortFunc = lambda x: (x['season'], x['episodeNumber'])
+    series = dict([ (name, sorted(list(groupEps), key = sortFunc))
+                    for name, groupEps
+                    in series ])
+    #episodes.sort(key = lambda x: (x['season'], x['episodeNumber']))
 
     html = open('series/template.html').read()
+    print '---- search list for cheetah (\'series\'): ', series
     t = Template(html, searchList = { 'series': series })
 
     return unicode(t)

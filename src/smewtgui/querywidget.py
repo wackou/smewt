@@ -119,12 +119,15 @@ class QueryWidget(QWidget):
 
     def newFolderTab(self):
         # remove the confidence from the metadata set
+        '''
         fm = dict(self.st.metadata)
         for filename, md in fm.items():
             for key, (value, confidence) in md.items():
                 md[key] = value
         fillBlanks(fm)
         self.folderMetadata = fm.values()
+        '''
+        self.folderMetadata = self.st.resolveProbabilities()
         self.emit(SIGNAL('newFolderMetadata'))
 
     def newSearch(self):

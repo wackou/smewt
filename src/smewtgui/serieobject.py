@@ -13,15 +13,24 @@ class SerieObject(MediaObject):
     typename = 'Serie'
 
     schema = { 'title': str,
-               'season': int,
+               'numberSeasons': int,
                'episodeList': list
                }
+
+    unique = [ 'title' ]
 
     converters = { 'episodeList': parseEpisodeList }
 
 
+
     def __init__(self):
         MediaObject.__init__(self)
+
+    @staticmethod
+    def fromDict(d):
+        result = SerieObject()
+        MediaObject.readFromDict(result, headers, row)
+        return result
 
     @staticmethod
     def fromRow(headers, row):
@@ -34,15 +43,24 @@ class EpisodeObject(MediaObject):
 
     typename = 'Episode'
 
-    schema = { 'epNumber': int,
+    schema = { 'serie': str,
+               'season': int,
+               'episodeNumber': int,
                'title': str
                }
+
+    unique = [ 'season', 'episodeNumber' ]
 
     converters = {}
 
     def __init__(self):
         MediaObject.__init__(self)
-            
+
+    @staticmethod
+    def fromDict(d):
+        result = EpisodeObject()
+        MediaObject.readFromDict(result, d)
+        return result
 
     @staticmethod
     def fromRow(headers, row):

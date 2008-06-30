@@ -51,7 +51,7 @@ class WebPluginEpGuides(QObject):
         # try to get the info for each episode
         episodes = []
         for line in tableText.split('\n'):
-            rexp = '[0-9]+\. *(?P<season>[0-9]+)- *(?P<epNumber>[0-9]+) *(?P<prodNumber>[^ ]+) *'
+            rexp = '[0-9]+\. *(?P<season>[0-9]+)- *(?P<episodeNumber>[0-9]+) *(?P<prodNumber>[^ ]+) *'
             rexp += '(?P<originalAirDate>[0-9]+ ... [0-9]+)?.*href="(?P<epguideUrl>.*?)">(?P<title>.*)</a>'
             result = re.compile(rexp).search(line)
             if result:
