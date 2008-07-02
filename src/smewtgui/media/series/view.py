@@ -10,7 +10,7 @@ from Cheetah.Template import Template
 def render(episodes):
     print '---- Rendering episode:', episodes
 
-    t = Template(file = 'series/view_episodes_by_season.tmpl',
+    t = Template(file = 'media/series/view_episodes_by_season.tmpl',
                  searchList = { 'episodes': episodes })
 
     return unicode(t)
