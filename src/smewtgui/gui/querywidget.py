@@ -65,7 +65,7 @@ class QueryWidget(QWidget):
         self.connect(folderMetadataSearchButton, SIGNAL('clicked()'),
                      self.folderMetadataSearch)
 
-        from tagger import SeriesTagger
+        from media.series.tagger import SeriesTagger
         self.st = SeriesTagger()
         self.connect(self.st, SIGNAL('metadataUpdated'),
                      self.newFolderTab)

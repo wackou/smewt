@@ -7,8 +7,8 @@ from PyQt4.QtWebKit import *
 import sys
 import dbus
 from media.series import view
-from querywidget import QueryWidget
-from resultwidget import ResultWidget
+from gui.querywidget import QueryWidget
+from gui.resultwidget import ResultWidget
 import config
 
 
