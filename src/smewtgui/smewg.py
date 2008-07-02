@@ -6,7 +6,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
 import sys
 import dbus
-import series
+from media.series import view
 from querywidget import QueryWidget
 from resultwidget import ResultWidget
 import config
@@ -64,14 +64,14 @@ class SmewtGui(QMainWindow):
         print rows
         objs = result2objects(headers, rows)
         print objs
-        webview.page().mainFrame().setHtml(series.render(objs))
+        webview.page().mainFrame().setHtml(view.render(objs))
         self.mainWidget.addTab(webview, 'rendered')
         self.mainWidget.setCurrentIndex(self.mainWidget.count() - 1)
 
     def newFolderMetadata(self):
         md = self.queryTab.folderMetadata
         webview = QWebView()
-        webview.page().mainFrame().setHtml(series.render(md))
+        webview.page().mainFrame().setHtml(view.render(md))
         self.mainWidget.addTab(webview, 'folder view')
         self.mainWidget.setCurrentIndex(self.mainWidget.count() - 1)
         
