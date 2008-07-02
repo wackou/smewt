@@ -8,6 +8,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
 import time
 import re
+import config
 
 class WebPlugin:
     pass
@@ -18,6 +19,9 @@ class WebPluginEpGuides(QObject):
         super(WebPluginEpGuides, self).__init__()
 
     def singleSerieUrl(self, name):
+        if config.test_localweb:
+            self.getGoogleResult(True)
+            return
         # urllib doesn't cut it against google, better use webkit here...
         #return urlopen('http://www.google.com/search', urlencode({'q': name})).read()
         self.googleResult = None
@@ -35,14 +39,21 @@ class WebPluginEpGuides(QObject):
 
     def getGoogleResult(self, ok):
         print 'WebPlugin: EpGuides - got result url from google ok =', ok
-        self.googleResult = unicode(self.queryPage.page().mainFrame().toHtml())
+        if config.test_localweb:
+            self.googleResult = open(config.local_epguides_googleresult).read().decode('utf-8')
+        else:
+            self.googleResult = unicode(self.queryPage.page().mainFrame().toHtml())
+
         self.serieUrl = re.compile('<h2 class="r"><a href=\"(.*?)\" class="l">').findall(self.googleResult)[0]
         print 'Found:', self.serieUrl
         print '*'*100
         self.emit(SIGNAL('gotSerie'), self.serieUrl)
 
     def getEpisodeList(self, url):
-        html = urlopen(url).read()
+        if config.test_localweb:
+            html = open(config.local_epguides_episodelist)
+        else:
+            html = urlopen(url).read()
         print 'WebPlugin: EpGuides - got episodes list from epguides'
 
         # extract episode table text

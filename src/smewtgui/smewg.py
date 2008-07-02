@@ -9,6 +9,7 @@ import dbus
 import series
 from querywidget import QueryWidget
 from resultwidget import ResultWidget
+import config
 
 
 def connectServer():
@@ -34,7 +35,8 @@ class SmewtGui(QMainWindow):
         super(SmewtGui, self).__init__()
         self.setWindowTitle('Smewt Gui')
 
-        self.server = connectServer()
+        if config.connect_smewtd:
+            self.server = connectServer()
 
         self.queryTab = QueryWidget()
         self.connect(self.queryTab, SIGNAL('newSearch'),
