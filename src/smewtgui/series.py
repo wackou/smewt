@@ -1,22 +1,5 @@
 from Cheetah.Template import Template
 
-HTML_SERIES = '''<html>
-<head>
-  <title>cheetah test</title>
-</head>
-
-<body>
-#for $serie, $eps in $series.items()
-  <h1>$serie</h1>
-  #for $ep in $eps
-    <div class="episode">$ep.epnumber - $ep.title</div>
-  #end for
-#end for
-
-</body>
-</html>
-'''
-
 
 # all the logic of rendering should be contained in the template
 # we shall always pass only a list of the basic media object
@@ -26,25 +9,12 @@ HTML_SERIES = '''<html>
 #  the series available, it needs to do its groupby by itself)
 def render(episodes):
     print '---- Rendering episode:', episodes
-    series = {}
-    import itertools
-    series = itertools.groupby(episodes, key = lambda x: x['serie'])
-    #for episode in episodes:
-    #    try:
-    #        series[episode['serie']].append(episode.properties)
-    #    except:
-    #        series[episode['serie']] = [ episode.properties ]
-    sortFunc = lambda x: (x['season'], x['episodeNumber'])
-    series = dict([ (name, sorted(list(groupEps), key = sortFunc))
-                    for name, groupEps
-                    in series ])
-    #episodes.sort(key = lambda x: (x['season'], x['episodeNumber']))
 
-    html = open('series/template.html').read()
-    print '---- search list for cheetah (\'series\'): ', series
-    t = Template(html, searchList = { 'series': series })
+    t = Template(file = 'series/view_episodes_by_season.tmpl',
+                 searchList = { 'episodes': episodes })
 
     return unicode(t)
+
 
 
 def cheetahTest():
