@@ -18,6 +18,12 @@ HTML_SERIES = '''<html>
 '''
 
 
+# all the logic of rendering should be contained in the template
+# we shall always pass only a list of the basic media object
+# (eg for series, we have SerieObject, EpisodeObject, SeasonObject...
+#  but the base type is EpisodeObject (a single file)
+#  That means that if the view should represent a list of all
+#  the series available, it needs to do its groupby by itself)
 def render(episodes):
     print '---- Rendering episode:', episodes
     series = {}
