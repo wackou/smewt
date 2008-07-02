@@ -44,7 +44,7 @@ class WebPluginEpGuides(QObject):
         else:
             self.googleResult = unicode(self.queryPage.page().mainFrame().toHtml())
 
-        self.serieUrl = re.compile('<h2 class="r"><a href=\"(.*?)\" class="l">').findall(self.googleResult)[0]
+        self.serieUrl = re.compile('<h2 class.*?a href=\"(.*?)\" class').findall(self.googleResult)[0]
         print 'Found:', self.serieUrl
         print '*'*100
         self.emit(SIGNAL('gotSerie'), self.serieUrl)
