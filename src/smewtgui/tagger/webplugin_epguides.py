@@ -20,6 +20,8 @@ class WebPluginEpGuides(QObject):
 
     def singleSerieUrl(self, name):
         if config.test_localweb:
+            self.connect(self, SIGNAL('gotSerie'),
+                         self.getEpisodeList)
             self.getGoogleResult(True)
             return
         # urllib doesn't cut it against google, better use webkit here...
@@ -50,11 +52,13 @@ class WebPluginEpGuides(QObject):
         self.emit(SIGNAL('gotSerie'), self.serieUrl)
 
     def getEpisodeList(self, url):
+        print 'getting episode list'
         if config.test_localweb:
-            html = open(config.local_epguides_episodelist)
+            html = open(config.local_epguides_episodelist).read()
         else:
             html = urlopen(url).read()
         print 'WebPlugin: EpGuides - got episodes list from epguides'
+        print html
 
         # extract episode table text
         tableText = re.compile('<pre>(.*?)</pre>', re.DOTALL).findall(html)[0]

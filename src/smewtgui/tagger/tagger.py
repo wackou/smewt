@@ -65,11 +65,11 @@ class SeriesTagger(QObject):
 
     def getAllFilesInDir(self, directory):
         allFiles = []
-        print 'get all files', directory[:-1]
+        #print 'get all files', directory[:-1]
         for root, dirs, files in os.walk(directory[:-1]):
-            print 'walking', root
+            #print 'walking', root
             for filename in files:
-                if filename.endswith('.avi'):
+                if filename.endswith('.avi') or filename.endswith('.ogm'):
                     allFiles.append(join(root, filename))
 
         
@@ -111,7 +111,7 @@ class SeriesTagger(QObject):
     def tagDirectory(self, directory):
         print 'tagging dir "' + directory + '"'
         self.files = self.getAllFilesInDir(directory)
-        print 'files', self.files
+        #print 'files', self.files
 
         for filename in self.files:
             name = splitFilename(filename)            
@@ -123,7 +123,7 @@ class SeriesTagger(QObject):
             # if would be nice if heuristics (only regexps?) could be translatable
             self.applyFilenameHeuristics(filename)
 
-        print 'Found filename metadata', self.metadata
+        #print 'Found filename metadata', self.metadata
 
         # use the registered "web-plugins" that look on online database for metadata
         # can use previously discovered metadata either to refine a query or to
