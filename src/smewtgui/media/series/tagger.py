@@ -57,7 +57,7 @@ class SeriesTagger(MediaTagger):
 
     def tagDirectory(self, directory):
         print 'tagging dir "' + directory + '"'
-        self.files = self.getAllFilesInDir(directory, [ '*.avi', '*.ogm' ])
+        self.files = self.getAllFilesInDir(directory, [ '*.avi', '*.ogm', '*.mkv' ])
         #print 'files', self.files
 
         self.filenameMetadata = defaultdict(lambda: EpisodeObject())
@@ -79,7 +79,7 @@ class SeriesTagger(MediaTagger):
             md.confidence['filename'] = 1.0
             self.metadata.append(md)
         
-        print 'Found filename metadata', '\n'.join(map(str, self.metadata))
+        #print 'Found filename metadata', '\n'.join(map(str, self.metadata))
         
 
         # use the registered "web-plugins" that look on online database for metadata
@@ -100,32 +100,17 @@ class SeriesTagger(MediaTagger):
         sampleEpisode = self.filenameMetadata[self.filenameMetadata.keys()[0]]
         self.web.singleSerieUrl(sampleEpisode['serie'])
 
-    def fetchOnlineMetadata(self):
-        
-        # try to find each file we already have in the db we just grabbed from the net
+    def fetchOnlineMetadata(self):        
+        # try to find each file we already have inside the db we just grabbed from the net
         for key in self.resolveProbabilities():
-            #print md['filename'], md
+            #if any(key is None ) print 'BAD WARNING: insufficient information for file:', filename
 
-            #q = md.getUniqueKey()
-            #if any(q is None ) print 'BAD WARNING: insufficient information for file:', filename
-
-            #if key in self.web.episodes
-            #matches = [ episode in self.web.episodes if episode.getUniqueKey() == key ]
-
+            #print '---------'
+            #print 'looking for', key
             for episode in self.web.episodes:
                 if episode.getUniqueKey() == key:
-                    #print '---------'
-                    #print 'Found more metadata for', key
-                    #print 'MD:', newmd
+                    #print 'Found MD:', episode
                     self.metadata.append(episode)
-
-            #webdata = groupby(self.web.episodes, lambda x: x.getUniqueKey())
-            #for q, webmd in webdata:
-            #    #print '---------'
-            #    #print 'Found more metadata for', md
-            #    for newmd in webmd:
-            #        #print 'MD:', newmd
-            #        self.metadata.append(newmd)
 
         self.emit(SIGNAL('metadataUpdated'))
 
