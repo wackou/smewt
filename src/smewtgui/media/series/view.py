@@ -8,7 +8,7 @@ from Cheetah.Template import Template
 #  That means that if the view should represent a list of all
 #  the series available, it needs to do its groupby by itself)
 def render(episodes):
-    print '---- Rendering episode:', episodes
+    #print '---- Rendering episode:', episodes
 
     t = Template(file = 'media/series/view_episodes_by_season.tmpl',
                  searchList = { 'episodes': episodes })

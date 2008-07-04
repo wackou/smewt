@@ -6,9 +6,7 @@ from collections import defaultdict
 
 series = defaultdict(lambda: defaultdict(lambda: []))
 
-l = open('/tmp/smewt.log', 'w')
-
-'''l.write(eps)'''
+log = open('/tmp/smewt.log', 'w')
 
 for (serie, season, episode), md in eps.items():
     series[serie][season].append(md)
@@ -16,11 +14,8 @@ for (serie, season, episode), md in eps.items():
 for serie, seasons in series.items():
     for season, eps in seasons.items():
         series[serie][season] = sorted(eps, key = lambda x: x['episodeNumber'])
-        l.write('for serie ' + serie + ' season ' + str(season) + ' eps = ' + str(list(eps)) + '\n')
-#for serie, serieEps in groupby(eps, key = lambda x: x['serie']):
-#    for season, seasonEps in groupby(serieEps, key = lambda x: x['season']):
-#        l.write('for serie ' + serie + ' season ' + str(season) + ' eps = ' + str(list(eps)) + '\n')
-#        series[serie][season] = sorted(list(seasonEps), key = lambda x: x['episodeNumber'])
+        log.write('*'*100 + '\n')
+        log.write('for serie ' + serie + ' season ' + str(season) + ' eps = ' + '\n'.join(map(str, eps)) + '\n')
 
 %>
 
@@ -35,11 +30,15 @@ for serie, seasons in series.items():
   #for seasonNumber, eps in seasons.items():
     <h2>Season $seasonNumber</h2>
     #for $ep in $eps
-      #try
-        <div class="episode">$ep.episodeNumber - $ep.title</div>
-      #except
-        <div class="episode"> ? - $ep.title</div>
-      #end try
+      #if 'filename' in ep.properties:
+        #try
+          <div class="episode">$ep.episodeNumber - $ep.title</div>
+        #except
+          <div class="episode"> ? - $ep.title</div>
+        #end try
+      #else
+        <div class="episode"><em>$ep.episodeNumber - $ep.title</em></div>
+      #end if
     #end for
   #end for
 #end for

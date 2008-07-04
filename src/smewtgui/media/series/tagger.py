@@ -79,7 +79,7 @@ class SeriesTagger(MediaTagger):
             md.confidence['filename'] = 1.0
             self.metadata.append(md)
         
-        #print 'Found filename metadata', self.metadata
+        print 'Found filename metadata', '\n'.join(map(str, self.metadata))
         
 
         # use the registered "web-plugins" that look on online database for metadata
@@ -102,45 +102,30 @@ class SeriesTagger(MediaTagger):
 
     def fetchOnlineMetadata(self):
         
-        # try to find each file in the db we just grabbed from the net
-        for key, md in self.resolveProbabilities().items():
-            # make this into a generic function passing [ 'season', 'epnumber' ] as argument
-            filename = md['filename']
-            #print filename, md
-            '''
-            try:
-                q = {}
-                for key in EpisodeObject.unique:
-                    q[key] = md[key]
-            except KeyError:
-                print 'BAD WARNING: insufficient information for file:', filename
-                continue
-            '''
-            q = md.getUniqueKey()
+        # try to find each file we already have in the db we just grabbed from the net
+        for key in self.resolveProbabilities():
+            #print md['filename'], md
 
-            webdata = groupby(self.web.episodes, lambda x: x.getUniqueKey())
-            for q, webmd in webdata:
-                #print '---------'
-                #print 'Found more metadata for', md
-                for newmd in webmd:
+            #q = md.getUniqueKey()
+            #if any(q is None ) print 'BAD WARNING: insufficient information for file:', filename
+
+            #if key in self.web.episodes
+            #matches = [ episode in self.web.episodes if episode.getUniqueKey() == key ]
+
+            for episode in self.web.episodes:
+                if episode.getUniqueKey() == key:
+                    #print '---------'
+                    #print 'Found more metadata for', key
                     #print 'MD:', newmd
-                    self.metadata.append(newmd)
-            #if any( is None ) print 'BAD WARNING: insufficient information for file:', filename
+                    self.metadata.append(episode)
 
-            #allEpisodes = [ EpisodeObject.fromDict(ep) for ep in self.web.episodes ]
-            #result = [ episode for episode in self.web.episodes if self.isIncluded(q, episode) ]
-
-            #if len(result) == 0:
-            #    print 'WARNING: insufficient information for file:', filename
-            #    continue
-
-            #if len(result) == 1:
-            #    print 'updating md for ', filename
-            #    for key, value in result[0].properties.items():
-            #        self.addMetadata(filename, key, value, 0.8)
-
-            #if len(result) > 1:
-            #    print 'ooh bad', result
+            #webdata = groupby(self.web.episodes, lambda x: x.getUniqueKey())
+            #for q, webmd in webdata:
+            #    #print '---------'
+            #    #print 'Found more metadata for', md
+            #    for newmd in webmd:
+            #        #print 'MD:', newmd
+            #        self.metadata.append(newmd)
 
         self.emit(SIGNAL('metadataUpdated'))
 
@@ -157,7 +142,7 @@ class SeriesTagger(MediaTagger):
         for n in name:
             for result in self.matchAllRegexp(n, rexps):
                 for key, value in result.items():
-                    print 'Found MD:', filename, ':', key, '=', value
+                    #print 'Found MD:', filename, ':', key, '=', value
                     # automatic conversion, is that good?
                     value = md.schema[key](value)
                     md[key] = value
@@ -168,8 +153,6 @@ class SeriesTagger(MediaTagger):
             self.filenameMetadata[filename]['serie'] = name[2]
             self.filenameMetadata[filename].confidence['serie'] = 0.8
         else:
-            print '++++++++++++++++++++', filename
-            print name
             self.filenameMetadata[filename]['serie'] = name[1]
             self.filenameMetadata[filename].confidence['serie'] = 0.6
 
