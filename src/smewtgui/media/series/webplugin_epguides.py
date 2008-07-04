@@ -9,6 +9,7 @@ from PyQt4.QtWebKit import *
 import time
 import re
 import config
+from media.series.serieobject import EpisodeObject
 
 class WebPlugin:
     pass
@@ -58,7 +59,11 @@ class WebPluginEpGuides(QObject):
         else:
             html = urlopen(url).read()
         print 'WebPlugin: EpGuides - got episodes list from epguides'
-        print html
+        #print html
+
+        # extract serie name
+        serieName = re.compile('<h1>.*?>(.*?)</a></h1>').findall(html)[0]
+        #print 'found seriename:', serieName
 
         # extract episode table text
         tableText = re.compile('<pre>(.*?)</pre>', re.DOTALL).findall(html)[0]
@@ -70,7 +75,13 @@ class WebPluginEpGuides(QObject):
             rexp += '(?P<originalAirDate>[0-9]+ ... [0-9]+)?.*href="(?P<epguideUrl>.*?)">(?P<title>.*)</a>'
             result = re.compile(rexp).search(line)
             if result:
-                episodes.append(result.groupdict())
+                newep = EpisodeObject.fromDict(result.groupdict())
+                newep['serie'] = serieName
+
+                for prop in newep.properties:
+                    newep.confidence[prop] = 0.9
+                
+                episodes.append(newep)
 
         self.episodes = episodes
         self.emit(SIGNAL('done'))

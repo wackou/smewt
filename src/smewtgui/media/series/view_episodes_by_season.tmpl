@@ -1,14 +1,27 @@
 #set eps = $episodes
 
 <%
-import itertools
+from itertools import groupby
+from collections import defaultdict
 
-series = itertools.groupby(eps, key = lambda x: x['serie'])
-sortFunc = lambda x: (x['season'], x['episodeNumber'])
+series = defaultdict(lambda: defaultdict(lambda: []))
 
-series = dict([ (name, sorted(list(groupEps), key = sortFunc))
-                       for name, groupEps
-                       in series ])
+l = open('/tmp/smewt.log', 'w')
+
+'''l.write(eps)'''
+
+for (serie, season, episode), md in eps.items():
+    series[serie][season].append(md)
+
+for serie, seasons in series.items():
+    for season, eps in seasons.items():
+        series[serie][season] = sorted(eps, key = lambda x: x['episodeNumber'])
+        l.write('for serie ' + serie + ' season ' + str(season) + ' eps = ' + str(list(eps)) + '\n')
+#for serie, serieEps in groupby(eps, key = lambda x: x['serie']):
+#    for season, seasonEps in groupby(serieEps, key = lambda x: x['season']):
+#        l.write('for serie ' + serie + ' season ' + str(season) + ' eps = ' + str(list(eps)) + '\n')
+#        series[serie][season] = sorted(list(seasonEps), key = lambda x: x['episodeNumber'])
+
 %>
 
 <html>
@@ -17,14 +30,17 @@ series = dict([ (name, sorted(list(groupEps), key = sortFunc))
 </head>
 
 <body>
-#for serie, eps in series.items()
-  <h1>$serie</h1>
-  #for $ep in $eps
-    #try
-      <div class="episode">$ep.episodeNumber - $ep.title</div>
-    #except
-      <div class="episode"> ? - $ep.title</div>
-    #end try
+#for serieName, seasons in series.items()
+  <h1>$serieName</h1>
+  #for seasonNumber, eps in seasons.items():
+    <h2>Season $seasonNumber</h2>
+    #for $ep in $eps
+      #try
+        <div class="episode">$ep.episodeNumber - $ep.title</div>
+      #except
+        <div class="episode"> ? - $ep.title</div>
+      #end try
+    #end for
   #end for
 #end for
 

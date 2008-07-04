@@ -49,7 +49,7 @@ class EpisodeObject(MediaObject):
                'title': str
                }
 
-    unique = [ 'season', 'episodeNumber' ]
+    unique = [ 'serie', 'season', 'episodeNumber' ]
 
     converters = {}
 

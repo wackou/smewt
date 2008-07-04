@@ -3,10 +3,21 @@
 from collections import defaultdict
 
 
+
 class SmewtDict(defaultdict):
     def __init__(self, schema):
         defaultdict.__init__(self, lambda x: None)
         self.schema = schema
+
+    def __missing__(self, key):
+        #if not key in self.schema:
+        #    raise KeyError
+        return None
+
+
+class ValidatingSmewtDict(SmewtDict):
+    def __init__(self, schema):
+        super(ValidatingSmewtDict, self).__init__(schema)
         
     def __setitem__(self, key, value):
         if key in self.schema:
@@ -15,12 +26,9 @@ class SmewtDict(defaultdict):
 
         defaultdict.__setitem__(self, key, value)
 
-    def __missing__(self, key):
-        if not key in self.schema:
-            raise KeyError
-        return None
 
 # @todo isn't it better to implement properties as actual python properties? or attributes?
+# @todo write unit tests for this class...
 class MediaObject:
 
     # need to be defined in plugins
@@ -39,7 +47,9 @@ class MediaObject:
 
     def __init__(self, dictionary = {}, headers = [], row = []):
         # create the properties
-        self.properties = SmewtDict(self.schema)
+        self.properties = ValidatingSmewtDict(self.schema)
+        self.confidence = SmewtDict(self.schema)
+        
         #for prop in self.schema:
         #    self.properties[prop] = None
         
@@ -52,10 +62,6 @@ class MediaObject:
 
     # used to make sure the values correspond to the schema
     def isValid(self):
-        # compare number of attributes
-        if len(self.properties) != len(self.schema):
-            return False
-
         # compare properties' type
         try:
             for prop in self.schema.keys():
@@ -70,17 +76,31 @@ class MediaObject:
     def __repr__(self):
         return self.typename + '(' + repr(self.properties) + ')'
 
+    # check this function still works correctly
     def __str__(self):
         result = ('valid ' if self.isValid() else 'invalid ') + self.typename + ':\n{ '
         for key, value in self.properties.items():
             result += '%-10s : %s\n  ' % (key, str(value))
         return result + '}'
 
+    def keys(self):
+        return self.properties.keys()
+
+    def getAttributes(self, attrs):
+        result = [ self[attr] for attr in attrs ]
+        return tuple(result)
+
+    def getUniqueKey(self):
+        return self.getAttributes(self.unique)
+
+
     def __getitem__(self, prop):
         return self.properties[prop]
 
     def __setitem__(self, prop, value):
         self.properties[prop] = value
+
+    #def setValue(self,
 
     @staticmethod
     def parse(cls, name, value):
