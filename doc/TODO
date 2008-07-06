@@ -1,1 +1,2 @@
 * Make Smewt rock the free world!
+* clean python imports (ie: no 'from PyQt4.QtCore import *')
