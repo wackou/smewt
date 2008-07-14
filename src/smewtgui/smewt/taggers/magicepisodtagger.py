@@ -70,7 +70,7 @@ if __name__ == '__main__':
     mediaObject = EpisodeObject.fromDict({'filename': sys.argv[1]})
     
     def printResults(tagged):
-        print tagged.properties
+        print tagged
 
     app.connect(tagger, SIGNAL('tagFinished'), printResults)
     

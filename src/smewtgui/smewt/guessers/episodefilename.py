@@ -110,7 +110,7 @@ if __name__ == '__main__':
     
     def printResults(guesses):
         for guess in guesses:
-            print guess.properties
+            print guess
 
     app.connect(guesser, SIGNAL('guessFinished'), printResults)
     

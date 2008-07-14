@@ -143,10 +143,10 @@ class EpGuides(Guesser):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     guesser = EpGuides()
-    mediaObjects = [EpisodeObject.fromDict({'serie': sys.argv[1], 'title': sys.argv[2]})]
+    mediaObjects = [EpisodeObject.fromDict({'serie': sys.argv[1], 'title': sys.argv[2], 'episodeNumber': sys.argv[3]})]
     def printResults(guesses):
         for guess in guesses:
-            print guess.properties
+            print guess
 
     app.connect(guesser, SIGNAL('guessFinished'), printResults)
     
