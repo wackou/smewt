@@ -38,8 +38,10 @@ class NaiveSolver(Solver):
         
         for mediaObject in mediaObjects[1:]:
             for k, v in mediaObject.properties.iteritems():
+                #print 'Solver: Checking property ''%s'' ::: ''%s'' (%r) -- ''%s'' (%r)' % (k, v, mediaObject.confidence.get(k, 0.0), resultMediaObject[k], resultMediaObject.confidence.get(k, 0.0))
                 if mediaObject.confidence.get(k, 0.0) > resultMediaObject.confidence.get(k, 0.0):
                     resultMediaObject[k] = v
+                    resultMediaObject.confidence[k] = mediaObject.confidence.get(k, 0.0)
                     
         self.emit(SIGNAL('solveFinished'), resultMediaObject)
 
