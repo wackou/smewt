@@ -98,7 +98,7 @@ class MediaObject:
     def __str__(self):
         result = ('valid ' if self.isValid() else 'invalid ') + self.typename + ':\n{ '
         for key, value in self.properties.items():
-            result += '%-10s : %s\n  ' % (key, str(value))
+            result += '%-10s : %s (%r)\n  ' % (key, str(value), self.confidence[key])
         return result + '}'
 
     def keys(self):
