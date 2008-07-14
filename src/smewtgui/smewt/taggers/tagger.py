@@ -21,13 +21,12 @@
 
 from PyQt4 import QtCore
 
-class Guesser(QtCore.QObject):
-    """Abstract class from which all guessers must inherit.  Guessers are objects that implement a slot called guess(self, mediaObjects) that returns immediately, and begins the process of guessing metadata of the given list of media objects.
-    When all guesses are made it emits a signal called guessFinished(guesses) which passes as argument a list of tuples containing the guessed MediaObjects and their associated confidence.
-    
+class Tagger(QtCore.QObject):
+    """Abstract class from which all Solvers must inherit.  Solvers are objects that implement a slot called solve(self, guesses) that returns immediately, and begins the process of solving the merge of mediaObjects.
+    When a merge (the most probable mediaObject) has been found it emits a signal called solveFinished(mediaObject) which passes as argument a mediaObject corresponding to the best solution or None in case no solution is available.
     """
     def __init__(self):
-        super(Guesser, self).__init__()
+        super(Tagger, self).__init__()
     
-    def guess(self, mediaObjects):
-        self.emit(QtCore.SIGNAL('guessFinished()'), mediaObjects)
+    def tag(self, mediaObject):
+        self.emit(QtCore.SIGNAL('tagFinished()'), None)

@@ -25,7 +25,7 @@ from PyQt4.QtGui import *
 import copy
 import sys
 import re
-from os.path import join, split
+from os.path import join, split, basename
 
 from media.series.serieobject import EpisodeObject
 
@@ -33,34 +33,49 @@ class EpisodeFilename(Guesser):
     def __init__(self):
         super(EpisodeFilename, self).__init__()
         
-    def guess(self, mediaObject):
-        if mediaObject.typename == 'Episode':
-            if mediaObject['filename'] is not None:
-                result = copy.copy(mediaObject)
-                filename = result['filename']
-                name = self.splitFilename(filename)
-                
-                # heuristic 1: try to guess the season
-                # this should contain also the confidence...
-                rexps = [ 'season (?P<season>[0-9]+)',
-                          '(?P<season>[0-9])x(?P<episodeNumber>[0-9][0-9])'
-                          ]
-                
-                # heuristic 2: try to guess the serie title!
-                if self.matchAnyRegexp(name[1], ['season (?P<season>[0-9]+)$']):
-                    result['serie'] = name[2]
-                    result.confidence['serie'] = 0.8
+    def guess(self, mediaObjects):
+        resultMediaObjects = []
+        for mediaObject in mediaObjects:
+            if mediaObject.typename == 'Episode':
+                if mediaObject['filename'] is not None:
+                    result = copy.copy(mediaObject)
+                    filename = result['filename']
+                    name = self.splitFilename(filename)
+
+                    # heuristic 1: try to guess the season
+                    # this should contain also the confidence...
+                    rexps = [ 'season (?P<season>[0-9]+)',
+                              '(?P<season>[0-9])x(?P<episodeNumber>[0-9][0-9])'
+                              ]
+
+                    for n in name:
+                        for match in self.matchAllRegexp(n, rexps):
+                            for key, value in match.items():
+                                #print 'Found MD:', filename, ':', key, '=', value
+                                # automatic conversion, is that good?
+                                value = result.schema[key](value)
+                                result[key] = value
+                                result.confidence[key] = 1.0
+
+
+                    # heuristic 2: try to guess the serie title!
+                    if self.matchAnyRegexp(name[1], ['season (?P<season>[0-9]+)$']):
+                        result['serie'] = name[2]
+                        result.confidence['serie'] = 0.8
+                    else:
+                        result['serie'] = name[1]
+                        result.confidence['serie'] = 0.6
+
+                    # If guessed succesfully append to the list
+                    resultMediaObjects.append(result)
                 else:
-                    result['serie'] = name[1]
-                    result.confidence['serie'] = 0.6
-
-                self.emit(SIGNAL('guessFinished'), [result])
+                    print 'Guesser: Does not contain ''filename'' metadata. Try when it has some info.'
+                    resultMediaObjects.append(mediaObject)
             else:
-                print 'Guesser: Does not contain ''filename'' metadata. Try when it has some info.'
-        else:
-            print 'Guesser: Not an EpisodeObject.  Cannot guess.'
+                print 'Guesser: Not an EpisodeObject.  Cannot guess.'
+                resultMediaObjects.append(mediaObject)                
 
-        return super(EpisodeFilename, self).guess(mediaObject)
+        self.emit(SIGNAL('guessFinished'), resultMediaObjects)
 
     def splitFilename(self, filename):
         root, path = split(filename)
@@ -71,6 +86,14 @@ class EpisodeFilename(Guesser):
             result.append(path)
         return result
     
+    def matchAllRegexp(self, string, regexps):
+        result = []
+        for regexp in regexps:
+            match = re.compile(regexp, re.IGNORECASE).search(string)
+            if match:
+                result.append(match.groupdict())
+        return result
+
     def matchAnyRegexp(self, string, regexps):
         for regexp in regexps:
             result = re.compile(regexp, re.IGNORECASE).search(string)
@@ -83,7 +106,7 @@ class EpisodeFilename(Guesser):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     guesser = EpisodeFilename()
-    mediaObject = EpisodeObject.fromDict({'filename': sys.argv[1]})
+    mediaObjects = [EpisodeObject.fromDict({'filename': sys.argv[1]})]
     
     def printResults(guesses):
         for guess in guesses:
@@ -91,6 +114,6 @@ if __name__ == '__main__':
 
     app.connect(guesser, SIGNAL('guessFinished'), printResults)
     
-    guesser.guess(mediaObject)    
+    guesser.guess(mediaObjects)    
     
     app.exec_()

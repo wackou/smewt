@@ -32,15 +32,17 @@ from urllib import *
 
 from media.series.serieobject import EpisodeObject
 
-class EpGuides(Guesser):
-    def __init__(self):
-        super(EpGuides, self).__init__()
+class EpGuideQuerier(QObject):
+    def __init__(self, mediaObject):
+        super(EpGuideQuerier, self).__init__()
         
         if config.test_localweb:
             self.connect(self, SIGNAL('gotSerie'),
                          self.getEpisodeList)
             self.getGoogleResult(True)
             return
+
+        self.mediaObject = mediaObject
         
         # urllib doesn't cut it against google, better use webkit here...
         #return urlopen('http://www.google.com/search', urlencode({'q': name})).read()
@@ -53,20 +55,11 @@ class EpGuides(Guesser):
         self.connect(self, SIGNAL('gotSerie'),
                      self.getEpisodeList)
 
-    def guess(self, mediaObject):
-        if mediaObject.typename == 'Episode':
-            if mediaObject['serie'] is not None:
-                print 'Guesser: EpGuides - looking for serie', mediaObject['serie']
-                query = 'allintitle: site:epguides.com ' + mediaObject['serie']
-                url = QUrl.fromEncoded('http://www.google.com/search?' + urlencode({'q': query}))
-                self.queryPage.load(url)
-                return
-            else:
-                print 'Guesser: Does not contain ''serie'' metadata. Try when it has some info.'
-        else:
-            print 'Guesser: Not an EpisodeObject.  Cannot guess.'
-            
-        return super(EpGuides, self).guess(mediaObject)
+    def query(self):
+        print 'Guesser: EpGuides - looking for serie', self.mediaObject['serie']
+        query = 'allintitle: site:epguides.com ' + self.mediaObject['serie']
+        url = QUrl.fromEncoded('http://www.google.com/search?' + urlencode({'q': query}))
+        self.queryPage.load(url)
 
     def getGoogleResult(self, ok):
         print 'Guesser: EpGuides - got result url from google ok =', ok
@@ -87,7 +80,6 @@ class EpGuides(Guesser):
         else:
             html = urlopen(url).read()
         print 'Guesser: EpGuides - got episodes list from epguides'
-        #print html
 
         # extract serie name
         serieName = re.compile('<h1>.*?>(.*?)</a></h1>').findall(html)[0]
@@ -105,14 +97,44 @@ class EpGuides(Guesser):
             if result:
                 newep = EpisodeObject.fromDict(result.groupdict())
                 newep['serie'] = serieName
-
+                
                 for prop in newep.properties:
                     newep.confidence[prop] = 0.9
                 
                 episodes.append(newep)
 
         #self.episodes = episodes
-        self.emit(SIGNAL('guessFinished'), episodes)
+        self.emit(SIGNAL('guessFinished'), self.mediaObject, episodes)
+
+class EpGuides(Guesser):
+    def __init__(self):
+        super(EpGuides, self).__init__()
+
+        self.mediaObjectQueries = {}
+        self.resultMediaObjects = []
+
+    def guess(self, mediaObjects):
+        for mediaObject in mediaObjects:
+            if mediaObject.typename == 'Episode':
+                if mediaObject['serie'] is not None:
+                    self.mediaObjectQueries[mediaObject] = EpGuideQuerier(mediaObject)
+                    self.connect(self.mediaObjectQueries[mediaObject], SIGNAL('guessFinished'), self.queryFinished)
+                else:
+                    print 'Guesser: Does not contain ''serie'' metadata. Try when it has some info.'
+                    self.resultMediaObjects.append(mediaObject)
+            else:
+                print 'Guesser: Not an EpisodeObject.  Cannot guess.'
+                self.resultMediaObjects.append(mediaObject)
+
+        for querier in self.mediaObjectQueries.values():
+            querier.query()
+
+    def queryFinished(self, mediaObject, guesses):
+        self.mediaObjectQueries.pop(mediaObject)
+        self.resultMediaObjects.extend(guesses)
+
+        if len(self.mediaObjectQueries) == 0:
+            self.emit(SIGNAL('guessFinished'), self.resultMediaObjects)
 
     def exitNow(self):
         print 'exiting'
@@ -121,14 +143,13 @@ class EpGuides(Guesser):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     guesser = EpGuides()
-    mediaObject = EpisodeObject.fromDict({'serie': sys.argv[1], 'title': sys.argv[2]})
-    print mediaObject.typename
+    mediaObjects = [EpisodeObject.fromDict({'serie': sys.argv[1], 'title': sys.argv[2]})]
     def printResults(guesses):
         for guess in guesses:
             print guess.properties
 
     app.connect(guesser, SIGNAL('guessFinished'), printResults)
     
-    guesser.guess(mediaObject)    
+    guesser.guess(mediaObjects)    
     
     app.exec_()
