@@ -98,9 +98,22 @@ class EpGuideQuerier(QObject):
                 newep = EpisodeObject.fromDict(result.groupdict())
                 newep['serie'] = serieName
                 
-                for prop in newep.properties:
-                    newep.confidence[prop] = 0.9
+                # Calculate the confidence of the episode
+                # We compare how many matching properties it has with the input mediaObject
+                # we weight the matching by the confidence of each property
+                commonProps = set(newep.properties) & set(self.mediaObject.properties)
+                episodeConfidence = 0.0
+                for prop in commonProps:
+                    if newep[prop] == self.mediaObject[prop]:
+                        episodeConfidence += newep.confidence.get(prop, 1.0) * self.mediaObject.confidence.get(prop, 1.0)
+                        
+                episodeConfidence /= float(len(commonProps))
+                print 'Guesser: episode confidence == %.3f' % episodeConfidence
+                print newep
                 
+                for prop in newep.properties:
+                    newep.confidence[prop] = 0.9 * episodeConfidence
+                    
                 episodes.append(newep)
 
         #self.episodes = episodes
