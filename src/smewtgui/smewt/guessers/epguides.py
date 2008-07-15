@@ -32,7 +32,9 @@ from urllib import *
 
 from media.series.serieobject import EpisodeObject
 
-class EpGuideQuerier(QObject):    
+class EpGuideQuerier(QObject):
+    episodeLists = {}
+    
     def __init__(self, mediaObject):
         super(EpGuideQuerier, self).__init__()
         
@@ -55,11 +57,17 @@ class EpGuideQuerier(QObject):
         self.connect(self, SIGNAL('gotSerie'),
                      self.getEpisodeList)
 
+        self.connect(self, SIGNAL('gotEpisodeList'),
+                     self.makeGuesses)
+
     def query(self):
-        print 'Guesser: EpGuides - looking for serie', self.mediaObject['serie']
-        query = 'allintitle: site:epguides.com ' + self.mediaObject['serie']
-        url = QUrl.fromEncoded('http://www.google.com/search?' + urlencode({'q': query}))
-        self.queryPage.load(url)
+        if self.episodeLists.has_key(self.mediaObject['serie']):
+            self.emit(SIGNAL('gotEpisodeList'))
+        else:
+            print 'Guesser: EpGuides - looking for serie', self.mediaObject['serie']
+            query = 'allintitle: site:epguides.com ' + self.mediaObject['serie']
+            url = QUrl.fromEncoded('http://www.google.com/search?' + urlencode({'q': query}))
+            self.queryPage.load(url)
 
     def getGoogleResult(self, ok):
         print 'Guesser: EpGuides - got result url from google ok =', ok
@@ -68,7 +76,13 @@ class EpGuideQuerier(QObject):
         else:
             self.googleResult = unicode(self.queryPage.page().mainFrame().toHtml())
 
-        self.serieUrl = re.compile('<h2 class.*?a href=\"(.*?)\" class').findall(self.googleResult)[0]
+        matches = re.compile('<h2 class.*?a href=\"(.*?)\" class').findall(self.googleResult)
+        if not matches:
+            self.episodeLists[self.mediaObject['serie']] = []
+            self.emit(SIGNAL('gotEpisodeList'))
+            return
+            
+        self.serieUrl = matches[0]
         print 'Found:', self.serieUrl
         print '*'*100
         self.emit(SIGNAL('gotSerie'), self.serieUrl)
@@ -97,27 +111,39 @@ class EpGuideQuerier(QObject):
             if result:
                 newep = EpisodeObject.fromDict(result.groupdict())
                 newep['serie'] = serieName
-                
-                # Calculate the confidence of the episode
-                # We compare how many matching properties it has with the input mediaObject
-                # we weight the matching by the confidence of each property
-                commonProps = set(newep.properties) & set(self.mediaObject.properties)
-                episodeConfidence = 0.0
-                for prop in commonProps:
-                    if newep[prop] == self.mediaObject[prop]:
-                        episodeConfidence += newep.confidence.get(prop, 1.0) * self.mediaObject.confidence.get(prop, 1.0)
-                        
-                episodeConfidence /= float(len(commonProps))
-                #print 'Guesser: episode confidence == %.3f' % episodeConfidence
-                #print newep
-                
-                for prop in newep.properties:
-                    newep.confidence[prop] = 0.9 * episodeConfidence
-                    
+                                    
                 episodes.append(newep)
 
+        self.episodeLists[self.mediaObject['serie']] = episodes
+        self.emit(SIGNAL('gotEpisodeList'))
         #self.episodes = episodes
-        self.emit(SIGNAL('guessFinished'), self.mediaObject, episodes)
+        
+    def makeGuesses(self):
+        import copy
+        guesses = []
+        episodeList = self.episodeLists[self.mediaObject['serie']]
+        for newep in episodeList:
+            # Calculate the confidence of the episode
+            # We compare how many matching properties it has with the input mediaObject
+            # we weight the matching by the confidence of each property
+            commonProps = set(newep.properties) & set(self.mediaObject.properties)
+            episodeConfidence = 0.0
+            for prop in commonProps:
+                if newep[prop] == self.mediaObject[prop]:
+                    episodeConfidence += newep.confidence.get(prop, 1.0) * self.mediaObject.confidence.get(prop, 1.0)
+                        
+            episodeConfidence /= float(len(commonProps))
+            #print 'Guesser: episode confidence == %.3f' % episodeConfidence
+            #print newep
+
+            guess = EpisodeObject()
+            for prop in newep.properties:
+                guess[prop] = newep[prop]
+                guess.confidence[prop] = 0.9 * episodeConfidence
+
+            guesses.append(guess)
+                
+        self.emit(SIGNAL('guessFinished'), self.mediaObject, guesses)
 
 class EpGuides(Guesser):
     def __init__(self):
@@ -130,7 +156,8 @@ class EpGuides(Guesser):
             if mediaObject.typename == 'Episode':
                 if mediaObject['serie'] is not None:
                     self.mediaObjectQueries[mediaObject] = EpGuideQuerier(mediaObject)
-                    self.connect(self.mediaObjectQueries[mediaObject], SIGNAL('guessFinished'), self.queryFinished)
+                    self.connect(self.mediaObjectQueries[mediaObject], SIGNAL('guessFinished'),
+                                 self.queryFinished)
                 else:
                     print 'Guesser: Does not contain ''serie'' metadata. Try when it has some info.'
                     self.resultMediaObjects.append(mediaObject)
