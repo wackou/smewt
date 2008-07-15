@@ -29,4 +29,4 @@ class Solver(QtCore.QObject):
         super(Solver, self).__init__()
     
     def solve(self, guesses):
-        self.emit(QtCore.SIGNAL('solveFinished()'), None)
+        self.emit(QtCore.SIGNAL('solveFinished'), None)
