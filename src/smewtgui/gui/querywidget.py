@@ -149,7 +149,7 @@ class QueryWidget(QWidget):
         fillBlanks(fm)
         self.folderMetadata = fm.values()
         '''
-        self.folderMetadata = dict([(media.getUniqueKey(), media) for media in self.collection.medias])
+        self.folderMetadata = dict([(media.getUniqueKey(), media) for media in self.collection.medias if media is not None])
         self.emit(SIGNAL('newFolderMetadata'))
 
     def newSearch(self):
