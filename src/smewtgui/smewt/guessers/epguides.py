@@ -32,7 +32,7 @@ from urllib import *
 
 from media.series.serieobject import EpisodeObject
 
-class EpGuideQuerier(QObject):
+class EpGuideQuerier(QObject):    
     def __init__(self, mediaObject):
         super(EpGuideQuerier, self).__init__()
         
@@ -108,8 +108,8 @@ class EpGuideQuerier(QObject):
                         episodeConfidence += newep.confidence.get(prop, 1.0) * self.mediaObject.confidence.get(prop, 1.0)
                         
                 episodeConfidence /= float(len(commonProps))
-                print 'Guesser: episode confidence == %.3f' % episodeConfidence
-                print newep
+                #print 'Guesser: episode confidence == %.3f' % episodeConfidence
+                #print newep
                 
                 for prop in newep.properties:
                     newep.confidence[prop] = 0.9 * episodeConfidence
@@ -123,10 +123,9 @@ class EpGuides(Guesser):
     def __init__(self):
         super(EpGuides, self).__init__()
 
+    def guess(self, mediaObjects):
         self.mediaObjectQueries = {}
         self.resultMediaObjects = []
-
-    def guess(self, mediaObjects):
         for mediaObject in mediaObjects:
             if mediaObject.typename == 'Episode':
                 if mediaObject['serie'] is not None:
@@ -156,7 +155,9 @@ class EpGuides(Guesser):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     guesser = EpGuides()
-    mediaObjects = [EpisodeObject.fromDict({'serie': sys.argv[1], 'title': sys.argv[2], 'episodeNumber': sys.argv[3]})]
+    mediaObjects = [EpisodeObject.fromDict({'serie': sys.argv[1],
+                                            'title': sys.argv[2],
+                                            'episodeNumber': sys.argv[3]})]
     def printResults(guesses):
         for guess in guesses:
             print guess
