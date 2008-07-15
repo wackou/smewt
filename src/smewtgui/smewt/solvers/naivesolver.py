@@ -32,7 +32,7 @@ class NaiveSolver(Solver):
         
     def solve(self, mediaObjects):
         if not mediaObjects:
-            return super(NaiveSolver, self).solve(mediaObject)
+            return super(NaiveSolver, self).solve(mediaObjects)
             
         resultMediaObject = copy.copy(mediaObjects[0])
         
