@@ -18,6 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from smewt.collection import *
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from resultwidget import ResultWidget
@@ -85,9 +87,8 @@ class QueryWidget(QWidget):
         self.connect(folderMetadataSearchButton, SIGNAL('clicked()'),
                      self.folderMetadataSearch)
 
-        from media.series.tagger import SeriesTagger
-        self.st = SeriesTagger()
-        self.connect(self.st, SIGNAL('metadataUpdated'),
+        self.collection = Collection()
+        self.connect(self.collection, SIGNAL('collectionUpdated'),
                      self.newFolderTab)
 
         self.resultTable = ResultWidget()
@@ -135,7 +136,8 @@ class QueryWidget(QWidget):
         print 'selected filename', filename
 
 
-        self.st.tagDirectory(filename)
+        #self.st.tagDirectory(filename)
+        self.collection.importFolder(filename)
 
     def newFolderTab(self):
         # remove the confidence from the metadata set
@@ -147,7 +149,7 @@ class QueryWidget(QWidget):
         fillBlanks(fm)
         self.folderMetadata = fm.values()
         '''
-        self.folderMetadata = self.st.resolveProbabilities()
+        self.folderMetadata = dict([(media.getUniqueKey(), media) for media in self.collection.medias])
         self.emit(SIGNAL('newFolderMetadata'))
 
     def newSearch(self):
