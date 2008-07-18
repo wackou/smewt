@@ -32,7 +32,7 @@ for serie, seasons in series.items():
     #for $ep in $eps
       #if 'filename' in ep.properties:
         #try
-          <div class="episode">$ep.episodeNumber - $ep.title</div>
+          <div class="episode"><a href="file://$ep.filename">$ep.episodeNumber - $ep.title</div>
         #except
           <div class="episode"> ? - $ep.title</div>
         #end try

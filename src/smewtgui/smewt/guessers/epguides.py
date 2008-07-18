@@ -151,7 +151,7 @@ class EpGuides(Guesser):
 
     def guess(self, mediaObjects):
         self.mediaObjectQueries = {}
-        self.resultMediaObjects = []
+        self.resultMediaObjects = mediaObjects
         for mediaObject in mediaObjects:
             if mediaObject.typename == 'Episode':
                 if mediaObject['serie'] is not None:

@@ -70,7 +70,9 @@ class FolderImporter(QObject):
     def start(self):
         # Populate the tagging queue
         for filename in GlobDirectoryWalker(self.folder, '*.avi'):
-            self.taggingQueue.append(EpisodeObject.fromDict({'filename': filename}))
+            mediaObject = EpisodeObject.fromDict({'filename': filename})
+            mediaObject.confidence['filename'] = 1.0
+            self.taggingQueue.append(mediaObject)
 
         self.tagNext()
 

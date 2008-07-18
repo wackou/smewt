@@ -106,7 +106,9 @@ class EpisodeFilename(Guesser):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     guesser = EpisodeFilename()
-    mediaObjects = [EpisodeObject.fromDict({'filename': sys.argv[1]})]
+    mediaObject = EpisodeObject.fromDict({'filename': sys.argv[1]})
+    mediaObject.confidence['filename'] = 1.0
+    mediaObjects = [mediaObject]
     
     def printResults(guesses):
         for guess in guesses:
