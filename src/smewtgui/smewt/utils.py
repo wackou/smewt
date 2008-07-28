@@ -18,17 +18,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from os.path import join, split, basename
-import re
 
-def splitFilename(filename):
-    root, path = split(filename)
-    result = [ path ]
-    # FIXME: this is a hack... How do we know we're at the root node?
-    while len(root) > 1:
-        root, path = split(root)
-        result.append(path)
-    return result
+# regexps-related functions
+import re
 
 def matchAllRegexp(string, regexps):
     result = []
@@ -44,3 +36,45 @@ def matchAnyRegexp(string, regexps):
         if result:
             return result.groupdict()
     return None
+
+
+
+# filename-related functions
+import os.path,  fnmatch
+
+def splitFilename(filename):
+    root, path = os.path.split(filename)
+    result = [ path ]
+    # FIXME: this is a hack... How do we know we're at the root node?
+    while len(root) > 1:
+        root, path = os.path.split(root)
+        result.append(path)
+    return result
+
+class GlobDirectoryWalker:
+    # a forward iterator that traverses a directory tree
+
+    def __init__(self, directory, patterns = ['*']):
+        self.stack = [directory]
+        self.patterns = patterns
+        self.files = []
+        self.index = 0
+
+    def __getitem__(self, index):
+        while True:
+            try:
+                file = self.files[self.index]
+                self.index = self.index + 1
+            except IndexError:
+                # pop next directory from stack
+                self.directory = self.stack.pop()
+                self.files = os.listdir(self.directory)
+                self.index = 0
+            else:
+                # got a filename
+                fullname = os.path.join(self.directory, file)
+                if os.path.isdir(fullname) and not os.path.islink(fullname):
+                    self.stack.append(fullname)
+                for pattern in self.patterns:
+                    if fnmatch.fnmatch(file, pattern):
+                        return fullname

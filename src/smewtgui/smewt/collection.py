@@ -19,43 +19,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
-import sys
-import os
-import fnmatch
-
+from PyQt4.QtCore import SIGNAL,  QObject
 from media.series.serieobject import EpisodeObject
 from smewt.taggers.magicepisodetagger import MagicEpisodeTagger
-
-class GlobDirectoryWalker:
-    # a forward iterator that traverses a directory tree
-
-    def __init__(self, directory, patterns = ['*']):
-        self.stack = [directory]
-        self.patterns = patterns
-        self.files = []
-        self.index = 0
-
-    def __getitem__(self, index):
-        while True:
-            try:
-                file = self.files[self.index]
-                self.index = self.index + 1
-            except IndexError:
-                # pop next directory from stack
-                self.directory = self.stack.pop()
-                self.files = os.listdir(self.directory)
-                self.index = 0
-            else:
-                # got a filename
-                fullname = os.path.join(self.directory, file)
-                if os.path.isdir(fullname) and not os.path.islink(fullname):
-                    self.stack.append(fullname)
-                for pattern in self.patterns:
-                    if fnmatch.fnmatch(file, pattern):
-                        return fullname
+from smewt.utils import GlobDirectoryWalker
 
 class FolderImporter(QObject):
     def __init__(self, folder):
@@ -109,6 +76,8 @@ class Collection(QObject):
 
 
 if __name__ == '__main__':
+    import sys
+
     app = QApplication(sys.argv)
     col = Collection()
     col.importFolder(sys.argv[1])
