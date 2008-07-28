@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Project SYSTEM "Project-4.2.dtd">
+<!-- eric4 project file for project Smewg -->
+<!-- Saved: 2008-07-28, 21:58:41 -->
+<!-- Copyright (C) 2008 Nicolas Wack, wackou@gmail.com -->
+<Project version="4.2">
+  <ProgLanguage mixed="0">Python</ProgLanguage>
+  <ProjectType>Qt4</ProjectType>
+  <Description>The Eric project for Smewt GUI</Description>
+  <Version>0.1</Version>
+  <Author>Nicolas Wack</Author>
+  <Email>wackou@gmail.com</Email>
+  <Sources>
+    <Source>
+      <Name>smewg.py</Name>
+    </Source>
+    <Source>
+      <Name>mediaplugin.py</Name>
+    </Source>
+    <Source>
+      <Name>test_connect.py</Name>
+    </Source>
+    <Source>
+      <Name>config.py</Name>
+    </Source>
+    <Source>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>view_episodes_by_season.py</Name>
+    </Source>
+    <Source>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>tagger.py</Name>
+    </Source>
+    <Source>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>webplugin_epguides.py</Name>
+    </Source>
+    <Source>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>view.py</Name>
+    </Source>
+    <Source>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>serieobject.py</Name>
+    </Source>
+    <Source>
+      <Dir>media</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>gui</Dir>
+      <Name>resultwidget.py</Name>
+    </Source>
+    <Source>
+      <Dir>gui</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>gui</Dir>
+      <Name>querywidget.py</Name>
+    </Source>
+    <Source>
+      <Name>mediatagger.py</Name>
+    </Source>
+    <Source>
+      <Name>mediaobject.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Name>collection.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Name>config.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>guessers</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>guessers</Dir>
+      <Name>epguides.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>guessers</Dir>
+      <Name>episodefilename.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>guessers</Dir>
+      <Name>guesser.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>solvers</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>solvers</Dir>
+      <Name>naivesolver.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>solvers</Dir>
+      <Name>solver.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>taggers</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>taggers</Dir>
+      <Name>magicepisodetagger.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>taggers</Dir>
+      <Name>tagger.py</Name>
+    </Source>
+  </Sources>
+  <Forms>
+  </Forms>
+  <Translations>
+  </Translations>
+  <Resources>
+  </Resources>
+  <Interfaces>
+  </Interfaces>
+  <Others>
+  </Others>
+  <MainScript>
+    <Name>smewg.py</Name>
+  </MainScript>
+  <Vcs>
+    <VcsType>None</VcsType>
+  </Vcs>
+  <FiletypeAssociations>
+    <FiletypeAssociation pattern="*.ui" type="FORMS" />
+    <FiletypeAssociation pattern="*.idl" type="INTERFACES" />
+    <FiletypeAssociation pattern="*.ptl" type="SOURCES" />
+    <FiletypeAssociation pattern="*.pyw" type="SOURCES" />
+    <FiletypeAssociation pattern="*.ui.h" type="FORMS" />
+    <FiletypeAssociation pattern="*.py" type="SOURCES" />
+    <FiletypeAssociation pattern="*.qrc" type="RESOURCES" />
+  </FiletypeAssociations>
+</Project>

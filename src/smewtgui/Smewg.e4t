@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Tasks SYSTEM "Tasks-4.1.dtd">
+<!-- eric4 tasks file for project Smewg -->
+<!-- Saved: 2008-07-28, 23:42:35 -->
+<Tasks version="4.1">
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: write a test here</Summary>
+    <Description></Description>
+    <Created>2008-07-28, 23:31:54</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>solvers</Dir>
+        <Name>naivesolver.py</Name>
+      </Filename>
+      <Linenumber>50</Linenumber>
+    </Resource>
+  </Task>
+</Tasks>
