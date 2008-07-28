@@ -40,16 +40,6 @@ predefinedResultSets = { 'series1':
                          }
 
 
-def fillBlanks(d):
-    allKeys = set()
-    for elem in d.values():
-        for key in elem.keys():
-            allKeys.add(key)
-    for elem in d.values():
-        for key in allKeys:
-            if key not in elem:
-                elem[key] = ''
-
 class QueryWidget(QWidget):
     def __init__(self):
         super(QueryWidget, self).__init__()
@@ -140,15 +130,6 @@ class QueryWidget(QWidget):
         self.collection.importFolder(filename)
 
     def newFolderTab(self):
-        # remove the confidence from the metadata set
-        '''
-        fm = dict(self.st.metadata)
-        for filename, md in fm.items():
-            for key, (value, confidence) in md.items():
-                md[key] = value
-        fillBlanks(fm)
-        self.folderMetadata = fm.values()
-        '''
         self.folderMetadata = dict([(media.getUniqueKey(), media) for media in self.collection.medias if media is not None])
         self.emit(SIGNAL('newFolderMetadata'))
 
