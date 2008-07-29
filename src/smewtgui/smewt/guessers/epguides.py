@@ -32,18 +32,21 @@ from urllib import urlopen,  urlencode
 from media.series.serieobject import EpisodeObject
 
 class EpGuideQuerier(QObject):
-    episodeLists = {}
 
     def __init__(self, mediaObject):
         super(EpGuideQuerier, self).__init__()
+
+        self.episodeLists = {}
+        self.mediaObject = mediaObject
+
+        self.connect(self, SIGNAL('gotEpisodeList'),
+                     self.makeGuesses)
 
         if config.test_localweb:
             self.connect(self, SIGNAL('gotSerie'),
                          self.getEpisodeList)
             self.getGoogleResult(True)
             return
-
-        self.mediaObject = mediaObject
 
         # urllib doesn't cut it against google, better use webkit here...
         #return urlopen('http://www.google.com/search', urlencode({'q': name})).read()
@@ -56,8 +59,6 @@ class EpGuideQuerier(QObject):
         self.connect(self, SIGNAL('gotSerie'),
                      self.getEpisodeList)
 
-        self.connect(self, SIGNAL('gotEpisodeList'),
-                     self.makeGuesses)
 
     def query(self):
         if self.episodeLists.has_key(self.mediaObject['serie']):
