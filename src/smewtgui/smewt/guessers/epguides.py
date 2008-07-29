@@ -22,30 +22,32 @@
 from smewt.guessers.guesser import Guesser
 from smewt import config
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtWebKit import *
+from PyQt4.QtCore import SIGNAL, QObject, QUrl
+from PyQt4.QtWebKit import QWebView
 
 import sys
 import re
-from urllib import *
+from urllib import urlopen,  urlencode
 
 from media.series.serieobject import EpisodeObject
 
 class EpGuideQuerier(QObject):
-    episodeLists = {}
-    
+
     def __init__(self, mediaObject):
         super(EpGuideQuerier, self).__init__()
-        
+
+        self.episodeLists = {}
+        self.mediaObject = mediaObject
+
+        self.connect(self, SIGNAL('gotEpisodeList'),
+                     self.makeGuesses)
+
         if config.test_localweb:
             self.connect(self, SIGNAL('gotSerie'),
                          self.getEpisodeList)
             self.getGoogleResult(True)
             return
 
-        self.mediaObject = mediaObject
-        
         # urllib doesn't cut it against google, better use webkit here...
         #return urlopen('http://www.google.com/search', urlencode({'q': name})).read()
         self.googleResult = None
@@ -57,8 +59,6 @@ class EpGuideQuerier(QObject):
         self.connect(self, SIGNAL('gotSerie'),
                      self.getEpisodeList)
 
-        self.connect(self, SIGNAL('gotEpisodeList'),
-                     self.makeGuesses)
 
     def query(self):
         if self.episodeLists.has_key(self.mediaObject['serie']):
@@ -81,7 +81,7 @@ class EpGuideQuerier(QObject):
             self.episodeLists[self.mediaObject['serie']] = []
             self.emit(SIGNAL('gotEpisodeList'))
             return
-            
+
         self.serieUrl = matches[0]
         print 'Found:', self.serieUrl
         print '*'*100
@@ -111,13 +111,13 @@ class EpGuideQuerier(QObject):
             if result:
                 newep = EpisodeObject.fromDict(result.groupdict())
                 newep['serie'] = serieName
-                                    
+
                 episodes.append(newep)
 
         self.episodeLists[self.mediaObject['serie']] = episodes
         self.emit(SIGNAL('gotEpisodeList'))
         #self.episodes = episodes
-        
+
     def makeGuesses(self):
         import copy
         guesses = []
@@ -131,7 +131,7 @@ class EpGuideQuerier(QObject):
             for prop in commonProps:
                 if newep[prop] == self.mediaObject[prop]:
                     episodeConfidence += newep.confidence.get(prop, 1.0) * self.mediaObject.confidence.get(prop, 1.0)
-                        
+
             episodeConfidence /= float(len(commonProps))
             #print 'Guesser: episode confidence == %.3f' % episodeConfidence
             #print newep
@@ -142,7 +142,7 @@ class EpGuideQuerier(QObject):
                 guess.confidence[prop] = 0.9 * episodeConfidence
 
             guesses.append(guess)
-                
+
         self.emit(SIGNAL('guessFinished'), self.mediaObject, guesses)
 
 class EpGuides(Guesser):
@@ -190,7 +190,7 @@ if __name__ == '__main__':
             print guess
 
     app.connect(guesser, SIGNAL('guessFinished'), printResults)
-    
-    guesser.guess(mediaObjects)    
-    
+
+    guesser.guess(mediaObjects)
+
     app.exec_()

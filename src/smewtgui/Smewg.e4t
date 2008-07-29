@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Tasks SYSTEM "Tasks-4.1.dtd">
+<!-- eric4 tasks file for project Smewg -->
+<!-- Saved: 2008-07-29, 02:17:18 -->
+<Tasks version="4.1">
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: write a test here</Summary>
+    <Description></Description>
+    <Created>2008-07-28, 23:31:54</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>solvers</Dir>
+        <Name>naivesolver.py</Name>
+      </Filename>
+      <Linenumber>50</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: this is a hack... How do we know we're at the root node?</Summary>
+    <Description></Description>
+    <Created>2008-07-29, 00:58:10</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>utils.py</Name>
+      </Filename>
+      <Linenumber>48</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: subtitles don't appear when lauching smplayer...</Summary>
+    <Description></Description>
+    <Created>2008-07-29, 02:10:41</Created>
+    <Resource>
+      <Filename>
+        <Name>smewg.py</Name>
+      </Filename>
+      <Linenumber>103</Linenumber>
+    </Resource>
+  </Task>
+</Tasks>

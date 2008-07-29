@@ -20,19 +20,20 @@
 #
 
 from smewt.guessers.guesser import Guesser
+from smewt import utils
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import copy
 import sys
-import re
-from os.path import join, split, basename
+
+
 
 from media.series.serieobject import EpisodeObject
 
 class EpisodeFilename(Guesser):
     def __init__(self):
         super(EpisodeFilename, self).__init__()
-        
+
     def guess(self, mediaObjects):
         resultMediaObjects = []
         for mediaObject in mediaObjects:
@@ -40,7 +41,7 @@ class EpisodeFilename(Guesser):
                 if mediaObject['filename'] is not None:
                     result = copy.copy(mediaObject)
                     filename = result['filename']
-                    name = self.splitFilename(filename)
+                    name = utils.splitFilename(filename)
 
                     # heuristic 1: try to guess the season
                     # this should contain also the confidence...
@@ -49,7 +50,7 @@ class EpisodeFilename(Guesser):
                               ]
 
                     for n in name:
-                        for match in self.matchAllRegexp(n, rexps):
+                        for match in utils.matchAllRegexp(n, rexps):
                             for key, value in match.items():
                                 #print 'Found MD:', filename, ':', key, '=', value
                                 # automatic conversion, is that good?
@@ -59,7 +60,7 @@ class EpisodeFilename(Guesser):
 
 
                     # heuristic 2: try to guess the serie title!
-                    if self.matchAnyRegexp(name[1], ['season (?P<season>[0-9]+)$']):
+                    if utils.matchAnyRegexp(name[1], ['season (?P<season>[0-9]+)$']):
                         result['serie'] = name[2]
                         result.confidence['serie'] = 0.8
                     else:
@@ -73,33 +74,11 @@ class EpisodeFilename(Guesser):
                     resultMediaObjects.append(mediaObject)
             else:
                 print 'Guesser: Not an EpisodeObject.  Cannot guess.'
-                resultMediaObjects.append(mediaObject)                
+                resultMediaObjects.append(mediaObject)
 
         self.emit(SIGNAL('guessFinished'), resultMediaObjects)
 
-    def splitFilename(self, filename):
-        root, path = split(filename)
-        result = [ path ]
-        # @todo this is a hack... How do we know we're at the root node?
-        while len(root) > 1:
-            root, path = split(root)
-            result.append(path)
-        return result
-    
-    def matchAllRegexp(self, string, regexps):
-        result = []
-        for regexp in regexps:
-            match = re.compile(regexp, re.IGNORECASE).search(string)
-            if match:
-                result.append(match.groupdict())
-        return result
 
-    def matchAnyRegexp(self, string, regexps):
-        for regexp in regexps:
-            result = re.compile(regexp, re.IGNORECASE).search(string)
-            if result:
-                return result.groupdict()
-        return None
 
 
 
@@ -109,13 +88,13 @@ if __name__ == '__main__':
     mediaObject = EpisodeObject.fromDict({'filename': sys.argv[1]})
     mediaObject.confidence['filename'] = 1.0
     mediaObjects = [mediaObject]
-    
+
     def printResults(guesses):
         for guess in guesses:
             print guess
 
     app.connect(guesser, SIGNAL('guessFinished'), printResults)
-    
-    guesser.guess(mediaObjects)    
-    
+
+    guesser.guess(mediaObjects)
+
     app.exec_()
