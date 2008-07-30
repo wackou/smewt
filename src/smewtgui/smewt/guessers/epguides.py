@@ -66,7 +66,7 @@ class EpGuideQuerier(QObject):
         else:
             print 'Guesser: EpGuides - looking for serie', self.mediaObject['serie']
             query = 'allintitle: site:epguides.com ' + self.mediaObject['serie']
-            url = QUrl.fromEncoded('http://www.google.com/search?' + urlencode({'q': query}))
+            url = QUrl.fromEncoded('http://www.google.com/search?' + urlencode({'q': query},  doseq=True))
             self.queryPage.load(url)
 
     def getGoogleResult(self, ok):
@@ -109,8 +109,14 @@ class EpGuideQuerier(QObject):
             rexp += '(?P<originalAirDate>[0-9]+ ... [0-9]+)?.*href="(?P<epguideUrl>.*?)">(?P<title>.*)</a>'
             result = re.compile(rexp).search(line)
             if result:
-                newep = EpisodeObject.fromDict(result.groupdict())
-                newep['serie'] = serieName
+                # FIXME: surely there is a better way to do this...
+                # we get this from the web, assume iso-8859-1
+                d = result.groupdict()
+                for name, value in d.items():
+                    if type(value) == str:
+                        d[name] = value.decode('iso-8859-1')
+                newep = EpisodeObject.fromDict(d)
+                newep['serie'] = unicode(serieName)
 
                 episodes.append(newep)
 
