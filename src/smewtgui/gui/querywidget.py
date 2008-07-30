@@ -42,8 +42,8 @@ class QueryWidget(QWidget):
                      self.importFolder)
 
         self.collection = Collection()
-        #self.connect(self.collection, SIGNAL('collectionUpdated'),
-        #             self.refreshCollectionView)
+        self.connect(self.collection, SIGNAL('collectionUpdated'),
+                     self.refreshCollectionView)
         self.connect(self.collection, SIGNAL('collectionUpdated'),
                      self.saveCollection)
 

@@ -29,20 +29,21 @@ from media.series.serieobject import EpisodeObject
 class NaiveSolver(Solver):
     def __init__(self):
         super(NaiveSolver, self).__init__()
-        
+
     def solve(self, mediaObjects):
         if not mediaObjects:
             return super(NaiveSolver, self).solve(mediaObjects)
-            
+
         resultMediaObject = copy.copy(mediaObjects[0])
-        
+
         for mediaObject in mediaObjects[1:]:
             for k, v in mediaObject.properties.iteritems():
-                #print 'Solver: Checking property ''%s'' ::: ''%s'' (%r) -- ''%s'' (%r)' % (k, v, mediaObject.confidence.get(k, 0.0), resultMediaObject[k], resultMediaObject.confidence.get(k, 0.0))
-                if mediaObject.confidence.get(k, 0.0) > resultMediaObject.confidence.get(k, 0.0):
+                #print 'Solver: Checking property ''%s'' ::: ''%s'' (%r) -- ''%s'' (%r)' % (k, v, mediaObject.confidence[k], resultMediaObject[k], resultMediaObject.confidence[k])
+                #if mediaObject.confidence.get(k, 0.0) > resultMediaObject.confidence.get(k, 0.0):
+                if mediaObject.confidence[k] > resultMediaObject.confidence[k]:
                     resultMediaObject[k] = v
-                    resultMediaObject.confidence[k] = mediaObject.confidence.get(k, 0.0)
-                    
+                    resultMediaObject.confidence[k] = mediaObject.confidence[k]
+
         self.emit(SIGNAL('solveFinished'), resultMediaObject)
 
 

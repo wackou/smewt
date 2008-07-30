@@ -47,10 +47,10 @@ class MagicEpisodeTagger(Tagger):
 
         # Connect the solver to the solved slot
         self.connect(self.solver, SIGNAL('solveFinished'), self.solved)
-        
+
     def solved(self, taggedMediaObject):
         self.emit(SIGNAL('tagFinished'), taggedMediaObject)
-    
+
     def tag(self, mediaObject):
         if mediaObject.typename == 'Episode':
             if mediaObject['filename'] is not None:
@@ -68,12 +68,12 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     tagger = MagicEpisodeTagger()
     mediaObject = EpisodeObject.fromDict({'filename': sys.argv[1]})
-    
+
     def printResults(tagged):
         print tagged
 
     app.connect(tagger, SIGNAL('tagFinished'), printResults)
-    
+
     tagger.tag(mediaObject)
-    
+
     app.exec_()

@@ -46,7 +46,8 @@ class EpisodeFilename(Guesser):
                     # heuristic 1: try to guess the season
                     # this should contain also the confidence...
                     rexps = [ 'season (?P<season>[0-9]+)',
-                              '(?P<season>[0-9])x(?P<episodeNumber>[0-9][0-9])'
+                              '(?P<season>[0-9]+)x(?P<episodeNumber>[0-9]+)',
+                              'S(?P<season>[0-9]+)E(?P<episodeNumber>[0-9]+)'
                               ]
 
                     for n in name:

@@ -80,8 +80,6 @@ class Collection(QObject):
 
         self.medias = [ EpisodeObject.fromDict(d) for d in dicts ]
 
-        self.emit(SIGNAL('collectionUpdated'))
-
     def save(self, filename):
         import cPickle
         f = open(filename, 'w')
