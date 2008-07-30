@@ -27,12 +27,19 @@ from Cheetah.Template import Template
 #  but the base type is EpisodeObject (a single file)
 #  That means that if the view should represent a list of all
 #  the series available, it needs to do its groupby by itself)
-def render(episodes):
+def render(name, episodes):
     #print '---- Rendering episode:', episodes
 
-    t = Template(file = 'media/series/view_episodes_by_season.tmpl',
-                 searchList = { 'episodes': episodes })
+    if name == 'single':
+        t = Template(file = 'media/series/view_episodes_by_season.tmpl',
+                     searchList = { 'episodes': episodes })
+    elif name == 'all':
+        t = Template(file = 'media/series/view_all_series.tmpl',
+                     searchList = { 'episodes': episodes })
+    else:
+        return 'Invalid view name'
 
+    #return unicode(t).decode('iso-8859-1')
     return unicode(t)
 
 

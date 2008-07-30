@@ -95,15 +95,31 @@ class QueryWidget(QWidget):
 
     def refreshCollectionView(self):
         metadata = dict([(media.getUniqueKey(), media) for media in self.collection.medias if media is not None])
-        self.collectionView.page().mainFrame().setHtml(view.render(metadata))
+        self.collectionView.page().mainFrame().setHtml(view.render('all', metadata))
 
     def linkClicked(self,  url):
         print 'clicked on link',  url
-        action = 'smplayer'
-        # FIXME: subtitles don't appear when lauching smplayer...
-        args = [ action,  str(url.toString()) ]
-        print 'opening with args =',  args
-        pid = Popen(args,  env = os.environ).pid
+        url = url.toString()
+
+        if url.startsWith('file://'):
+            action = 'smplayer'
+            # FIXME: subtitles don't appear when lauching smplayer...
+            args = [ action,  str(url.toString()) ]
+            print 'opening with args =',  args
+            pid = Popen(args,  env = os.environ).pid
+        elif url.startsWith('smewt://'):
+            # render according template
+            smewtpath = url[8:].split('/')
+            # smewtpath[0]: media type
+            # smewtpath[1]: view type
+            # smewtpath[:]: args
+            metadata = dict([(media.getUniqueKey(), media) for media in self.collection.medias if media is not None and media.properties['serie'] == smewtpath[2] ])
+            html = view.render(smewtpath[1],  metadata)
+
+            # display template
+            self.collectionView.page().mainFrame().setHtml(html)
+        else:
+            pass
 
     def renderTemplate(self):
         self.emit(SIGNAL('renderTemplate'), self.templates.currentText())
