@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.1.dtd">
 <!-- eric4 tasks file for project Smewg -->
-<!-- Saved: 2008-07-29, 02:17:18 -->
+<!-- Saved: 2008-07-30, 02:23:11 -->
 <Tasks version="4.1">
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: write a test here</Summary>
@@ -31,7 +31,7 @@
   <Task priority="1" completed="False" bugfix="True">
     <Summary>FIXME: subtitles don't appear when lauching smplayer...</Summary>
     <Description></Description>
-    <Created>2008-07-29, 02:10:41</Created>
+    <Created>2008-07-30, 01:48:38</Created>
     <Resource>
       <Filename>
         <Name>smewg.py</Name>

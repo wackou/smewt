@@ -32,11 +32,11 @@ from urllib import urlopen,  urlencode
 from media.series.serieobject import EpisodeObject
 
 class EpGuideQuerier(QObject):
+    episodeLists = {}
 
     def __init__(self, mediaObject):
         super(EpGuideQuerier, self).__init__()
 
-        self.episodeLists = {}
         self.mediaObject = mediaObject
 
         self.connect(self, SIGNAL('gotEpisodeList'),
