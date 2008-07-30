@@ -25,6 +25,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
 from media.series import view
 from subprocess import Popen
+from gui.bookmarkwidget import BookmarkListWidget
 import os
 from os.path import dirname,  join
 
@@ -51,21 +52,22 @@ class QueryWidget(QWidget):
         self.connect(self.collectionView,  SIGNAL('linkClicked(const QUrl&)'),
                      self.linkClicked)
 
-        layout2_1 = QHBoxLayout()
-        layout2_1.addWidget(backButton)
-        layout2_1.addStretch(1)
-        layout2_1.addWidget(folderImportButton)
-        layout2 = QVBoxLayout()
-        layout2.addLayout(layout2_1)
+        toolbar = QHBoxLayout()
+        toolbar.addWidget(backButton)
+        toolbar.addStretch(1)
+        toolbar.addWidget(folderImportButton)
+
+        navigation = QHBoxLayout()
+
+        bookmarks = BookmarkListWidget()
+        self.connect(bookmarks,  SIGNAL('selected'),
+                     self.setSmewtUrl)
+        navigation.addWidget(bookmarks)
+        navigation.addWidget(self.collectionView)
 
         layout = QVBoxLayout()
-
-        renderGroupBox = QGroupBox('WebKit rendering')
-        renderGroupBox.setLayout(layout2)
-        layout.addWidget(renderGroupBox)
-
-        #layout.addWidget(self.resultTable)
-        layout.addWidget(self.collectionView)
+        layout.addLayout(toolbar)
+        layout.addLayout(navigation)
 
         t = QSettings().value('collection_file').toString()
         if t == '':
@@ -149,7 +151,7 @@ class QueryWidget(QWidget):
         if url.startsWith('file://'):
             action = 'smplayer'
             # FIXME: subtitles don't appear when lauching smplayer...
-            args = [ action,  str(url.toString()) ]
+            args = [ action,  str(url) ]
             print 'opening with args =',  args
             pid = Popen(args,  env = os.environ).pid
         elif url.startsWith('smewt://'):
