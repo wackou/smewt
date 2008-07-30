@@ -1,0 +1,36 @@
+#set eps = $episodes
+
+<%
+from itertools import groupby
+from collections import defaultdict
+
+series = defaultdict(lambda: defaultdict(lambda: []))
+
+log = open('/tmp/smewt.log', 'w')
+
+for (serie, season, episode), md in eps.items():
+    series[serie][season].append(md)
+
+for serie, seasons in series.items():
+    for season, eps in seasons.items():
+        series[serie][season] = sorted(eps, key = lambda x: x['episodeNumber'])
+        log.write('*'*100 + '\n')
+        log.write('for serie ' + serie + ' season ' + str(season) + ' eps = ' + '\n'.join(map(str, eps)) + '\n')
+
+%>
+
+<html>
+<head>
+  <title>cheetah test</title>
+</head>
+
+<body>
+
+ALL SERIES
+
+#for serieName, seasons in series.items()
+  <h1><a href='smewt://Serie/single/$serieName'>$serieName</a></h1>
+#end for
+
+</body>
+</html>
