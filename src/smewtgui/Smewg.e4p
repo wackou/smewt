@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2008-07-29, 01:21:18 -->
+<!-- Saved: 2008-07-30, 22:33:16 -->
 <!-- Copyright (C) 2008 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -19,9 +19,6 @@
     </Source>
     <Source>
       <Name>test_connect.py</Name>
-    </Source>
-    <Source>
-      <Name>config.py</Name>
     </Source>
     <Source>
       <Dir>media</Dir>

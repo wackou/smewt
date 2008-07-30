@@ -32,13 +32,17 @@ class QueryWidget(QWidget):
     def __init__(self):
         super(QueryWidget, self).__init__()
 
+        backButton = QPushButton('Back')
         folderImportButton = QPushButton('Import folder...')
+
+        self.connect(backButton, SIGNAL('clicked()'),
+                     self.back)
         self.connect(folderImportButton, SIGNAL('clicked()'),
                      self.importFolder)
 
         self.collection = Collection()
-        self.connect(self.collection, SIGNAL('collectionUpdated'),
-                     self.refreshCollectionView)
+        #self.connect(self.collection, SIGNAL('collectionUpdated'),
+        #             self.refreshCollectionView)
         self.connect(self.collection, SIGNAL('collectionUpdated'),
                      self.saveCollection)
 
@@ -48,6 +52,7 @@ class QueryWidget(QWidget):
                      self.linkClicked)
 
         layout2_1 = QHBoxLayout()
+        layout2_1.addWidget(backButton)
         layout2_1.addStretch(1)
         layout2_1.addWidget(folderImportButton)
         layout2 = QVBoxLayout()
@@ -62,8 +67,7 @@ class QueryWidget(QWidget):
         #layout.addWidget(self.resultTable)
         layout.addWidget(self.collectionView)
 
-        s = QSettings()
-        t = s.value('collection_file').toString()
+        t = QSettings().value('collection_file').toString()
         if t == '':
             t = join(dirname(unicode(s.fileName())),  'Smewg.collection')
             s.setValue('collection_file',  QVariant(t))
@@ -74,6 +78,34 @@ class QueryWidget(QWidget):
             pass
 
         self.setLayout(layout)
+
+        s = QSettings()
+        self.history = []
+        baseUrl = s.value('base_url').toString()
+        if baseUrl == '':
+            baseUrl = 'smewt://serie/all'
+        self.setSmewtUrl(baseUrl)
+
+    def back(self):
+        try:
+            self.setSmewtUrl(self.history[-2])
+        except IndexError:
+            pass
+
+    def setSmewtUrl(self, url):
+        self.smewtUrl = url
+
+        try:
+            if self.history[-2] == url:
+                self.history = self.history[:-2]
+        except IndexError:
+            pass
+
+        self.history.append(url)
+
+        QSettings().setValue('base_url',  QVariant(self.smewtUrl))
+        self.refreshCollectionView()
+
 
     def loadCollection(self):
         filename = str(QFileDialog.getOpenFileName(self, 'Select file to load the collection'))
@@ -94,8 +126,21 @@ class QueryWidget(QWidget):
             self.collection.importFolder(filename)
 
     def refreshCollectionView(self):
-        metadata = dict([(media.getUniqueKey(), media) for media in self.collection.medias if media is not None])
-        self.collectionView.page().mainFrame().setHtml(view.render('all', metadata))
+        smewtpath = self.smewtUrl[8:].split('/')
+        mediaType = smewtpath[0]
+        viewType = smewtpath[1]
+        args = smewtpath[2:]
+        if viewType == 'single':
+            metadata = dict([(media.getUniqueKey(), media) for media in self.collection.medias if media is not None and media.properties['serie'] == args[0] ])
+        elif viewType == 'all':
+            metadata = dict([(media.getUniqueKey(), media) for media in self.collection.medias if media is not None ])
+        else:
+            raise 'invalid view type'
+
+        html = view.render(viewType,  metadata)
+
+        # display template
+        self.collectionView.page().mainFrame().setHtml(html)
 
     def linkClicked(self,  url):
         print 'clicked on link',  url
@@ -108,16 +153,7 @@ class QueryWidget(QWidget):
             print 'opening with args =',  args
             pid = Popen(args,  env = os.environ).pid
         elif url.startsWith('smewt://'):
-            # render according template
-            smewtpath = url[8:].split('/')
-            # smewtpath[0]: media type
-            # smewtpath[1]: view type
-            # smewtpath[:]: args
-            metadata = dict([(media.getUniqueKey(), media) for media in self.collection.medias if media is not None and media.properties['serie'] == smewtpath[2] ])
-            html = view.render(smewtpath[1],  metadata)
-
-            # display template
-            self.collectionView.page().mainFrame().setHtml(html)
+            self.setSmewtUrl(url)
         else:
             pass
 
