@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2008-07-30, 22:33:16 -->
+<!-- Saved: 2008-07-31, 00:52:05 -->
 <!-- Copyright (C) 2008 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -142,6 +142,15 @@
       <Dir>media</Dir>
       <Dir>series</Dir>
       <Name>view_episodes_by_season.tmpl</Name>
+    </Source>
+    <Source>
+      <Dir>gui</Dir>
+      <Name>bookmarkwidget.py</Name>
+    </Source>
+    <Source>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>view_all_series.tmpl</Name>
     </Source>
   </Sources>
   <Forms>
