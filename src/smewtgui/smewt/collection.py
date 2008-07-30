@@ -39,7 +39,7 @@ class FolderImporter(QObject):
         # Populate the tagging queue
         filetypes = [ '*.avi',  '*.ogm',  '*.mkv' ] # video files
         for filename in GlobDirectoryWalker(self.folder, filetypes):
-            mediaObject = EpisodeObject.fromDict({'filename': filename})
+            mediaObject = EpisodeObject.fromDict({'filename': unicode(filename)})
             mediaObject.confidence['filename'] = 1.0
             self.taggingQueue.append(mediaObject)
 

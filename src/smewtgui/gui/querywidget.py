@@ -121,7 +121,7 @@ class QueryWidget(QWidget):
         self.collection.save(filename)
 
     def importFolder(self):
-        filename = str(QFileDialog.getExistingDirectory(self, 'Select directory to import', '/data/Series/Futurama/Season 1',
+        filename = unicode(QFileDialog.getExistingDirectory(self, 'Select directory to import', '/data/Series/Futurama/Season 1',
                                                             QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
 
         if filename:

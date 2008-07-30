@@ -48,7 +48,7 @@ def splitFilename(filename):
     # FIXME: this is a hack... How do we know we're at the root node?
     while len(root) > 1:
         root, path = os.path.split(root)
-        result.append(path)
+        result.append(unicode(path))
     return result
 
 class GlobDirectoryWalker:

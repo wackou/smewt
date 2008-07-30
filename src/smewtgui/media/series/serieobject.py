@@ -30,7 +30,7 @@ class SerieObject(MediaObject):
 
     typename = 'Serie'
 
-    schema = { 'title': str,
+    schema = { 'title': unicode,
                'numberSeasons': int,
                'episodeList': list
                }
@@ -61,10 +61,10 @@ class EpisodeObject(MediaObject):
 
     typename = 'Episode'
 
-    schema = { 'serie': str,
+    schema = { 'serie': unicode,
                'season': int,
                'episodeNumber': int,
-               'title': str
+               'title': unicode
                }
 
     unique = [ 'serie', 'season', 'episodeNumber' ]

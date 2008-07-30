@@ -39,8 +39,7 @@ def render(name, episodes):
     else:
         return 'Invalid view name'
 
-    #return unicode(t).decode('iso-8859-1')
-    return unicode(t)
+    return t.respond()
 
 
 
