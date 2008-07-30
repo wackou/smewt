@@ -36,7 +36,7 @@ class SmewtDict(defaultdict):
 class ValidatingSmewtDict(SmewtDict):
     def __init__(self, schema):
         super(ValidatingSmewtDict, self).__init__(schema)
-        
+
     def __setitem__(self, key, value):
         if key in self.schema:
             # @todo change this to an exception
@@ -52,7 +52,7 @@ class MediaObject:
     # need to be defined in plugins
 
     # 1- 'typename' which is a string representing the type name
-    
+
     # 2- 'schema' which is a dictionary from property name to type
     # ex: schema = { 'epNumber': int,
     #                'title': str
@@ -67,16 +67,16 @@ class MediaObject:
         # create the properties
         self.properties = ValidatingSmewtDict(self.schema)
         self.confidence = SmewtDict(self.schema)
-        
+
         #for prop in self.schema:
         #    self.properties[prop] = None
-        
+
         if dictionary:
             self.readFromDict(dictionary)
 
         if headers and row:
             self.readFromRow(headers, row)
-        
+
 
     # used to make sure the values correspond to the schema
     def isValid(self):
@@ -87,10 +87,10 @@ class MediaObject:
                     return False
         except KeyError:
             return False
-        
+
         return True
 
-        
+
     def __repr__(self):
         return self.typename + '(' + repr(self.properties) + ')'
 
@@ -124,18 +124,21 @@ class MediaObject:
     def parse(cls, name, value):
         if name not in cls.schema:
             return value
-        
+
         if name in cls.converters:
             # types that need a specific conversion
             return cls.converters[name](value)
-                    
+
         else:
             # otherwise just call the default constructor
             return cls.schema[name](value)
 
     def parseProperty(self, name, value):
         return self.parse(self, name, value)
-        
+
+    def toDict(self):
+        return dict(self.properties)
+
 
     def readFromDict(self, d):
         for prop, value in d.items():
@@ -152,7 +155,7 @@ class MediaObject:
         for prop, value in zip(headers, row):
             try:
                 self.properties[prop] = self.parseProperty(prop, value)
-                
+
             except KeyError:
                 # property name is not in the schema
                 pass

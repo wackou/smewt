@@ -74,6 +74,20 @@ class Collection(QObject):
         self.medias.extend(newMedias)
         self.emit(SIGNAL('collectionUpdated'))
 
+    def load(self, filename):
+        import cPickle
+        dicts = cPickle.load(open(filename))
+
+        self.medias = [ EpisodeObject.fromDict(d) for d in dicts ]
+
+        self.emit(SIGNAL('collectionUpdated'))
+
+    def save(self, filename):
+        import cPickle
+        f = open(filename, 'w')
+        dict_coll = [ m.toDict() for m in self.medias ]
+        cPickle.dump(dict_coll, f)
+        f.close()
 
 if __name__ == '__main__':
     import sys

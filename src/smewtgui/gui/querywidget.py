@@ -26,18 +26,11 @@ from PyQt4.QtWebKit import *
 from media.series import view
 from subprocess import Popen
 import os
+from os.path import dirname,  join
 
 class QueryWidget(QWidget):
     def __init__(self):
         super(QueryWidget, self).__init__()
-
-        collectionLoadButton = QPushButton('Load collection...')
-        self.connect(collectionLoadButton, SIGNAL('clicked()'),
-                     self.loadCollection)
-
-        collectionSaveButton = QPushButton('Save collection...')
-        self.connect(collectionSaveButton, SIGNAL('clicked()'),
-                     self.saveCollection)
 
         folderImportButton = QPushButton('Import folder...')
         self.connect(folderImportButton, SIGNAL('clicked()'),
@@ -46,6 +39,8 @@ class QueryWidget(QWidget):
         self.collection = Collection()
         self.connect(self.collection, SIGNAL('collectionUpdated'),
                      self.refreshCollectionView)
+        self.connect(self.collection, SIGNAL('collectionUpdated'),
+                     self.saveCollection)
 
         self.collectionView = QWebView()
         self.collectionView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
@@ -55,8 +50,6 @@ class QueryWidget(QWidget):
         layout2_1 = QHBoxLayout()
         layout2_1.addStretch(1)
         layout2_1.addWidget(folderImportButton)
-        layout2_1.addWidget(collectionSaveButton)
-        layout2_1.addWidget(collectionLoadButton)
         layout2 = QVBoxLayout()
         layout2.addLayout(layout2_1)
 
@@ -69,28 +62,36 @@ class QueryWidget(QWidget):
         #layout.addWidget(self.resultTable)
         layout.addWidget(self.collectionView)
 
+        s = QSettings()
+        t = s.value('collection_file').toString()
+        if t == '':
+            t = join(dirname(unicode(s.fileName())),  'Smewg.collection')
+            s.setValue('collection_file',  QVariant(t))
+        try:
+            self.collection.load(t)
+        except:
+            # if file is not found, just go on with an empty collection
+            pass
+
         self.setLayout(layout)
 
     def loadCollection(self):
         filename = str(QFileDialog.getOpenFileName(self, 'Select file to load the collection'))
-
-        import cPickle
-        self.collection = cPickle.load(open(filename))
-        self.refreshCollectionView()
+        self.collection.load(filename)
 
     def saveCollection(self):
-        filename = str(QFileDialog.getSaveFileName(self, 'Select file to save the collection'))
+        #filename = str(QFileDialog.getSaveFileName(self, 'Select file to save the collection'))
 
-        import cPickle
-        f = open(filename, 'w')
-        cPickle.dump(self.collection, f)
-        f.close()
+        filename = unicode(QSettings().value('collection_file').toString())
+
+        self.collection.save(filename)
 
     def importFolder(self):
         filename = str(QFileDialog.getExistingDirectory(self, 'Select directory to import', '/data/Series/Futurama/Season 1',
-                                                        QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
+                                                            QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
 
-        self.collection.importFolder(filename)
+        if filename:
+            self.collection.importFolder(filename)
 
     def refreshCollectionView(self):
         metadata = dict([(media.getUniqueKey(), media) for media in self.collection.medias if media is not None])

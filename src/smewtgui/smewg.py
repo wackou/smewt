@@ -102,6 +102,9 @@ class SmewtGui(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    app.setOrganizationName("DigitalGaia")
+    app.setOrganizationDomain("smewt.com")
+    app.setApplicationName("Smewg")
     sgui = SmewtGui()
     sgui.show()
     app.exec_()
