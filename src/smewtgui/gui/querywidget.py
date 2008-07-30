@@ -71,8 +71,8 @@ class QueryWidget(QWidget):
 
         t = QSettings().value('collection_file').toString()
         if t == '':
-            t = join(dirname(unicode(s.fileName())),  'Smewg.collection')
-            s.setValue('collection_file',  QVariant(t))
+            t = join(dirname(unicode(QSettings().fileName())),  'Smewg.collection')
+            QSettings().setValue('collection_file',  QVariant(t))
         try:
             self.collection.load(t)
         except:
@@ -81,9 +81,8 @@ class QueryWidget(QWidget):
 
         self.setLayout(layout)
 
-        s = QSettings()
         self.history = []
-        baseUrl = s.value('base_url').toString()
+        baseUrl = QSettings().value('base_url').toString()
         if baseUrl == '':
             baseUrl = 'smewt://serie/all'
         self.setSmewtUrl(baseUrl)
