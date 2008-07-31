@@ -49,6 +49,7 @@ class QueryWidget(QWidget):
 
         self.collectionView = QWebView()
         self.collectionView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
+        #self.collectionView.page().setLinkDelegationPolicy(QWebPage.DelegateExternalLinks)
         self.connect(self.collectionView,  SIGNAL('linkClicked(const QUrl&)'),
                      self.linkClicked)
 
@@ -142,6 +143,7 @@ class QueryWidget(QWidget):
         html = view.render(viewType,  metadata)
 
         # display template
+        open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
         self.collectionView.page().mainFrame().setHtml(html)
 
     def linkClicked(self,  url):
