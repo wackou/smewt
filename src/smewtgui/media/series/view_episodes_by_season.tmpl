@@ -14,6 +14,7 @@ for serie, seasons in series.items():
         series[serie][season] = sorted(eps, key = lambda x: x['episodeNumber'])
 
 import os, os.path
+# FIXME: this is not the correct way to do it...
 import_dir = os.path.join(os.getcwd(), 'media', 'series')
 %>
 
