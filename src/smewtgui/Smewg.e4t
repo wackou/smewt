@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.1.dtd">
 <!-- eric4 tasks file for project Smewg -->
-<!-- Saved: 2008-07-31, 00:52:07 -->
+<!-- Saved: 2008-08-02, 16:01:23 -->
 <Tasks version="4.1">
   <Task priority="2" completed="False" bugfix="False">
     <Summary>TODO: make a .desktop file</Summary>
@@ -19,18 +19,6 @@
         <Name>naivesolver.py</Name>
       </Filename>
       <Linenumber>51</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: subtitles don't appear when lauching smplayer...</Summary>
-    <Description></Description>
-    <Created>2008-07-31, 00:04:48</Created>
-    <Resource>
-      <Filename>
-        <Dir>gui</Dir>
-        <Name>querywidget.py</Name>
-      </Filename>
-      <Linenumber>153</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
@@ -56,6 +44,31 @@
         <Name>epguides.py</Name>
       </Filename>
       <Linenumber>112</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: subtitles don't appear when lauching smplayer...</Summary>
+    <Description></Description>
+    <Created>2008-07-31, 21:16:42</Created>
+    <Resource>
+      <Filename>
+        <Dir>gui</Dir>
+        <Name>querywidget.py</Name>
+      </Filename>
+      <Linenumber>155</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: this is not the correct way to do it...</Summary>
+    <Description></Description>
+    <Created>2008-07-31, 21:42:28</Created>
+    <Resource>
+      <Filename>
+        <Dir>media</Dir>
+        <Dir>series</Dir>
+        <Name>view_episodes_by_season.tmpl</Name>
+      </Filename>
+      <Linenumber>17</Linenumber>
     </Resource>
   </Task>
 </Tasks>
