@@ -89,6 +89,8 @@ class QueryWidget(QWidget):
             baseUrl = 'smewt://serie/all'
         self.setSmewtUrl(baseUrl)
 
+        self.externalProcess = QProcess()
+
     def back(self):
         try:
             self.setSmewtUrl(self.history[-2])
@@ -153,9 +155,11 @@ class QueryWidget(QWidget):
         if url.startsWith('file://'):
             action = 'smplayer'
             # FIXME: subtitles don't appear when lauching smplayer...
-            args = [ action,  str(url) ]
+            args = [ action,  str(url)[7:] ]
             print 'opening with args =',  args
-            pid = Popen(args,  env = os.environ).pid
+            #pid = Popen(args,  shell=True, env = os.environ).pid
+            self.externalProcess.start(action, [str(url)])
+
         elif url.startsWith('smewt://'):
             self.setSmewtUrl(url)
         else:
