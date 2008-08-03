@@ -59,9 +59,20 @@ class FolderImporter(QObject):
         self.tagNext()
 
 class Collection(QObject):
+    '''A Collection instance contains 2 variables:
+     - self.media, which contains all the files that are being monitored on the HDD
+     - self.metadata, which contains the information about all the AbstractMediaObject
+       that Smewt knows of.
+
+    As far as possible, Smewt's job is to collect files from the HDD and put them
+    in the self.media variable, get information from the web and fill the
+    self.metadata variable, and then use the available guessers/solvers to map
+    the entries in self.media to the ones in self.metadata'''
+
     def __init__(self):
         super(Collection, self).__init__()
-        self.medias = []
+        self.media = []
+        self.metadata = {}
 
     def importFolder(self, folder):
         self.folderImporter = FolderImporter(folder)
@@ -71,19 +82,19 @@ class Collection(QObject):
 
     def addMedias(self, newMedias):
         #print 'Collection: Adding medias'
-        self.medias.extend(newMedias)
+        self.media += newMedias
         self.emit(SIGNAL('collectionUpdated'))
 
     def load(self, filename):
         import cPickle
         dicts = cPickle.load(open(filename))
 
-        self.medias = [ EpisodeObject.fromDict(d) for d in dicts ]
+        self.media = [ EpisodeObject.fromDict(d) for d in dicts ]
 
     def save(self, filename):
         import cPickle
         f = open(filename, 'w')
-        dict_coll = [ m.toDict() for m in self.medias ]
+        dict_coll = [ m.toDict() for m in self.media ]
         cPickle.dump(dict_coll, f)
         f.close()
 
