@@ -27,6 +27,8 @@ import re
 
 
 class IMDBSerieFetcher(WebParser):
+    def __init__(self):
+        WebParser.__init__(self)
 
     def getSerieUrl(self, serieName):
         # FIXME: encode url correctly
@@ -41,6 +43,18 @@ class IMDBSerieFetcher(WebParser):
 
         url = 'http://www.imdb.com' + url
         return url
+
+    def getSeriePoster(self, serieName):
+        serieUrl = self.getSerieUrl(serieName)
+        html = urlopen(serieUrl).read()
+        rexp = '<a name="poster" href="(?P<hiresUrl>[^"]*)".*?src="(?P<loresImg>[^"]*)"'
+        poster = utils.matchRegexp(html, rexp)
+        open('/tmp/lores.jpg', 'w').write(urlopen(poster['loresImg']).read())
+
+        html = urlopen('http://www.imdb.com' + poster['hiresUrl']).read()
+        rexp = '<table id="principal">.*?src="(?P<hiresImg>[^"]*)"'
+        poster = utils.matchRegexp(html, rexp)
+        open('/tmp/hires.jpg', 'w').write(urlopen(poster['hiresImg']).read())
 
     def getAllEpisodes(self, serieName):
         epsUrl = self.getSerieUrl(serieName) + 'episodes'
@@ -87,6 +101,7 @@ class IMDBSerieFetcher(WebParser):
 
 if __name__ == '__main__':
     md = IMDBSerieFetcher()
+    md.getSeriePoster('damages')
     #md.getSerieUrl('damages')
     eps = md.getAllEpisodes('damages')
     for ep in eps:

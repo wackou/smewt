@@ -21,6 +21,9 @@
 import re
 
 class WebParser:
+    def __init__(self):
+        pass
+
     def convertHtmlCodeChars(self, s):
         codeCharRexp = re.compile('&#[0-9]+;', re.IGNORECASE)
         found = codeCharRexp.search(s)
