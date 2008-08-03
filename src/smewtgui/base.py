@@ -18,6 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from collections import defaultdict
+
 class SmewtDict(defaultdict):
     def __init__(self, schema):
         defaultdict.__init__(self, lambda x: None)
