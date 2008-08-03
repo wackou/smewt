@@ -40,7 +40,7 @@ class ValidatingSmewtDict(SmewtDict):
 
     def __setitem__(self, key, value):
         if key in self.schema:
-            # @todo change this to an exception
+            # TODO: change this to an exception
             assert(value is None or type(value) == self.schema[key])
 
         defaultdict.__setitem__(self, key, value)
