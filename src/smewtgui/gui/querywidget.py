@@ -19,6 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from base import SmewtException
 from smewt.collection import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -140,7 +141,7 @@ class QueryWidget(QWidget):
         elif viewType == 'all':
             metadata = dict([(media.getUniqueKey(), media) for media in self.collection.medias if media is not None ])
         else:
-            raise 'invalid view type'
+            raise SmewtException('invalid view type')
 
         html = view.render(viewType,  metadata)
 
