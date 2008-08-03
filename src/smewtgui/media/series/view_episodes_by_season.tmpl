@@ -37,8 +37,10 @@ import_dir = os.path.join(os.getcwd(), 'media', 'series')
 
 <script type="text/javascript">
 
-#for seasonNumber, eps in seasons.items():
-  animatedcollapse.addDiv('s$(seasonNumber)', 'fade=0,speed=400,group=seasons,hide=1')
+#for serie, seasons in series.items():
+  #for seasonNumber, eps in seasons.items():
+    animatedcollapse.addDiv('s$(seasonNumber)', 'fade=0,speed=400,group=seasons,hide=1')
+  #end for
 #end for
 
 animatedcollapse.init()
