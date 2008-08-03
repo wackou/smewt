@@ -19,14 +19,14 @@
 #
 
 
-from mediaobject import MediaObject
+from mediaobject import AbstractMediaObject
 
 def parseEpisodeList(string):
     # blah
     return []
 
 
-class SerieObject(MediaObject):
+class SerieObject(AbstractMediaObject):
 
     typename = 'Serie'
 
@@ -42,22 +42,22 @@ class SerieObject(MediaObject):
 
 
     def __init__(self):
-        MediaObject.__init__(self)
+        AbstractMediaObject.__init__(self)
 
     @staticmethod
     def fromDict(d):
         result = SerieObject()
-        MediaObject.readFromDict(result, headers, row)
+        AbstractMediaObject.readFromDict(result, headers, row)
         return result
 
     @staticmethod
     def fromRow(headers, row):
         result = SerieObject()
-        MediaObject.readFromRow(result, headers, row)
+        AbstractMediaObject.readFromRow(result, headers, row)
         return result
 
 
-class EpisodeObject(MediaObject):
+class EpisodeObject(AbstractMediaObject):
 
     typename = 'Episode'
 
@@ -72,16 +72,16 @@ class EpisodeObject(MediaObject):
     converters = {}
 
     def __init__(self):
-        MediaObject.__init__(self)
+        AbstractMediaObject.__init__(self)
 
     @staticmethod
     def fromDict(d):
         result = EpisodeObject()
-        MediaObject.readFromDict(result, d)
+        AbstractMediaObject.readFromDict(result, d)
         return result
 
     @staticmethod
     def fromRow(headers, row):
         result = EpisodeObject()
-        MediaObject.readFromRow(result, headers, row)
+        AbstractMediaObject.readFromRow(result, headers, row)
         return result
