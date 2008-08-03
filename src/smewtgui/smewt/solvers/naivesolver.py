@@ -46,7 +46,3 @@ class NaiveSolver(Solver):
 
         self.emit(SIGNAL('solveFinished'), resultMediaObject)
 
-
-if __name__ == '__main__':
-    #TODO: write a test here
-    pass
