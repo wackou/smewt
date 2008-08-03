@@ -47,6 +47,8 @@ license = '''#
 
 
 def getLicenseHeader(filename):
+    '''Returns the license header for a file, with copyright info and GPL license.
+    Authors are fetched from the git log.'''
     cmd = 'git log --reverse --pretty=format:"%an <%ae> - %aD" ' + filename
     result = Popen(cmd,  shell=True, stdout=PIPE).stdout.read()
 
@@ -84,16 +86,16 @@ if __name__ == '__main__':
             source = open(filename).read()
             sourceParts = source.split(license)
 
+            newSource = licenseHeader + license.join(sourceParts[1:])
+
             if len(sourceParts) == 1:
                 # there was no header information present
-                pass
+                print 'adding header for:',  filename
+                open(filename,  'w').write(newSource)
             else:
-                #oldSource = open(filename).read()
-                newSource = licenseHeader + license.join(sourceParts[1:])
+                # there was a header already present, update it if different
                 if source != newSource:
                     print 'updating header for:',  filename
-                    #print 'OLD', oldSource
-                    #print 'NEW', newSource
                     open(filename,  'w').write(newSource)
 
         except: pass
