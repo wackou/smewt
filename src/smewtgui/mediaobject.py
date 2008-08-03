@@ -19,12 +19,22 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from collections import defaultdict
+
+# This file contains the 2 base MediaObject types used in Smewt:
+#  - MediaObject: is the type used to represent physical files on the hard disk.
+#    It always has at least 2 properties: 'filename' and 'sha'
+#  - AbstractMediaObject: is the type used to represent a media entity independent
+#    of its physical location.
+#
+# Two MediaObject can point to the same AbstractMediaObject, such as the video and
+# the subtitle files for an episode will point to the same Episode AbstractMediaObject
+#
+# The job of a guesser is to map a MediaObject to its corresponding AbstractMediaObject
 
 
 # @todo isn't it better to implement properties as actual python properties? or attributes?
 # @todo write unit tests for this class...
-class MediaObject:
+class AbstractMediaObject:
 
     # need to be defined in plugins
 
@@ -137,3 +147,6 @@ class MediaObject:
             except KeyError:
                 # property name is not in the schema
                 pass
+
+# let's keep it simple at the moment and use the same class
+MediaObject = AbstractMediaObject
