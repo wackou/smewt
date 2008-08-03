@@ -43,27 +43,4 @@ def render(name, episodes):
 
 
 
-def cheetahTest():
-    eps = [ { 'filename': 'file:///data/blah/01.avi',
-              'serie': 'Black Lagoon',
-              'season': 1,
-              'epnumber': 1,
-              'title': 'Black Lagoon'
-              },
-            { 'filename': 'file:///data/blah/02.avi',
-              'serie': 'Black Lagoon',
-              'season': 1,
-              'epnumber': 2,
-              'title': 'Heavenly Gardens'
-              },
-            { 'filename': 'file:///data/blouh/01.avi',
-              'serie': 'Noir',
-              'season': 1,
-              'epnumber': 1,
-              'title': 'La vierge aux mains noires'
-              }
-            ]
-
-    return render(eps)
-
 
