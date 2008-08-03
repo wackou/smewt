@@ -24,7 +24,7 @@ import re
 from base import SmewtException
 
 def matchRegexp(string, regexp):
-    match = re.compile(regexp, re.IGNORECASE).search(string)
+    match = re.compile(regexp, re.IGNORECASE | re.DOTALL).search(string)
     if match:
         return match.groupdict()
     raise SmewtException('Does not match regexp')
