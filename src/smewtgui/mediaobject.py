@@ -19,6 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from base import SmewtDict,  ValidatingSmewtDict
 
 # This file contains the 2 base MediaObject types used in Smewt:
 #  - MediaObject: is the type used to represent physical files on the hard disk.
