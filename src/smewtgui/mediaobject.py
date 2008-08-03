@@ -23,7 +23,7 @@ from base import SmewtDict,  ValidatingSmewtDict
 
 # This file contains the 2 base MediaObject types used in Smewt:
 #  - MediaObject: is the type used to represent physical files on the hard disk.
-#    It always has at least 2 properties: 'filename' and 'sha'
+#    It always has at least 2 properties: 'filename' and 'sha1'
 #  - AbstractMediaObject: is the type used to represent a media entity independent
 #    of its physical location.
 #
@@ -33,23 +33,33 @@ from base import SmewtDict,  ValidatingSmewtDict
 # The job of a guesser is to map a MediaObject to its corresponding AbstractMediaObject
 
 
+class MediaObject:
+    def __init__(self):
+        self.filename = ''
+        self.sha1 = ''
+        self.metadata = None # ref to an AbstractMediaObject
+
+
 # @todo isn't it better to implement properties as actual python properties? or attributes?
 # @todo write unit tests for this class...
 class AbstractMediaObject:
+    ''' This is the class which all the metadata MediaObjects should inherit.
+    We assume the implementation of the AbstractMediaObjects come from plugins.
 
-    # need to be defined in plugins
+    The following needs to be defined in derived classes:
 
-    # 1- 'typename' which is a string representing the type name
+    1- 'typename' which is a string representing the type name
 
-    # 2- 'schema' which is a dictionary from property name to type
-    # ex: schema = { 'epNumber': int,
-    #                'title': str
-    #                }
+    2- 'schema' which is a dictionary from property name to type
+    ex: schema = { 'epNumber': int,
+                   'title': str
+                   }
 
-    # 3- 'converters', which is a dictionary from property name to
-    #    a function that is able to parse this property from a string
+    3- 'converters', which is a dictionary from property name to
+       a function that is able to parse this property from a string
 
-    # 4- 'unique' which is the list of properties that form a primary key
+    4- 'unique' which is the list of properties that form a primary key
+    '''
 
     def __init__(self, dictionary = {}, headers = [], row = []):
         # create the properties
@@ -106,8 +116,6 @@ class AbstractMediaObject:
     def __setitem__(self, prop, value):
         self.properties[prop] = value
 
-    #def setValue(self,
-
     @staticmethod
     def parse(cls, name, value):
         if name not in cls.schema:
@@ -149,5 +157,3 @@ class AbstractMediaObject:
                 # property name is not in the schema
                 pass
 
-# let's keep it simple at the moment and use the same class
-MediaObject = AbstractMediaObject
