@@ -24,7 +24,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import copy
 
-from media.series.serieobject import EpisodeObject
+from smewt.media.series import EpisodeObject
 
 class NaiveSolver(Solver):
     def __init__(self):

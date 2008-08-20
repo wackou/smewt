@@ -20,3 +20,4 @@
 
 from querywidget import QueryWidget
 from resultwidget import ResultWidget
+from bookmarkwidget import BookmarkListWidget

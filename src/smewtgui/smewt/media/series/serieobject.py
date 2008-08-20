@@ -18,8 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-
-from mediaobject import AbstractMediaObject
+from smewt.mediaobject import AbstractMediaObject
 
 def parseEpisodeList(string):
     # blah

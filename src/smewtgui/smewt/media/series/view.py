@@ -31,10 +31,10 @@ def render(name, episodes):
     #print '---- Rendering episode:', episodes
 
     if name == 'single':
-        t = Template(file = 'media/series/view_episodes_by_season.tmpl',
+        t = Template(file = 'smewt/media/series/view_episodes_by_season.tmpl',
                      searchList = { 'episodes': episodes })
     elif name == 'all':
-        t = Template(file = 'media/series/view_all_series.tmpl',
+        t = Template(file = 'smewt/media/series/view_all_series.tmpl',
                      searchList = { 'episodes': episodes })
     else:
         return 'Invalid view name'

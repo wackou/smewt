@@ -29,7 +29,7 @@ import sys
 import re
 from os.path import join, split, basename
 
-from media.series.serieobject import EpisodeObject
+from smewt.media.series import EpisodeObject
 
 class MagicEpisodeTagger(Tagger):
     def __init__(self):

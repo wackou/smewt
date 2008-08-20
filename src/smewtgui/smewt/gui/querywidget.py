@@ -23,10 +23,10 @@ from smewt import SmewtException, Collection
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
-from media.series import view
-from subprocess import Popen
-from gui.bookmarkwidget import BookmarkListWidget
+from smewt.media.series import view
+from bookmarkwidget import BookmarkListWidget
 import os
+from subprocess import Popen
 from os.path import dirname,  join
 
 class QueryWidget(QWidget):

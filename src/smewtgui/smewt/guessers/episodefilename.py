@@ -26,9 +26,7 @@ from PyQt4.QtGui import *
 import copy
 import sys
 
-
-
-from media.series.serieobject import EpisodeObject
+from smewt.media.series import EpisodeObject
 
 class EpisodeFilename(Guesser):
     def __init__(self):

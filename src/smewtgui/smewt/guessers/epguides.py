@@ -29,7 +29,7 @@ import sys
 import re
 from urllib import urlopen,  urlencode
 
-from media.series.serieobject import EpisodeObject
+from smewt.media.series import EpisodeObject
 
 class EpGuideQuerier(QObject):
     episodeLists = {}
