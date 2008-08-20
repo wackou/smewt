@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from base import SmewtDict,  ValidatingSmewtDict
+from smewt import SmewtDict,  ValidatingSmewtDict
 
 # This file contains the 2 base MediaObject types used in Smewt:
 #  - MediaObject: is the type used to represent physical files on the hard disk.
@@ -40,8 +40,8 @@ class MediaObject:
         self.metadata = None # ref to an AbstractMediaObject
 
 
-# @todo isn't it better to implement properties as actual python properties? or attributes?
-# @todo write unit tests for this class...
+# TODO: isn't it better to implement properties as actual python properties? or attributes?
+# TODO: !!write unit tests for this class...!!
 class AbstractMediaObject:
     ''' This is the class which all the metadata MediaObjects should inherit.
     We assume the implementation of the AbstractMediaObjects come from plugins.

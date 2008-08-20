@@ -19,3 +19,4 @@
 #
 
 from base import SmewtDict, ValidatingSmewtDict, SmewtException
+from collection import Collection
