@@ -26,7 +26,7 @@ import dbus
 from media.series import view
 from gui.querywidget import QueryWidget
 from gui.resultwidget import ResultWidget
-import config
+from smewt import config
 
 
 
