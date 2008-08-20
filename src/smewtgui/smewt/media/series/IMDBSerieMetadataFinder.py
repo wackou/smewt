@@ -25,7 +25,7 @@ from urllib import urlopen
 import re
 
 
-class IMDBSerieFetcher(WebParser):
+class IMDBSerieMetadataFinder(WebParser):
     def __init__(self):
         WebParser.__init__(self)
 
@@ -99,7 +99,7 @@ class IMDBSerieFetcher(WebParser):
 
 
 if __name__ == '__main__':
-    md = IMDBSerieFetcher()
+    md = IMDBSerieMetadataFinder()
     md.getSeriePoster('damages')
     #md.getSerieUrl('damages')
     eps = md.getAllEpisodes('damages')
