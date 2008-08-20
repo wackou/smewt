@@ -33,18 +33,18 @@ from smewt import SmewtDict,  ValidatingSmewtDict
 # The job of a guesser is to map a MediaObject to its corresponding AbstractMediaObject
 
 
-class MediaObject:
+class Media:
     def __init__(self):
         self.filename = ''
         self.sha1 = ''
-        self.metadata = None # ref to an AbstractMediaObject
+        self.metadata = None # ref to a Metadata object
 
 
 # TODO: isn't it better to implement properties as actual python properties? or attributes?
 # TODO: !!write unit tests for this class...!!
-class AbstractMediaObject:
-    ''' This is the class which all the metadata MediaObjects should inherit.
-    We assume the implementation of the AbstractMediaObjects come from plugins.
+class Metadata:
+    ''' This is the class which all the metadata objects should inherit.
+    We assume the implementation of the Metadata objects come from plugins.
 
     The following needs to be defined in derived classes:
 

@@ -18,14 +18,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.mediaobject import AbstractMediaObject
+from smewt.mediaobject import Metadata
 
 def parseEpisodeList(string):
     # blah
     return []
 
 
-class SerieObject(AbstractMediaObject):
+class SerieObject(Metadata):
 
     typename = 'Serie'
 
@@ -41,22 +41,22 @@ class SerieObject(AbstractMediaObject):
 
 
     def __init__(self):
-        AbstractMediaObject.__init__(self)
+        Metadata.__init__(self)
 
     @staticmethod
     def fromDict(d):
         result = SerieObject()
-        AbstractMediaObject.readFromDict(result, headers, row)
+        Metadata.readFromDict(result, headers, row)
         return result
 
     @staticmethod
     def fromRow(headers, row):
         result = SerieObject()
-        AbstractMediaObject.readFromRow(result, headers, row)
+        Metadata.readFromRow(result, headers, row)
         return result
 
 
-class EpisodeObject(AbstractMediaObject):
+class EpisodeObject(Metadata):
 
     typename = 'Episode'
 
@@ -71,16 +71,16 @@ class EpisodeObject(AbstractMediaObject):
     converters = {}
 
     def __init__(self):
-        AbstractMediaObject.__init__(self)
+        Metadata.__init__(self)
 
     @staticmethod
     def fromDict(d):
         result = EpisodeObject()
-        AbstractMediaObject.readFromDict(result, d)
+        Metadata.readFromDict(result, d)
         return result
 
     @staticmethod
     def fromRow(headers, row):
         result = EpisodeObject()
-        AbstractMediaObject.readFromRow(result, headers, row)
+        Metadata.readFromRow(result, headers, row)
         return result

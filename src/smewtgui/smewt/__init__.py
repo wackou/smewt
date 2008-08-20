@@ -20,4 +20,4 @@
 
 from base import SmewtDict, ValidatingSmewtDict, SmewtException
 from collection import Collection
-from mediaobject import MediaObject, AbstractMediaObject
+from mediaobject import Media, Metadata
