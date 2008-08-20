@@ -18,11 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from base import SmewtException
-from urllib import urlopen
-from smewt import utils
-from media.series.serieobject import EpisodeObject
+from smewt import SmewtException, utils
+from smewt.media.series import EpisodeObject
 from smewt.webparser import WebParser
+from urllib import urlopen
 import re
 
 
