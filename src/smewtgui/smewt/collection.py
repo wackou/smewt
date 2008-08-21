@@ -20,8 +20,8 @@
 #
 
 from PyQt4.QtCore import SIGNAL,  QObject
-from media.series.serieobject import EpisodeObject
-from smewt.taggers.magicepisodetagger import MagicEpisodeTagger
+from smewt import Media
+from smewt.media.series import Episode
 from smewt.utils import GlobDirectoryWalker
 
 class FolderImporter(QObject):
@@ -30,8 +30,9 @@ class FolderImporter(QObject):
 
         self.folder = folder
         self.taggingQueue = []
+        from smewt.taggers.magicepisodetagger import MagicEpisodeTagger
         self.tagger = MagicEpisodeTagger()
-        self.results = []
+        self.results = Collection()
 
         self.connect(self.tagger, SIGNAL('tagFinished'), self.tagged)
 
@@ -39,8 +40,7 @@ class FolderImporter(QObject):
         # Populate the tagging queue
         filetypes = [ '*.avi',  '*.ogm',  '*.mkv' ] # video files
         for filename in GlobDirectoryWalker(self.folder, filetypes):
-            mediaObject = EpisodeObject.fromDict({'filename': unicode(filename)})
-            mediaObject.confidence['filename'] = 1.0
+            mediaObject = Media(filename)
             self.taggingQueue.append(mediaObject)
 
         self.tagNext()
@@ -55,36 +55,85 @@ class FolderImporter(QObject):
 
     def tagged(self, taggedMedia):
         #print 'Collection: Media tagged: %s' % taggedMedia
-        self.results.append(taggedMedia)
+        # TODO: here we should import both the Media and the Metadata into the user
+        # collection, we probably need to have a merging algorithm to find out which are already
+        # imported, etc...
+        self.results.mergeCollection(taggedMedia)
         self.tagNext()
 
 class Collection(QObject):
+    '''A Collection instance contains 3 variables:
+     - self.media, which contains all the files that are being monitored on the HDD
+     - self.metadata, which contains the information about all the AbstractMediaObject
+       that Smewt knows of.
+     - self.links, which contains the links from elements in self.media to elements
+       in self.metadata and which correspond to the files the user has tagged.
+
+    As far as possible, Smewt's job is to collect files from the HDD and put them
+    in the self.media variable, get information from the web and fill the
+    self.metadata variable, and then use the available guessers/solvers to map
+    the entries in self.media to the ones in self.metadata'''
+
     def __init__(self):
         super(Collection, self).__init__()
-        self.medias = []
+        self.media = []
+        self.metadata = []
+        self.links = []
 
     def importFolder(self, folder):
         self.folderImporter = FolderImporter(folder)
-        self.connect(self.folderImporter, SIGNAL('importFinished'), self.addMedias)
+        self.connect(self.folderImporter, SIGNAL('importFinished'), self.mergeCollection)
         self.folderImporter.start()
 
 
-    def addMedias(self, newMedias):
+    def mergeCollection(self, c):
         #print 'Collection: Adding medias'
-        self.medias.extend(newMedias)
+        self.media += c.media
+        self.metadata += c.metadata
+        self.links += c.links
         self.emit(SIGNAL('collectionUpdated'))
+
+    def filter(self, prop, value):
+        result = Collection()
+        for media, metadata in self.links:
+            if metadata[prop] == value:
+                result.media += [ media ]
+                result.metadata += [ metadata ]
+                result.links += [ (media, metadata) ]
+        return result
+
 
     def load(self, filename):
         import cPickle
-        dicts = cPickle.load(open(filename))
 
-        self.medias = [ EpisodeObject.fromDict(d) for d in dicts ]
+        try:
+            f = open(filename)
+        except:
+            # if file is not found, just go on with an empty collection
+            print 'WARNING: Collection', filename, 'does not exist'
+            return
+
+        self.media = cPickle.load(f)
+
+        dicts = cPickle.load(f)
+        self.metadata = [ Episode.fromDict(d) for d in dicts ]
+
+        nlinks = cPickle.load(f)
+        for (mn, mdn) in nlinks:
+            self.links += [ (self.media[mn], self.metadata[mdn]) ]
 
     def save(self, filename):
         import cPickle
         f = open(filename, 'w')
-        dict_coll = [ m.toDict() for m in self.medias ]
-        cPickle.dump(dict_coll, f)
+        cPickle.dump(self.media, f)
+        cPickle.dump([ m.toDict() for m in self.metadata ], f)
+
+        # FIXME: cannot dump links correctly, need to use reference
+        nlinks = []
+        for (media, metadata) in self.links:
+            nlinks += [ (self.media.index(media), self.metadata.index(metadata)) ]
+        cPickle.dump(nlinks, f)
+
         f.close()
 
 if __name__ == '__main__':

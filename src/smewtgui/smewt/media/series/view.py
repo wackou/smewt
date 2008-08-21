@@ -31,10 +31,10 @@ def render(name, episodes):
     #print '---- Rendering episode:', episodes
 
     if name == 'single':
-        t = Template(file = 'media/series/view_episodes_by_season.tmpl',
+        t = Template(file = 'smewt/media/series/view_episodes_by_season.tmpl',
                      searchList = { 'episodes': episodes })
     elif name == 'all':
-        t = Template(file = 'media/series/view_all_series.tmpl',
+        t = Template(file = 'smewt/media/series/view_all_series.tmpl',
                      searchList = { 'episodes': episodes })
     else:
         return 'Invalid view name'
@@ -42,28 +42,5 @@ def render(name, episodes):
     return t.respond()
 
 
-
-def cheetahTest():
-    eps = [ { 'filename': 'file:///data/blah/01.avi',
-              'serie': 'Black Lagoon',
-              'season': 1,
-              'epnumber': 1,
-              'title': 'Black Lagoon'
-              },
-            { 'filename': 'file:///data/blah/02.avi',
-              'serie': 'Black Lagoon',
-              'season': 1,
-              'epnumber': 2,
-              'title': 'Heavenly Gardens'
-              },
-            { 'filename': 'file:///data/blouh/01.avi',
-              'serie': 'Noir',
-              'season': 1,
-              'epnumber': 1,
-              'title': 'La vierge aux mains noires'
-              }
-            ]
-
-    return render(eps)
 
 

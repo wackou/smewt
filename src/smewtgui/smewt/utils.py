@@ -21,6 +21,13 @@
 
 # regexps-related functions
 import re
+from base import SmewtException
+
+def matchRegexp(string, regexp):
+    match = re.compile(regexp, re.IGNORECASE | re.DOTALL).search(string)
+    if match:
+        return match.groupdict()
+    raise SmewtException('Does not match regexp')
 
 def matchAllRegexp(string, regexps):
     result = []

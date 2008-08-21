@@ -18,4 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from base import SmewtDict, ValidatingSmewtDict, SmewtException
+from mediaobject import Media, Metadata
 from collection import Collection

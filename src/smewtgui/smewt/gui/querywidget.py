@@ -19,14 +19,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt import Collection
+from smewt import SmewtException, Collection
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
-from media.series import view
-from subprocess import Popen
-from gui.bookmarkwidget import BookmarkListWidget
+from smewt.media.series import view
+from bookmarkwidget import BookmarkListWidget
 import os
+from subprocess import Popen
 from os.path import dirname,  join
 
 class QueryWidget(QWidget):
@@ -77,8 +77,8 @@ class QueryWidget(QWidget):
         try:
             self.collection.load(t)
         except:
-            # if file is not found, just go on with an empty collection
-            pass
+            print 'WARNING: Could not load collection', t
+            raise
 
         self.setLayout(layout)
 
@@ -136,11 +136,11 @@ class QueryWidget(QWidget):
         viewType = smewtpath[1]
         args = smewtpath[2:]
         if viewType == 'single':
-            metadata = dict([(media.getUniqueKey(), media) for media in self.collection.medias if media is not None and media.properties['serie'] == args[0] ])
+            metadata = self.collection.filter('serie', args[0])
         elif viewType == 'all':
-            metadata = dict([(media.getUniqueKey(), media) for media in self.collection.medias if media is not None ])
+            metadata = dict([(md.getUniqueKey(), md) for md in self.collection.metadata ])
         else:
-            raise 'invalid view type'
+            raise SmewtException('invalid view type')
 
         html = view.render(viewType,  metadata)
 

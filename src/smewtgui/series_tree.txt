@@ -1,0 +1,1504 @@
+.
+|-- Black Adder
+|   |-- Black_Adder_-_1x01_-_The_Foretelling.digitaldistractions.[www.the-realworld.de].avi
+|   |-- Black_Adder_-_1x02_-_Born_To_Be_King.digitaldistractions.[www.the-realworld.de].avi
+|   |-- Black_Adder_-_1x03_-_The_Archbishop.digitaldistractions.[www.the-realworld.de].avi
+|   `-- Black_Adder_-_1x04_-_The_Queen_Of_Spains_Beard.digitaldistractions.[www.the-realworld.de].avi
+|-- Black Lagoon
+|   |-- Black Lagoon
+|   |   |-- Black_Lagoon_-_01_-_The_Black_Lagoon_-_[KAA](08af53b9).mkv
+|   |   |-- Black_Lagoon_-_02_-_Mangrove_Heaven_-_[KAA](b7cd3432).mkv
+|   |   |-- Black_Lagoon_-_03_-_Ring-Ding_Ship_Chase_-_[KAA](96036150).mkv
+|   |   |-- Black_Lagoon_-_04_-_Die_R\303\274ckkehr_des_Adlers_-_[KAA](4ed905aa).mkv
+|   |   |-- Black_Lagoon_-_05_-_Eagle_Hunting_and_Hunting_Eagle_-_[KAA](8a418b1e).mkv
+|   |   |-- Black_Lagoon_-_06_-_Moonlit_Hunting_Ground_-_[KAA](7f1ec807).mkv
+|   |   |-- Black_Lagoon_-_07_-_Calm_Down,_Two_Men_-_[KAA](ba2ee8e3).mkv
+|   |   |-- Black_Lagoon_-_08_-_Rasta_Blasta_-_[KAA](bb6d727e).mkv
+|   |   |-- Black_Lagoon_-_09_-_Maid_to_Kill_-_[KAA](a9c31e25).mkv
+|   |   |-- Black_Lagoon_-_10_-_The_Unstoppable_Chambermaid_-_[KAA](4a0ada1f).mkv
+|   |   |-- Black_Lagoon_-_11_-_Lock`n_Load_Revolution_-_[KAA](11a55045).mkv
+|   |   `-- Black_Lagoon_-_12_-_Guerrillas_in_the_Jungle_-_[KAA](0b78c60f).mkv
+|   `-- Black Lagoon - 2nd Barrage
+|       |-- Black_Lagoon._The_Second_Barrage_-_01_-_The_Vampire_Twins_Comen_-_[KAA](a8be776d).mkv
+|       |-- Black_Lagoon._The_Second_Barrage_-_02_-_Bloodsport_Fairytale_-_[KAA](5adb21d8).mkv
+|       |-- Black_Lagoon._The_Second_Barrage_-_03_-_Swan_Song_at_Dawn_-_[KAA](8432ccbc).mkv
+|       |-- Black_Lagoon._The_Second_Barrage_-_04_-_Greenback_Jane_-_[KAA](eeff0c93).mkv
+|       |-- Black_Lagoon._The_Second_Barrage_-_05v2_-_The_Roanapur_Freakshow_Circus_-_[KAA](48c59fd7).mkv
+|       |-- Black_Lagoon._The_Second_Barrage_-_06v2_-_Mr._Benny`s_Good_Fortune_-_[KAA](734d4b8f).mkv
+|       |-- Black_Lagoon._The_Second_Barrage_-_07_-_Fujiyama_Gangsta_Paradise_-_[KAA](887df8fb).mkv
+|       |-- Black_Lagoon._The_Second_Barrage_-_08v2_-_The_Succession_-_[KAA](8358a066).mkv
+|       |-- Black_Lagoon._The_Second_Barrage_-_09_-_Two_Father`s_Little_Soldier_Girls_-_[KAA](fc041678).mkv
+|       |-- Black_Lagoon._The_Second_Barrage_-_10_-_The_Dark_Tower_-_[KAA](55a14c5b).mkv
+|       |-- Black_Lagoon._The_Second_Barrage_-_11_-_Snow_White`s_Payback_-_[KAA](2aa002b3).mkv
+|       `-- Black_Lagoon._The_Second_Barrage_-_12_-_The_Gunslingers_-_[KAA](a3529a8b).mkv
+|-- Californication
+|   |-- Californication.1x01.Pilot.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].avi
+|   |-- Californication.1x01.Pilot.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].idx
+|   |-- Californication.1x01.Pilot.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].sub
+|   |-- Californication.1x02.Hell-A.Woman.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].avi
+|   |-- Californication.1x02.Hell-A.Woman.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].idx
+|   |-- Californication.1x02.Hell-A.Woman.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].sub
+|   |-- Californication.1x03.The.Whore.Of.Babylon.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].avi
+|   |-- Californication.1x03.The.Whore.Of.Babylon.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].idx
+|   |-- Californication.1x03.The.Whore.Of.Babylon.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].sub
+|   |-- Californication.1x04.Fear.And.Loathing.At.The.Fundraiser.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].avi
+|   |-- Californication.1x05.LOL.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].avi
+|   |-- Californication.1x06.Absinthe.Makes.The.Heart.Grow.Fonder.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].avi
+|   |-- Californication.1x07.Girls.Interrupted.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].avi
+|   |-- Californication.1x08.California.Son.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].avi
+|   |-- Californication.1x09.Filthy.Lucre.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].avi
+|   |-- Californication.1x10.The.Devil's.Threesome.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].avi
+|   |-- Californication.1x11.Turn.The.Page.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].avi
+|   |-- Californication.1x12.The.Last.Waltz.iNTERNAL.DVDRip.XviD-NODLABS.[tvu.org.ru].avi
+|   |-- Californication.S01E04.iNTERNAL.DVDRip.XviD-NODLABS.idx
+|   |-- Californication.S01E04.iNTERNAL.DVDRip.XviD-NODLABS.sub
+|   |-- Californication.S01E05.iNTERNAL.DVDRip.XviD-NODLABS.idx
+|   |-- Californication.S01E05.iNTERNAL.DVDRip.XviD-NODLABS.sub
+|   |-- Californication.S01E06.iNTERNAL.DVDRip.XviD-NODLABS.idx
+|   |-- Californication.S01E06.iNTERNAL.DVDRip.XviD-NODLABS.sub
+|   |-- Californication.S01E07.iNTERNAL.DVDRip.XviD-NODLABS.idx
+|   |-- Californication.S01E07.iNTERNAL.DVDRip.XviD-NODLABS.sub
+|   |-- Californication.S01E08.iNTERNAL.DVDRip.XviD-NODLABS.idx
+|   |-- Californication.S01E08.iNTERNAL.DVDRip.XviD-NODLABS.sub
+|   |-- Californication.S01E09.iNTERNAL.DVDRip.XviD-NODLABS.idx
+|   |-- Californication.S01E09.iNTERNAL.DVDRip.XviD-NODLABS.sub
+|   |-- Californication.S01E10.iNTERNAL.DVDRip.XviD-NODLABS.idx
+|   |-- Californication.S01E10.iNTERNAL.DVDRip.XviD-NODLABS.sub
+|   |-- Californication.S01E11.iNTERNAL.DVDRip.XviD-NODLABS.idx
+|   |-- Californication.S01E11.iNTERNAL.DVDRip.XviD-NODLABS.sub
+|   |-- Californication.S01E12.iNTERNAL.DVDRip.XviD-NODLABS.idx
+|   `-- Californication.S01E12.iNTERNAL.DVDRip.XviD-NODLABS.sub
+|-- Claymore
+|   |-- Claymore_-_01_-_Claymore_-_[Eclipse](afeaa0d7).mkv
+|   |-- Claymore_-_02_-_The_Black_Card_-_[Eclipse](54fbc4fe).mkv
+|   |-- Claymore_-_03_-_Darkness_in_Paradise_-_[Eclipse](97b2ef24).mkv
+|   |-- Claymore_-_04_-_Clare`s_Awakening_-_[Eclipse](b470720a).mkv
+|   |-- Claymore_-_05_-_Teresa_of_the_Faint_Smile_-_[Eclipse](5d1fcce4).mkv
+|   |-- Claymore_-_06_-_Teresa_and_Clare_-_[Eclipse](f251190e).mkv
+|   |-- Claymore_-_07_-_The_Mark_of_the_Deceased_-_[Eclipse](ebd7064c).mkv
+|   |-- Claymore_-_08_-_Awakening_-_[Eclipse](2f0dcea9).mkv
+|   |-- Claymore_-_09_-_The_Slashers_(Part_1)_-_[Eclipse](d82c081e).mkv
+|   |-- Claymore_-_10_-_The_Slashers_(Part_2)_-_[Eclipse](ad6df6f1).mkv
+|   |-- Claymore_-_11_-_The_Slashers_(Part_3)_-_[Eclipse](566de970).mkv
+|   |-- Claymore_-_12_-_The_Endless_Gravestones_(Part_1)_-_[Eclipse](e2fdf8f8).mkv
+|   |-- Claymore_-_13_-_The_Endless_Gravestones_(Part_2)_-_[Eclipse](2d94958f).mkv
+|   |-- Claymore_-_14_-_Qualified_to_Fight_-_[Eclipse](99df1f62).mkv
+|   |-- Claymore_-_15_-_The_Witch`s_Maw_(Part_1)_-_[Eclipse](5546f888).mkv
+|   |-- Claymore_-_16_-_The_Witch`s_Maw_(Part_2)_-_[Eclipse](470f8338).mkv
+|   |-- Claymore_-_17_-_The_Witch`s_Maw_(Part_3)_-_[Eclipse](bdfc9f8e).mkv
+|   |-- Claymore_-_18_-_The_War_in_The_North_(Part_1)_-_[Eclipse](61f9cac5).mkv
+|   |-- Claymore_-_19_-_The_War_in_The_North_(Part_2)_-_[Eclipse](e33c075f).mkv
+|   |-- Claymore_-_20_-_The_War_in_The_North_(Part_3)_-_[Eclipse](bc5e4d32).mkv
+|   |-- Claymore_-_21_-_Invasion_of_Pieta_(Part_1)_-_[Eclipse](62e371ac).mkv
+|   |-- Claymore_-_22_-_Invasion_of_Pieta_(Part_2)_-_[Eclipse](596c6897).mkv
+|   |-- Claymore_-_23_-_Critical_Point_(Part_1)_-_[Eclipse](b013d77c).mkv
+|   |-- Claymore_-_24_-_Critical_Point_(Part_2)_-_[Eclipse](886beea2).mkv
+|   |-- Claymore_-_25_-_For_Whose_Sake_-_[Eclipse](504faf88).mkv
+|   `-- Claymore_-_26_-_Towards_the_Successors_-_[Eclipse](e37ebcf3).mkv
+|-- Cuttlas
+|   |-- Cuttlas_1x01_El_Circo_Olimpo.[TVRip.Spanish.XviD].avi
+|   |-- Cuttlas_1x02_Con_cien_canones_por_banda.[TVRip.Spanish.XviD].avi
+|   |-- Cuttlas_1x03_Agente_Especial_Triple_X.[TVRip.Spanish.XviD].avi
+|   |-- Cuttlas_1x04_Las_77_formas_de_matar_o_morir.[TVRip.Spanish.XviD].avi
+|   |-- Cuttlas_1x05_El_exilir_de_la_eterna_juventud.[TVRip.Spanish.XviD].avi
+|   |-- Cuttlas_1x06_Knock_Out.[TVRip.Spanish.XviD].avi
+|   |-- Cuttlas_1x07_El_enigma_poligonal.[TVRip.Spanish.XviD].avi
+|   |-- Cuttlas_1x08_El_Buey_Negro.[TVRip.Spanish.XviD].avi
+|   |-- Cuttlas_1x09_Lluvia_de_estrellas.[TVRip.Spanish.XviD].avi
+|   |-- Cuttlas_1x10_El_Bueno_de_Cuttlas.[TVRip.Spanish.XviD].avi
+|   |-- Cuttlas_1x11_Multimonster.[TVRip.Spanish.XviD].avi
+|   |-- Cuttlas_1x12_Cuando_llegue_el_ocaso.[TVRip.Spanish.XviD].avi
+|   `-- Cuttlas_1x13_Gran_Calibre.[TVRip.Spanish.XviD].avi
+|-- Damages
+|   |-- Damages.1x01.Pilot.DVDRip-FoV.[tvu.org.ru].Fran\303\247ais.srt
+|   |-- Damages.1x01.Pilot.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Damages.1x02.Jesus,.Mary,.And.Joe.Cocker.DVDRip-FoV.[tvu.org.ru].Fran\303\247ais.srt
+|   |-- Damages.1x02.Jesus,.Mary,.And.Joe.Cocker.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Damages.1x03.And.My.Paralyzing.Fear.Of.Death.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Damages.1x03.And.My.Paralyzing.Fear.Of.Death.DVDRip-FoV.[tvu.org.ru].srt
+|   |-- Damages.1x04.Tastes.Like.A.HoHo.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Damages.1x04.Tastes.Like.A.HoHo.DVDRip-FoV.[tvu.org.ru].srt
+|   |-- Damages.1x05.A.Regular.Earl.Anthony.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Damages.1x05.A.Regular.Earl.Anthony.DVDRip-FoV.[tvu.org.ru].srt
+|   |-- Damages.1x06.She.Spat.At.Me.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Damages.1x06.She.Spat.At.Me.DVDRip-FoV.[tvu.org.ru].srt
+|   |-- Damages.1x07.We.Are.Not.Animals.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Damages.1x07.We.Are.Not.Animals.DVDRip-FoV.[tvu.org.ru].srt
+|   |-- Damages.1x08.Blame.The.Victim.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Damages.1x08.Blame.The.Victim.DVDRip-FoV.[tvu.org.ru].srt
+|   |-- Damages.1x09.Do.You.Regret.What.We.Did.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Damages.1x09.Do.You.Regret.What.We.Did.DVDRip-FoV.[tvu.org.ru].srt
+|   |-- Damages.1x10.Sort.Of.Like.A.Family.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Damages.1x10.Sort.Of.Like.A.Family.DVDRip-FoV.[tvu.org.ru].srt
+|   |-- Damages.1x11.I.Hate.These.People.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Damages.1x11.I.Hate.These.People.DVDRip-FoV.[tvu.org.ru].srt
+|   |-- Damages.1x12.There's.No.We.Anymore.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Damages.1x12.There's.No.We.Anymore.DVDRip-FoV.[tvu.org.ru].srt
+|   |-- Damages.1x13.Because.I.Know.Patty.DVDRip-FoV.[tvu.org.ru].avi
+|   `-- Damages.1x13.Because.I.Know.Patty.DVDRip-FoV.[tvu.org.ru].srt
+|-- Deadwood
+|   |-- Deadwood STFR Saison 3 S03E01 (3x01) S03E02 (3x02) S03E03 (3x03) S03E04 (3x04) srt VF.rar
+|   `-- Season 1
+|       |-- Deadwood Saison 1 - Srt Sub Sous-Titres - Fr Fre Fra French Fran\303\247ais.rar
+|       |-- Deadwood.1x01.Deadwood.DVDRip-FFNDVD.[tvu.org.ru].English.srt
+|       |-- Deadwood.1x01.Deadwood.DVDRip-FFNDVD.[tvu.org.ru].Fran\303\247ais.srt
+|       |-- Deadwood.1x01.Deadwood.DVDRip-FFNDVD.[tvu.org.ru].avi
+|       |-- Deadwood.1x02.Deep.Water.DVDRip-FFNDVD.[tvu.org.ru].English.srt
+|       |-- Deadwood.1x02.Deep.Water.DVDRip-FFNDVD.[tvu.org.ru].Fran\303\247ais.srt
+|       |-- Deadwood.1x02.Deep.Water.DVDRip-FFNDVD.[tvu.org.ru].avi
+|       |-- Deadwood.1x03.Reconnoitering.The.Rim.DVDRip-FFNDVD.[tvu.org.ru].English.srt
+|       |-- Deadwood.1x03.Reconnoitering.The.Rim.DVDRip-FFNDVD.[tvu.org.ru].Fran\303\247ais.srt
+|       |-- Deadwood.1x03.Reconnoitering.The.Rim.DVDRip-FFNDVD.[tvu.org.ru].Fran\303\247ais2.srt
+|       |-- Deadwood.1x03.Reconnoitering.The.Rim.DVDRip-FFNDVD.[tvu.org.ru].avi
+|       |-- Deadwood.1x04.Here.Was.A.Man.DVDRip-FFNDVD.[tvu.org.ru].English.srt
+|       |-- Deadwood.1x04.Here.Was.A.Man.DVDRip-FFNDVD.[tvu.org.ru].Fran\303\247ais.srt
+|       |-- Deadwood.1x04.Here.Was.A.Man.DVDRip-FFNDVD.[tvu.org.ru].avi
+|       |-- Deadwood.1x05.The.Trial.Of.Jack.McCall.DVDRip-FFNDVD.[tvu.org.ru].English.srt
+|       |-- Deadwood.1x05.The.Trial.Of.Jack.McCall.DVDRip-FFNDVD.[tvu.org.ru].Fran\303\247ais.srt
+|       |-- Deadwood.1x05.The.Trial.Of.Jack.McCall.DVDRip-FFNDVD.[tvu.org.ru].avi
+|       |-- Deadwood.1x06.Plague.DVDRip-FFNDVD.[tvu.org.ru].English.srt
+|       |-- Deadwood.1x06.Plague.DVDRip-FFNDVD.[tvu.org.ru].Fran\303\247ais.srt
+|       |-- Deadwood.1x06.Plague.DVDRip-FFNDVD.[tvu.org.ru].avi
+|       |-- Deadwood.1x07.Bullock.Returns.To.The.Camp.DVDRip-FFNDVD.[tvu.org.ru].English.srt
+|       |-- Deadwood.1x07.Bullock.Returns.To.The.Camp.DVDRip-FFNDVD.[tvu.org.ru].Fran\303\247ais.srt
+|       |-- Deadwood.1x07.Bullock.Returns.To.The.Camp.DVDRip-FFNDVD.[tvu.org.ru].Fran\303\247ais2.srt
+|       |-- Deadwood.1x07.Bullock.Returns.To.The.Camp.DVDRip-FFNDVD.[tvu.org.ru].avi
+|       |-- Deadwood.1x08.Suffer.The.Little.Children.DVDRip-FFNDVD.[tvu.org.ru].English.srt
+|       |-- Deadwood.1x08.Suffer.The.Little.Children.DVDRip-FFNDVD.[tvu.org.ru].Fran\303\247ais.srt
+|       |-- Deadwood.1x08.Suffer.The.Little.Children.DVDRip-FFNDVD.[tvu.org.ru].avi
+|       |-- Deadwood.1x09.No.Other.Sons.Or.Daughters.DVDRip-FFNDVD.[tvu.org.ru].English.srt
+|       |-- Deadwood.1x09.No.Other.Sons.Or.Daughters.DVDRip-FFNDVD.[tvu.org.ru].Fran\303\247ais.srt
+|       |-- Deadwood.1x09.No.Other.Sons.Or.Daughters.DVDRip-FFNDVD.[tvu.org.ru].avi
+|       |-- Deadwood.1x10.Mister.Wu.DVDRip-FFNDVD.[tvu.org.ru].English.srt
+|       |-- Deadwood.1x10.Mister.Wu.DVDRip-FFNDVD.[tvu.org.ru].Fran\303\247ais.srt
+|       |-- Deadwood.1x10.Mister.Wu.DVDRip-FFNDVD.[tvu.org.ru].avi
+|       |-- Deadwood.1x11.Jewel's.Boot.Is.Made.For.Walking.DVDRip-FFNDVD.[tvu.org.ru].English.srt
+|       |-- Deadwood.1x11.Jewel's.Boot.Is.Made.For.Walking.DVDRip-FFNDVD.[tvu.org.ru].Fran\303\247ais.srt
+|       |-- Deadwood.1x11.Jewel's.Boot.Is.Made.For.Walking.DVDRip-FFNDVD.[tvu.org.ru].avi
+|       |-- Deadwood.1x12.Sold.Under.Sin.DVDRip-FFNDVD.[tvu.org.ru].English.srt
+|       |-- Deadwood.1x12.Sold.Under.Sin.DVDRip-FFNDVD.[tvu.org.ru].Fran\303\247ais.srt
+|       |-- Deadwood.1x12.Sold.Under.Sin.DVDRip-FFNDVD.[tvu.org.ru].avi
+|       |-- Deadwood.English.Subtitle.(SubRip).DVDRip-FFNDVD.[tvu.org.ru].rar
+|       `-- Deadwood.Espanol.Subtitle.DVDRip.[tvu.org.ru].rar
+|-- Death Note
+|   |-- Death_Note_-_01_-_Rebirth_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_02_-_Confrontation_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_03_-_Dealings_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_04_-_Pursuit_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_05_-_Tactics_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_06_-_Unravelings_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_07_-_Overcast_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_08_-_Glare_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_09_-_Encounter_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_10_-_Doubt_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_11_-_Assault_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_12_-_Love_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_13_-_Confession_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_14_-_Friend_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_15_-_Wager_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_16_-_Decision_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_17_-_Execution_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_18_-_Ally_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_19_-_Matsuda_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_20_-_Makeshift_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_21_-_Activity_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_22_-_Guidance_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_23_-_Mania_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_24_-_Revival_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_25_-_Silence_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_26_-_Reincarnation_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_27_-_Abduction_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_28_-_Impatience_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_29_-_Father_-_[GTO](5149a105)(dub.sub_ja.fr).avi
+|   |-- Death_Note_-_30_-_Justice_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_31_-_Transfer_-_[GTO](b82137ca)(dub.sub_ja.fr).avi
+|   |-- Death_Note_-_32_-_Selection_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_32v2_-_Selection_-_[GTO](61c44b3a)(dub.sub_ja.fr).avi
+|   |-- Death_Note_-_33_-_Ridicule_-_[GTO](66de9077)(dub.sub_ja.fr).avi
+|   |-- Death_Note_-_34_-_Vigilance_-_[GTO](8b57335e)(dub.sub_ja.fr).avi
+|   |-- Death_Note_-_35_-_Murder_Intent_-_[GTO](492b3496)(dub.sub_ja.fr).avi
+|   |-- Death_Note_-_36_-_1.28_-_[GTO](d64a8151)(dub.sub_ja.fr).avi
+|   |-- Death_Note_-_37_-_New_World_-_[GTO](dub.sub_ja.fr).avi
+|   |-- Death_Note_-_37v2_-_New_World_-_[GTO](0cc8955d)(dub.sub_ja.fr).avi
+|   |-- Death_Note_-_37v3_-_New_World_-_[GTO](4c2cb0b4)(dub.sub_ja.fr).avi
+|   |-- Death_Note_-_S2_-_DEATH_NOTE_ANIME_DIRECTOR`S_CUT_Final_Conclusion_-_[GTO](090fc0e9)(dub.sub_ja.fr).avi
+|   `-- Death_Note_-_S2_-_DEATH_NOTE_ANIME_DIRECTOR`S_CUT_Final_Conclusion_-_[GTO](cfa23587)(dub.sub_ja.fr).avi
+|-- Dennou Coil
+|   |-- Dennou_Coil_-_01v2_-_Children_of_Glasses_-_[Ureshii](ee5c7065).mkv
+|   |-- Dennou_Coil_-_02_-_Coil_Cyber-Detective_Agency_-_[Ureshii](260d682d).mkv
+|   |-- Dennou_Coil_-_03_-_Yuko_and_Yuko_-_[Ureshii](3f761b9e).mkv
+|   |-- Dennou_Coil_-_04_-_Daikoku_City_-_Hacker_Club_-_[Ureshii](37b60ea0).mkv
+|   |-- Dennou_Coil_-_05_-_Meta-bug_Struggle_Bus_Tour_-_[Ureshii](c8d044ea).mkv
+|   |-- Dennou_Coil_-_06v2_-_A_Red_Automaton_-_[Ureshii](0d3faa94).mkv
+|   |-- Dennou_Coil_-_07_-_Mobilise!_Coil_Detective_Agency_-_[Ureshii](dda0d73f).mkv
+|   |-- Dennou_Coil_-_08_-_The_Summer_Festival_and_the_Duel_-_[Ureshii](1439a439).mkv
+|   |-- Dennou_Coil_-_09_-_There`s_Ms_Michiko_-_[Ureshii](344d7443).mkv
+|   |-- Dennou_Coil_-_10_-_Kanna`s_Diary_-_[Ureshii](27ade548).mkv
+|   |-- Dennou_Coil_-_11_-_Sinking!_Daikoku_City_-_[Ureshii](6e0df20a).mkv
+|   |-- Dennou_Coil_-_12_-_Daichi,_Departing_Hair_-_[Ureshii](dca059a6).mkv
+|   |-- Dennou_Coil_-_13_-_The_Last_Plesiosaur_-_[Ureshii](58d447c1).mkv
+|   |-- Dennou_Coil_-_14_-_Record_of_Living_Things_-_[Ureshii](e0a93d77).mkv
+|   |-- Dennou_Coil_-_15_-_The_Boy_on_the_Other_Side_of_the_Station_-_[Ureshii](00071426).mkv
+|   |-- Dennou_Coil_-_16_-_Isako`s_Sickroom_-_[Ureshii](4a1bbe38).mkv
+|   |-- Dennou_Coil_-_17_-_The_Last_Summer_Vacation_-_[Ureshii](59f0d2be).mkv
+|   |-- Dennou_Coil_-_18_-_The_Door_to_a_Strange_World_-_[Ureshii](c066b340).mkv
+|   |-- Dennou_Coil_-_19_-_The_Black_Visitor_-_[Ureshii](b47c3a03).mkv
+|   |-- Dennou_Coil_-_20_-_Kanna_and_Yasako_-_[Ureshii](6f7e873b).mkv
+|   |-- Dennou_Coil_-_21_-_Black_Automaton_-_[Ureshii](5466a46a).mkv
+|   |-- Dennou_Coil_-_22_-_The_Last_Coil_-_[Ureshii](254962bd).mkv
+|   |-- Dennou_Coil_-_23_-_A_Granted_Wish_-_[Ureshii](7f51e865).mkv
+|   |-- Dennou_Coil_-_24_-_The_Kids_who_abandoned_their_Glasses_-_[Ureshii](5a6e0004).mkv
+|   |-- Dennou_Coil_-_25_-_Kanazawa_City`s_Loophole_Nexus_-_[Ureshii](f8acf613).mkv
+|   |-- Dennou_Coil_-_26_-_Yasako_and_Isako_-_[Ureshii](33de9ab3).mkv
+|   `-- Dennou_Coil_-_T1_-_Trailer_1_-_[Ureshii](6e747025).avi
+|-- Desperate Housewives
+|   |-- Desperate.Housewives.-.English.Subtitles.english.[tvu.org.ru].rar
+|   |-- Desperate.Housewives.1x00.-.Pilot.(Unaired.Version).[tvu.org.ru].mpg
+|   |-- Desperate.Housewives.1x19a.-.Special.-.Sorting.Out.The.Dirty.Laundry.TCM.HDTV.[tvu.org.ru].avi
+|   |-- Desperate.Housewives.Special.-.All.The.Juicy.Details.DiD.HDTV.[tvu.org.ru].avi
+|   |-- Desperate.Housewives.Special.-.E!.True.Hollywood.Story:.The.Women.Of.Desperate.Housewives.graysky.DSR.[tvu.org.ru].avi
+|   |-- Desperate.Housewives.Special.-.Time.To.Come.Clean.TBS.PDTV.[tvu.org.ru].avi
+|   |-- Desperate.Housewives.The.More.You.Know.The.Juicier.It.Gets.XOR.HDTV.[tvu.org.ru].avi
+|   |-- Season 1
+|   |   |-- Desperate.Housewives.-.1x01.-.Pilot.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x02.-.Ah,.But.Underneath.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x03.-.Pretty.Little.Picture.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x04.-.Who's.That.Woman.(Extended).english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x05.-.Come.In,.Stranger.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x06.-.Running.To.Stand.Still.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x07.-.Anything.You.Can.Do.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x08.-.Guilty.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x09.-.Suspicious.Minds.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x10.-.Come.Back.To.Me.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x11.-.Move.On.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x12.-.Every.Day.A.Little.Death.(Extended).english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x13.-.Your.Fault.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x14.-.Love.Is.In.The.Air.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x15.-.Impossible.(Extended).english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x16.-.The.Ladies.Who.Lunch.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x17.-.There.Won't.Be.Trumpets.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x18.-.Children.Will.Listen.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x19.-.Live.Alone.And.Like.It.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x20.-.Fear.No.More.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x21.-.Sunday.In.The.Park.With.George.(Extended).english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x22.-.Goodbye.For.Now.(Extended).english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.1x23.-.One.Wonderful.Day.english.WAT.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.S01.English.Subtitle.english.WAT.DVD.[tvu.org.ru].rar
+|   |   |-- desperate.housewives.s01e01.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e02.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e03.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e04.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e05.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e06.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e07.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e08.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e09.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e10.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e11.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e12.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e13.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e14.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e15.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e16.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e17.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e18.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e19.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e20.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e21.dvdrip.xvid-wat.srt
+|   |   |-- desperate.housewives.s01e22.dvdrip.xvid-wat.srt
+|   |   `-- desperate.housewives.s01e23.dvdrip.xvid-wat.srt
+|   |-- Season 2
+|   |   |-- Desperate.Housewives.-.2x01.-.Next.english.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.2x04.-.My.Heart.Belongs.To.Daddy.english.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.2x06.-.I.Wish.I.Could.Forget.You.english.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.2x06.-.I.Wish.I.Could.Forget.You.english.FoV.DVD.[tvu.org.ru].srt
+|   |   |-- Desperate.Housewives.-.2x12.-.We're.Gonna.Be.All.Right.english.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.2x12.-.We're.Gonna.Be.All.Right.english.FoV.DVD.[tvu.org.ru].srt
+|   |   |-- Desperate.Housewives.-.2x16.-.There.Is.No.Other.Way.english.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.2x16.-.There.Is.No.Other.Way.english.FoV.DVD.[tvu.org.ru].srt
+|   |   |-- Desperate.Housewives.-.2x17.-.Could.I.Leave.You.english.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.2x17.-.Could.I.Leave.You.english.FoV.DVD.[tvu.org.ru].srt
+|   |   |-- Desperate.Housewives.-.2x18.-.Everybody.Says.Don't.english.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.2x18.-.Everybody.Says.Don't.english.FoV.DVD.[tvu.org.ru].srt
+|   |   |-- Desperate.Housewives.-.2x19.-.Don't.Look.At.Me.english.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.2x19.-.Don't.Look.At.Me.english.FoV.DVD.[tvu.org.ru].srt
+|   |   |-- Desperate.Housewives.-.2x20.-.It.Wasn't.Meant.To.Happen.english.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.2x20.-.It.Wasn't.Meant.To.Happen.english.FoV.DVD.[tvu.org.ru].srt
+|   |   |-- Desperate.Housewives.-.2x21.-.I.Know.Things.Now.english.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.2x21.-.I.Know.Things.Now.english.FoV.DVD.[tvu.org.ru].srt
+|   |   |-- Desperate.Housewives.-.2x22.-.No.One.Is.Alone.english.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.2x22.-.No.One.Is.Alone.english.FoV.DVD.[tvu.org.ru].srt
+|   |   |-- Desperate.Housewives.-.2x23.-.24.-.Remember.english.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.2x23.-.24.-.Remember.english.FoV.DVD.[tvu.org.ru].srt
+|   |   |-- desperate_housewives.2x01.next.dvdrip_xvid-fov.srt
+|   |   |-- desperate_housewives.2x02.you_could_drive_a_person_crazy.dvdrip_xvid-fov.srt
+|   |   |-- desperate_housewives.2x03.youll_never_get_away_from_me.repack.dvdrip_xvid-fov.srt
+|   |   |-- desperate_housewives.2x04.my_heart_belongs_to_daddy.dvdrip_xvid-fov.srt
+|   |   |-- desperate_housewives.2x05.they_asked_me_why_i_believe_in_you.dvdrip_xvid-fov.srt
+|   |   |-- desperate_housewives.2x06.i_wish_i_could_forget_you.dvdrip_xvid-fov.srt
+|   |   |-- desperate_housewives.2x07.color_and_light.repack.dvdrip_xvid-fov.srt
+|   |   |-- desperate_housewives.2x08.the_sun_wont_set.dvdrip_xvid-fov.srt
+|   |   |-- desperate_housewives.2x09.the_sun_wont_set.dvdrip_xvid-fov.srt
+|   |   |-- desperate_housewives.2x10.coming_home.dvdrip_xvid-fov.srt
+|   |   |-- desperate_housewives.2x11.one_more_kiss.dvdrip_xvid-fov.srt
+|   |   |-- desperate_housewives.2x13.theres_something_about_a_war.dvdrip_xvid-fov.srt
+|   |   |-- desperate_housewives.2x14.silly_people.dvdrip_xvid-fov.srt
+|   |   `-- desperate_housewives.2x15.thank_you_so_much.dvdrip_xvid-fov.srt
+|   |-- Season 3
+|   |   |-- Desperate.Housewives.-.3x01.-.Listen.To.The.Rain.On.The.Roof.english.XOR.HDTV.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.3x02.-.It.Takes.Two.english.XOR.HDTV.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.3x03.-.A.Weekend.In.The.Country.english.LOL.HDTV.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.3x04.-.Like.It.Was.english.XOR.HDTV.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.3x05.-.Nice.She.Ain't.english.LOL.HDTV.PROPER.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.3x06.-.Sweetheart,.I.Have.To.Confess.english.XOR.HDTV.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.3x07.-.Bang.english.XOR.HDTV.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.3x08.-.Children.And.Art.english.XOR.HDTV.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.3x09.-.Beautiful.Girls.english.XOR.HDTV.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.3x10.-.The.Miracle.Song.english.XOR.HDTV.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.3x11.-.No.Fits,.No.Fights,.No.Feuds.english.XOR.HDTV.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.3x12.-.Not.While.I'm.Around.english.XOR.HDTV.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.3x13.-.Come.Play.Wiz.Me.english.NoTV.HDTV.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.3x14.-.I.Remember.That.english.NoTV.HDTV.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.-.3x15.-.The.Little.Things.You.Do.Together.english.FQM.HDTV.PROPER.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.3x16.My.Husband,.The.Pig.NoTV.HDTV.REPACK.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.3x17.Dress.Big.Caph.HDTV.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.3x17.Liaisons.sub.french.Cyrille_ss.HDTV.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.3x18.Liaisons.Caph.HDTV.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.3x19..God.That's.Good.HDTV-SORNY.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.3x20.Gossip.HDTV-Caph.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.3x21.Into.The.Woods.HDTV.PROPER-XOR.[tvu.org.ru].avi
+|   |   |-- Desperate.Housewives.3x22.What.Would.We.Do.Without.You.HDTV-NoTV.[tvu.org.ru].avi
+|   |   `-- Desperate.Housewives.3x23.Getting.Married.Today.HDTV-Caph.[tvu.org.ru].avi
+|   `-- Season 4
+|       |-- Desperate.Housewives.4x01.Now.You.Know.ENG.-.sub.FR-EMENOU.[tvu.org.ru].avi
+|       |-- Desperate.Housewives.4x02.Smiles.Of.A.Summer.Night.HDTV-Caph.[tvu.org.ru].avi
+|       |-- Desperate.Housewives.4x03.The.Game.720p-HDTV-CTU.[tvu.org.ru].mkv
+|       |-- Desperate.Housewives.4x04.If.There's.Anything.I.Can't.Stand.HDTV-XOR.[tvu.org.ru].avi
+|       |-- Desperate.Housewives.4x05.Art.Isn't.Easy.HDTV-Caph.[tvu.org.ru].avi
+|       |-- Desperate.Housewives.4x06.Now.I.Know.Don't.Be.Scared.HDTV-DOT.[tvu.org.ru].avi
+|       |-- Desperate.Housewives.4x07.You.Can't.Judge.A.Book.By.Its.Cover.HDTV-DOT.[tvu.org.ru].avi
+|       |-- Desperate.Housewives.4x08.A.Distant.Past.ENG.-.sub.FR.HDTV-CK.[tvu.org.ru].avi
+|       |-- Desperate.Housewives.4x09.Something's.Coming.ENG.-.sub.FR.HDTV-CK.[tvu.org.ru].avi
+|       |-- Desperate.Housewives.4x10.Welcome.To.Kanagawa.ENG.-.sub.FR.HDTV-CK.[tvu.org.ru].avi
+|       |-- Desperate.Housewives.4x11.Sunday.ENG.-.sub.FR.HDTV.DivX-CK.[tvu.org.ru].avi
+|       |-- Desperate.Housewives.4x12.In.Buddy's.Eyes.ENG.-.sub.FR.HDTV.DivX-CK.[tvu.org.ru].avi
+|       |-- Desperate.Housewives.4x13.Hello,.Little.Girl.ENG.-.sub.FR.HDTV.DivX-CK.[tvu.org.ru].avi
+|       |-- Desperate.Housewives.4x14.Opening.Doors.ENG.-.sub.FR.HDTV.DivX-CK.[tvu.org.ru].avi
+|       |-- Desperate.Housewives.4x15.Mother.Said.HDTV.XviD-0TV.[tvu.org.ru].avi
+|       |-- Desperate.Housewives.4x15.Mother.Said.HDTV.XviD-0TV.srt
+|       `-- Desperate.Housewives.4x16-17.The.Gun.Song.-.Free.ENG.-.sub.FR.HDTV.DivX-CK.[tvu.org.ru].avi
+|-- Duckman
+|   |-- Duckman - 101 (01) - 20021107 - I, Duckman.avi
+|   |-- Duckman - 102 (02) - 20021112 - TV or Not To Be.avi
+|   |-- Duckman - 103 (03) - 20021113 - Gripes of Wrath.avi
+|   |-- Duckman - 104 (04) - 20021113 - Psyche.avi
+|   |-- Duckman - 105 (05) - 20021118 - Gland of Opportunity.avi
+|   |-- Duckman - 106 (06) - 20021119 - Ride The High School.avi
+|   |-- Duckman - 107 (07) - 20021128 - A Civil War.avi
+|   |-- Duckman - 108 (08) - 20021128 - Not So Easy Rider.avi
+|   |-- Duckman - 109 (09) - 20021210 - It's The Thing Of The Principal.avi
+|   |-- Duckman - 110 (10) - 20021218 - Cellar Beware.avi
+|   |-- Duckman - 111 (11) - 20021210 - American Dick.avi
+|   `-- Duckman - S1E13 Joking The Chicken (unedited).avi
+|-- El Cazador de la Bruja
+|   |-- El_Cazador_de_la_Bruja_-_01_-_The_Woman_Who_Runs_Away_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_02_-_The_Waiting_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_03_-_The_Falling_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_04_-_The_Aiming_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_05_-_Clothed_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_06_-_Man_in_Love_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_07_-_Working_Man_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_08_-_Lying_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_09_-_Digging_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_10_-_Man_Who_Lives_With_An_Angel_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_11_-_Cursed_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_12_-_Shot_Man_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_13_-_Hiding_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_14_-_Maple_Leaf_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_15_-_Opposing_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_16_-_Angry_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_17_-_Cornered_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_18_-_Disagreeing_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_19_-_Man_Who_Protects_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_20_-_Captured_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_21_-_Flapping_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_22_-_Awoken_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_23_-_Puzzled_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_24_-_Dead_Man_-_[Z`Y](dub.sub_ja.fr).mp4
+|   |-- El_Cazador_de_la_Bruja_-_25_-_Saintly_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|   `-- El_Cazador_de_la_Bruja_-_26_-_Shining_Woman_-_[Z`Y](dub.sub_ja.fr).mp4
+|-- Fantastic Children
+|   |-- Fantastic_Children_-_01_-_From_the_Edge_of_Night_-_[FACreW](8fdfa753)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_02_-_Wayward_Feelings_-_[FACreW](8563fb0d)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_03_-_The_Place_I_Want_to_Go_-_[FACreW](9cd1443d)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_04_-_Shinon_-_[FACreW](0baad149)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_05_-_Kokkuri_Island_-_[FACreW](86c13320)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_06_-_Kokkuri_Island_2_-_[FACreW](dc3690a0)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_07_-_The_Children_of_B\303\251fort_-_[FACreW](a2b7c6c1)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_08_-_A_Warm_Family_-_[FACreW](fc5c12a7)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_09_-_Orsel_-_[FACreW](45cc836b)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_10_-_The_Ged_Group_-_[FACreW](d1e7f4d3)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_11_-_A_Special_Person_-_[FACreW](30c18306)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_12_-_Enma_-_[FACreW](13d164ed)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_13_-_Memories_of_Greecia_-_[FACreW](35ac6848)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_14_-_The_Path_-_[FACreW](db67e181)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_15_-_Recollections_-_[FACreW](86ae1a56)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_16_-_Return,_Into_the_Mist_-_[FACreW](449cfc8a)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_17_-_Tina_-_[FACreW](92bcef6a)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_18_-_Tragedy_-_[FACreW](cdcd7ffc)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_19_-_The_Vow_-_[FACreW](0f724db9)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_20_-_Revolving_Lives_-_[FACreW](98a66e9f)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_21_-_Dumas_-_[FACreW](a3e3c78d)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_22_-_Incoming_-_[FACreW](94f1cdd1)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_23_-_Gherta_-_[FACreW](f6191f44)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_24_-_The_Truth_About_Thoma_-_[FACreW](d62f2df8)(dub.sub_ja.fr).avi
+|   |-- Fantastic_Children_-_25_-_To_the_Zone_-_[FACreW](014ffb08)(dub.sub_ja.fr).avi
+|   `-- Fantastic_Children_-_26_-_The_End,_and_Then_the_Beginning_-_[FACreW](f6cbca53)(dub.sub_ja.fr).avi
+|-- Firefly
+|   |-- Firefly.1x01-02.Serenity.(Pilot).DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Firefly.1x03.The.Train.Job.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Firefly.1x04.Bushwhacked.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Firefly.1x05.Shindig.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Firefly.1x06.Safe.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Firefly.1x07.Our.Mrs..Reynolds.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Firefly.1x08.Jaynestown.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Firefly.1x09.Out.Of.Gas.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Firefly.1x10.Ariel.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Firefly.1x11.War.Stories.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Firefly.1x12.Trash.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Firefly.1x13.The.Message.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Firefly.1x14.Heart.Of.Gold.DVDRip-FoV.[tvu.org.ru].avi
+|   |-- Firefly.1x15.Objects.In.Space.DVDRip-FoV.[tvu.org.ru].avi
+|   `-- Firefly.S1.English.Subtitles.DVDRip.[tvu.org.ru].zip
+|-- Fruits Basket
+|   |-- Fruits.Basket.1x01.Introduction.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x02.Le.Grand.Secret.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x03.Remise.En.Question.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x04.Une.Invit\303\251e.Surprise.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x05.D\303\251part.Anticip\303\251.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x06.Transformations.Successives.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x07.Les.Deux.Intrus.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x08.Flashback.D'un.Amour.Perdu.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x09.\303\251pisode.09.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x10.\303\251pisode.10.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x11.\303\251pisode.11.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x12.\303\251pisode.12.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x13.Voyage.Aux.Sources.Thermales.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x14.\303\251pisode.14.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x15.\303\251pisode.15.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x16.\303\251pisode.16.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x17.\303\251pisode.17.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x18.\303\251pisode.18.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x19.Grosse.D\303\251prime.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x20.\303\251pisode.20.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x21.\303\251pisode.21.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x22.\303\251pisode.22.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x23.\303\251pisode.23.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x24.\303\251pisode.24.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   |-- Fruits.Basket.1x25.\303\251pisode.25.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|   `-- Fruits.Basket.1x26.\303\251pisode.26.Et.FIN.JP.-.sub.FR-Elgoretto.[tvu.org.ru].avi
+|-- Fullmetal Alchemist
+|   |-- Hagane_no_Renkinjutsushi_-_01v2_-_To_Challenge_the_Sun_-_[KAA](bb60f687).avi
+|   |-- Hagane_no_Renkinjutsushi_-_02v2_-_Body_of_the_Sanctioned_-_[KAA](00effdd6).avi
+|   |-- Hagane_no_Renkinjutsushi_-_03v2_-_Mother_-_[KAA](87a242c5).avi
+|   |-- Hagane_no_Renkinjutsushi_-_04v2_-_A_Forger`s_Love_-_[KAA](891315ce).avi
+|   |-- Hagane_no_Renkinjutsushi_-_05_-_The_Man_with_the_Mechanical_Arm_-_[KAA](6b09f7bb).avi
+|   |-- Hagane_no_Renkinjutsushi_-_06_-_The_Alchemy_Exam_-_[KAA](052f4f29).avi
+|   |-- Hagane_no_Renkinjutsushi_-_07_-_Night_of_the_Chimera`s_Cry_-_[KAA](8a627803).avi
+|   |-- Hagane_no_Renkinjutsushi_-_08_-_The_Philosopher`s_Stone_-_[KAA](c5853c7b).avi
+|   |-- Hagane_no_Renkinjutsushi_-_09_-_Be_Thou_for_the_People_-_[KAA](7fdf2841).avi
+|   |-- Hagane_no_Renkinjutsushi_-_10_-_The_Phantom_Thief_-_[KAA](22353b3e).avi
+|   |-- Hagane_no_Renkinjutsushi_-_11_-_The_Other_Brothers_Elric,_Part_1_-_[KAA](5b682615).avi
+|   |-- Hagane_no_Renkinjutsushi_-_12_-_The_Other_Brothers_Elric,_Part_2_-_[KAA](fb423c27).avi
+|   |-- Hagane_no_Renkinjutsushi_-_13_-_Fullmetal_vs._Flame_-_[KAA](72ee5487).avi
+|   |-- Hagane_no_Renkinjutsushi_-_14_-_Destruction`s_Right_Hand_-_[KAA](49e4c738).avi
+|   |-- Hagane_no_Renkinjutsushi_-_15_-_The_Ishbal_Massacre_-_[KAA](0d831a08).avi
+|   |-- Hagane_no_Renkinjutsushi_-_16_-_That_Which_Is_Lost_-_[KAA](044ea07c).avi
+|   |-- Hagane_no_Renkinjutsushi_-_17_-_House_of_the_Waiting_Family_-_[KAA](e0060f5d).avi
+|   |-- Hagane_no_Renkinjutsushi_-_18_-_Marcoh`s_Notes_-_[KAA](6d19de13).avi
+|   |-- Hagane_no_Renkinjutsushi_-_19_-_The_Truth_Behind_Truths_-_[KAA](6e20762f).avi
+|   |-- Hagane_no_Renkinjutsushi_-_20_-_Soul_of_the_Guardian_-_[KAA](a91ba3b1).avi
+|   |-- Hagane_no_Renkinjutsushi_-_21_-_The_Red_Glow_-_[KAA](5e07ff91).avi
+|   |-- Hagane_no_Renkinjutsushi_-_22_-_Created_Human_-_[KAA](e6140f69).avi
+|   |-- Hagane_no_Renkinjutsushi_-_23_-_Fullmetal_Heart_-_[KAA](20451956).avi
+|   |-- Hagane_no_Renkinjutsushi_-_24_-_Bonding_Memories_-_[KAA](b88973a0).avi
+|   |-- Hagane_no_Renkinjutsushi_-_25_-_Words_of_Farewell_-_[KAA](2f1b0a73).avi
+|   |-- Hagane_no_Renkinjutsushi_-_26_-_Her_Reason_-_[KAA](ba795653).avi
+|   |-- Hagane_no_Renkinjutsushi_-_27_-_Teacher_-_[KAA](0ed93ef3).avi
+|   |-- Hagane_no_Renkinjutsushi_-_28_-_All_is_One,_One_is_All_-_[KAA](278f6c10).avi
+|   |-- Hagane_no_Renkinjutsushi_-_29_-_The_Untainted_Child_-_[KAA](3ff102d0).avi
+|   |-- Hagane_no_Renkinjutsushi_-_30_-_Assault_on_South_Headquarters_-_[KAA](2474bb6d).avi
+|   |-- Hagane_no_Renkinjutsushi_-_31_-_Sin_-_[KAA](14962405).avi
+|   |-- Hagane_no_Renkinjutsushi_-_32_-_Dante_of_the_Deep_Forest_-_[KAA](6ffdf682).avi
+|   |-- Hagane_no_Renkinjutsushi_-_33_-_Al,_Captured_-_[KAA](20a92c47).avi
+|   |-- Hagane_no_Renkinjutsushi_-_34_-_Theory_of_Avarice_-_[KAA](2010b136).avi
+|   |-- Hagane_no_Renkinjutsushi_-_35_-_Reunion_of_the_Fallen_-_[KAA](d8e288dc).avi
+|   |-- Hagane_no_Renkinjutsushi_-_36_-_The_Sinner_Within_-_[KAA](c57e6d10).avi
+|   |-- Hagane_no_Renkinjutsushi_-_37_-_The_Flame_Alchemist,_the_Bachelor_Lieutenant_and_the_Mystery_of_Warehouse_13_-_[KAA](b44c21ad).avi
+|   |-- Hagane_no_Renkinjutsushi_-_38_-_With_the_River`s_Flow_-_[KAA](a38df978).avi
+|   |-- Hagane_no_Renkinjutsushi_-_39_-_Secret_of_Ishbal_-_[KAA](9d85c48b).avi
+|   |-- Hagane_no_Renkinjutsushi_-_40_-_The_Scar_-_[KAA](d1b3cc76).avi
+|   |-- Hagane_no_Renkinjutsushi_-_41_-_Holy_Mother_-_[KAA](6ae43f98).avi
+|   |-- Hagane_no_Renkinjutsushi_-_42_-_His_Name_is_Unknown_-_[KAA](713e51af).mkv
+|   |-- Hagane_no_Renkinjutsushi_-_43_-_The_Stray_Dog_-_[KAA](92c48013).mkv
+|   |-- Hagane_no_Renkinjutsushi_-_44_-_Hohenheim_of_Light_-_[KAA](69e70e48).mkv
+|   |-- Hagane_no_Renkinjutsushi_-_45_-_A_Rotted_Heart_-_[KAA](91688a31).mkv
+|   |-- Hagane_no_Renkinjutsushi_-_46_-_Human_Transmutation_-_[KAA](9e4ab6ab).mkv
+|   |-- Hagane_no_Renkinjutsushi_-_47_-_Sealing_the_Homunculus_-_[KAA](0fdeb2cd).mkv
+|   |-- Hagane_no_Renkinjutsushi_-_48_-_Goodbye_-_[KAA](20b3e399).mkv
+|   |-- Hagane_no_Renkinjutsushi_-_49_-_The_Other_Side_of_the_Gate_-_[KAA](5761336a).mkv
+|   |-- Hagane_no_Renkinjutsushi_-_50_-_Death_-_[KAA](9f8182d1).mkv
+|   `-- Hagane_no_Renkinjutsushi_-_51_-_Laws_and_Promises_-_[KAA](a5d0c232).mkv
+|-- Futurama
+|   |-- Season 1
+|   |   |-- Futurama.1x01.Space.Pilot.3000.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.1x02.The.Series.Has.Landed.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.1x03.I,.Roommate.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.1x04.Love's.Labours.Lost.In.Space.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.1x05.Fear.Of.A.Bot.Planet.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.1x06.A.Fishful.Of.Dollars.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.1x07.My.Three.Suns.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.1x08.A.Big.Piece.Of.Garbage.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.1x09.Hell.Is.Other.Robots.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.1x10.A.Flight.To.Remember.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.1x11.Mars.University.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.1x12.When.Aliens.Attack.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.1x13.Fry.And.The.Slurm.Factory.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.Extras.-.Animatic.For.Space.Pilot.3000.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.Extras.-.Deleted.Scenes.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.Extras.-.Featurette.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   `-- Futurama.Extras.-.Trailer.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |-- Season 2
+|   |   |-- Futurama.2x01.I.Second.That.Emotion.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x02.Brannigan,.Begin.Again.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x03.A.Head.In.The.Polls.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x04.Xmas.Story.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x05.Why.Must.I.Be.A.Crustacean.In.Love?.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x06.The.Lesser.Of.Two.Evils.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x07.Put.Your.Head.On.My.Shoulders.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x08.Raging.Bender.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x09.A.Bicyclops.Built.For.Two.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x10.A.Clone.Of.My.Own.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x11.How.Hermes.Requisitioned.His.Groove.Back.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x12.The.Deep.South.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x13.Bender.Gets.Made.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x14.Mother's.Day.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x15.The.Problem.With.Popplers.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x16.Anthology.Of.Interest.I.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x17.War.Is.The.H-Word.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x18.The.Honking.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.2x19.The.Cryonic.Woman.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.Extras.-.Deleted.Scenes.(Part.1).DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.Extras.-.Deleted.Scenes.(Part.2).DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |   `-- Futurama.Extras.-.Why.Must.I.Be.A.Crustacean.In.Love.Animatic.DVDRiP-frankysan.[tvu.org.ru].ogm
+|   |-- Season 3
+|   |   |-- Futurama.3x01.Amazon.Women.In.The.Mood.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x02.Parasites.Lost.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x03.A.Tale.Of.Two.Santas.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x04.Luck.Of.The.Fryrish.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x05.The.Birdbot.Of.Ice-Catraz.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x06.Bendless.Love.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x07.The.Day.The.Earth.Stood.Stupid.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x08.Thats.Lobstertainment.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x09.The.Cyber.House.Rules.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x10.Where.The.Buggalo.Roam.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x11.Insane.In.The.Mainframe.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x12.The.Route.Of.All.Evil.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x13.Bendin.In.The.Wind.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x14.Time.Keeps.On.Slipping.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x15.I.Dated.A.Robot.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x16.A.Leela.Of.Her.Own.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x17.A.Pharaoh.To.Remember.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x18.Anthology.Of.Interest.II.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x19.Roswell.That.Ends.Well.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x20.Godfellas.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x21.Future.Stock.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.3x22.30.Percent.Iron.Chef.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.S03.Bonus.-.3D.Models.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.S03.Bonus.-.Anthology.Of.Interest.II.Animatic.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.S03.Bonus.-.Deleted.Scenes.Part.1.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.S03.Bonus.-.Deleted.Scenes.Part.2.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.S03.Bonus.-.Deleted.Scenes.Part.3.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.S03.Bonus.-.Game.Trailer.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   |-- Futurama.S03.Bonus.-.Season.2.DVD.Trailer.DVDRip-frankysan.[tvu.org.ru].ogm
+|   |   `-- Futurama.S03.Bonus.-.Tale.Of.Two.Santas.Introduction.DVDRip-frankysan.[tvu.org.ru].ogm
+|   `-- Season 4
+|       |-- Futurama.4x01.Kif.Gets.Knocked.Up.A.Notch.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x02.Leelas.Homeworld.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x03.Love.And.Rocket.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x04.Less.Than.Hero.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x05.A.Taste.Of.Freedom.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x06.Bender.Should.Not.Be.Allowed.On.TV.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x07.Jurassic.Bark.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x08.Crimes.Of.The.Hot.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x09.Teenage.Mutant.Leelas.Hurdles.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x10.The.Why.Of.Fry.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x11.Where.No.Fan.Has.Gone.Before.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x12.The.Sting.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x13.Bend.Her.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x14.Obsoletely.Fabulous.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x15.The.Farnsworth.Parabox.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x16.Three.Hundred.Big.Boys.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x17.Spanish.Fry.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.4x18.The.Devils.Hands.Are.Idle.Playthings.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.Extras-.Obsoletely.Fabulous.Animatic.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.Extras.-.3D.Models.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.Extras.-.Cast.&.Crew.Interviews.DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.Extras.-.Deleted.Scenes.(Part.1).DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.Extras.-.Deleted.Scenes.(Part.2).DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.Extras.-.Deleted.Scenes.(Part.3).DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.Extras.-.Deleted.Scenes.(Part.4).DVDRip-frankysan.[tvu.org.ru].ogm
+|       |-- Futurama.Extras.-.Secret.Alien.Message.Unused.Captions.The.Devils.Hands.Are.Idle.Playthings.Table.Read.DVDRip-frankysan.[tvu.org.ru].zip
+|       `-- Futurama.Extras.-.Trailer.DVDRip-frankysan.[tvu.org.ru].ogm
+|-- Hanada Shounen-shi
+|   |-- Hanada_Shounen-shi_-_01_-_The_Beginning_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_02_-_The_plea_of_Yukie`s_ghost_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_03_-_Hanada_Jiro_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_04_-_The_house_where_the_sunflower_blooms_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_05_-_Old_Dick_Grandpa_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_06_-_Kei-chan_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_07_-_Pork_chops_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_08_-_Crying_in_Breasts_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_09_-_Madame_Katherine_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_10_-_Family_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_11_-_The_Biggest_Crisis_of_my_Life_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_12_-_Something_precious_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_13_-_A_Partner_After_13_Years_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_14_-_Amanojaku_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_15_-_Gonpachi_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_16_-_Hana-san_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_17_-_The_ghost_under_the_cherry_tree_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_18_-_Promise_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_19_-_The_first_melon_of_the_harvest_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_20_-_Christmas_present_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_21_-_On_a_Snowy_Night_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_22_-_Rinko_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_23_-_Evening_chores_-_[Z-T](dub.sub_ja.fr).avi
+|   |-- Hanada_Shounen-shi_-_24_-_Mother_and_Child_Saint_Protector_-_[Z-T](dub.sub_ja.fr).avi
+|   `-- Hanada_Shounen-shi_-_25_-_Dogtooth_violet_flowers_-_[Z-T](dub.sub_ja.fr).avi
+|-- Heroes
+|   |-- Heroes Unmasked
+|   |   |-- Heroes.Unmasked.S01E01.HDTV.XviD-PVR.avi
+|   |   |-- Heroes.Unmasked.S01E02.HDTV.XviD-BiA.avi
+|   |   |-- Heroes.Unmasked.S01E03.The.Dreamer.HDTV.XviD-BiA.avi
+|   |   `-- Heroes.Unmasked.S01E04.Hiro.Worship.HDTV.XviD-BiA.avi
+|   `-- Season 2
+|       |-- Heroes - 02x03 - Kindred (Espa\303\261ol).srt
+|       |-- Heroes - 02x03 - Kindred.srt
+|       |-- Heroes.2x01.Four.Months.Later.HDTV-XOR.[tvu.org.ru].English.srt
+|       |-- Heroes.2x01.Four.Months.Later.HDTV-XOR.[tvu.org.ru].Fran\303\247ais.srt
+|       |-- Heroes.2x01.Four.Months.Later.HDTV-XOR.[tvu.org.ru].avi
+|       |-- Heroes.2x02.Lizards.HDTV-XOR.[tvu.org.ru].English.srt
+|       |-- Heroes.2x02.Lizards.HDTV-XOR.[tvu.org.ru].avi
+|       |-- Heroes.2x03.Kindred.HDTV-HiQT.[tvu.org.ru].avi
+|       |-- Heroes.2x03.Le.Clan.ENG.-.sub.FR.HDTV-Juanito.[tvu.org.ru].avi
+|       |-- Heroes.2x04.The.Kindness.Of.Strangers.HDTV-LOL.[tvu.org.ru].avi
+|       |-- Heroes.2x04.The.Kindness.Of.Strangers.HDTV-LOL.[tvu.org.ru].srt
+|       |-- Heroes.2x05.Fight.Or.Flight.HDTV-LOL.[tvu.org.ru].avi
+|       |-- Heroes.2x05.Fight.Or.Flight.HDTV-LOL.[tvu.org.ru].srt
+|       |-- Heroes.2x06.The.Line.HDTV-LOL.[tvu.org.ru].avi
+|       |-- Heroes.2x06.The.Line.HDTV-LOL.[tvu.org.ru].srt
+|       |-- Heroes.2x07.Out.Of.Time.HDTV-LOL.[tvu.org.ru].avi
+|       |-- Heroes.2x07.Out.Of.Time.HDTV-LOL.[tvu.org.ru].srt
+|       |-- Heroes.2x08.Four.Months.Ago.HDTV-LOL.[tvu.org.ru].avi
+|       |-- Heroes.2x08.Four.Months.Ago.HDTV-LOL.[tvu.org.ru].srt
+|       |-- Heroes.2x09.Cautionary.Tales.HDTV-LOL.[tvu.org.ru].avi
+|       |-- Heroes.2x09.Cautionary.Tales.HDTV-LOL.[tvu.org.ru].srt
+|       |-- Heroes.2x10.Truth.And.Consequences.HDTV-LOL.[tvu.org.ru].English.srt
+|       |-- Heroes.2x10.Truth.And.Consequences.HDTV-LOL.[tvu.org.ru].Fran\303\247ais.srt
+|       |-- Heroes.2x10.Truth.And.Consequences.HDTV-LOL.[tvu.org.ru].avi
+|       |-- Heroes.2x11.Powerless.HDTV-LOL.[tvu.org.ru].English.srt
+|       |-- Heroes.2x11.Powerless.HDTV-LOL.[tvu.org.ru].Fran\303\247ais.srt
+|       `-- Heroes.2x11.Powerless.HDTV-LOL.[tvu.org.ru].avi
+|-- House
+|   |-- Season 1
+|   |   |-- House.1x01.Pilot.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x01.Pilot.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x02.Paternity.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x02.Paternity.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x03.Occams.Razor.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x03.Occams.Razor.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x04.Maternity.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x04.Maternity.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x05.Damned.If.You.Do.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x05.Damned.If.You.Do.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x06.The.Socratic.Method.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x06.The.Socratic.Method.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x07.Fidelity.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x07.Fidelity.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x08.Poison.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x08.Poison.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x09.DNR.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x09.DNR.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x10.Histories.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x10.Histories.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x11.Detox.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x11.Detox.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x12.Sports.Medicine.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x12.Sports.Medicine.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x13.Cursed.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x13.Cursed.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x14.Control.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x14.Control.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x15.Mob.Rules.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x15.Mob.Rules.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x16.Heavy.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x16.Heavy.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x17.Role.Model.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x17.Role.Model.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x18.Babies.&.Bathwater.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x18.Babies.&.Bathwater.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x19.Kids.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x19.Kids.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x20.Love.Hurts.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x20.Love.Hurts.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x21.Three.Stories.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x21.Three.Stories.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.1x22.The.Honeymoon.FoV.DVD.[tvu.org.ru].English.srt
+|   |   |-- House.1x22.The.Honeymoon.FoV.DVD.[tvu.org.ru].avi
+|   |   |-- House.Eng,.Esp.&.Fra.Subs.Velvet.DVD.[tvu.org.ru].rar
+|   |   |-- House.English.Subtitles.FoV.DVD.[tvu.org.ru].rar
+|   |   |-- House.Extra.Casting.Session.With.Hugh.Laurie.CRT.DVD.[tvu.org.ru].avi
+|   |   |-- House.Extra.Dr.House.CRT.DVD.[tvu.org.ru].avi
+|   |   |-- House.Extra.House-isms.CRT.DVD.[tvu.org.ru].avi
+|   |   |-- House.Extra.Medical.Cases.CRT.DVD.[tvu.org.ru].avi
+|   |   |-- House.Extra.Set.Tour.CRT.DVD.[tvu.org.ru].avi
+|   |   `-- House.Extra.The.Concept.CRT.DVD.[tvu.org.ru].avi
+|   |-- Season 2
+|   |   |-- House - 2x16 - Safe.avi
+|   |   |-- House 2x11 - Need to Know.srt
+|   |   |-- House 2x12 - Distractions.srt
+|   |   |-- House 2x13 - Skin Deep.srt
+|   |   |-- House 2x14 - Sex Kills.srt
+|   |   |-- House 2x15 - Clueless.srt
+|   |   |-- House 2x16 - Safe.srt
+|   |   |-- House 2x16 - Safe_1.srt
+|   |   |-- House 2x17 - All In.srt
+|   |   |-- House 2x18 - Sleeping Dogs Lie.srt
+|   |   |-- House 2x19 - House Vs God.srt
+|   |   |-- House 2x20 - Euphoria (1).srt
+|   |   |-- House 2x21 - Euphoria (2).srt
+|   |   |-- House 2x22 - Forever.srt
+|   |   |-- House 2x23 - Who Is Your Daddy.srt
+|   |   |-- House 2x24 - No Reason.srt
+|   |   |-- House.2x01.Acceptance.DVDRiP.iNTERNAL-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x01.Acceptance.DVDRiP.iNTERNAL-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x01.Acceptance.DVDRiP.iNTERNAL-FoV.[tvu.org.ru].sub
+|   |   |-- House.2x02.Autopsy.DVDRiP-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x02.Autopsy.DVDRiP-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x02.Autopsy.DVDRiP-FoV.[tvu.org.ru].sub
+|   |   |-- House.2x03.Humpty.Dumpty.DVDRiP-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x03.Humpty.Dumpty.DVDRiP-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x03.Humpty.Dumpty.DVDRiP-FoV.[tvu.org.ru].sub
+|   |   |-- House.2x04.TB.Or.Not.TB.DVDRiP-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x04.TB.Or.Not.TB.DVDRiP-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x04.TB.Or.Not.TB.DVDRiP-FoV.[tvu.org.ru].sub
+|   |   |-- House.2x05.Daddy's.Boy.DVDRiP-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x05.Daddy's.Boy.DVDRiP-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x05.Daddy's.Boy.DVDRiP-FoV.[tvu.org.ru].sub
+|   |   |-- House.2x06.Spin.DVDRiP-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x06.Spin.DVDRiP-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x06.Spin.DVDRiP-FoV.[tvu.org.ru].sub
+|   |   |-- House.2x07.Hunting.DVDRiP-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x07.Hunting.DVDRiP-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x07.Hunting.DVDRiP-FoV.[tvu.org.ru].sub
+|   |   |-- House.2x08.The.Mistake.DVDRiP-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x08.The.Mistake.DVDRiP-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x08.The.Mistake.DVDRiP-FoV.[tvu.org.ru].sub
+|   |   |-- House.2x09.Deception.DVDRiP-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x09.Deception.DVDRiP-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x09.Deception.DVDRiP-FoV.[tvu.org.ru].sub
+|   |   |-- House.2x10.Failure.To.Communicate.DVDRiP-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x10.Failure.To.Communicate.DVDRiP-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x10.Failure.To.Communicate.DVDRiP-FoV.[tvu.org.ru].sub
+|   |   |-- House.2x11.Need.To.Know.DVDRiP-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x11.Need.To.Know.DVDRiP-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x11.Need.To.Know.DVDRiP-FoV.[tvu.org.ru].sub
+|   |   |-- House.2x12.Distractions.DVDRiP-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x12.Distractions.DVDRiP-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x12.Distractions.DVDRiP-FoV.[tvu.org.ru].sub
+|   |   |-- House.2x13.Skin.Deep.DVDRiP-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x13.Skin.Deep.DVDRiP-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x13.Skin.Deep.DVDRiP-FoV.[tvu.org.ru].sub
+|   |   |-- House.2x14.Sex.Kills.DVDRiP-FoV.[tvu.org.ru].English.srt
+|   |   |-- House.2x14.Sex.Kills.DVDRiP-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x15.Clueless.DVDRiP-FoV.[tvu.org.ru].English.srt
+|   |   |-- House.2x15.Clueless.DVDRiP-FoV.[tvu.org.ru].Espa\303\261ol.srt
+|   |   |-- House.2x15.Clueless.DVDRiP-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x16.Safe.DVDRiP-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x17.All.In.DVDRiP.REPACK-FoV.[tvu.org.ru].English_notsync.srt
+|   |   |-- House.2x17.All.In.DVDRiP.REPACK-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x18.Sleeping.Dogs.Lie.DVDRiP.REPACK-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x19.House.Vs.God.DVDRiP.REPACK-FoV.[tvu.org.ru].English_notsync.srt
+|   |   |-- House.2x19.House.Vs.God.DVDRiP.REPACK-FoV.[tvu.org.ru].Espa\303\261ol.srt
+|   |   |-- House.2x19.House.Vs.God.DVDRiP.REPACK-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x20.Euphoria.Part.1.DVDRiP.REPACK-FoV.[tvu.org.ru].English_notsync.srt
+|   |   |-- House.2x20.Euphoria.Part.1.DVDRiP.REPACK-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x21.Euphoria.Part.2.DVDRiP.iNTERNAL-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x21.Euphoria.Part.2.DVDRiP.iNTERNAL-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x21.Euphoria.Part.2.DVDRiP.iNTERNAL-FoV.[tvu.org.ru].sub
+|   |   |-- House.2x22.Forever.DVDRiP.iNTERNAL-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x22.Forever.DVDRiP.iNTERNAL-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x22.Forever.DVDRiP.iNTERNAL-FoV.[tvu.org.ru].sub
+|   |   |-- House.2x23.Who's.Your.Daddy.DVDRiP.iNTERNAL-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x23.Who's.Your.Daddy.DVDRiP.iNTERNAL-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x23.Who's.Your.Daddy.DVDRiP.iNTERNAL-FoV.[tvu.org.ru].sub
+|   |   |-- House.2x24.No.Reason.DVDRiP.iNTERNAL-FoV.[tvu.org.ru].avi
+|   |   |-- House.2x24.No.Reason.DVDRiP.iNTERNAL-FoV.[tvu.org.ru].idx
+|   |   |-- House.2x24.No.Reason.DVDRiP.iNTERNAL-FoV.[tvu.org.ru].sub
+|   |   |-- House.S02.Extras.-.An.Evening.With.House.DVDRiP-iND.[tvu.org.ru].avi
+|   |   |-- House.S02.Extras.-.Blooper.Reel.DVDRiP-iND.[tvu.org.ru].avi
+|   |   |-- House.S02.Extras.-.Daddy's.Boy.(Alternate.Scene).DVDRiP-iND.[tvu.org.ru].avi
+|   |   |-- House.S02.Extras.-.It.Could.Be.Lupus.DVDRiP-iND.[tvu.org.ru].avi
+|   |   |-- House.S02.Extras.-.Sleeping.Dogs.Lie.(Alternate.Scene).DVDRiP-iND.[tvu.org.ru].avi
+|   |   |-- House.S02.Subpack.DVDRiP-FoV.[tvu.org.ru].rar
+|   |   |-- House.[2x16].Safe.(english.sub).[found.via.www.FileDonkey.com].srt
+|   |   |-- NB Subtitles.txt
+|   |   |-- house.season2.subpack_dvdrip-fov.nfo
+|   |   |-- house.season2.subpack_dvdrip-fov.r00
+|   |   |-- house.season2.subpack_dvdrip-fov.rar
+|   |   `-- house.season2.subpack_dvdrip-fov.sfv
+|   |-- Season 3
+|   |   |-- House.3x01.Meaning.-.sub.FR.HDTV-EMENOU.[tvu.org.ru].avi
+|   |   |-- House.3x02.Cane.&.Able.-.sub.FR.HDTV-EMENOU.[tvu.org.ru].avi
+|   |   |-- House.3x03.Informed.Consent.-.sub.FR.HDTV-EMENOU.[tvu.org.ru].avi
+|   |   |-- House.3x04.Lines.In.The.Sand.-.sub.FR.HDTV-EMENOU.[tvu.org.ru].avi
+|   |   |-- House.3x05.Fools.For.Love.-.sub.FR.HDTV-EMENOU.[tvu.org.ru].avi
+|   |   |-- House.3x06.Que.Ser\303\241.Ser\303\241.-.sub.FR.HDTV-EMENOU.[tvu.org.ru].avi
+|   |   |-- House.3x07.Son.Of.Coma.Guy.-.sub.FR.HDTV-EMENOU.[tvu.org.ru].avi
+|   |   |-- House.3x08.Whac-A-Mole.-.sub.FR.HDTV-EMENOU.[tvu.org.ru].avi
+|   |   |-- House.3x09.Finding.Judas.-.sub.FR.HDTV-EMENOU.[tvu.org.ru].avi
+|   |   |-- House.3x10.Merry.Little.Christmas.-.sub.FR.HDTV-EMENOU.[tvu.org.ru].avi
+|   |   |-- House.3x11.Words.And.Deeds.-.sub.FR.HDTV-EMENOU.[tvu.org.ru].avi
+|   |   |-- House.3x12.One.Day.One.Room.-.sub.FR.HDTV-EMENOU.[tvu.org.ru].avi
+|   |   |-- House.3x13.Needle.In.A.Haystack.-.sub.FR.HDTV-EMENOU.[tvu.org.ru].avi
+|   |   |-- House.3x14.Insensitive.-.sub.FR.HDTV-EMENOU.[tvu.org.ru].avi
+|   |   |-- House.3x15.Half-Wit.-.sub.FR.HDTV-EMENOU.[tvu.org.ru].avi
+|   |   |-- House.3x16.Top.Secret.HDTV-LOL.[tvu.org.ru].English.srt
+|   |   |-- House.3x16.Top.Secret.HDTV-LOL.[tvu.org.ru].Fran\303\247ais.srt
+|   |   |-- House.3x16.Top.Secret.HDTV-LOL.[tvu.org.ru].avi
+|   |   |-- House.3x17.Fetal.Position.HDTV-XOR.[tvu.org.ru].English.srt
+|   |   |-- House.3x17.Fetal.Position.HDTV-XOR.[tvu.org.ru].Fran\303\247ais.srt
+|   |   |-- House.3x17.Fetal.Position.HDTV-XOR.[tvu.org.ru].avi
+|   |   |-- House.3x18.Airborne.HDTV-LOL.[tvu.org.ru].English.srt
+|   |   |-- House.3x18.Airborne.HDTV-LOL.[tvu.org.ru].Fran\303\247ais.srt
+|   |   |-- House.3x18.Airborne.HDTV-LOL.[tvu.org.ru].avi
+|   |   |-- House.3x19.Act.Your.Age.HDTV-XOR.[tvu.org.ru].English.srt
+|   |   |-- House.3x19.Act.Your.Age.HDTV-XOR.[tvu.org.ru].Fran\303\247ais.srt
+|   |   |-- House.3x19.Act.Your.Age.HDTV-XOR.[tvu.org.ru].avi
+|   |   |-- House.3x20.House.Training.HDTV-LOL.[tvu.org.ru].English.srt
+|   |   |-- House.3x20.House.Training.HDTV-LOL.[tvu.org.ru].Fran\303\247ais.srt
+|   |   |-- House.3x20.House.Training.HDTV-LOL.[tvu.org.ru].avi
+|   |   |-- House.3x21.Family.HDTV-LOL.[tvu.org.ru].English.srt
+|   |   |-- House.3x21.Family.HDTV-LOL.[tvu.org.ru].avi
+|   |   |-- House.3x22.Resignation.HDTV.PROPER-XOR.[tvu.org.ru].English.srt
+|   |   |-- House.3x22.Resignation.HDTV.PROPER-XOR.[tvu.org.ru].avi
+|   |   |-- House.3x23.The.Jerk.HDTV-LOL.[tvu.org.ru].English.srt
+|   |   |-- House.3x23.The.Jerk.HDTV-LOL.[tvu.org.ru].avi
+|   |   |-- House.3x24.Human.Error.HDTV-NoTV.[tvu.org.ru].English.srt
+|   |   `-- House.3x24.Human.Error.HDTV-NoTV.[tvu.org.ru].avi
+|   `-- Season 4
+|       |-- House.4x01.Alone.HDTV-Caph.[tvu.org.ru].English.srt
+|       |-- House.4x01.Alone.HDTV-Caph.[tvu.org.ru].avi
+|       |-- House.4x02.The.Right.Stuff.HDTV-XOR.[tvu.org.ru].English.srt
+|       |-- House.4x02.The.Right.Stuff.HDTV-XOR.[tvu.org.ru].avi
+|       |-- House.4x03.97.Seconds.HDTV-2HD.[tvu.org.ru].English.srt
+|       |-- House.4x03.97.Seconds.HDTV-2HD.[tvu.org.ru].avi
+|       |-- House.4x04.Guardian.Angels.HDTV-LOL.[tvu.org.ru].English.srt
+|       |-- House.4x04.Guardian.Angels.HDTV-LOL.[tvu.org.ru].avi
+|       |-- House.4x05.Mirror.Mirror.HDTV-LOL.[tvu.org.ru].English.srt
+|       |-- House.4x05.Mirror.Mirror.HDTV-LOL.[tvu.org.ru].avi
+|       |-- House.4x06.Whatever.It.Takes.HDTV-LOL.[tvu.org.ru].English.srt
+|       |-- House.4x06.Whatever.It.Takes.HDTV-LOL.[tvu.org.ru].avi
+|       |-- House.4x07.Ugly.HDTV-LOL.[tvu.org.ru].English.srt
+|       |-- House.4x07.Ugly.HDTV-LOL.[tvu.org.ru].avi
+|       |-- House.4x08.You.Don't.Want.To.Know.HDTV-LOL.[tvu.org.ru].English.srt
+|       |-- House.4x08.You.Don't.Want.To.Know.HDTV-LOL.[tvu.org.ru].avi
+|       |-- House.4x09.Games.HDTV-LOL.[tvu.org.ru].English.srt
+|       |-- House.4x09.Games.HDTV-LOL.[tvu.org.ru].avi
+|       |-- House.4x10.It's.A.Wonderful.Lie.HDTV-LOL.[tvu.org.ru].English.srt
+|       |-- House.4x10.It's.A.Wonderful.Lie.HDTV-LOL.[tvu.org.ru].English_upper.srt
+|       |-- House.4x10.It's.A.Wonderful.Lie.HDTV-LOL.[tvu.org.ru].avi
+|       |-- House.4x11.Frozen.HDTV-LOL.[tvu.org.ru].English.srt
+|       |-- House.4x11.Frozen.HDTV-LOL.[tvu.org.ru].avi
+|       |-- House.4x12.Don't.Ever.Change.HDTV-LOL.[tvu.org.ru].English.srt
+|       |-- House.4x12.Don't.Ever.Change.HDTV-LOL.[tvu.org.ru].avi
+|       |-- House.4x13.No.More.Mr.Nice.Guy.HDTV.XviD-XOR.[tvu.org.ru].English.srt
+|       |-- House.4x13.No.More.Mr.Nice.Guy.HDTV.XviD-XOR.[tvu.org.ru].avi
+|       |-- House.4x14.Living.The.Dream.HDTV.XviD-NoTV.[tvu.org.ru].English.srt
+|       |-- House.4x14.Living.The.Dream.HDTV.XviD-NoTV.[tvu.org.ru].avi
+|       |-- House.4x15.House's.Head.HDTV.XviD-0TV.[tvu.org.ru].English.srt
+|       |-- House.4x15.House's.Head.HDTV.XviD-0TV.[tvu.org.ru].Espa\303\261ol.srt
+|       |-- House.4x15.House's.Head.HDTV.XviD-0TV.[tvu.org.ru].avi
+|       |-- House.4x16.Wilson's.Heart.HDTV.XviD-LOL.[tvu.org.ru].English.srt
+|       |-- House.4x16.Wilson's.Heart.HDTV.XviD-LOL.[tvu.org.ru].Espa\303\261ol.srt
+|       `-- House.4x16.Wilson's.Heart.HDTV.XviD-LOL.[tvu.org.ru].avi
+|-- Kaamelott
+|   |-- Kaamelott - Livre IV - 2006 - 10 Episodes - (011 a 020 sur 100) - TNTRiP.By -=KRAPUL=-.avi
+|   |-- Kaamelott - Livre IV - 2006 - 10 Episodes - (041 a 050 sur 100) - TNTRiP.By -=KRAPUL=-.avi
+|   |-- Kaamelott - Livre IV - 2006 - 10 Episodes - (061 a 070 sur 100) - TNTRiP.By -=KRAPUL=-.avi
+|   |-- Kaamelott - Livre IV - 2006 - 10 Episodes - (071 a 080 sur 100) - TNTRiP.By -=KRAPUL=-.avi
+|   |-- Kaamelott - Livre IV - 2006 - 10 Episodes - (091 a 100 sur 100) - TNTRiP.By -=KRAPUL=-.avi
+|   |-- Kaamelott - Livre V - 08 - Le Periple.avi
+|   |-- Kaamelott - Livre V - 09 - La Demission.avi
+|   |-- Kaamelott - Livre V - 10 - Les Recruteurs - Tntrip By Slurm.avi
+|   |-- Kaamelott - Livre V - 11 - Hurlements - Tntrip by Slurm-.avi
+|   |-- Kaamelott - Livre V - 12 - La roche et le fer -Tntrip by Slurm.avi
+|   |-- Kaamelott - Livre V - 13 - Les Dauphins - Tntrip by Slurm.avi
+|   |-- Kaamelott - Livre V - 14 - Vae Soli ! - Tntrip by Slurm.avi
+|   |-- Kaamelott - Livre V - 15 - Les Aquitains - Tntrip by Slurm.avi
+|   |-- Kaamelott - Livre V - 16 - Les Fruits D'Hiver - Retaillage par Slurm.avi
+|   |-- Kaamelott - Livre V - Ep 02 - Miserere Nobis.avi
+|   |-- Kaamelott - Livre V - Ep 23 - Le Forfait.avi
+|   |-- Kaamelott - Livre V - Second Volet - HD 704x396 Xvid 2 pass - Son 5.1 - TntRip by Slurm.avi
+|   |-- Kaamelott Livre3 Tome1 Dvdrip Fr By Cooli.avi
+|   `-- Kaamelott Livre3 Tome2 Dvdrip Fr By Cooli.avi
+|-- Legend of Zelda
+|   |-- Legend.Of.Zelda,.The.1x01.Le.Si\303\250ge.-.sub.FR-VALINOR-FANSUB.[tvu.org.ru].avi
+|   |-- Legend.Of.Zelda,.The.1x01.The.Ringer.DVDRiP-SAiNTS.[tvu.org.ru].avi
+|   |-- Legend.Of.Zelda,.The.1x02.Cold.Spells.DVDRiP-SAiNTS.[tvu.org.ru].avi
+|   |-- Legend.Of.Zelda,.The.1x02.Le.Chant.De.La.Licorne.-.sub.FR-VALINOR-FANSUB.[tvu.org.ru].avi
+|   |-- Legend.Of.Zelda,.The.1x03.Embrasse...et.Dit.-.sub.FR-VALINOR-FANSUB.[tvu.org.ru].avi
+|   |-- Legend.Of.Zelda,.The.1x03.The.White.Knight.DVDRiP-SAiNTS.[tvu.org.ru].avi
+|   |-- Legend.Of.Zelda,.The.1x04.Kiss.'N.Tell.DVDRiP-SAiNTS.[tvu.org.ru].avi
+|   |-- Legend.Of.Zelda,.The.1x05.Sing.For.The.Unicorn.DVDRiP-SAiNTS.[tvu.org.ru].avi
+|   |-- Legend.Of.Zelda,.The.1x06.That.Sinking.Feeling.DVDRiP-SAiNTS.[tvu.org.ru].avi
+|   |-- Legend.Of.Zelda,.The.1x07.Doppelganger.DVDRiP-SAiNTS.[tvu.org.ru].avi
+|   |-- Legend.Of.Zelda,.The.1x08.Underworld.Connections.DVDRiP-SAiNTS.[tvu.org.ru].avi
+|   |-- Legend.Of.Zelda,.The.1x09.Stinging.A.Stinger.DVDRiP-SAiNTS.[tvu.org.ru].avi
+|   |-- Legend.Of.Zelda,.The.1x10.Hitch.In.The.Works.DVDRiP-SAiNTS.[tvu.org.ru].avi
+|   |-- Legend.Of.Zelda,.The.1x11.Fairies.In.The.Spring.DVDRiP-SAiNTS.[tvu.org.ru].avi
+|   |-- Legend.Of.Zelda,.The.1x12.The.Missing.Link.DVDRiP-SAiNTS.[tvu.org.ru].avi
+|   `-- Legend.Of.Zelda,.The.1x13.The.Moblins.Are.Revolting.DVDRiP-SAiNTS.[tvu.org.ru].avi
+|-- Les Shadoks
+|   |-- Les Shadoks - Mythe Ou L\303\251gende.avi
+|   `-- Les_shadoks_no_BU_(1-4).mpg
+|-- Lodoss
+|   |-- Crystania_no_Densetsu_-_1v2_-_The_Cave_of_the_Sealed_-_[Wp](dub.sub_ja.fr).avi
+|   |-- Crystania_no_Densetsu_-_2_-_Resurrection_of_the_God`s_King_-_[Wp](dub.sub_ja.fr).avi
+|   |-- Crystania_no_Densetsu_-_3_-_A_New_Beginning_-_[Wp](dub.sub_ja.fr).avi
+|   |-- Hajimari_no_Boukensha-tachi._Crystania_no_Densetsu_-_1_-_Complete_Movie_-_[a4e](5f678289).ogm
+|   |-- Lodoss-tou_Senki_-_01_-_Prologue_to_the_Legend_-_[zx](45322c5b).ogm
+|   |-- Lodoss-tou_Senki_-_02_-_Blazing_Departure_-_[zx](83060a51).ogm
+|   |-- Lodoss-tou_Senki_-_03_-_The_Black_Knight_-_[zx](540167af).ogm
+|   |-- Lodoss-tou_Senki_-_04_-_The_Grey_Witch_-_[zx](ca034e16).ogm
+|   |-- Lodoss-tou_Senki_-_05_-_The_Desert_King_-_[zx](dd6362ea).ogm
+|   |-- Lodoss-tou_Senki_-_06_-_The_Sword_of_the_Dark_Emperor_-_[zx](38af98cf).ogm
+|   |-- Lodoss-tou_Senki_-_07_-_The_War_of_Heroes_-_[zx](b0b8f84a).ogm
+|   |-- Lodoss-tou_Senki_-_08_-_Requiem_for_Warriors_-_[zx](8fbb93d8).ogm
+|   |-- Lodoss-tou_Senki_-_09_-_The_Scepter_of_Domination_-_[zx](02ef0728).ogm
+|   |-- Lodoss-tou_Senki_-_10_-_The_Demon_Dragon_-_[zx](b79230f5).ogm
+|   |-- Lodoss-tou_Senki_-_11_-_The_Wizard`s_Ambition_-_[zx](e40fea2a).ogm
+|   |-- Lodoss-tou_Senki_-_12_-_Final_Battle!_Marmo_the_Dark_Island_-_[zx](5a0b73e3).ogm
+|   `-- Lodoss-tou_Senki_-_13_-_Lodoss_-_The_Burning_Continent_-_[zx](7dba7be7).ogm
+|-- Murder Princess
+|   |-- Murder Princess 01 {Millenium-Requiem DvD}{B0DAE967}.avi
+|   |-- Murder Princess 02 {Millenium-Requiem DvD}{7F8CE162}.avi
+|   |-- Murder Princess 03 {Millenium-Requiem DvD}{CB83BB4A}.avi
+|   |-- Murder Princess 04v2 {Millenium-Requiem DVD}{E25E8C5E}.avi
+|   |-- Murder Princess 05 {Millenium-Requiem DVD}{0717B0A9}.avi
+|   `-- Murder Princess 06 {Millenium-Requiem DVD}{67EA1AA5}.avi
+|-- Neverwhere
+|   |-- Neverwhere.01.Door.[tvu.org.ru].avi
+|   |-- Neverwhere.02.Knightsbridge.[tvu.org.ru].avi
+|   |-- Neverwhere.03.Earls.Court.To.Islington.[tvu.org.ru].avi
+|   |-- Neverwhere.04.Blackfriars.[tvu.org.ru].avi
+|   |-- Neverwhere.05.Down.Street.[tvu.org.ru].avi
+|   `-- Neverwhere.06.As.Above,.So.Below.[tvu.org.ru].avi
+|-- Noir
+|   |-- [DvD].Noir.-.01.-.Les.Vierges.aux.Mains.Noires.-.Vostfr.avi
+|   |-- [DvD].Noir.-.02.-.Pain.Quotidien.-.Vostfr.avi
+|   |-- [DvD].Noir.-.03.-.Double.Jeu.Meurtrier.-.Vostfr.avi
+|   |-- [DvD].Noir.-.04.-.Le.Bruit.des.Vagues.-.Vostfr.avi
+|   |-- [DvD].Noir.-.05.-.Les.Soldats.-.Vostfr.avi
+|   |-- [DvD].Noir.-.06.-.Chat.Errant.-.Vostfr.avi
+|   |-- [DvD].Noir.-.07.-.Le.Fil.Noir.du.Destin.-.Vostfr.avi
+|   |-- [DvD].Noir.-.08.-.Intoccabile.(Acte.I).-.Vostfr.avi
+|   |-- [DvD].Noir.-.09.-.Intoccabile.(Acte.II).-.Vostfr.avi
+|   |-- [DvD].Noir.-.10.-.Le.Vrai.Noir.-.Vostfr.avi
+|   |-- [DvD].Noir.-.11.-.Th\303\251.au.Clair.de.Lune.-.Vostfr.avi
+|   |-- [DvD].Noir.-.12.-.Mission.Ex\303\251cution.-.Vostfr.avi
+|   |-- [DvD].Noir.-.13.-.Une.Saison.en.Enfer.-.Vostfr.avi
+|   |-- [DvD].Noir.-.14.-.Un.Bouquet.pour.Mireille.-.Vostfr.avi
+|   |-- [DvD].Noir.-.15.-.L'Assassin.au.Regard.Froid.(Acte.I).-.Vostfr.avi
+|   |-- [DvD].Noir.-.16.-.L'Assassin.au.Regard.Froid.(Acte.II).-.Vostfr.avi
+|   |-- [DvD].Noir.-.17.-.Retour.en.Corse.-.Vostfr.avi
+|   |-- [DvD].Noir.-.18.-.Les.T\303\251n\303\250bres.sont.en.Moi.-.Vostfr.avi
+|   |-- [DvD].Noir.-.19.-.Les.Deux.Mains.des.Soldats.-.Vostfr.avi
+|   |-- [DvD].Noir.-.20.-.Les.P\303\251ch\303\251s.Parmis.les.P\303\251ch\303\251s.-.Vostfr.avi
+|   |-- [DvD].Noir.-.21.-.Matin.Sans.Aube.-.Vostfr.avi
+|   |-- [DvD].Noir.-.22.-.La.Fin.du.Voyage.-.Vostfr.avi
+|   |-- [DvD].Noir.-.23.-.La.Fleur.Qui.Reste.-.Vostfr.avi
+|   |-- [DvD].Noir.-.24.-.Sombre.Retour.-.Vostfr.avi
+|   |-- [DvD].Noir.-.25.-.Les.Feux.de.l'Enfer.-.Vostfr.avi
+|   `-- [DvD].Noir.-.26.-.Naissance.-.Vostfr.avi
+|-- Northern Exposure
+|   |-- Northern Exposure - S01E01 - Pilot.avi
+|   |-- Northern Exposure - S01E01 - Pilot.srt
+|   |-- Northern Exposure - S01E02 - Brains Know-How and Native Intelligence.avi
+|   |-- Northern Exposure - S01E02 - Brains Know-How and Native Intelligence.srt
+|   |-- Northern Exposure - S01E03 - Soapy Sanderson.avi
+|   |-- Northern Exposure - S01E03 - Soapy Sanderson.srt
+|   |-- Northern Exposure - S01E04 - Dreams Schemes and Putting Greens.avi
+|   |-- Northern Exposure - S01E04 - Dreams Schemes and Putting Greens.srt
+|   |-- Northern Exposure - S01E05 - Russian Flu.avi
+|   |-- Northern Exposure - S01E05 - Russian Flu.srt
+|   |-- Northern Exposure - S01E06 - Sex Lies and Ed's Tape.avi
+|   |-- Northern Exposure - S01E06 - Sex Lies and Ed's Tape.srt
+|   |-- Northern Exposure - S01E07 - A Kodiak Moment.avi
+|   |-- Northern Exposure - S01E07 - A Kodiak Moment.srt
+|   |-- Northern Exposure - S01E08 - Aurora Borealis.avi
+|   `-- Northern Exposure - S01E08 - Aurora Borealis.srt
+|-- POrca Mis\303\250ria
+|   |-- Porca Mis\303\250ria - 3x10 - L'home invisible (TDTrip catala by XoRdI)(totsrucs).avi
+|   |-- Porca Mis\303\250ria 3x02 En qu\303\250 penses (TDTrip catala by XoRdI)(rucatala).avi
+|   |-- Porca Mis\303\250ria 3x03 La gent no canvia.avi
+|   |-- Porca Mis\303\250ria 3x04 Tu no t'hi fiquis.avi
+|   |-- Porca Mis\303\250ria 3x05 La muntanya m\303\240gica (TDTrip catala by XoRdI)(totsrucs).avi
+|   |-- Porca Mis\303\250ria 3x06 - The truth is out there (TDTrip catal\303\240 by XoRdI)(www.totsrucs.cat).avi
+|   |-- Porca Mis\303\250ria 3x13 El factor sorpresa (TDTrip catal\303\240 by XoRdI)(TotsRucs).avi
+|   |-- Porca Mis\303\250ria [3x07] Amics, amants i altres familiars (TDTrip catal\303\240 by XoRdI)(www.totsrucs.cat).avi
+|   |-- Porca Mis\303\250ria [3x08] Quan es tanca una porta, se n-'obre una altra (DVBRip by DeivitTuste)([TotsRucs.cat).avi
+|   |-- Porca Mis\303\250ria [3x09] L'orgull de l'autor (TDTrip catal\303\240 by XoRdI)(www.totsrucs.cat).avi
+|   |-- Porca Mis\303\250ria [3x11] Fes-te valer (TDTrip catala by XoRdI)(Totsrucs).avi
+|   `-- Porca Mis\303\250ria [3x12] A la deriva (TDTrip catal\303\240 by XoRdI)(Totsrucs.cat).avi
+|-- Paradise Kiss (2005)[1280x720,HDTV,x264] - THORA
+|   |-- Paradise Kiss (2005)[1280x720,HDTV,x264] - THORA.md5
+|   |-- Paradise_Kiss_(2005)[1280x720,HDTV,x264]_-_THORA.nfo
+|   |-- Paradise_Kiss_01_Atelier_(2005)[1280x720,HDTV,x264]_-_THORA.mkv
+|   |-- Paradise_Kiss_02_Illumination_(2005)[1280x720,HDTV,x264]_-_THORA.mkv
+|   |-- Paradise_Kiss_03_Kiss_(2005)[1280x720,HDTV,x264]_-_THORA.mkv
+|   |-- Paradise_Kiss_04_George_(2005)[1280x720,HDTV,x264]_-_THORA.mkv
+|   |-- Paradise_Kiss_05_Mother_(2005)[1280x720,HDTV,x264]_-_THORA.mkv
+|   |-- Paradise_Kiss_06_New_World_(2005)[1280x720,HDTV,x264]_-_THORA.mkv
+|   |-- Paradise_Kiss_07_Butterfly_(2005)[1280x720,HDTV,x264]_-_THORA.mkv
+|   |-- Paradise_Kiss_08_Tokumori_(2005)[1280x720,HDTV,x264]_-_THORA.mkv
+|   |-- Paradise_Kiss_09_Designer_(2005)[1280x720,HDTV,x264]_-_THORA.mkv
+|   |-- Paradise_Kiss_10_Rose_(2005)[1280x720,HDTV,x264]_-_THORA.mkv
+|   |-- Paradise_Kiss_11_Stage_(2005)[1280x720,HDTV,x264]_-_THORA.mkv
+|   `-- Paradise_Kiss_12_Future_(2005)[1280x720,HDTV,x264]_-_THORA.mkv
+|-- Plats bruts
+|   |-- Plats Bruts - 01x01 Tinc pis.avi
+|   |-- Plats Bruts - 01x03 Tinc enveja.avi
+|   |-- Plats Bruts - 01x04 Tinc Una Edat.avi
+|   |-- Plats Bruts - 01x06 Tinc un pare hippy.avi
+|   |-- Plats Bruts - 01x08 Tinc desti.avi
+|   |-- Plats Bruts - 01x10 Tinc Una Fan.avi
+|   |-- Plats Bruts - 01x11 Tinc Problemes Amb La Mama.avi
+|   |-- Plats Bruts - 1.09 Tinc desti (Divx catala)(el_ruc.tripod.com).avi
+|   |-- Plats Bruts 1x07 - Tinc fogots.avi
+|   |-- Plats Bruts 1x13 Tenim Un Amor Comu.avi
+|   |-- Plats.Bruts.-.1.02.-.Tinc.por.(el_ruc.tripod.com)(Divx.5.03.catala).avi
+|   |-- Plats.Bruts.-.1.05.-.Tinc.dubtes.(el_ruc.tripod.com)(Divx.5.03.catala).avi
+|   `-- Plats.Bruts.-.1.12.-.Tinc.problemes.amb.els.papes.(Divx.catala)(el_ruc.tripod.com).avi
+|-- Prison Break
+|   |-- Prison.Break.1x11.And.The.We.Are.7.ENG.-.sub.FR.HDTV-VXZ.[tvu.org.ru].avi
+|   |-- Prison.Break.1x13.End.Of.The.Tunnel-Au.Bout.Du.Tunnel.ENG.-.sub.FR.HDTV.[tvu.org.ru].avi
+|   |-- Prison.Break.1x14.The.Rat.ENG.-.sub.FR.HDTV.[tvu.org.ru].avi
+|   |-- Prison.Break.1x15.By.The.Skin.And.The.Teeth.DVDRip.iNTERNAL-MoMo.[tvu.org.ru].avi
+|   |-- Prison.Break.1x16.Brother's.Keeper.DVDRip.iNTERNAL-MoMo.[tvu.org.ru].avi
+|   |-- Prison.Break.1x17.J-Cat.DVDRip.iNTERNAL-MoMo.[tvu.org.ru].avi
+|   |-- Prison.Break.1x18.Bluff.DVDRip.iNTERNAL-MoMo.[tvu.org.ru].avi
+|   |-- Prison.Break.1x19.The.Key.DVDRip.iNTERNAL-MoMo.[tvu.org.ru].avi
+|   |-- Prison.Break.1x20.Tonight.DVDRip.iNTERNAL-MoMo.[tvu.org.ru].avi
+|   |-- Prison.Break.1x21.Go.DVDRip.iNTERNAL-MoMo.[tvu.org.ru].avi
+|   |-- Prison.Break.1x22.Flight.DVDRip.iNTERNAL-MoMo.[tvu.org.ru].avi
+|   |-- Prison.Break.2x20.Panama.ENG.-.sub.FR.HDTV-Ter77.[tvu.org.ru].avi
+|   |-- Prison.Break.2x21.Fin.Del.Camino.ENG.-.sub.FR.HDTV-Cyrille_ss.[tvu.org.ru].avi
+|   |-- Prison.Break.2x22.Sona.ENG.-.sub.FR.HDTV-ELITE.[tvu.org.ru].avi
+|   |-- Prison.Break.3x01.Orientacion.ENG.-.sub.FR.HDTV.PROPER-ZuBroTeam.[tvu.org.ru].avi
+|   |-- Prison.Break.3x02.Fire.Water.ENG.-.sub.FR.HDTV-ZuBroTeAm.[tvu.org.ru].avi
+|   |-- Prison.Break.3x03.Call.Waiting.ENG.-.sub.FR.HDTV.PROPER-ZuBroTeAm.[tvu.org.ru].avi
+|   |-- Prison.Break.3x04.Good.Fences.ENG.-.sub.FR.HDTV-ZuBroTeAm.[tvu.org.ru].avi
+|   |-- Prison.Break.3x05.Interference.ENG.-.sub.FR.HDTV-ZuBroTeAm.[tvu.org.ru].avi
+|   |-- Prison.Break.3x06.Photo.Finish.HDTV-XOR.[tvu.org.ru].avi
+|   |-- Prison.Break.3x07.Vamonos.HDTV.REPACK-XOR.[tvu.org.ru].avi
+|   |-- Prison.Break.3x08.Bang.And.Burn.ENG.-.sub.FR.HDTV-ELiTE.[tvu.org.ru].avi
+|   |-- Prison.Break.3x09.Boxed.In.ENG.-.sub.FR.HDTV.-ELiTE.[tvu.org.ru].avi
+|   |-- Prison.Break.3x10.Dirt.Nap.ENG.-.sub.FR.HDTV.-ELiTE.[tvu.org.ru].avi
+|   |-- Prison.Break.3x11.Under.And.Out.ENG.-.sub.FR.HDTV.-ELiTE.[tvu.org.ru].avi
+|   |-- Prison.Break.3x12.Hell.Or.High.Water.ENG.-.sub.FR.HDTV.-ELiTE.[tvu.org.ru].avi
+|   `-- Prison.Break.3x13.The.Art.Of.The.Deal.ENG.-.sub.FR.HDTV.-BaLLanTeAm.[tvu.org.ru].avi
+|-- Ren & Stimpy
+|   |-- Ren & Stimpy - Happy Happy Joy Joy.mpeg
+|   |-- Ren And Stimpy - In The Army.avi
+|   |-- Ren And Stimpy - Onward & Upward-Adult Party Cartoon.avi
+|   |-- Ren And Stimpy - Season X (BANNED) - Man's Best Friend.avi
+|   |-- Ren And Stimpy - The Big Shot.mpg
+|   |-- Ren and Stimpy - 1x01 - Stimpy's big day.avi
+|   |-- Ren and Stimpy - Black_hole_[DivX].avi
+|   |-- Ren and Stimpy - Space Madness.avi
+|   `-- Ren and Stimpy - The Boy Who Cried Rat.mpg
+|-- Samurai Champloo
+|   |-- Samurai.Champloo.-.1x01.-.Un.Jour.Plus.T\303\264t.french-japanese.Dl-Mania.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x02.-.Les.Repr\303\251sailles.De.La.Col\303\250re.french-japanese.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x03.-.Cerb\303\250res.\303\240.Louer.(Part.1).french-japanese.Dl-Mania.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x04.-.Cerb\303\250res.\303\240.Louer.(Part.2).french-japanese.Dl-Mania.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x05.-.Anarchie.Artistique.french-japanese.Dl-Mania.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x06.-.La.Recherche.De.L'\303\251tranger.french-japanese.Dl-Mania.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x07.-.Un.Racket.Risqu\303\251.french-japanese.Dl-Mania.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x08.-.L'art.De.L'acc\303\251leration.french-japanese.TKM.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x09.-.Des.Bandits.Dans.Le.Vent.french-japanese.-SeT-.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x10.-.Folie.Mortelle.french-japanese.TKM.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x11.-.Ange.D\303\251chu.french-japanese.Nerae.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x11.-.Ange.D\303\251chu.french-japanese.TKM.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x12.-.Le\303\247ons.Du.Pass\303\251.french-japanese.Nerae.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x13.-.Chemin.Dans.La.Nuit.(Part.1).french-japanese.Nerae.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x14.-.Chemin.Dans.La.Nuit.(Part.2).french-japanese.Nerae.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x15.-.Niquera,.Niquera.Pas.french-japanese.TKM.PROPER.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x16.-.Berceuse.Pour.Un.\303\251chec.(Part.1).french-japanese.Nerae.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x17.-.Berceuse.Pour.Un.\303\251chec.(Part.2).french-japanese.TKM.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x18.-.Episode.18.french-japanese.-SeT-.PROPER.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x19.-.L'union.Impossible.french-japanese.EroGaki-Team.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x20.-.Episode.20.french-japanese.DED.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x21.-.Episode.21.french-japanese.EroGaki-Team.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x22.-.Episode.22.french-japanese.EroGaki-Team.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x23.-.Baseball.Blues.french-japanese.EroGaki-Team.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x24.-.Rencontre.Fugace.(Part.1).french-japanese.EroGaki-Team.[tvu.org.ru].avi
+|   |-- Samurai.Champloo.-.1x25.-.Rencontre.Fugace.(Part.2).french-japanese.EroGaki-Team.[tvu.org.ru].avi
+|   `-- Samurai.Champloo.-.1x26.-.Rencontre.Fugace.(Part.3).french-japanese.EroGaki-Team.[tvu.org.ru].avi
+|-- Samurai Deeper Kyo
+|   |-- Samurai.Deeper.Kyo.1x01.The.Way.To.Armaggedon.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x02.Wanted.(Dead.Or.Alive).Man.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x03.Red.Mirage.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x04.Sneaking.Nightmare.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x05.The.Assassin's.Tears.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x06.The.Duel.Of.Hibiya.Bay.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x07.Keichou.Battle.Royal.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x08.Demon.Spear.Cries.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x09.A.Blind.Of.Smiles.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x10.Cold-blooded.Illusion.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x11.Pitch.Black.Flashback.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x12.The.Boy.Who.Came.From.The.Deep.Forest.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x13.The.Crossing.Souls.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x14.Satan.Once.Again.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x15.Our.Friend,.Red.Tiger.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x16.Perfect.Victory.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x17.The.Secret.Talk.Of.The.Ladies.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x18.The.Nurse.Devil.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x19.Thunderbolt.Attack.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x20.Far.Away,.The.Absolute.Zero.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x21.The.Hellish.Mibu.Castle.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x22.Mechanical.Dolls.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x23.Scorching.Ecstasy.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x24.The.Last.Muramasa.Awakens.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   |-- Samurai.Deeper.Kyo.1x25.One.That.Overcomes.Tachyon.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|   `-- Samurai.Deeper.Kyo.1x26.The.Samurai.Sings.A.Ballad.JP.-.sub.ENG-Anime-Keep.[tvu.org.ru].avi
+|-- Seirei no Moribito
+|   |-- Seirei_no_Moribito_-_01_-_Barusa,_the_Female_Bodyguard_-_[Requiem](bb45cd3a)(dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_02_-_The_Hunter_and_the_Hunted_-_[Requiem](405cae6e)(dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_03_-_A_Fight_to_the_Death_-_[Requiem](354ce435)(dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_04_-_Torogai`s_Writings_-_[Requiem](1054d0e6)(dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_05_-_Secret_Step,_the_Blue_Hand_-_[Requiem](31f9002f)(dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_06_-_It_Dies_in_the_Blue_Fog_-_[Requiem](d30fb187)(dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_07_-_Chagum`s_Decision_-_[Requiem](05a16f6c)(dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_08_-_Swordsmith_-_[Requiem](9428053e)(dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_09_-_Thirsty_Shuga_-_[Requiem](dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_10_-_Hero_and_Soil_-_[Requiem](dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_11_-_Flower_Wine_for_Tanda_-_[Requiem](dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_12_-_Summer_Solstice_Festival_-_[Requiem](dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_13_-_Neither_Man_nor_Tiger_-_[Requiem](dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_14_-_Knot_-_[Requiem](dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_15_-_Premature_Death_-_[Requiem](dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_16_-_In_All_Earnestness_-_[Requiem](dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_17_-_Water-Wheel_Burning_-_[Requiem](dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_18_-_Ancient_Village_-_[Requiem](dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_19_-_Chagum`s_Escape_-_[Requiem](dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_20_-_Trap_-_[Requiem](dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_21_-_Jiguro_Musa_-_[Requiem](dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_22v2_-_Season_of_Awakening_-_[Requiem](dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_23_-_Chasing_after_Sig_Salua_-_[Requiem](dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_24_-_Last_Hope_-_[Requiem](dub.sub_ja.fr).mkv
+|   |-- Seirei_no_Moribito_-_25_-_Banquet_-_[Requiem](dub.sub_ja.fr).mkv
+|   `-- Seirei_no_Moribito_-_26_-_Going_on_a_Journey_-_[Requiem](dub.sub_ja.fr).mkv
+|-- Shingetsutan Tsukihime
+|   |-- Shingetsutan_Tsukihime_-_01_-_Inversion_Impulse_-_[SSP-Corp](31ad7322).mkv
+|   |-- Shingetsutan_Tsukihime_-_02_-_The_Black_Beast_-_[SSP-Corp](f8c5b41c).mkv
+|   |-- Shingetsutan_Tsukihime_-_03_-_Mystic_Eyes_of_Death_Perception_-_[SSP-Corp](f56f8e03).mkv
+|   |-- Shingetsutan_Tsukihime_-_04_-_The_Cradling_Garden_-_[SSP-Corp](aed8b1c4).mkv
+|   |-- Shingetsutan_Tsukihime_-_05_-_A_Bow_Of_The_Sky_-_[SSP-Corp](45bc92b3).mkv
+|   |-- Shingetsutan_Tsukihime_-_06_-_White_Dream_-_[SSP-Corp](68dab0f4).mkv
+|   |-- Shingetsutan_Tsukihime_-_07_-_Blue_Sin_Mark_-_[SSP-Corp](9f16e643).mkv
+|   |-- Shingetsutan_Tsukihime_-_08_-_Origami_-_[SSP-Corp](27023420).mkv
+|   |-- Shingetsutan_Tsukihime_-_09_-_Death_-_[SSP-Corp](27055960).mkv
+|   |-- Shingetsutan_Tsukihime_-_10_-_Vermilion_Crimson_Moon_-_[SSP-Corp](b7255496).mkv
+|   |-- Shingetsutan_Tsukihime_-_11_-_Misfortunate_Night_-_[SSP-Corp](8ea06187).mkv
+|   `-- Shingetsutan_Tsukihime_-_12_-_Lunar_World_-_[SSP-Corp](a3e56b9b).mkv
+|-- Simpsons
+|   |-- Simpsons_-_10x01_-_Lard_Of_The_Dance.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x02_-_The_Wizard_Of_Evergreen_Terrace.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x03_-_Bart_The_Mother.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x04_-_Treehouse_Of_Horror_IX.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x05_-_When_You_Dish_Upon_A_Star.RL.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x06_-_Doh-in_In_The_Wind.RL.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x07_-_Lisa_Gets_An_A.RL.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x08_-_Homer_In_Kidney_Trouble.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x09_-_Mayored_To_The_Mob.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x10_-_Viva_Ned_Flanders.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x11_-_Wild_Barts_Cant_Be_Broken.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x12_-_Sunday_Cruddy_Sunday.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x13_-_Homer_To_The_Max.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x14_-_Im_With_Cupid.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x15_-_Marge_Simpson_In_Screaming_Yellow_Honkers.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x16_-_Make_Room_For_Lisa.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x17_-_Maximum_Homerdrive.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x18_-_Simpsons_Bible_Stories.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x19_-_Mom_And_Pop_Art.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x20_-_The_Old_Man_And_The_C_Student.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x21_-_Monty_Cant_Buy_Me_Love.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x22_-_They_Saved_Lisas_Brain.rl.[www.the-realworld.de].avi
+|   |-- Simpsons_-_10x23_-_Thirty_Minutes_Over_Tokyo.RL.[www.the-realworld.de].avi
+|   |-- The Simpsons - S13E17 - Gump Roast.mpg
+|   |-- The_Simpsons.S08E23.Homers_Enemy.avi
+|   |-- The_Simpsons.S08E24.The_Simpsons_Spin-Off_Showcase.avi
+|   |-- The_Simpsons.S08E25.The_Secret_War_Of_Lisa_Simpson.[rl].smac.ShareReactor.avi
+|   |-- The_Simpsons.S09E25.Natural_Born_Kissers.avi
+|   |-- The_Simpsons_s13e16_-_weekend_at_burnsies.mpg
+|   `-- The_simpsons_s13e18_-_i_am_furious_yellow.mpg
+|-- South Park
+|   |-- Season 11
+|   |   |-- South.Park.11x01.With.Apologies.To.Jesse.Jackson.NoTV.DSR.PROPER.[tvu.org.ru].avi
+|   |   |-- South.Park.11x02.Cartman.Sucks.NoTV.DSR.[tvu.org.ru].avi
+|   |   |-- South.Park.11x03.Lice.Capades.NoTV.DSR.[tvu.org.ru].avi
+|   |   |-- South.Park.11x04.The.Snuke.NoTV.DSR.[tvu.org.ru].avi
+|   |   |-- South.Park.11x05.Fantastic.Easter.Special.CRiMSON.DSR.[tvu.org.ru].avi
+|   |   |-- South.Park.11x06.D-Yikes.NoTV.DSR.[tvu.org.ru].avi
+|   |   |-- South.Park.11x07..Night.Of.The.Living.Homeless.DSR-NoTV.[tvu.org.ru].avi
+|   |   |-- South.Park.11x08.Le.Petit.Tourette.DSR-LOKi.[tvu.org.ru].avi
+|   |   |-- South.Park.11x09.More.Crap.DSR-SYS.[tvu.org.ru].avi
+|   |   |-- South.Park.11x10.Imaginationland.DSR-XOR.[tvu.org.ru].avi
+|   |   |-- South.Park.11x11.Imaginationland.Episode.II.DSR-NoTV.[tvu.org.ru].avi
+|   |   |-- South.Park.11x12.Imaginationland.Episode.III.DSR-NoTV.[tvu.org.ru].avi
+|   |   |-- South.Park.11x13.Guitar.Queer-O.DSR-NoTvCaphCrimsonDotSys.[tvu.org.ru].avi
+|   |   `-- South.Park.11x14.The.List.DSR-NoTV.[tvu.org.ru].avi
+|   `-- Season 12
+|       |-- South.Park.12x01.Tonsil.Trouble.DSR-0TV.[tvu.org.ru].avi
+|       |-- South.Park.12x02.Britney's.New.Look.DSR.XviD-0TV.[tvu.org.ru].avi
+|       |-- South.Park.12x03.Major.Boobage.DSR.XviD-0TV.[tvu.org.ru].avi
+|       |-- South.Park.12x04.Canada.On.Strike.DSR.XviD-0TV.[tvu.org.ru].avi
+|       |-- South.Park.12x05.Eek.A.Penis.REPACK.DSR.XviD-0TV.[tvu.org.ru].avi
+|       |-- South.Park.12x06.Over.Logging.DSR.XviD-0TV.[tvu.org.ru].avi
+|       `-- South.Park.12x07.Super.Fun.Time.REPACK.DSR.XviD-0TV.[tvu.org.ru].avi
+|-- Super Mario Bros
+|   |-- Super.Mario.Bros.1x01.Ne.Fais.Pas.L'oiseau.FR-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x02.Butch.Mario.Et.Luigi.Kid.FR-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x03.Mario.De.Cramalot.FR-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x04.Le.Tapis.Magique.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x05.En.Descendant.La.Rivi\303\250re.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x06.Le.Grand.Gladiateur.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x07.Mario.Et.Le.Haricot.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x08.C'est.Beau.L'amour.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x09.La.Course.Des.BMX.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x10.Deux.Plombiers.Et.Un.Couffin.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x11.Gardez.Les.Au.Frais.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x12.Gare.Aux.Pirates.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x13.Robot.Koopa.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x14.Monsieur.Le.Comte.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x15.La.Fi\303\250vre.De.La.Jungle.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x16.Jusqu'au.Bout.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x17.L'incendie.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x18.Mario.Rit.Jaune.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|   |-- Super.Mario.Bros.1x19.Mario.Et.Juliette.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|   `-- Super.Mario.Bros.1x20.Attention.Sa.Br\303\273le.FR.DVDRip.-Milo-Scorpion.[tvu.org.ru].avi
+|-- Terra E
+|   |-- Terra e - 01 {Requiem}{2400B95D}.avi
+|   |-- Terra e - 02 {Requiem}{76CD27E2}.avi
+|   |-- Terra e - 03 {Requiem}{2A52C78F}.avi
+|   |-- Terra e - 04 {Requiem}{76543980}.avi
+|   |-- Terra e - 05 {Requiem}{24BE81EA}.avi
+|   `-- Terra e - 06 {Requiem}{1F86CA97}.avi
+|-- The IT Crowd
+|   |-- IT.Crowd,.The.1x01.Yesterday's.Jam.DVDRip.PROPER-iNGOT.[tvu.org.ru].English.srt
+|   |-- IT.Crowd,.The.1x01.Yesterday's.Jam.DVDRip.PROPER-iNGOT.[tvu.org.ru].avi
+|   |-- IT.Crowd,.The.1x02.Calamity.Jen.DVDRip.PROPER-iNGOT.[tvu.org.ru].avi
+|   |-- IT.Crowd,.The.1x03.Fifty-Fifty.DVDRip.PROPER-iNGOT.[tvu.org.ru].avi
+|   |-- IT.Crowd,.The.1x04.The.Red.Door.DVDRip.PROPER-iNGOT.[tvu.org.ru].avi
+|   |-- IT.Crowd,.The.1x05.The.Haunting.Of.Bill.Crouse.DVDRip.PROPER-iNGOT.[tvu.org.ru].avi
+|   `-- IT.Crowd,.The.1x06.Aunt.Irma.Visits.DVDRip.PROPER-iNGOT.[tvu.org.ru].avi
+|-- The Wire
+|   |-- The_Wire.102_English.srt
+|   |-- The_Wire.103_English.srt
+|   |-- The_Wire.104_English.srt
+|   |-- The_Wire.105_English.srt
+|   |-- The_Wire.106_English.srt
+|   |-- The_Wire.107_English.srt
+|   |-- The_Wire.108_English.srt
+|   |-- The_Wire.109_English.srt
+|   |-- The_Wire.110_English.srt
+|   |-- The_Wire.111_English.srt
+|   |-- The_Wire.112_English.srt
+|   |-- The_Wire.113_English.srt
+|   |-- Wire,.The.1x01.The.Target.DVDRip-Thomilla.[tvu.org.ru].English.srt
+|   |-- Wire,.The.1x01.The.Target.DVDRip-Thomilla.[tvu.org.ru].avi
+|   |-- Wire,.The.1x02.The.Detail.DVDRip-Thomilla.[tvu.org.ru].avi
+|   |-- Wire,.The.1x03.The.Buys.DVDRip-Thomilla.[tvu.org.ru].avi
+|   |-- Wire,.The.1x04.Old.Cases.DVDRip-Thomilla.[tvu.org.ru].avi
+|   |-- Wire,.The.1x05.The.Pager.DVDRip-Thomilla.[tvu.org.ru].avi
+|   |-- Wire,.The.1x06.The.Wire.DVDRip-Thomilla.[tvu.org.ru].avi
+|   |-- Wire,.The.1x07.One.Arrest.DVDRip-Thomilla.[tvu.org.ru].avi
+|   |-- Wire,.The.1x08.Lessons.DVDRip-Thomilla.[tvu.org.ru].avi
+|   |-- Wire,.The.1x09.Game.Day.DVDRip-Thomilla.[tvu.org.ru].avi
+|   |-- Wire,.The.1x10.The.Cost.DVDRip-Thomilla.[tvu.org.ru].avi
+|   |-- Wire,.The.1x11.The.Hunt.DVDRip-Thomilla.[tvu.org.ru].avi
+|   |-- Wire,.The.1x12.Cleaning.Up.DVDRip-Thomilla.[tvu.org.ru].avi
+|   |-- Wire,.The.1x13.Sentencing.DVDRip-Thomilla.[tvu.org.ru].avi
+|   `-- Wire,.The.English.Subtitle.DVDRip.[tvu.org.ru].rar
+|-- Twin Peaks
+|   |-- Season 1
+|   |   |-- Twin.Peaks.-.1x00.-.Pilot.english.FoV.DVD.iNTERNAL.[tvu.org.ru].avi
+|   |   |-- Twin.Peaks.-.1x00.-.Pilot.english.FoV.DVD.iNTERNAL.[tvu.org.ru].srt
+|   |   |-- Twin.Peaks.-.1x01.-.Traces.To.Nowhere.english.FoV.DVD.iNTERNAL.[tvu.org.ru].avi
+|   |   |-- Twin.Peaks.-.1x01.-.Traces.To.Nowhere.english.FoV.DVD.iNTERNAL.[tvu.org.ru].srt
+|   |   |-- Twin.Peaks.-.1x02.-.Zen.Or.The.Skill.To.Catch.A.Killer.english.FoV.DVD.iNTERNAL.[tvu.org.ru].avi
+|   |   |-- Twin.Peaks.-.1x02.-.Zen.Or.The.Skill.To.Catch.A.Killer.english.FoV.DVD.iNTERNAL.[tvu.org.ru].srt
+|   |   |-- Twin.Peaks.-.1x03.-.Rest.In.Pain.english.FoV.DVD.iNTERNAL.[tvu.org.ru].avi
+|   |   |-- Twin.Peaks.-.1x03.-.Rest.In.Pain.english.FoV.DVD.iNTERNAL.[tvu.org.ru].srt
+|   |   |-- Twin.Peaks.-.1x04.-.The.One-Armed.Man.english.FoV.DVD.iNTERNAL.[tvu.org.ru].avi
+|   |   |-- Twin.Peaks.-.1x04.-.The.One-Armed.Man.english.FoV.DVD.iNTERNAL.[tvu.org.ru].srt
+|   |   |-- Twin.Peaks.-.1x05.-.Coopers.Dreams.english.FoV.DVD.iNTERNAL.[tvu.org.ru].avi
+|   |   |-- Twin.Peaks.-.1x05.-.Coopers.Dreams.english.FoV.DVD.iNTERNAL.[tvu.org.ru].srt
+|   |   |-- Twin.Peaks.-.1x06.-.Realization.Time.english.FoV.DVD.iNTERNAL.[tvu.org.ru].avi
+|   |   |-- Twin.Peaks.-.1x06.-.Realization.Time.english.FoV.DVD.iNTERNAL.[tvu.org.ru].srt
+|   |   |-- Twin.Peaks.-.1x07.-.The.Last.Evening.english.FoV.DVD.iNTERNAL.[tvu.org.ru].avi
+|   |   `-- Twin.Peaks.-.1x07.-.The.Last.Evening.english.FoV.DVD.iNTERNAL.[tvu.org.ru].srt
+|   `-- Season 2
+|       |-- Twin.Peaks.-.2x01.-.May.The.Giant.Be.With.You.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x01.-.May.The.Giant.Be.With.You.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x02.-.Coma.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x02.-.Coma.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x03.-.The.Man.Behind.Glass.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x03.-.The.Man.Behind.Glass.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x04.-.Laura's.Secret.Diary.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x04.-.Laura's.Secret.Diary.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x05.-.The.Orchid's.Curse.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x05.-.The.Orchid's.Curse.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x06.-.Demons.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x06.-.Demons.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x07.-.Lonely.Souls.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x07.-.Lonely.Souls.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x08.-.Drive.With.A.Dead.Girl.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x08.-.Drive.With.A.Dead.Girl.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x09.-.Arbitrary.Law.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x09.-.Arbitrary.Law.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x10.-.Dispute.Between.Brothers.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x10.-.Dispute.Between.Brothers.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x11.-.Masked.Ball.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x11.-.Masked.Ball.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x12.-.The.Black.Widow.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x12.-.The.Black.Widow.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x13.-.Checkmate.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x13.-.Checkmate.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x14.-.Double.Play.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x14.-.Double.Play.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x15.-.Slaves.And.Masters.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x15.-.Slaves.And.Masters.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x16.-.Condemned.Woman.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x16.-.Condemned.Woman.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x17.-.Wounds.And.Scars.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x17.-.Wounds.And.Scars.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x18.-.On.The.Wings.Of.Love.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x18.-.On.The.Wings.Of.Love.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x19.-.Variations.On.Relations.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x19.-.Variations.On.Relations.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x20.-.The.Path.To.The.Black.Lodge.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x20.-.The.Path.To.The.Black.Lodge.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x21.-.Miss.Twin.Peaks.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       |-- Twin.Peaks.-.2x21.-.Miss.Twin.Peaks.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|       |-- Twin.Peaks.-.2x22.-.Beyond.Life.And.Death.english.MEDiEVAL.DVD.[tvu.org.ru].avi
+|       `-- Twin.Peaks.-.2x22.-.Beyond.Life.And.Death.english.MEDiEVAL.DVD.[tvu.org.ru].srt
+|-- Utawarerumono_(2006)_[720p,BluRay,x264]_-_THORA
+|   |-- READ!_Utawarerumono_(2006)_[720p,BluRay,x264]_-_THORA.nfo
+|   |-- Utawarerumono_(2006)_[720p,BluRay,x264]_-_THORA.md5
+|   |-- Utawarerumono_ED_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep01_The_Uninvited_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep02_Ruler_of_the_Wild_Forest_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep03_Violet_and_Amber_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep04_One_Way_Path_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep05_Daughter_of_the_Forest_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep06_Gathering_Force_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep07_Invasion_of_the_Imperial_City_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep08_The_Mediator_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep09_Taboo_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep10_The_Mercenary_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep11_Everlasting_Promise_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep12_Unrest_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep13_A_Bloody_Battle_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep14_The_Ravages_of_War_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep15_End_of_the_Banquet_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep16_At_the_End_of_the_Battle_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep17_The_Young_Sovereign_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep18_The_Rebel_Army_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep19_Farewells_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep20_First_Battle_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep21_The_Great_Seal_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep22_Odious_Pact_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep23_Where_the_Heart_Lies_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep24_On_the_Path_of_Destruction_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep25_Traces_of_an_Ancient_Dream_[720p,BluRay,x264]_-_THORA.mkv
+|   |-- Utawarerumono_Ep26_Him_Whose_Song_is_Sung_[720p,BluRay,x264]_-_THORA.mkv
+|   `-- Utawarerumono_OP_[720p,BluRay,x264]_-_THORA.mkv
+|-- Walt Disney
+|   |-- Bugs.Bunny.-.Bugsy.And.Mugsy.[www.bigernie.jump.to].mpg
+|   |-- Bugs.Bunny.-.The.Grey.Hounded.Hare.[www.bigernie.jump.to].mpg
+|   |-- Bugs.Bunny.-.The.Rabbit.Of.Seville.[www.bigernie.jump.to].mpg
+|   |-- Daffy.Duck.-.Ain't.That.Ducky.[www.bigernie.jump.to].mpg
+|   |-- Donald.Duck.-.Donald.Applecore.[www.bigernie.jump.to].mpg
+|   `-- Donald.Duck.-.Good.Scouts.[www.bigernie.jump.to].avi
+|-- dexter
+|   |-- Dexter 1x10 Seeing Red.srt
+|   |-- Dexter-S01E07-Circle Of Friends-ESP-.srt
+|   |-- Dexter.2x01.It's.Alive!.ENG.-.sub.FR.DVDRip-alf.[tvu.org.ru].avi
+|   |-- Dexter.2x02.Waiting.To.Exhale.ENG.-.sub.FR.DVDRip-alf.[tvu.org.ru].avi
+|   |-- Dexter.2x03.An.Inconvenient.Lie.HDTV-XOR.[tvu.org.ru].avi
+|   |-- Dexter.2x04.See-Through.HDTV-NoTV.[tvu.org.ru].avi
+|   |-- Dexter.2x05.The.Dark.Defender.HDTV-XOR.[tvu.org.ru].avi
+|   |-- Dexter.2x06.Dex.Lies.And.Videotape.HDTV.PROPER-0TV.[tvu.org.ru].avi
+|   |-- Dexter.2x07.That.Night.A.Forest.Grew.HDTV-NoTV.[tvu.org.ru].avi
+|   |-- Dexter.2x08.Morning.Comes.HDTV-XOR.[tvu.org.ru].avi
+|   |-- Dexter.2x09.Resistance.Is.Futile.HDTV-NoTV.[tvu.org.ru].avi
+|   |-- Dexter.2x10.There's.Something.About.Harry.ENG.-.sub.FR.HDTV-AlFleNi.TeaM.[tvu.org.ru].avi
+|   |-- Dexter.2x11.Left.Turn.Ahead.HDTV-XOR.[tvu.org.ru].avi
+|   |-- Dexter.2x12.The.British.Invasion.ENG.-.sub.FR.DVDRip.PREAIR-EMENOU.[tvu.org.ru].avi
+|   |-- Dexter.S01E07.Circle.Of.Friends.HDTV.XviD-LOL.Fran\303\247ais.srt
+|   |-- Dexter.S01E07.Circle.Of.Friends.HDTV.XviD-LOL.avi
+|   |-- Dexter.S01E08.Shrink.Wrap.HDTV.XviD-LOL.avi
+|   |-- Dexter.S01E08.Shrink.Wrap.HDTV.XviD-LOL.srt
+|   |-- Dexter.S01E09.FRENCH.HDTV.XviD-JMT.English.srt
+|   |-- Dexter.S01E09.FRENCH.HDTV.XviD-JMT.avi
+|   |-- Dexter.S01E09.Father.Knows.Best.HDTV.XviD-LOL.srt
+|   |-- Dexter.S01E10.FRENCH.HDTV.XviD-JMT.avi
+|   |-- Dexter.S01E10.HDTV.XviD-LOL-Subs.srt
+|   |-- Dexter.S01E11.Truth.Be.Told.HDTV.XviD-LOL.avi
+|   `-- dexter.s01e12.final-jmt.avi
+|-- ed2k_links
+|   |-- black_lagoon.txt
+|   |-- death_note.txt
+|   |-- el_cazador_de_la_bruja.txt
+|   |-- ergo_proxy.txt
+|   |-- fantastic_children.txt
+|   |-- fullmetal_alchemist.txt
+|   |-- haibane_renmei.txt
+|   |-- lodoss.txt
+|   |-- lodoss.txt~
+|   |-- movies.txt
+|   |-- mushishi.txt
+|   `-- trigun.txt
+`-- weeds
+    |-- Weeds.2x12.Pittsburg.sub.french.Team-VOst.HDTV.[tvu.org.ru].avi
+    |-- Weeds.3x01.Doing.The.Backstroke.ENG.-.sub.FR.DVDRip.PREAIR-V3R.[tvu.org.ru].avi
+    |-- Weeds.3x02.A.Pool.And.His.Money.ENG.-.sub.FR.DVDRip.PREAIR-V3R.[tvu.org.ru].avi
+    |-- Weeds.3x03.The.Brick.Dance.ENG.-.sub.FR.DVDRip.PREAIR-OW.[tvu.org.ru].avi
+    |-- Weeds.3x04.Shit.Highway.ENG.-.sub.FR.DVDRip.PREAIR-OW.[tvu.org.ru].avi
+    |-- Weeds.3x05.Bill.Sussman.ENG.-.sub.FR.HDTV.PROPER-OW.[tvu.org.ru].avi
+    |-- Weeds.3x06.Grasshopper.ENG.-.sub.FR.HDTV-OW.[tvu.org.ru].avi
+    |-- Weeds.3x07.He.Taught.Me.How.To.Drive.By.HDTV-NoTV.[tvu.org.ru].avi
+    |-- Weeds.3x08.The.Two.Mrs.Scottsons.HDTV-XOR.[tvu.org.ru].avi
+    |-- Weeds.3x09.Release.The.Hounds.HDTV-XOR.[tvu.org.ru].avi
+    |-- Weeds.3x10.Roy.Till.Called.HDTV.REPACK-XOR.[tvu.org.ru].avi
+    |-- Weeds.3x11.Cankles.ENG.-.sub.FR.HDTV-EliTE.[tvu.org.ru].avi
+    |-- Weeds.3x12.The.Dark.Time.HDTV-NoTV.[tvu.org.ru].avi
+    |-- Weeds.3x13.Risk.HDTV.REPACK-XOR.[tvu.org.ru].avi
+    |-- Weeds.3x14.Protection.HDTV-NoTV.[tvu.org.ru].avi
+    `-- Weeds.3x15.Go.HDTV-XOR.[tvu.org.ru].avi
+
+70 directories, 1431 files

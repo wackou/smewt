@@ -23,11 +23,9 @@ from PyQt4.QtGui import *
 from PyQt4.QtWebKit import QWebView,  QWebPage
 import sys
 import dbus
-from media.series import view
-from gui.querywidget import QueryWidget
-from gui.resultwidget import ResultWidget
-import config
-
+from smewt import config
+from smewt.media.series import view
+from smewt.gui import QueryWidget, ResultWidget
 
 
 def connectServer():
@@ -44,8 +42,6 @@ def result2objects(headers, rows):
         result.append(r)
     return result
 
-def blouh(ok):
-    print 'blouh = ', ok
 
 class SmewtGui(QMainWindow):
 

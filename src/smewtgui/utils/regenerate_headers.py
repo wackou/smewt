@@ -86,14 +86,14 @@ if __name__ == '__main__':
             source = open(filename).read()
             sourceParts = source.split(license)
 
-            newSource = licenseHeader + license.join(sourceParts[1:])
-
             if len(sourceParts) == 1:
                 # there was no header information present
+                newSource = licenseHeader + sourceParts[0]
                 print 'adding header for:',  filename
                 open(filename,  'w').write(newSource)
             else:
                 # there was a header already present, update it if different
+                newSource = licenseHeader + license.join(sourceParts[1:])
                 if source != newSource:
                     print 'updating header for:',  filename
                     open(filename,  'w').write(newSource)

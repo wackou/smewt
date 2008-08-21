@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Ricard Marxer <email@ricardmarxer.com>
 # Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
@@ -19,16 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4 import QtCore
-
-class Guesser(QtCore.QObject):
-    """Abstract class from which all guessers must inherit.  Guessers are objects that implement a slot called guess(self, mediaObjects) that returns immediately, and begins the process of guessing metadata of the given collection.
-
-    When all guesses are made it emits a signal called guessFinished(guesses) which passes as argument a list of tuples containing the guessed MediaObjects and their associated confidence.
-
-    """
-    def __init__(self):
-        super(Guesser, self).__init__()
-
-    def guess(self, mediaObjects):
-        self.emit(QtCore.SIGNAL('guessFinished()'), mediaObjects)
+class SmewtException(RuntimeError):
+    def __init__(self,  msg):
+        super(SmewtException, self).__init__(msg)
