@@ -105,16 +105,35 @@ class Collection(QObject):
 
     def load(self, filename):
         import cPickle
-        dicts = cPickle.load(open(filename))
 
-        self.media = [ EpisodeObject.fromDict(d) for d in dicts ]
+        try:
+            f = open(filename)
+        except:
+            # if file is not found, just go on with an empty collection
+            print 'WARNING: Collection', filename, 'does not exist'
+            return
+
+        self.media = cPickle.load(f)
+
+        dicts = cPickle.load(f)
+        self.metadata = [ Episode.fromDict(d) for d in dicts ]
+
+        nlinks = cPickle.load(f)
+        for (mn, mdn) in nlinks:
+            self.links += [ (self.media[mn], self.metadata[mdn]) ]
 
     def save(self, filename):
         import cPickle
         f = open(filename, 'w')
         cPickle.dump(self.media, f)
         cPickle.dump([ m.toDict() for m in self.metadata ], f)
+
         # FIXME: cannot dump links correctly, need to use reference
+        nlinks = []
+        for (media, metadata) in self.links:
+            nlinks += [ (self.media.index(media), self.metadata.index(metadata)) ]
+        cPickle.dump(nlinks, f)
+
         f.close()
 
 if __name__ == '__main__':

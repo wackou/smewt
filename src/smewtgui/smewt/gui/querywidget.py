@@ -77,8 +77,8 @@ class QueryWidget(QWidget):
         try:
             self.collection.load(t)
         except:
-            # if file is not found, just go on with an empty collection
             print 'WARNING: Could not load collection', t
+            raise
 
         self.setLayout(layout)
 
