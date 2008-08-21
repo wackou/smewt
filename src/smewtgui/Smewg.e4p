@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2008-08-21, 00:26:59 -->
+<!-- Saved: 2008-08-21, 05:04:36 -->
 <!-- Copyright (C) 2008 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -148,12 +148,6 @@
       <Dir>smewt</Dir>
       <Dir>media</Dir>
       <Dir>series</Dir>
-      <Name>tagger.py</Name>
-    </Source>
-    <Source>
-      <Dir>smewt</Dir>
-      <Dir>media</Dir>
-      <Dir>series</Dir>
       <Name>webplugin_epguides.py</Name>
     </Source>
     <Source>
@@ -167,12 +161,6 @@
       <Dir>media</Dir>
       <Dir>series</Dir>
       <Name>view_episodes_by_season.py</Name>
-    </Source>
-    <Source>
-      <Dir>smewt</Dir>
-      <Dir>media</Dir>
-      <Dir>series</Dir>
-      <Name>IMDBSerieFetcher.py</Name>
     </Source>
     <Source>
       <Dir>smewt</Dir>
@@ -213,6 +201,12 @@
       <Dir>media</Dir>
       <Dir>series</Dir>
       <Name>view_episodes_by_season.tmpl</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>IMDBSerieMetadataFinder.py</Name>
     </Source>
   </Sources>
   <Forms>
