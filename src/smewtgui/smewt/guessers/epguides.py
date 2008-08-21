@@ -141,7 +141,7 @@ class EpGuideQuerier(QObject):
                     episodeConfidence += 1.0
                     #except
 
-            episodeConfidence /= float(len(commonProps))
+            episodeConfidence /= float(len(commonProps)) + 1
             #print 'Guesser: episode confidence == %.3f' % episodeConfidence
             #print newep
 
