@@ -171,7 +171,8 @@ class EpGuides(Guesser):
                     self.connect(self.mediaObjectQueries[md], SIGNAL('guessFinished'),
                                  self.queryFinished)
                 else:
-                    print 'Guesser: Does not contain ''serie'' metadata. Try when it has some info.'
+                    pass
+                    #print 'Guesser: Does not contain ''serie'' metadata. Try when it has some info.'
                     #self.resultMediaObjects.append(mediaObject)
         else:
             print 'Guesser: Not an EpisodeObject.  Cannot guess.'

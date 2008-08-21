@@ -61,7 +61,11 @@ animatedcollapse.init()
     #for $ep in $eps
       #if 'filename' in ep.properties:
         #try
-          <div class="episode"><a href="file://$ep.filename">$ep.episodeNumber - $ep.title</div>
+          #if $ep.title:
+            <div class="episode"><a href="file://$ep.filename">$ep.episodeNumber - $ep.title</div>
+          #else
+            <div class="episode"><a href="file://$ep.filename">$ep.episodeNumber - Untitled <i>($ep.filename)</i></div>
+          #end if
         #except
           <div class="episode"> ? - $ep.title</div>
         #end try
