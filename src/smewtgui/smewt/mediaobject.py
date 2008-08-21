@@ -22,9 +22,9 @@
 from smewt import SmewtDict,  ValidatingSmewtDict
 
 # This file contains the 2 base MediaObject types used in Smewt:
-#  - MediaObject: is the type used to represent physical files on the hard disk.
+#  - Media: is the type used to represent physical files on the hard disk.
 #    It always has at least 2 properties: 'filename' and 'sha1'
-#  - AbstractMediaObject: is the type used to represent a media entity independent
+#  - Metadata: is the type used to represent a media entity independent
 #    of its physical location.
 #
 # Two MediaObject can point to the same AbstractMediaObject, such as the video and
@@ -34,10 +34,22 @@ from smewt import SmewtDict,  ValidatingSmewtDict
 
 
 class Media:
-    def __init__(self):
-        self.filename = ''
+
+    types = { 'video': [ 'avi', 'ogm', 'mkv', 'mpg', 'mpeg' ]
+              }
+
+    def __init__(self, filename = ''):
+        self.filename = unicode(filename)
         self.sha1 = ''
         self.metadata = None # ref to a Metadata object
+
+    def type(self):
+        for name, exts in Media.types.items():
+            for ext in exts:
+                if self.filename.endswith(ext):
+                    return name
+        return 'unknown type'
+
 
 
 # TODO: isn't it better to implement properties as actual python properties? or attributes?
@@ -64,7 +76,7 @@ class Metadata:
     def __init__(self, dictionary = {}, headers = [], row = []):
         # create the properties
         self.properties = ValidatingSmewtDict(self.schema)
-        self.confidence = SmewtDict(self.schema)
+        self.confidence = None
 
         #for prop in self.schema:
         #    self.properties[prop] = None
@@ -88,15 +100,22 @@ class Metadata:
 
         return True
 
+    def isUnique(self):
+        for prop in self.unique:
+            if self.properties[prop] is None:
+                return False
+        return True
+
 
     def __repr__(self):
-        return self.typename + '(' + repr(self.properties) + ')'
+        #return self.typename + '(' + repr(self.properties) + ')'
+        return str(self)
 
     # check this function still works correctly
     def __str__(self):
-        result = ('valid ' if self.isValid() else 'invalid ') + self.typename + ':\n{ '
+        result = ('valid ' if self.isValid() else 'invalid ') + self.typename + ' (confidence: ' + str(self.confidence) + ') :\n{ '
         for key, value in self.properties.items():
-            result += '%-10s : %s (%r)\n  ' % (key, unicode(value), self.confidence[key])
+            result += '%-10s : %s\n  ' % (key, unicode(value))
         return result + '}'
 
     def keys(self):
@@ -109,12 +128,13 @@ class Metadata:
     def getUniqueKey(self):
         return self.getAttributes(self.unique)
 
-
     def __getitem__(self, prop):
         return self.properties[prop]
 
     def __setitem__(self, prop, value):
-        self.properties[prop] = value
+        #self.properties[prop] = value
+        # automatic conversion, is that good?
+        self.properties[prop] = self.parse(self, prop, value)
 
     @staticmethod
     def parse(cls, name, value):
@@ -127,7 +147,6 @@ class Metadata:
 
         else:
             # otherwise just call the default constructor
-
             return cls.schema[name](value)
 
     def parseProperty(self, name, value):

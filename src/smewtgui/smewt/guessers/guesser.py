@@ -22,12 +22,13 @@
 from PyQt4 import QtCore
 
 class Guesser(QtCore.QObject):
-    """Abstract class from which all guessers must inherit.  Guessers are objects that implement a slot called guess(self, mediaObjects) that returns immediately, and begins the process of guessing metadata of the given list of media objects.
+    """Abstract class from which all guessers must inherit.  Guessers are objects that implement a slot called guess(self, mediaObjects) that returns immediately, and begins the process of guessing metadata of the given collection.
+
     When all guesses are made it emits a signal called guessFinished(guesses) which passes as argument a list of tuples containing the guessed MediaObjects and their associated confidence.
-    
+
     """
     def __init__(self):
         super(Guesser, self).__init__()
-    
+
     def guess(self, mediaObjects):
         self.emit(QtCore.SIGNAL('guessFinished()'), mediaObjects)

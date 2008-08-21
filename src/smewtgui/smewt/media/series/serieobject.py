@@ -25,7 +25,7 @@ def parseEpisodeList(string):
     return []
 
 
-class SerieObject(Metadata):
+class Serie(Metadata):
 
     typename = 'Serie'
 
@@ -56,7 +56,7 @@ class SerieObject(Metadata):
         return result
 
 
-class EpisodeObject(Metadata):
+class Episode(Metadata):
 
     typename = 'Episode'
 
@@ -70,12 +70,14 @@ class EpisodeObject(Metadata):
 
     converters = {}
 
-    def __init__(self):
+    def __init__(self, copy = None):
         Metadata.__init__(self)
+        if copy:
+            self.readFromDict(copy.toDict())
 
     @staticmethod
     def fromDict(d):
-        result = EpisodeObject()
+        result = Episode()
         Metadata.readFromDict(result, d)
         return result
 

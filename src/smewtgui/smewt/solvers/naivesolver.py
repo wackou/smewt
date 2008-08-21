@@ -24,25 +24,42 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import copy
 
-from smewt.media.series import EpisodeObject
+from smewt import Collection
+from smewt.media.series import Episode
 
 class NaiveSolver(Solver):
     def __init__(self):
         super(NaiveSolver, self).__init__()
 
-    def solve(self, mediaObjects):
-        if not mediaObjects:
-            return super(NaiveSolver, self).solve(mediaObjects)
+    def solve(self, query):
+        # TODO: assert len(query.media) == 1
+        if not query.metadata:
+            print 'WARNING: Solver not solving anything...'
+            return super(NaiveSolver, self).solve(query.metadata)
 
-        resultMediaObject = copy.copy(mediaObjects[0])
+        results = sorted(query.metadata, cmp = lambda x, y: x.confidence > y.confidence)
+        result = results[0]
 
-        for mediaObject in mediaObjects[1:]:
-            for k, v in mediaObject.properties.iteritems():
+        #resultMediaObject = copy.copy(mediaObjects[0])
+
+        for md in results[1:]:
+            merge = True
+            for k, v in md.properties.iteritems():
                 #print 'Solver: Checking property ''%s'' ::: ''%s'' (%r) -- ''%s'' (%r)' % (k, v, mediaObject.confidence[k], resultMediaObject[k], resultMediaObject.confidence[k])
                 #if mediaObject.confidence.get(k, 0.0) > resultMediaObject.confidence.get(k, 0.0):
-                if mediaObject.confidence[k] > resultMediaObject.confidence[k]:
-                    resultMediaObject[k] = v
-                    resultMediaObject.confidence[k] = mediaObject.confidence[k]
+                #if md.confidence[k] > resultMediaObject.confidence[k]:
+                #    resultMediaObject[k] = v
+                #    resultMediaObject.confidence[k] = mediaObject.confidence[k]
+                if result[k] and v and result[k] != v:
+                    merge = False
+            if merge:
+                for k in md.properties:
+                    result[k] = md[k]
 
-        self.emit(SIGNAL('solveFinished'), resultMediaObject)
+        solved = Collection()
+        solved.media = query.media
+        solved.metadata = [ result ]
+        solved.links = [ (query.media[0], result) ]
+
+        self.emit(SIGNAL('solveFinished'), solved)
 

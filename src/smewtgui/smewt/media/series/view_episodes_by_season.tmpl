@@ -3,11 +3,14 @@
 <%
 from itertools import groupby
 from collections import defaultdict
+from smewt.media.series import Episode
 
 series = defaultdict(lambda: defaultdict(lambda: []))
 
-for (serie, season, episode), md in eps.items():
-    series[serie][season].append(md)
+for (media, md) in eps.links:
+    md = Episode(md)
+    md['filename'] = media.filename
+    series[md['serie']][md['season']].append(md)
 
 for serie, seasons in series.items():
     for season, eps in seasons.items():

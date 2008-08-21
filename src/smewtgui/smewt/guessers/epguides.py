@@ -29,7 +29,7 @@ import sys
 import re
 from urllib import urlopen,  urlencode
 
-from smewt.media.series import EpisodeObject
+from smewt.media.series import Episode
 
 class EpGuideQuerier(QObject):
     episodeLists = {}
@@ -115,7 +115,7 @@ class EpGuideQuerier(QObject):
                 for name, value in d.items():
                     if type(value) == str:
                         d[name] = value.decode('iso-8859-1')
-                newep = EpisodeObject.fromDict(d)
+                newep = Episode.fromDict(d)
                 newep['serie'] = unicode(serieName)
 
                 episodes.append(newep)
@@ -136,16 +136,20 @@ class EpGuideQuerier(QObject):
             episodeConfidence = 0.0
             for prop in commonProps:
                 if newep[prop] == self.mediaObject[prop]:
-                    episodeConfidence += newep.confidence.get(prop, 1.0) * self.mediaObject.confidence.get(prop, 1.0)
+                    #episodeConfidence += newep.confidence.get(prop, 1.0) * self.mediaObject.confidence.get(prop, 1.0)
+                    #try:
+                    episodeConfidence += 1.0
+                    #except
 
             episodeConfidence /= float(len(commonProps))
             #print 'Guesser: episode confidence == %.3f' % episodeConfidence
             #print newep
 
-            guess = EpisodeObject()
+            guess = Episode()
+            guess.confidence = episodeConfidence
             for prop in newep.properties:
                 guess[prop] = newep[prop]
-                guess.confidence[prop] = 0.9 * episodeConfidence
+                #guess.confidence[prop] = 0.9 * episodeConfidence
 
             guesses.append(guess)
 
@@ -155,31 +159,33 @@ class EpGuides(Guesser):
     def __init__(self):
         super(EpGuides, self).__init__()
 
-    def guess(self, mediaObjects):
+    def guess(self, query):
         self.mediaObjectQueries = {}
-        self.resultMediaObjects = mediaObjects
-        for mediaObject in mediaObjects:
-            if mediaObject.typename == 'Episode':
-                if mediaObject['serie'] is not None:
-                    self.mediaObjectQueries[mediaObject] = EpGuideQuerier(mediaObject)
-                    self.connect(self.mediaObjectQueries[mediaObject], SIGNAL('guessFinished'),
+        self.query = query
+        self.resultMetadata = query.metadata
+        mediaObject = query.media[0]
+        if mediaObject.type() == 'video':
+            for md in list(query.metadata):
+                if md['serie']:
+                    self.mediaObjectQueries[md] = EpGuideQuerier(md)
+                    self.connect(self.mediaObjectQueries[md], SIGNAL('guessFinished'),
                                  self.queryFinished)
                 else:
                     print 'Guesser: Does not contain ''serie'' metadata. Try when it has some info.'
-                    self.resultMediaObjects.append(mediaObject)
-            else:
-                print 'Guesser: Not an EpisodeObject.  Cannot guess.'
-                self.resultMediaObjects.append(mediaObject)
+                    #self.resultMediaObjects.append(mediaObject)
+        else:
+            print 'Guesser: Not an EpisodeObject.  Cannot guess.'
+            #self.resultMediaObjects.append(mediaObject)
 
         for querier in self.mediaObjectQueries.values():
             querier.query()
 
-    def queryFinished(self, mediaObject, guesses):
-        self.mediaObjectQueries.pop(mediaObject)
-        self.resultMediaObjects.extend(guesses)
+    def queryFinished(self, metadata, guesses):
+        self.mediaObjectQueries.pop(metadata)
+        self.resultMetadata += guesses
 
         if len(self.mediaObjectQueries) == 0:
-            self.emit(SIGNAL('guessFinished'), self.resultMediaObjects)
+            self.emit(SIGNAL('guessFinished'), self.query)
 
     def exitNow(self):
         print 'exiting'

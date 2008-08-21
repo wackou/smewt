@@ -136,9 +136,9 @@ class QueryWidget(QWidget):
         viewType = smewtpath[1]
         args = smewtpath[2:]
         if viewType == 'single':
-            metadata = dict([(media.getUniqueKey(), media) for media in self.collection.media if media is not None and media.properties['serie'] == args[0] ])
+            metadata = self.collection.filter('serie', args[0])
         elif viewType == 'all':
-            metadata = dict([(media.getUniqueKey(), media) for media in self.collection.media if media is not None ])
+            metadata = dict([(md.getUniqueKey(), md) for md in self.collection.metadata ])
         else:
             raise SmewtException('invalid view type')
 

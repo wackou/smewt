@@ -29,7 +29,8 @@ import sys
 import re
 from os.path import join, split, basename
 
-from smewt.media.series import EpisodeObject
+from smewt import Collection
+from smewt.media.series import Episode
 
 class MagicEpisodeTagger(Tagger):
     def __init__(self):
@@ -52,14 +53,16 @@ class MagicEpisodeTagger(Tagger):
         self.emit(SIGNAL('tagFinished'), taggedMediaObject)
 
     def tag(self, mediaObject):
-        if mediaObject.typename == 'Episode':
-            if mediaObject['filename'] is not None:
-                self.guessers[0].guess([mediaObject])
+        if mediaObject.type() == 'video':
+            if mediaObject.filename:
+                query = Collection()
+                query.media = [ mediaObject ]
+                self.guessers[0].guess(query)
                 return
             else:
-                print 'Tagger: Does not contain ''filename'' metadata. Try when it has some info.'
+                print 'Tagger: filename hasn\'t been set on Media object.'
         else:
-            print 'Tagger: Not an EpisodeObject.  Cannot tag.'
+            print 'Tagger: Not a video media.  Cannot tag.'
 
         return super(MagicEpisodeTagger, self).tag(mediaObject)
 
