@@ -23,8 +23,8 @@ from smewt.guessers.guesser import Guesser
 from smewt import utils
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-import copy
 import sys
+import logging
 
 from smewt.media.series import Episode
 
@@ -36,42 +36,38 @@ class EpisodeFilename(Guesser):
         super(EpisodeFilename, self).__init__()
 
     def guess(self, query):
+        self.checkValid(query)
+
         found = query.metadata
         mediaObject = query.media[0]
 
-        if mediaObject.type() == 'video':
-            #result = copy.copy(mediaObject)
-            name = utils.splitFilename(mediaObject.filename)
+        name = utils.splitFilename(mediaObject.filename)
 
-            # heuristic 1: try to guess the season & epnumber using S01E02 and 1x02 patterns
-            rexps = [ 'season (?P<season>[0-9]+)',
-                      '(?P<season>[0-9]+)x(?P<episodeNumber>[0-9]+)',
-                      'S(?P<season>[0-9]+)E(?P<episodeNumber>[0-9]+)'
-                      ]
+        # heuristic 1: try to guess the season & epnumber using S01E02 and 1x02 patterns
+        rexps = [ 'season (?P<season>[0-9]+)',
+                  '(?P<season>[0-9]+)x(?P<episodeNumber>[0-9]+)',
+                  'S(?P<season>[0-9]+)E(?P<episodeNumber>[0-9]+)'
+                  ]
 
-            for n in name:
-                for match in utils.matchAllRegexp(n, rexps):
-                    result = Episode()
-                    result.confidence = 1.0
-                    for key, value in match.items():
-                        #print 'Found MD:', filename, ':', key, '=', value
-                        result[key] = value
-                    found += [ result ]
+        for n in name:
+            for match in utils.matchAllRegexp(n, rexps):
+                result = Episode()
+                result.confidence = 1.0
+                for key, value in match.items():
+                    logging.debug('Found MD: %s: %s = %s', filename, key, value)
+                    result[key] = value
+                found += [ result ]
 
-
-            # heuristic 2: try to guess the serie title from the parent directory!
-            result = Episode()
-            if utils.matchAnyRegexp(name[1], ['season (?P<season>[0-9]+)$']):
-                result['serie'] = name[2]
-                result.confidence = 0.8
-            else:
-                result['serie'] = name[1]
-                result.confidence = 0.4
-            found += [ result ]
-
+        # heuristic 2: try to guess the serie title from the parent directory!
+        result = Episode()
+        if utils.matchAnyRegexp(name[1], ['season (?P<season>[0-9]+)$']):
+            result['serie'] = name[2]
+            result.confidence = 0.8
         else:
-            print 'Guesser: Not a video Media.  Cannot guess.'
-            #resultMediaObjects.append(mediaObject)
+            result['serie'] = name[1]
+            result.confidence = 0.4
+        found += [ result ]
+
 
         self.emit(SIGNAL('guessFinished'), query)
 
