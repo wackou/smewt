@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt import SmewtException, Collection
+from smewt import SmewtException, Collection, SmewtUrl
 from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings
 from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout
 from PyQt4.QtWebKit import QWebView, QWebPage
