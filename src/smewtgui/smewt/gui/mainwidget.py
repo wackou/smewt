@@ -20,14 +20,12 @@
 #
 
 from smewt import SmewtException, Collection
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtWebKit import *
+from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings
+from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout
+from PyQt4.QtWebKit import QWebView, QWebPage
 from smewt.media.series import view
 from bookmarkwidget import BookmarkListWidget
-import os
-from subprocess import Popen
-from os.path import dirname,  join
+import logging
 
 class MainWidget(QWidget):
     def __init__(self):
@@ -74,10 +72,11 @@ class MainWidget(QWidget):
         if t == '':
             t = join(dirname(unicode(s.fileName())),  'Smewg.collection')
             s.setValue('collection_file',  QVariant(t))
+
         try:
             self.collection.load(t)
         except:
-            print 'WARNING: Could not load collection', t
+            logging.warning('Could not load collection %s', t)
             raise
 
         self.setLayout(layout)
@@ -117,10 +116,7 @@ class MainWidget(QWidget):
         self.collection.load(filename)
 
     def saveCollection(self):
-        #filename = str(QFileDialog.getSaveFileName(self, 'Select file to save the collection'))
-
         filename = unicode(QSettings().value('collection_file').toString())
-
         self.collection.save(filename)
 
     def importFolder(self):
@@ -149,15 +145,14 @@ class MainWidget(QWidget):
         self.collectionView.page().mainFrame().setHtml(html)
 
     def linkClicked(self,  url):
-        print 'clicked on link',  url
+        logging.info('clicked on link %s', url)
         url = url.toString()
 
         if url.startsWith('file://'):
             action = 'smplayer'
             # FIXME: subtitles don't appear when lauching smplayer...
             args = [ action,  str(url)[7:] ]
-            print 'opening with args =',  args
-            #pid = Popen(args,  shell=True, env = os.environ).pid
+            logging.debug('opening with args = %s',  args)
             self.externalProcess.start(action, [str(url)])
 
         elif url.startsWith('smewt://'):
@@ -165,5 +160,3 @@ class MainWidget(QWidget):
         else:
             pass
 
-    def renderTemplate(self):
-        self.emit(SIGNAL('renderTemplate'), self.templates.currentText())

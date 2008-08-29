@@ -27,44 +27,15 @@ from smewt import config
 from smewt.media.series import view
 from smewt.gui import MainWidget
 
+import logging
+
 
 class SmewtGui(QMainWindow):
 
     def __init__(self):
         super(SmewtGui, self).__init__()
-        self.setWindowTitle('Smewt Gui')
-
-        self.mainWidget = MainWidget()
-        self.connect(self.mainWidget, SIGNAL('renderTemplate'),
-                     self.renderTemplate)
-
-        self.mainWidget = QTabWidget()
-        self.mainWidget.addTab(self.mainWidget, 'query')
-
-        self.setCentralWidget(self.mainWidget)
-
-
-    def renderTemplate(self, templateName):
-        webview = QWebView()
-        headers, rows = self.mainWidget.resultTable.getResults()
-        print rows
-        objs = result2objects(headers, rows)
-        print objs
-
-        webview.page().mainFrame().setHtml(view.render(objs))
-        self.mainWidget.addTab(webview, 'rendered')
-        self.mainWidget.setCurrentIndex(self.mainWidget.count() - 1)
-    """
-    def newFolderMetadata(self):
-        md = self.queryTab.collection.medias
-        webview = QWebView()
-        webview.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
-        self.connect(webview,  SIGNAL('linkClicked(const QUrl&)'),
-                     self.linkClicked)
-        webview.page().mainFrame().setHtml(view.render(md))
-        self.mainWidget.addTab(webview, 'folder view')
-        self.mainWidget.setCurrentIndex(self.mainWidget.count() - 1)
-    """
+        self.setWindowTitle('Smewg - An Ordinary Smewt Gui')
+        self.setCentralWidget(MainWidget())
 
 
 
@@ -73,6 +44,10 @@ if __name__ == '__main__':
     app.setOrganizationName("DigitalGaia")
     app.setOrganizationDomain("smewt.com")
     app.setApplicationName("Smewg")
+
+    logging.basicConfig(level = logging.DEBUG,
+                        format = '%(levelname)-8s %(message)s')
+
     sgui = SmewtGui()
     sgui.show()
     app.exec_()
