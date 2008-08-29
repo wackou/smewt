@@ -19,7 +19,7 @@
 #
 
 from smewt import SmewtException, utils
-from smewt.media.series import EpisodeObject
+from smewt.media.series import Episode
 from smewt.webparser import WebParser
 from urllib import urlopen
 import re
@@ -72,7 +72,7 @@ class IMDBSerieMetadataFinder(WebParser):
                 rexp = 'Season (?P<season>[0-9]+), Episode (?P<episodeNumber>[0-9]+)'
                 rexp += '.*?<a href="(?P<imdbUrl>.*?)">(?P<title>.*?)</a>'
                 md = utils.matchRegexp(line, rexp)
-                md['serieName'] = serieName
+                md['serie'] = serieName
                 md['imdbUrl'] = 'http://www.imdb.com' + md['imdbUrl']
                 md['synopsis'] = utils.matchRegexp(line, '<br>  (?P<synopsis>.*?)<br/>')['synopsis']
 
@@ -82,7 +82,7 @@ class IMDBSerieMetadataFinder(WebParser):
 
                 md = self.cleanMetadata(md)
 
-                eps.append(EpisodeObject.fromDict(md))
+                eps.append(Episode.fromDict(md))
 
         return eps
 
@@ -100,8 +100,8 @@ class IMDBSerieMetadataFinder(WebParser):
 
 if __name__ == '__main__':
     md = IMDBSerieMetadataFinder()
-    md.getSeriePoster('damages')
+    #md.getSeriePoster('damages')
     #md.getSerieUrl('damages')
-    eps = md.getAllEpisodes('damages')
+    eps = md.getAllEpisodes('black adder')
     for ep in eps:
         print unicode(ep)
