@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Ricard Marxer <email@ricardmarxer.com>
+# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewtdict import SmewtDict
-from validatingsmewtdict import ValidatingSmewtDict
 from smewtexception import SmewtException
-from smewturl import SmewtUrl
+
+class SmewtUrl:
+    def __init__(self, url):
+        if not url.startswith('smewt://'):
+            raise SmewtException('Could not create SmewtUrl from %s' % url)
+
+        spath = url[8:].split('/')
+        self.mediaType = spath[0]
+        self.viewType = smewtpath[1]
+
+        try:
+            self.args = smewtpath[2:]
+        except IndexError:
+            self.args = None

@@ -127,21 +127,22 @@ class MainWidget(QWidget):
             self.collection.importFolder(filename)
 
     def refreshCollectionView(self):
-        smewtpath = self.smewtUrl[8:].split('/')
-        mediaType = smewtpath[0]
-        viewType = smewtpath[1]
-        args = smewtpath[2:]
-        if viewType == 'single':
+        surl = SmewtUrl(self.smewtUrl)
+
+        if surl.mediaType != 'serie':
+            raise SmewtException('Invalid media type: %s' % surl.mediaType)
+
+        if surl.viewType == 'single':
             metadata = self.collection.filter('serie', args[0])
-        elif viewType == 'all':
+        elif surl.viewType == 'all':
             metadata = dict([(md.getUniqueKey(), md) for md in self.collection.metadata ])
         else:
-            raise SmewtException('invalid view type')
+            raise SmewtException('Invalid view type: %s' % surl.viewType)
 
         html = view.render(viewType,  metadata)
 
         # display template
-        open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
+        #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
         self.collectionView.page().mainFrame().setHtml(html)
 
     def linkClicked(self,  url):
