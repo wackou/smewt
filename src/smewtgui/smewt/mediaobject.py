@@ -114,9 +114,27 @@ class Metadata:
     # check this function still works correctly
     def __str__(self):
         result = ('valid ' if self.isValid() else 'invalid ') + self.typename + ' (confidence: ' + str(self.confidence) + ') :\n{ '
-        for key, value in self.properties.items():
-            result += '%-10s : %s\n  ' % (key, unicode(value))
+
+        for propname in self.orderedProperties():
+            result += '%-10s : %s\n  ' % (propname, unicode(self.properties[propname]))
+
         return result + '}'
+
+
+    def orderedProperties(self):
+        '''Returns the list of properties ordered using the defined order in the subclass'''
+        result = []
+        propertyNames = self.properties.keys()
+
+        try:
+            for p in self.order:
+                if p in propertyNames:
+                    result += [ p ]
+                    propertyNames.remove(p)
+        except AttributeError:
+            return propertyNames
+
+        return result + propertyNames
 
     def keys(self):
         return self.properties.keys()
