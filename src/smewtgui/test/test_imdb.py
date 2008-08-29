@@ -19,12 +19,15 @@
 #
 
 from smewttest import *
+import yaml
+import glob
 
 class TestIMDB(TestCase):
 
     def testRegression(self):
-        pass
-
+        for filename in glob.glob('test_imdb/*.yaml'):
+            data = yaml.load(open(filename).read())
+            print data
 
 
 
