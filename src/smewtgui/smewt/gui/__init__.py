@@ -18,6 +18,5 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from querywidget import QueryWidget
-from resultwidget import ResultWidget
+from mainwidget import MainWidget
 from bookmarkwidget import BookmarkListWidget

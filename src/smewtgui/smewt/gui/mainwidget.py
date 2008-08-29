@@ -29,9 +29,9 @@ import os
 from subprocess import Popen
 from os.path import dirname,  join
 
-class QueryWidget(QWidget):
+class MainWidget(QWidget):
     def __init__(self):
-        super(QueryWidget, self).__init__()
+        super(MainWidget, self).__init__()
 
         backButton = QPushButton('Back')
         folderImportButton = QPushButton('Import folder...')

@@ -29,8 +29,6 @@ This is not to be mistaken with the program settings, which contains the user
 preferences.
 '''
 
-# whether to connect to Smewtd
-connect_smewtd = False
 
 
 # whether to retrieve locally stored results for web queries
