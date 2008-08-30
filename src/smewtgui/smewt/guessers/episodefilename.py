@@ -54,7 +54,7 @@ class EpisodeFilename(Guesser):
                 result = Episode()
                 result.confidence = 1.0
                 for key, value in match.items():
-                    logging.debug('Found MD: %s: %s = %s', filename, key, value)
+                    logging.debug('Found MD: %s: %s = %s', mediaObject.filename, key, value)
                     result[key] = value
                 found += [ result ]
 

@@ -33,7 +33,8 @@ class Guesser(QtCore.QObject):
 
     The following needs to be defined in derived classes:
 
-    1- 'supportedTypes' which lists the media types for which this guesser can provide metadata
+    1- 'supportedTypes' which lists the media types for which this guesser can
+        provide metadata.
 
     """
 
