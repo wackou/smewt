@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2008-08-21, 05:04:36 -->
+<!-- Saved: 2008-08-30, 03:50:03 -->
 <!-- Copyright (C) 2008 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -11,9 +11,6 @@
   <Author>Nicolas Wack</Author>
   <Email>wackou@gmail.com</Email>
   <Sources>
-    <Source>
-      <Name>test_connect.py</Name>
-    </Source>
     <Source>
       <Name>smewg.py</Name>
     </Source>
@@ -44,10 +41,6 @@
     <Source>
       <Dir>smewt</Dir>
       <Name>mediaplugin.py</Name>
-    </Source>
-    <Source>
-      <Dir>smewt</Dir>
-      <Name>mediatagger.py</Name>
     </Source>
     <Source>
       <Dir>smewt</Dir>
@@ -122,22 +115,12 @@
     <Source>
       <Dir>smewt</Dir>
       <Dir>gui</Dir>
-      <Name>resultwidget.py</Name>
-    </Source>
-    <Source>
-      <Dir>smewt</Dir>
-      <Dir>gui</Dir>
       <Name>__init__.py</Name>
     </Source>
     <Source>
       <Dir>smewt</Dir>
       <Dir>gui</Dir>
       <Name>bookmarkwidget.py</Name>
-    </Source>
-    <Source>
-      <Dir>smewt</Dir>
-      <Dir>gui</Dir>
-      <Name>querywidget.py</Name>
     </Source>
     <Source>
       <Dir>smewt</Dir>
@@ -207,6 +190,42 @@
       <Dir>media</Dir>
       <Dir>series</Dir>
       <Name>IMDBSerieMetadataFinder.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>gui</Dir>
+      <Name>mainwidget.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>base</Dir>
+      <Name>smewturl.py</Name>
+    </Source>
+    <Source>
+      <Dir>test</Dir>
+      <Name>all_tests.py</Name>
+    </Source>
+    <Source>
+      <Dir>test</Dir>
+      <Name>test_imdb.py</Name>
+    </Source>
+    <Source>
+      <Dir>test</Dir>
+      <Name>smewttest.py</Name>
+    </Source>
+    <Source>
+      <Dir>test</Dir>
+      <Name>test_episodefilename.py</Name>
+    </Source>
+    <Source>
+      <Dir>test</Dir>
+      <Dir>test_imdb</Dir>
+      <Name>blackadder.yaml</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>solvers</Dir>
+      <Name>mergesolver.py</Name>
     </Source>
   </Sources>
   <Forms>

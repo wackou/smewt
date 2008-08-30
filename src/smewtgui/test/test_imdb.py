@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Ricard Marxer <email@ricardmarxer.com>
+# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,6 +18,21 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from base import SmewtDict, ValidatingSmewtDict, SmewtException, SmewtUrl
-from mediaobject import Media, Metadata
-from collection import Collection
+from smewttest import *
+import yaml
+import glob
+
+class TestIMDB(TestCase):
+
+    def testRegression(self):
+        for filename in glob.glob('test_imdb/*.yaml'):
+            data = yaml.load(open(filename).read())
+            #print data
+
+
+
+
+suite = allTests(TestIMDB)
+
+if __name__ == '__main__':
+    TextTestRunner(verbosity=2).run(suite)

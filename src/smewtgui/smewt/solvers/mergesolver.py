@@ -3,6 +3,7 @@
 #
 # Smewt - A smart collection manager
 # Copyright (c) 2008 Ricard Marxer <email@ricardmarxer.com>
+# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,6 +19,21 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from base import SmewtDict, ValidatingSmewtDict, SmewtException, SmewtUrl
-from mediaobject import Media, Metadata
-from collection import Collection
+from smewt.solvers.solver import Solver
+import copy
+
+class MergeSolver(Solver):
+    def __init__(self):
+        super(MergeSolver, self).__init__()
+
+    def solve(self, query):
+        self.checkValid(query)
+
+        results = sorted(query.metadata, cmp = lambda x, y: x.confidence > y.confidence)
+        result = copy.copy(results[0])
+
+        for md in results[1:]:
+            for k, v in md.properties.items():
+                result[k] = v
+
+        self.found(query, result)

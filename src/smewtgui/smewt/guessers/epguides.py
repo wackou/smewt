@@ -156,6 +156,9 @@ class EpGuideQuerier(QObject):
         self.emit(SIGNAL('guessFinished'), self.mediaObject, guesses)
 
 class EpGuides(Guesser):
+
+    supportedTypes = [ 'video' ]
+
     def __init__(self):
         super(EpGuides, self).__init__()
 

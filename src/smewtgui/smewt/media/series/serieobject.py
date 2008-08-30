@@ -66,6 +66,8 @@ class Episode(Metadata):
                'title': unicode
                }
 
+    order = [ 'serie', 'season', 'episodeNumber',  'title' ]
+
     unique = [ 'serie', 'season', 'episodeNumber' ]
 
     converters = {}

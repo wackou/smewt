@@ -20,31 +20,24 @@
 #
 
 from smewt.solvers.solver import Solver
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 import copy
 
-from smewt import Collection
-from smewt.media.series import Episode
 
 class NaiveSolver(Solver):
     def __init__(self):
         super(NaiveSolver, self).__init__()
 
     def solve(self, query):
-        # TODO: assert len(query.media) == 1
-        if not query.metadata:
-            print 'WARNING: Solver not solving anything...'
-            return super(NaiveSolver, self).solve(query.metadata)
+        self.checkValid(query)
 
         results = sorted(query.metadata, cmp = lambda x, y: x.confidence > y.confidence)
-        result = results[0]
+        result = copy.copy(results[0])
 
         #resultMediaObject = copy.copy(mediaObjects[0])
 
         for md in results[1:]:
             merge = True
-            for k, v in md.properties.iteritems():
+            for k, v in md.properties.items():
                 #print 'Solver: Checking property ''%s'' ::: ''%s'' (%r) -- ''%s'' (%r)' % (k, v, mediaObject.confidence[k], resultMediaObject[k], resultMediaObject.confidence[k])
                 #if mediaObject.confidence.get(k, 0.0) > resultMediaObject.confidence.get(k, 0.0):
                 #if md.confidence[k] > resultMediaObject.confidence[k]:
@@ -59,10 +52,5 @@ class NaiveSolver(Solver):
                 for k in md.properties:
                     result[k] = md[k]
 
-        solved = Collection()
-        solved.media = query.media
-        solved.metadata = [ result ]
-        solved.links = [ (query.media[0], result) ]
-
-        self.emit(SIGNAL('solveFinished'), solved)
+        self.found(query, result)
 
