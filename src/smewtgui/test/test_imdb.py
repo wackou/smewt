@@ -27,7 +27,7 @@ class TestIMDB(TestCase):
     def testRegression(self):
         for filename in glob.glob('test_imdb/*.yaml'):
             data = yaml.load(open(filename).read())
-            print data
+            #print data
 
 
 

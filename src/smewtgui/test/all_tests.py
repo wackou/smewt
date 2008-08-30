@@ -21,7 +21,7 @@
 import sys
 import unittest
 import glob
-
+from PyQt4.QtCore import *
 
 def importTest(name):
     cmd = 'import test_%s; setattr(sys.modules[__name__], \'%s\', test_%s.suite)' % (name, name, name)
@@ -38,4 +38,5 @@ testObjectsList = [ getattr(sys.modules[__name__], name) for name in listTests ]
 all = unittest.TestSuite(testObjectsList)
 
 if __name__ == '__main__':
+    app = QCoreApplication(sys.argv)
     unittest.TextTestRunner(verbosity=2).run(all)
