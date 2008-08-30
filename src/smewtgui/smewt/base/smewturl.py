@@ -22,14 +22,14 @@ from smewtexception import SmewtException
 
 class SmewtUrl:
     def __init__(self, url):
-        if not url.startswith('smewt://'):
+        if not str(url).startswith('smewt://'):
             raise SmewtException('Could not create SmewtUrl from %s' % url)
 
         spath = url[8:].split('/')
         self.mediaType = spath[0]
-        self.viewType = smewtpath[1]
+        self.viewType = spath[1]
 
         try:
-            self.args = smewtpath[2:]
+            self.args = spath[2:]
         except IndexError:
             self.args = None

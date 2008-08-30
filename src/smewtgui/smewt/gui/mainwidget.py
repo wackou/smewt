@@ -21,7 +21,7 @@
 
 from smewt import SmewtException, Collection, SmewtUrl
 from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings
-from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout
+from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog
 from PyQt4.QtWebKit import QWebView, QWebPage
 from smewt.media.series import view
 from bookmarkwidget import BookmarkListWidget
@@ -133,13 +133,13 @@ class MainWidget(QWidget):
             raise SmewtException('Invalid media type: %s' % surl.mediaType)
 
         if surl.viewType == 'single':
-            metadata = self.collection.filter('serie', args[0])
+            metadata = self.collection.filter('serie', surl.args[0])
         elif surl.viewType == 'all':
             metadata = dict([(md.getUniqueKey(), md) for md in self.collection.metadata ])
         else:
             raise SmewtException('Invalid view type: %s' % surl.viewType)
 
-        html = view.render(viewType,  metadata)
+        html = view.render(surl.viewType,  metadata)
 
         # display template
         #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
