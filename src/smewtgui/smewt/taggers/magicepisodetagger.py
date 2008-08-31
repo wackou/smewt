@@ -41,10 +41,10 @@ class MagicEpisodeTagger(Tagger):
 
         # Connect each guesser to the next
         for index, guesser in enumerate(self.guessers[:-1]):
-            self.connect(guesser, SIGNAL('finished'), self.guessers[index+1].guess)
+            self.connect(guesser, SIGNAL('finished'), self.guessers[index+1].start)
 
         # Connect the last guesser to the solver
-        self.connect(self.guessers[-1], SIGNAL('finished'), self.solver.solve)
+        self.connect(self.guessers[-1], SIGNAL('finished'), self.solver.start)
 
         # Connect the solver to the solved slot
         self.connect(self.solver, SIGNAL('finished'), self.solved)
@@ -57,7 +57,7 @@ class MagicEpisodeTagger(Tagger):
             if mediaObject.filename:
                 query = Collection()
                 query.media = [ mediaObject ]
-                self.guessers[0].guess(query)
+                self.guessers[0].start(query)
                 return
             else:
                 print 'Tagger: filename hasn\'t been set on Media object.'

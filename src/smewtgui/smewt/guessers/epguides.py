@@ -207,6 +207,6 @@ if __name__ == '__main__':
 
     app.connect(guesser, SIGNAL('finished'), printResults)
 
-    guesser.guess(mediaObjects)
+    guesser.start(mediaObjects)
 
     app.exec_()

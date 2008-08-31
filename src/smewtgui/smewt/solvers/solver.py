@@ -25,7 +25,7 @@ import logging
 
 class Solver(QObject):
     """Abstract class from which all Solvers must inherit.  Solvers are objects
-    that implement a slot called solve(self, query) that returns immediately,
+    that implement a slot called start(self, query) that returns immediately,
     and begins the process of solving the merge of mediaObjects.
 
     When a merge (the most probable mediaObject) has been found it emits a signal
@@ -58,5 +58,5 @@ class Solver(QObject):
 
 
 
-    def solve(self, query):
+    def start(self, query):
         self.emit(SIGNAL('finished'), None)

@@ -19,12 +19,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4 import QtCore
+from PyQt4.QtCore import SIGNAL
 from smewt import SmewtException
 
 class Guesser(QtCore.QObject):
     """Abstract class from which all guessers must inherit.  Guessers are objects
-    that implement a slot called guess(self, query) that returns immediately, and
+    that implement a slot called start(self, query) that returns immediately, and
     begins the process of guessing metadata of the first element of the given
     Collection.media list.
 
@@ -51,5 +51,5 @@ class Guesser(QtCore.QObject):
             raise SmewtException('Guesser: this guesser only supports files of type: %s but you provided a file of type: %s' % (str(self.supportedTypes), query.media[0].type()))
 
 
-    def guess(self, query):
-        self.emit(QtCore.SIGNAL('finished()'), query)
+    def start(self, query):
+        self.emit(SIGNAL('finished'), query)

@@ -53,7 +53,7 @@ class TestCase(BaseTestCase):
         # hack to make sure the worker thread could enter its event loop
         QThread.msleep(100)
 
-        guesser.guess(query)
+        guesser.start(query)
         t.wait()
 
         return results[0]
@@ -66,7 +66,7 @@ class TestCase(BaseTestCase):
         # hack to make sure the worker thread could enter its event loop
         QThread.msleep(100)
 
-        solver.solve(query)
+        solver.start(query)
         t.wait()
 
         return results[0]
