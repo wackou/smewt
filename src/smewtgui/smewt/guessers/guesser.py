@@ -28,7 +28,7 @@ class Guesser(QtCore.QObject):
     begins the process of guessing metadata of the first element of the given
     Collection.media list.
 
-    When all guesses are made it emits a signal called guessFinished(guesses) which
+    When all guesses are made it emits a signal called finished(guesses) which
     returns the original Collection augmented with the guesses it could have made.
 
     The following needs to be defined in derived classes:
@@ -52,4 +52,4 @@ class Guesser(QtCore.QObject):
 
 
     def guess(self, query):
-        self.emit(QtCore.SIGNAL('guessFinished()'), query)
+        self.emit(QtCore.SIGNAL('finished()'), query)

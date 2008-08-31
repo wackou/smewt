@@ -47,7 +47,7 @@ class WorkerThread(QThread):
 class TestCase(BaseTestCase):
     def launchGuesser(self, guesser, query):
         results = [ None ]
-        t = WorkerThread(guesser, 'guessFinished', query, results)
+        t = WorkerThread(guesser, 'finished', query, results)
         t.start()
 
         # hack to make sure the worker thread could enter its event loop
@@ -60,7 +60,7 @@ class TestCase(BaseTestCase):
 
     def launchSolver(self, solver, query):
         results = [ None ]
-        t = WorkerThread(solver, 'solveFinished', query, results)
+        t = WorkerThread(solver, 'finished', query, results)
         t.start()
 
         # hack to make sure the worker thread could enter its event loop

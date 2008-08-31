@@ -153,7 +153,7 @@ class EpGuideQuerier(QObject):
 
             guesses.append(guess)
 
-        self.emit(SIGNAL('guessFinished'), self.mediaObject, guesses)
+        self.emit(SIGNAL('finished'), self.mediaObject, guesses)
 
 class EpGuides(Guesser):
 
@@ -171,7 +171,7 @@ class EpGuides(Guesser):
             for md in list(query.metadata):
                 if md['serie']:
                     self.mediaObjectQueries[md] = EpGuideQuerier(md)
-                    self.connect(self.mediaObjectQueries[md], SIGNAL('guessFinished'),
+                    self.connect(self.mediaObjectQueries[md], SIGNAL('finished'),
                                  self.queryFinished)
                 else:
                     pass
@@ -189,7 +189,7 @@ class EpGuides(Guesser):
         self.resultMetadata += guesses
 
         if len(self.mediaObjectQueries) == 0:
-            self.emit(SIGNAL('guessFinished'), self.query)
+            self.emit(SIGNAL('finished'), self.query)
 
     def exitNow(self):
         print 'exiting'
@@ -205,7 +205,7 @@ if __name__ == '__main__':
         for guess in guesses:
             print guess
 
-    app.connect(guesser, SIGNAL('guessFinished'), printResults)
+    app.connect(guesser, SIGNAL('finished'), printResults)
 
     guesser.guess(mediaObjects)
 

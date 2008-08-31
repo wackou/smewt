@@ -69,7 +69,7 @@ class EpisodeFilename(Guesser):
         found += [ result ]
 
 
-        self.emit(SIGNAL('guessFinished'), query)
+        self.emit(SIGNAL('finished'), query)
 
 
 
@@ -86,7 +86,7 @@ if __name__ == '__main__':
         for guess in guesses:
             print guess
 
-    app.connect(guesser, SIGNAL('guessFinished'), printResults)
+    app.connect(guesser, SIGNAL('finished'), printResults)
 
     guesser.guess(mediaObjects)
 

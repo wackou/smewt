@@ -29,7 +29,7 @@ class Solver(QObject):
     and begins the process of solving the merge of mediaObjects.
 
     When a merge (the most probable mediaObject) has been found it emits a signal
-    called solveFinished(mediaObject) which passes as argument a mediaObject
+    called finished(mediaObject) which passes as argument a mediaObject
     corresponding to the best solution or None in case no solution is available.
     """
 
@@ -54,9 +54,9 @@ class Solver(QObject):
 
         logging.info('Solver: found for %s: %s', query.media[0], str(solved.metadata[0]))
 
-        self.emit(SIGNAL('solveFinished'), solved)
+        self.emit(SIGNAL('finished'), solved)
 
 
 
     def solve(self, query):
-        self.emit(SIGNAL('solveFinished'), None)
+        self.emit(SIGNAL('finished'), None)

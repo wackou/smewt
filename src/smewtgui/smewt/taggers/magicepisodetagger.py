@@ -41,13 +41,13 @@ class MagicEpisodeTagger(Tagger):
 
         # Connect each guesser to the next
         for index, guesser in enumerate(self.guessers[:-1]):
-            self.connect(guesser, SIGNAL('guessFinished'), self.guessers[index+1].guess)
+            self.connect(guesser, SIGNAL('finished'), self.guessers[index+1].guess)
 
         # Connect the last guesser to the solver
-        self.connect(self.guessers[-1], SIGNAL('guessFinished'), self.solver.solve)
+        self.connect(self.guessers[-1], SIGNAL('finished'), self.solver.solve)
 
         # Connect the solver to the solved slot
-        self.connect(self.solver, SIGNAL('solveFinished'), self.solved)
+        self.connect(self.solver, SIGNAL('finished'), self.solved)
 
     def solved(self, taggedMediaObject):
         self.emit(SIGNAL('tagFinished'), taggedMediaObject)
