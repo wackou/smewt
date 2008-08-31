@@ -29,35 +29,29 @@ import sys
 import re
 from os.path import join, split, basename
 
-from smewt import Collection
+from smewt import Collection, SolvingChain
 from smewt.media.series import Episode
 
 class MagicEpisodeTagger(Tagger):
     def __init__(self):
         super(MagicEpisodeTagger, self).__init__()
-        self.guesserIndex = 0
-        self.guessers = [episodefilename.EpisodeFilename(), epguides.EpGuides()]
-        self.solver = naivesolver.NaiveSolver()
 
-        # Connect each guesser to the next
-        for index, guesser in enumerate(self.guessers[:-1]):
-            self.connect(guesser, SIGNAL('finished'), self.guessers[index+1].start)
+        self.schain = SolvingChain(episodefilename.EpisodeFilename(),
+                                   epguides.EpGuides(),
+                                   naivesolver.NaiveSolver())
 
-        # Connect the last guesser to the solver
-        self.connect(self.guessers[-1], SIGNAL('finished'), self.solver.start)
+        # Connect the chain to our solved slot
+        self.connect(self.schain, SIGNAL('finished'), self.solved)
 
-        # Connect the solver to the solved slot
-        self.connect(self.solver, SIGNAL('finished'), self.solved)
-
-    def solved(self, taggedMediaObject):
-        self.emit(SIGNAL('tagFinished'), taggedMediaObject)
+    def solved(self, result):
+        self.emit(SIGNAL('tagFinished'), result)
 
     def tag(self, mediaObject):
         if mediaObject.type() == 'video':
             if mediaObject.filename:
                 query = Collection()
                 query.media = [ mediaObject ]
-                self.guessers[0].start(query)
+                self.schain.start(query)
                 return
             else:
                 print 'Tagger: filename hasn\'t been set on Media object.'
