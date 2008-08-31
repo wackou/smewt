@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import SIGNAL, QObject
+from PyQt4.QtCore import Qt, SIGNAL, QObject
 from smewtexception import SmewtException
 from workerthread import WorkerThread
 import logging
@@ -34,7 +34,7 @@ class SolvingChain(QObject):
         # connect each element (guesser, solver) to the next
         for elem, next in zip(self.chain[:-1], self.chain[1:]):
             self.connect(elem, SIGNAL('finished'),
-                         next.start)
+                         next.start, Qt.QueuedConnection)
 
         # connect the last solver's finished to the whole chain finish method
         self.connect(self.chain[-1], SIGNAL('finished'),
