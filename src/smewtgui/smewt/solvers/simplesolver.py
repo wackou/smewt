@@ -21,6 +21,60 @@
 from smewt.solvers.solver import Solver
 import copy
 
+def levenshtein(a, b):
+    if not a: return len(b)
+    if not b: return len(a)
+
+    m = len(a)
+    n = len(b)
+    d = []
+    for i in range(m+1):
+        d.append([0] * (n+1))
+
+    for i in range(m+1):
+        d[i][0] = i
+
+    for j in range(n+1):
+        d[0][j] = j
+
+    for i in range(1, m+1):
+        for j in range(1, n+1):
+            if a[i-1] == b[j-1]:
+                cost = 0
+            else:
+                cost = 1
+
+            d[i][j] = min(d[i-1][j] + 1,     # deletion
+                          d[i][j-1] + 1,     # insertion
+                          d[i-1][j-1] + cost # substitution
+                          )
+
+    return d[m][n]
+
+
+def exactMatch(baseGuess, md):
+    return baseGuess.uniqueKey() == md.uniqueKey()
+
+def fuzzyMatch(baseGuess, md):
+    for p1, p2 in zip(baseGuess.uniqueKey(), md.uniqueKey()):
+        if type(p1) == str or type(p1) == unicode:
+            if p1 not in p2:
+                return False
+        else:
+            if p1 != p2:
+                return False
+    return True
+
+def fuzzyMatch2(baseGuess, md):
+    for p1, p2 in zip(baseGuess.uniqueKey(), md.uniqueKey()):
+        if type(p1) == str or type(p1) == unicode:
+            if levenshtein(p1.lower(), p2.lower()) > 6:
+                return False
+        else:
+            if p1 != p2:
+                return False
+    return True
+
 
 class SimpleSolver(Solver):
     '''This solver implements this simple solving strategy:
@@ -46,7 +100,7 @@ class SimpleSolver(Solver):
             return
 
         for md in query.metadata:
-            if baseGuess.uniqueKey() == md.uniqueKey():
+            if fuzzyMatch2(baseGuess, md):
                 baseGuess.merge(md)
 
         self.found(query, baseGuess)
