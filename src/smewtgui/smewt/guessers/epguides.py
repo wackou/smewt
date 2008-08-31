@@ -19,17 +19,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.guessers.guesser import Guesser
 from smewt import config
+from smewt.guessers.guesser import Guesser
+from smewt.media.series import Episode
 
 from PyQt4.QtCore import SIGNAL, QObject, QUrl
 from PyQt4.QtWebKit import QWebView
 
-import sys
-import re
+import sys, re, logging
 from urllib import urlopen,  urlencode
 
-from smewt.media.series import Episode
 
 class EpGuideQuerier(QObject):
     episodeLists = {}
@@ -64,13 +63,13 @@ class EpGuideQuerier(QObject):
         if self.episodeLists.has_key(self.mediaObject['serie']):
             self.emit(SIGNAL('gotEpisodeList'))
         else:
-            print 'Guesser: EpGuides - looking for serie', self.mediaObject['serie']
+            logging.info('Guesser: EpGuides - looking for serie %s', self.mediaObject['serie'])
             query = 'allintitle: site:epguides.com ' + self.mediaObject['serie']
             url = QUrl.fromEncoded('http://www.google.com/search?' + urlencode({'q': query},  doseq=True))
             self.queryPage.load(url)
 
     def getGoogleResult(self, ok):
-        print 'Guesser: EpGuides - got result url from google ok =', ok
+        logging.info('Guesser: EpGuides - got result url from google ok = %s', ok)
         if config.test_localweb:
             self.googleResult = open(config.local_epguides_googleresult).read().decode('utf-8')
         else:
@@ -83,17 +82,16 @@ class EpGuideQuerier(QObject):
             return
 
         self.serieUrl = matches[0]
-        print 'Found:', self.serieUrl
-        print '*'*100
+        logging.info('Found: %s', self.serieUrl)
         self.emit(SIGNAL('gotSerie'), self.serieUrl)
 
     def getEpisodeList(self, url):
-        print 'getting episode list'
+        logging.info('Getting episode list...')
         if config.test_localweb:
             html = open(config.local_epguides_episodelist).read()
         else:
             html = urlopen(url).read()
-        print 'Guesser: EpGuides - got episodes list from epguides'
+        logging.info('Guesser: EpGuides - got episodes list from epguides')
 
         # extract serie name
         serieName = re.compile('<h1>.*?>(.*?)</a></h1>').findall(html)[0]
