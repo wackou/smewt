@@ -94,7 +94,13 @@ class EpGuideQuerier(QObject):
         logging.info('Guesser: EpGuides - got episodes list from epguides')
 
         # extract serie name
-        serieName = re.compile('<h1>.*?>(.*?)</a></h1>').findall(html)[0]
+        try:
+            serieName = re.compile('<h1>.*?>(.*?)</a></h1>').findall(html)[0]
+        except IndexError:
+            self.episodeLists[self.mediaObject['serie']] = []
+            self.emit(SIGNAL('gotEpisodeList'))
+            return
+
         #print 'found seriename:', serieName
 
         # extract episode table text

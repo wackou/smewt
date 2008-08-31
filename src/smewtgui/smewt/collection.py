@@ -31,7 +31,8 @@ class FolderImporter(QObject):
         self.folder = folder
         self.taggingQueue = []
         from smewt.taggers.magicepisodetagger import MagicEpisodeTagger
-        self.tagger = MagicEpisodeTagger()
+        from smewt.taggers.wackoutagger import WackouTagger
+        self.tagger = WackouTagger()
         self.results = Collection()
 
         self.connect(self.tagger, SIGNAL('tagFinished'), self.tagged)

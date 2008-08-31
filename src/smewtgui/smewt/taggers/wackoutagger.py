@@ -27,25 +27,37 @@ from PyQt4.QtCore import SIGNAL
 from smewt import Collection, SolvingChain
 from smewt.media.series import Episode
 
-class MagicEpisodeTagger(Tagger):
+class WackouTagger(Tagger):
     def __init__(self):
-        super(MagicEpisodeTagger, self).__init__()
+        super(WackouTagger, self).__init__()
 
-        self.schain = SolvingChain(EpisodeFilename(), MergeSolver(),
-                                   EpGuides(), SimpleSolver())
+        self.chain1 = SolvingChain(EpisodeFilename(), MergeSolver())
+        self.chain2 = SolvingChain(EpGuides(), SimpleSolver())
 
-        # Connect the chain to our solved slot
-        self.connect(self.schain, SIGNAL('finished'), self.solved)
+        # Connect the chains to our slots
+        self.connect(self.chain1, SIGNAL('finished'), self.gotFilenameMetadata)
+        self.connect(self.chain2, SIGNAL('finished'), self.solved)
+
+    def gotFilenameMetadata(self, result):
+        self.filenameMetadata = result.metadata[0]
+        self.chain2.start(result)
 
     def solved(self, result):
+        if not result.metadata[0]:
+            # we didn't find any info outside of what the filename told us
+            result.metadata = [ self.filenameMetadata ]
+            result.links = [ (result.media[0], result.metadata[0]) ]
+
         self.emit(SIGNAL('tagFinished'), result)
+
+
 
     def tag(self, media):
         if media.type() == 'video':
             if media.filename:
                 query = Collection()
                 query.media = [ media ]
-                self.schain.start(query)
+                self.chain1.start(query)
                 return
             else:
                 print 'Tagger: filename hasn\'t been set on Media object.'
@@ -53,20 +65,4 @@ class MagicEpisodeTagger(Tagger):
             print 'Tagger: Not a video media.  Cannot tag.'
 
         # default tagger strategy if none other was applicable
-        return super(MagicEpisodeTagger, self).tag(media)
-
-
-if __name__ == '__main__':
-    import sys
-    app = QApplication(sys.argv)
-    tagger = MagicEpisodeTagger()
-    mediaObject = Episode.fromDict({'filename': sys.argv[1]})
-
-    def printResults(tagged):
-        print tagged
-
-    app.connect(tagger, SIGNAL('tagFinished'), printResults)
-
-    tagger.tag(mediaObject)
-
-    app.exec_()
+        return super(WackouTagger, self).tag(media)

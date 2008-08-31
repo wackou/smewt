@@ -26,6 +26,7 @@ from PyQt4.QtWebKit import QWebView, QWebPage
 from smewt.media.series import view
 from bookmarkwidget import BookmarkListWidget
 import logging
+from os.path import join, dirname
 
 class MainWidget(QWidget):
     def __init__(self):
@@ -68,10 +69,11 @@ class MainWidget(QWidget):
         layout.addLayout(toolbar)
         layout.addLayout(navigation)
 
-        t = QSettings().value('collection_file').toString()
+        settings = QSettings()
+        t = settings.value('collection_file').toString()
         if t == '':
-            t = join(dirname(unicode(s.fileName())),  'Smewg.collection')
-            s.setValue('collection_file',  QVariant(t))
+            t = join(dirname(unicode(settings.fileName())),  'Smewg.collection')
+            settings.setValue('collection_file',  QVariant(t))
 
         try:
             self.collection.load(t)

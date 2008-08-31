@@ -54,7 +54,7 @@ class Solver(QObject):
         solved.metadata = [ result ]
         solved.links = [ (query.media[0], result) ]
 
-        logging.debug('Solver: found for %s: %s', query.media[0], str(solved.metadata[0]))
+        logging.debug('Solver: found for %s: %s', query.media[0], solved.metadata[0])
 
         self.emit(SIGNAL('finished'), solved)
 
