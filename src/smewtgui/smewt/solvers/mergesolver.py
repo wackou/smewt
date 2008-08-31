@@ -26,7 +26,7 @@ class MergeSolver(Solver):
     def __init__(self):
         super(MergeSolver, self).__init__()
 
-    def solve(self, query):
+    def start(self, query):
         self.checkValid(query)
 
         results = sorted(query.metadata, cmp = lambda x, y: x.confidence > y.confidence)

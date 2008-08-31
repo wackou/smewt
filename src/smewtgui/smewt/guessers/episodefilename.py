@@ -35,7 +35,7 @@ class EpisodeFilename(Guesser):
     def __init__(self):
         super(EpisodeFilename, self).__init__()
 
-    def guess(self, query):
+    def start(self, query):
         self.checkValid(query)
 
         found = query.metadata
@@ -67,7 +67,6 @@ class EpisodeFilename(Guesser):
             result['serie'] = name[1]
             result.confidence = 0.4
         found += [ result ]
-
 
         self.emit(SIGNAL('finished'), query)
 

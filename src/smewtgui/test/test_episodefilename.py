@@ -52,10 +52,10 @@ class TestEpisodeFilename(TestCase):
             query = Collection()
             query.media = [ Media(filename) ]
 
-            result = self.launchGuesser(EpisodeFilename(), query)
-            result = self.launchSolver(solver, result)
+            result = self.launch(EpisodeFilename(), query)
+            result = self.launch(solver, result)
 
-            self.assertEqual(len(result.metadata), 1)
+            self.assertEqual(len(result.metadata), 1, 'Solver coudn\'t solve anything...')
             result = result.metadata[0]
 
             for key, value in md.items():
@@ -76,5 +76,5 @@ suite = allTests(TestEpisodeFilename)
 if __name__ == '__main__':
     import sys, logging
     a = QCoreApplication(sys.argv)
-    #logging.basicConfig(level = logging.INFO)
+    logging.basicConfig(level = logging.DEBUG)
     TextTestRunner(verbosity=2).run(suite)

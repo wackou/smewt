@@ -162,7 +162,7 @@ class EpGuides(Guesser):
     def __init__(self):
         super(EpGuides, self).__init__()
 
-    def guess(self, query):
+    def start(self, query):
         self.mediaObjectQueries = {}
         self.query = query
         self.resultMetadata = query.metadata

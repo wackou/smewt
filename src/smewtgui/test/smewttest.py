@@ -24,13 +24,13 @@ from PyQt4.QtCore import SIGNAL, QThread
 import yaml, logging
 
 class WorkerThread(QThread):
-    def __init__(self, actuator, signal, query, results):
+    def __init__(self, task, args, results):
         super(WorkerThread, self).__init__()
-        self.actuator = actuator
-        self.query = query
+        self.task = task
+        self.args = args
         self.results = results
 
-        self.connect(self.actuator, SIGNAL(signal),
+        self.connect(self.task, SIGNAL('finished'),
                      self.finished)
 
     def run(self):
@@ -45,32 +45,18 @@ class WorkerThread(QThread):
 
 
 class TestCase(BaseTestCase):
-    def launchGuesser(self, guesser, query):
+    def launch(self, task, args):
         results = [ None ]
-        t = WorkerThread(guesser, 'finished', query, results)
+        t = WorkerThread(task, args, results)
         t.start()
 
         # hack to make sure the worker thread could enter its event loop
         QThread.msleep(100)
 
-        guesser.start(query)
+        task.start(args)
         t.wait()
 
         return results[0]
-
-    def launchSolver(self, solver, query):
-        results = [ None ]
-        t = WorkerThread(solver, 'finished', query, results)
-        t.start()
-
-        # hack to make sure the worker thread could enter its event loop
-        QThread.msleep(100)
-
-        solver.start(query)
-        t.wait()
-
-        return results[0]
-
 
 
 def allTests(testClass):

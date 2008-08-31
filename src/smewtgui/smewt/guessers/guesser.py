@@ -19,10 +19,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import SIGNAL
+from PyQt4.QtCore import SIGNAL, QObject
 from smewt import SmewtException
 
-class Guesser(QtCore.QObject):
+class Guesser(QObject):
     """Abstract class from which all guessers must inherit.  Guessers are objects
     that implement a slot called start(self, query) that returns immediately, and
     begins the process of guessing metadata of the first element of the given
