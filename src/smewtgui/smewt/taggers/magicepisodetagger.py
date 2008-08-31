@@ -22,12 +22,7 @@
 from smewt.taggers.tagger import Tagger
 from smewt.guessers import *
 from smewt.solvers import *
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-import copy
-import sys
-import re
-from os.path import join, split, basename
+from PyQt4.QtCore import SIGNAL
 
 from smewt import Collection, SolvingChain
 from smewt.media.series import Episode
@@ -46,11 +41,11 @@ class MagicEpisodeTagger(Tagger):
     def solved(self, result):
         self.emit(SIGNAL('tagFinished'), result)
 
-    def tag(self, mediaObject):
-        if mediaObject.type() == 'video':
-            if mediaObject.filename:
+    def tag(self, media):
+        if media.type() == 'video':
+            if media.filename:
                 query = Collection()
-                query.media = [ mediaObject ]
+                query.media = [ media ]
                 self.schain.start(query)
                 return
             else:
@@ -58,13 +53,15 @@ class MagicEpisodeTagger(Tagger):
         else:
             print 'Tagger: Not a video media.  Cannot tag.'
 
-        return super(MagicEpisodeTagger, self).tag(mediaObject)
+        # default tagger strategy if none other was applicable
+        return super(MagicEpisodeTagger, self).tag(media)
 
 
 if __name__ == '__main__':
+    import sys
     app = QApplication(sys.argv)
     tagger = MagicEpisodeTagger()
-    mediaObject = EpisodeObject.fromDict({'filename': sys.argv[1]})
+    mediaObject = Episode.fromDict({'filename': sys.argv[1]})
 
     def printResults(tagged):
         print tagged
