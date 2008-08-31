@@ -20,6 +20,7 @@
 
 from PyQt4.QtCore import SIGNAL, QObject
 from smewtexception import SmewtException
+from workerthread import WorkerThread
 
 class SolvingChain(QObject):
     def __init__(self, *args):
@@ -39,8 +40,28 @@ class SolvingChain(QObject):
                      self.finished)
 
 
-    def start(self):
-        self.chain[0].start()
+    def start(self, query):
+        '''Launches the solving chain process asynchronously, eg: it returns
+        immediately and will emit the signal 'finished' along with the result of
+        it when done.'''
+        self.chain[0].start(query)
+
+    def launchAndWait(self, query):
+        '''Launches the solving chain process synchronously, eg: it will only
+        return when it has finished solving the chain. This method returns the
+        result of the chain.'''
+        results = [ None ]
+        t = WorkerThread(self, query, results)
+        t.start()
+
+        # hack to make sure the worker thread could enter its event loop
+        from PyQt4.QtCore import QThread
+        QThread.msleep(100)
+
+        self.start(query)
+        t.wait()
+
+        return results[0]
 
     def finished(self, result):
         self.emit(SIGNAL('finished'), result)

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Ricard Marxer <email@ricardmarxer.com>
+# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +18,25 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewtdict import SmewtDict
-from validatingsmewtdict import ValidatingSmewtDict
-from smewtexception import SmewtException
-from smewturl import SmewtUrl
-from solvingchain import SolvingChain
-from workerthread import WorkerThread
+from PyQt4.QtCore import SIGNAL, QThread
+import logging
+
+class WorkerThread(QThread):
+    def __init__(self, task, args, results):
+        super(WorkerThread, self).__init__()
+        self.task = task
+        self.args = args
+        self.results = results
+
+        self.connect(self.task, SIGNAL('finished'),
+                     self.finished)
+
+    def run(self):
+        logging.debug('Starting worker thread event loop...')
+        self.exec_()
+        logging.debug('Worker thread finished running')
+
+    def finished(self, result):
+        logging.debug('Worker thread received finished signal')
+        self.results[0] = result
+        self.quit()

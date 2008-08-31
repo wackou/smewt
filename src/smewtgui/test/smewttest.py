@@ -20,43 +20,9 @@
 
 from unittest import *
 from unittest import TestCase as BaseTestCase
-from PyQt4.QtCore import SIGNAL, QThread
+
 import yaml, logging
 
-class WorkerThread(QThread):
-    def __init__(self, task, args, results):
-        super(WorkerThread, self).__init__()
-        self.task = task
-        self.args = args
-        self.results = results
-
-        self.connect(self.task, SIGNAL('finished'),
-                     self.finished)
-
-    def run(self):
-        logging.debug('Starting worker thread event loop...')
-        self.exec_()
-        logging.debug('Worker thread finished running')
-
-    def finished(self, result):
-        logging.debug('Worker thread received finished signal')
-        self.results[0] = result
-        self.quit()
-
-
-class TestCase(BaseTestCase):
-    def launch(self, task, args):
-        results = [ None ]
-        t = WorkerThread(task, args, results)
-        t.start()
-
-        # hack to make sure the worker thread could enter its event loop
-        QThread.msleep(100)
-
-        task.start(args)
-        t.wait()
-
-        return results[0]
 
 
 def allTests(testClass):

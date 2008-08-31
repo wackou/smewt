@@ -52,8 +52,8 @@ class TestEpisodeFilename(TestCase):
             query = Collection()
             query.media = [ Media(filename) ]
 
-            result = self.launch(EpisodeFilename(), query)
-            result = self.launch(solver, result)
+            schain = SolvingChain(EpisodeFilename(), solver)
+            result = schain.launchAndWait(query)
 
             self.assertEqual(len(result.metadata), 1, 'Solver coudn\'t solve anything...')
             result = result.metadata[0]
