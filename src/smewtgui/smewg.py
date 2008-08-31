@@ -45,9 +45,6 @@ if __name__ == '__main__':
     app.setOrganizationDomain("smewt.com")
     app.setApplicationName("Smewg")
 
-    logging.basicConfig(level = logging.DEBUG,
-                        format = '%(levelname)-8s %(message)s')
-
     sgui = SmewtGui()
     sgui.show()
     app.exec_()

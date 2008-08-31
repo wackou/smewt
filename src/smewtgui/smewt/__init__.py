@@ -18,6 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from base import SmewtDict, ValidatingSmewtDict, SmewtException, SmewtUrl
+from base import SmewtDict, ValidatingSmewtDict, SmewtException, SmewtUrl, SolvingChain
 from mediaobject import Media, Metadata
 from collection import Collection
+
+import logging
+logging.basicConfig(level = logging.DEBUG,
+                    format = '%(levelname)-8s %(message)s')
