@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2008-08-30, 03:50:03 -->
+<!-- Saved: 2008-09-01, 01:31:29 -->
 <!-- Copyright (C) 2008 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -131,19 +131,7 @@
       <Dir>smewt</Dir>
       <Dir>media</Dir>
       <Dir>series</Dir>
-      <Name>webplugin_epguides.py</Name>
-    </Source>
-    <Source>
-      <Dir>smewt</Dir>
-      <Dir>media</Dir>
-      <Dir>series</Dir>
       <Name>__init__.py</Name>
-    </Source>
-    <Source>
-      <Dir>smewt</Dir>
-      <Dir>media</Dir>
-      <Dir>series</Dir>
-      <Name>view_episodes_by_season.py</Name>
     </Source>
     <Source>
       <Dir>smewt</Dir>
@@ -226,6 +214,26 @@
       <Dir>smewt</Dir>
       <Dir>solvers</Dir>
       <Name>mergesolver.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>base</Dir>
+      <Name>solvingchain.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>base</Dir>
+      <Name>workerthread.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>solvers</Dir>
+      <Name>simplesolver.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>taggers</Dir>
+      <Name>wackoutagger.py</Name>
     </Source>
   </Sources>
   <Forms>

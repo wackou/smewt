@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.1.dtd">
 <!-- eric4 tasks file for project Smewg -->
-<!-- Saved: 2008-08-30, 03:50:04 -->
+<!-- Saved: 2008-09-01, 01:31:31 -->
 <Tasks version="4.1">
   <Task priority="2" completed="False" bugfix="False">
     <Summary>TODO: make a .desktop file</Summary>
@@ -134,30 +134,6 @@
       <Linenumber>20</Linenumber>
     </Resource>
   </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: here we should import both the Media and the Metadata into the user</Summary>
-    <Description></Description>
-    <Created>2008-08-21, 04:37:04</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Name>collection.py</Name>
-      </Filename>
-      <Linenumber>58</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: cannot dump links correctly, need to use reference</Summary>
-    <Description></Description>
-    <Created>2008-08-21, 04:37:04</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Name>collection.py</Name>
-      </Filename>
-      <Linenumber>131</Linenumber>
-    </Resource>
-  </Task>
   <Task priority="1" completed="False" bugfix="True">
     <Summary>FIXME: this is a hack... How do we know we're at the root node?</Summary>
     <Description></Description>
@@ -196,69 +172,6 @@
       <Linenumber>157</Linenumber>
     </Resource>
   </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: isn't it better to implement properties as actual python properties? or attributes?</Summary>
-    <Description></Description>
-    <Created>2008-08-30, 01:30:17</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Name>mediaobject.py</Name>
-      </Filename>
-      <Linenumber>55</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: !!write unit tests for this class...!!</Summary>
-    <Description></Description>
-    <Created>2008-08-30, 01:30:17</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Name>mediaobject.py</Name>
-      </Filename>
-      <Linenumber>56</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: surely there is a better way to do this...</Summary>
-    <Description></Description>
-    <Created>2008-08-30, 02:00:37</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>guessers</Dir>
-        <Name>epguides.py</Name>
-      </Filename>
-      <Linenumber>112</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: check that result is valid</Summary>
-    <Description></Description>
-    <Created>2008-08-30, 03:23:13</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>solvers</Dir>
-        <Name>solver.py</Name>
-      </Filename>
-      <Linenumber>49</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: big hack</Summary>
-    <Description></Description>
-    <Created>2008-08-30, 03:37:13</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>solvers</Dir>
-        <Name>naivesolver.py</Name>
-      </Filename>
-      <Linenumber>48</Linenumber>
-    </Resource>
-  </Task>
   <Task priority="1" completed="False" bugfix="True">
     <Summary>FIXME: encode url correctly</Summary>
     <Description></Description>
@@ -274,16 +187,103 @@
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: big hack</Summary>
+    <Description></Description>
+    <Created>2008-08-31, 20:17:54</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>solvers</Dir>
+        <Name>naivesolver.py</Name>
+      </Filename>
+      <Linenumber>48</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
     <Summary>FIXME: subtitles don't appear when lauching smplayer...</Summary>
     <Description></Description>
-    <Created>2008-08-30, 03:47:27</Created>
+    <Created>2008-08-31, 22:57:21</Created>
     <Resource>
       <Filename>
         <Dir>smewt</Dir>
         <Dir>gui</Dir>
         <Name>mainwidget.py</Name>
       </Filename>
-      <Linenumber>154</Linenumber>
+      <Linenumber>156</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: here we should import both the Media and the Metadata into the user</Summary>
+    <Description></Description>
+    <Created>2008-08-31, 23:07:29</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>collection.py</Name>
+      </Filename>
+      <Linenumber>59</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: cannot dump links correctly, need to use reference</Summary>
+    <Description></Description>
+    <Created>2008-08-31, 23:07:29</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>collection.py</Name>
+      </Filename>
+      <Linenumber>135</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: check that result is valid</Summary>
+    <Description></Description>
+    <Created>2008-09-01, 00:16:30</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>solvers</Dir>
+        <Name>solver.py</Name>
+      </Filename>
+      <Linenumber>51</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: surely there is a better way to do this...</Summary>
+    <Description></Description>
+    <Created>2008-09-01, 00:23:34</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>guessers</Dir>
+        <Name>epguides.py</Name>
+      </Filename>
+      <Linenumber>116</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: isn't it better to implement properties as actual python properties? or attributes?</Summary>
+    <Description></Description>
+    <Created>2008-09-01, 01:22:31</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>mediaobject.py</Name>
+      </Filename>
+      <Linenumber>62</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: !!write unit tests for this class...!!</Summary>
+    <Description></Description>
+    <Created>2008-09-01, 01:22:31</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>mediaobject.py</Name>
+      </Filename>
+      <Linenumber>63</Linenumber>
     </Resource>
   </Task>
 </Tasks>
