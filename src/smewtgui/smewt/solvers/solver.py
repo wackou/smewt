@@ -45,6 +45,8 @@ class Solver(QObject):
         if not query.metadata:
             raise SmewtException('Solver: not solving anything...')
 
+        logging.debug('Solver: trying to solve %s', query)
+
     def found(self, query, result):
         # TODO: check that result is valid
         solved = Collection()
@@ -52,7 +54,7 @@ class Solver(QObject):
         solved.metadata = [ result ]
         solved.links = [ (query.media[0], result) ]
 
-        logging.info('Solver: found for %s: %s', query.media[0], str(solved.metadata[0]))
+        logging.debug('Solver: found for %s: %s', query.media[0], str(solved.metadata[0]))
 
         self.emit(SIGNAL('finished'), solved)
 

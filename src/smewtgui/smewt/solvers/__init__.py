@@ -18,4 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__all__ = ['naivesolver']
+from mergesolver import MergeSolver
+from naivesolver import NaiveSolver
+from simplesolver import SimpleSolver

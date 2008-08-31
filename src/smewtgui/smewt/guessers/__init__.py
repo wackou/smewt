@@ -18,4 +18,5 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__all__ = ['episodefilename', 'epguides']
+from epguides import EpGuides
+from episodefilename import EpisodeFilename

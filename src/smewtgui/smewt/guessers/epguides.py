@@ -196,7 +196,7 @@ class EpGuides(Guesser):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     guesser = EpGuides()
-    mediaObjects = [EpisodeObject.fromDict({'serie': sys.argv[1],
+    mediaObjects = [Episode.fromDict({'serie': sys.argv[1],
                                             'title': sys.argv[2],
                                             'episodeNumber': sys.argv[3]})]
     def printResults(guesses):

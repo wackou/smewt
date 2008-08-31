@@ -74,7 +74,7 @@ class TestEpisodeFilename(TestCase):
 suite = allTests(TestEpisodeFilename)
 
 if __name__ == '__main__':
-    import sys, logging
+    from PyQt4.QtCore import QCoreApplication
+    import sys
     a = QCoreApplication(sys.argv)
-    logging.basicConfig(level = logging.DEBUG)
     TextTestRunner(verbosity=2).run(suite)

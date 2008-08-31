@@ -135,7 +135,7 @@ class MainWidget(QWidget):
         if surl.viewType == 'single':
             metadata = self.collection.filter('serie', surl.args[0])
         elif surl.viewType == 'all':
-            metadata = dict([(md.getUniqueKey(), md) for md in self.collection.metadata ])
+            metadata = dict([(md.uniqueKey(), md) for md in self.collection.metadata ])
         else:
             raise SmewtException('Invalid view type: %s' % surl.viewType)
 

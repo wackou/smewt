@@ -19,8 +19,12 @@
 #
 
 from smewttest import *
+from smewt import *
+from smewt.solvers import *
+from smewt.guessers import *
 import yaml
 import glob
+from smewt.media import Episode
 
 class TestIMDB(TestCase):
 
@@ -30,9 +34,28 @@ class TestIMDB(TestCase):
             #print data
 
 
+    def testEpGuides(self):
+        query = Collection()
+        chain = SolvingChain(EpisodeFilename(), MergeSolver(), EpGuides(), SimpleSolver())
 
+        query.media = [ Media('/data/Series/Futurama/Season 1/Futurama.Extras.-.Trailer.DVDRiP-frankysan.[tvu.org.ru].ogm') ]
+        result = chain.launchAndWait(query)
+        self.assertEqual(result.metadata, [None])
+
+        query.media = [ Media('/data/Series/Futurama/Season 1/Futurama.1x03.I,.Roommate.DVDRiP-frankysan.[tvu.org.ru].ogm') ]
+        expected = Episode.fromDict(yaml.load('''
+serie : Futurama
+season     : 1
+episodeNumber : 3
+title      : I, Roommate'''))
+
+        result = chain.launchAndWait(query)
+        self.assert_(result.metadata[0].contains(expected))
 
 suite = allTests(TestIMDB)
 
 if __name__ == '__main__':
+    from PyQt4.QtCore import QCoreApplication
+    import sys
+    a = QCoreApplication(sys.argv)
     TextTestRunner(verbosity=2).run(suite)

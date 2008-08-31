@@ -46,7 +46,7 @@ class NaiveSolver(Solver):
                 if result[k] and v and result[k] != v:
                     merge = False
             # FIXME: big hack
-            if list(result.getUniqueKey()).count(None) > 0 and md.confidence < 0.6:
+            if list(result.uniqueKey()).count(None) > 0 and md.confidence < 0.6:
                 merge = False
             if merge:
                 for k in md.properties:

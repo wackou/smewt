@@ -21,6 +21,7 @@
 from PyQt4.QtCore import SIGNAL, QObject
 from smewtexception import SmewtException
 from workerthread import WorkerThread
+import logging
 
 class SolvingChain(QObject):
     def __init__(self, *args):
@@ -64,4 +65,9 @@ class SolvingChain(QObject):
         return results[0]
 
     def finished(self, result):
+        if result.metadata:
+            logging.info('Solving chain for file %s found metadata: %s', result.media[0].filename, result.metadata[0])
+        else:
+            logging.info('Solving chain for file %s didn\'t find any metadata...', result.media[0].filename)
+
         self.emit(SIGNAL('finished'), result)

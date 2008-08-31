@@ -43,6 +43,13 @@ class Media:
         self.sha1 = ''
         self.metadata = None # ref to a Metadata object
 
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return self.filename
+
+
     def type(self):
         for name, exts in Media.types.items():
             for ext in exts:
@@ -143,7 +150,7 @@ class Metadata:
         result = [ self[attr] for attr in attrs ]
         return tuple(result)
 
-    def getUniqueKey(self):
+    def uniqueKey(self):
         return self.getAttributes(self.unique)
 
     def __getitem__(self, prop):
@@ -153,6 +160,16 @@ class Metadata:
         #self.properties[prop] = value
         # automatic conversion, is that good?
         self.properties[prop] = self.parse(self, prop, value)
+
+    def merge(self, other):
+        for name, prop in other.properties.items():
+            self.properties[name] = prop
+
+    def contains(self, other):
+        for name, prop in other.properties.items():
+            if self.properties[name] != prop:
+                return False
+        return True
 
     @staticmethod
     def parse(cls, name, value):

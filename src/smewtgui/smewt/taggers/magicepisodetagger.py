@@ -32,6 +32,7 @@ class MagicEpisodeTagger(Tagger):
         super(MagicEpisodeTagger, self).__init__()
 
         self.schain = SolvingChain(episodefilename.EpisodeFilename(),
+                                   mergesolver.MergeSolver(),
                                    epguides.EpGuides(),
                                    naivesolver.NaiveSolver())
 

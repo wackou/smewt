@@ -102,6 +102,9 @@ class Collection(QObject):
                 result.links += [ (media, metadata) ]
         return result
 
+    def __str__(self):
+        return 'Collection:\nMedia = %s\nMetadata = %s' % (str(self.media), str(self.metadata))
+
 
     def load(self, filename):
         import cPickle
