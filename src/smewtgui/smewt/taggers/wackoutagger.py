@@ -32,7 +32,7 @@ class WackouTagger(Tagger):
         super(WackouTagger, self).__init__()
 
         self.chain1 = SolvingChain(EpisodeFilename(), MergeSolver())
-        self.chain2 = SolvingChain(EpGuides(), SimpleSolver())
+        self.chain2 = SolvingChain(EpisodeIMDB(), SimpleSolver())
 
         # Connect the chains to our slots
         self.connect(self.chain1, SIGNAL('finished'), self.gotFilenameMetadata)
