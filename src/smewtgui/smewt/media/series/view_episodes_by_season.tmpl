@@ -12,13 +12,11 @@ for (media, md) in eps.links:
     try:
         poster = md['loresImage']
     except:
-        print 'no poster for', md
+        pass
 
     md = Episode(md)
     md['filename'] = media.filename
     series[md['serie']][md['season']].append(md)
-
-print 'POSTER=', poster
 
 for serie, seasons in series.items():
     for season, eps in seasons.items():
