@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Nicolas Wack
-# Copyright (c) 2008 Ricard Marxer
+# Copyright (c) 2008 Ricard Marxer <email@ricardmarxer.com>
+# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,33 +20,37 @@
 #
 
 from smewt.solvers.solver import Solver
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 import copy
 
-from media.series.serieobject import EpisodeObject
 
 class NaiveSolver(Solver):
     def __init__(self):
         super(NaiveSolver, self).__init__()
 
-    def solve(self, mediaObjects):
-        if not mediaObjects:
-            return super(NaiveSolver, self).solve(mediaObjects)
+    def start(self, query):
+        self.checkValid(query)
 
-        resultMediaObject = copy.copy(mediaObjects[0])
+        results = sorted(query.metadata, cmp = lambda x, y: x.confidence > y.confidence)
+        result = copy.copy(results[0])
 
-        for mediaObject in mediaObjects[1:]:
-            for k, v in mediaObject.properties.iteritems():
+        #resultMediaObject = copy.copy(mediaObjects[0])
+
+        for md in results[1:]:
+            merge = True
+            for k, v in md.properties.items():
                 #print 'Solver: Checking property ''%s'' ::: ''%s'' (%r) -- ''%s'' (%r)' % (k, v, mediaObject.confidence[k], resultMediaObject[k], resultMediaObject.confidence[k])
                 #if mediaObject.confidence.get(k, 0.0) > resultMediaObject.confidence.get(k, 0.0):
-                if mediaObject.confidence[k] > resultMediaObject.confidence[k]:
-                    resultMediaObject[k] = v
-                    resultMediaObject.confidence[k] = mediaObject.confidence[k]
+                #if md.confidence[k] > resultMediaObject.confidence[k]:
+                #    resultMediaObject[k] = v
+                #    resultMediaObject.confidence[k] = mediaObject.confidence[k]
+                if result[k] and v and result[k] != v:
+                    merge = False
+            # FIXME: big hack
+            if list(result.uniqueKey()).count(None) > 0 and md.confidence < 0.6:
+                merge = False
+            if merge:
+                for k in md.properties:
+                    result[k] = md[k]
 
-        self.emit(SIGNAL('solveFinished'), resultMediaObject)
+        self.found(query, result)
 
-
-if __name__ == '__main__':
-    #TODO: write a test here
-    pass

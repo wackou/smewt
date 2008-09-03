@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Nicolas Wack
-# Copyright (c) 2008 Ricard Marxer
+# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,7 +33,7 @@ class BookmarkWidget(QPushButton):
 class BookmarkListWidget(QWidget):
     def __init__(self):
         super(BookmarkListWidget, self).__init__()
-        self.bookmarks = {'All Series':'smewt://series/all'}
+        self.bookmarks = {'All Series':'smewt://serie/all'}
 
         layout = QVBoxLayout()
 

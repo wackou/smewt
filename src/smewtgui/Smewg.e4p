@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2008-07-31, 00:52:05 -->
+<!-- Saved: 2008-09-01, 01:31:29 -->
 <!-- Copyright (C) 2008 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -15,62 +15,8 @@
       <Name>smewg.py</Name>
     </Source>
     <Source>
-      <Name>mediaplugin.py</Name>
-    </Source>
-    <Source>
-      <Name>test_connect.py</Name>
-    </Source>
-    <Source>
-      <Dir>media</Dir>
-      <Dir>series</Dir>
-      <Name>view_episodes_by_season.py</Name>
-    </Source>
-    <Source>
-      <Dir>media</Dir>
-      <Dir>series</Dir>
-      <Name>tagger.py</Name>
-    </Source>
-    <Source>
-      <Dir>media</Dir>
-      <Dir>series</Dir>
-      <Name>webplugin_epguides.py</Name>
-    </Source>
-    <Source>
-      <Dir>media</Dir>
-      <Dir>series</Dir>
-      <Name>__init__.py</Name>
-    </Source>
-    <Source>
-      <Dir>media</Dir>
-      <Dir>series</Dir>
-      <Name>view.py</Name>
-    </Source>
-    <Source>
-      <Dir>media</Dir>
-      <Dir>series</Dir>
-      <Name>serieobject.py</Name>
-    </Source>
-    <Source>
-      <Dir>media</Dir>
-      <Name>__init__.py</Name>
-    </Source>
-    <Source>
-      <Dir>gui</Dir>
-      <Name>resultwidget.py</Name>
-    </Source>
-    <Source>
-      <Dir>gui</Dir>
-      <Name>__init__.py</Name>
-    </Source>
-    <Source>
-      <Dir>gui</Dir>
-      <Name>querywidget.py</Name>
-    </Source>
-    <Source>
-      <Name>mediatagger.py</Name>
-    </Source>
-    <Source>
-      <Name>mediaobject.py</Name>
+      <Dir>smewt</Dir>
+      <Name>config.py</Name>
     </Source>
     <Source>
       <Dir>smewt</Dir>
@@ -82,17 +28,19 @@
     </Source>
     <Source>
       <Dir>smewt</Dir>
-      <Name>config.py</Name>
+      <Name>utils.py</Name>
     </Source>
     <Source>
       <Dir>smewt</Dir>
-      <Dir>guessers</Dir>
-      <Name>__init__.py</Name>
+      <Name>webparser.py</Name>
     </Source>
     <Source>
       <Dir>smewt</Dir>
-      <Dir>guessers</Dir>
-      <Name>epguides.py</Name>
+      <Name>mediaobject.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Name>mediaplugin.py</Name>
     </Source>
     <Source>
       <Dir>smewt</Dir>
@@ -106,13 +54,13 @@
     </Source>
     <Source>
       <Dir>smewt</Dir>
-      <Dir>solvers</Dir>
-      <Name>__init__.py</Name>
+      <Dir>guessers</Dir>
+      <Name>epguides.py</Name>
     </Source>
     <Source>
       <Dir>smewt</Dir>
-      <Dir>solvers</Dir>
-      <Name>naivesolver.py</Name>
+      <Dir>guessers</Dir>
+      <Name>__init__.py</Name>
     </Source>
     <Source>
       <Dir>smewt</Dir>
@@ -121,8 +69,13 @@
     </Source>
     <Source>
       <Dir>smewt</Dir>
-      <Dir>taggers</Dir>
+      <Dir>solvers</Dir>
       <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>solvers</Dir>
+      <Name>naivesolver.py</Name>
     </Source>
     <Source>
       <Dir>smewt</Dir>
@@ -136,21 +89,151 @@
     </Source>
     <Source>
       <Dir>smewt</Dir>
-      <Name>utils.py</Name>
+      <Dir>taggers</Dir>
+      <Name>__init__.py</Name>
     </Source>
     <Source>
+      <Dir>smewt</Dir>
+      <Dir>base</Dir>
+      <Name>smewtdict.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>base</Dir>
+      <Name>validatingsmewtdict.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>base</Dir>
+      <Name>smewtexception.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>base</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>gui</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>gui</Dir>
+      <Name>bookmarkwidget.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>media</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>serieobject.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>view.py</Name>
+    </Source>
+    <Source>
+      <Dir>utils</Dir>
+      <Name>regenerate_headers.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>animatedcollapse.js</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>jquery-1.2.2.pack.js</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>view_all_series.tmpl</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
       <Dir>media</Dir>
       <Dir>series</Dir>
       <Name>view_episodes_by_season.tmpl</Name>
     </Source>
     <Source>
-      <Dir>gui</Dir>
-      <Name>bookmarkwidget.py</Name>
-    </Source>
-    <Source>
+      <Dir>smewt</Dir>
       <Dir>media</Dir>
       <Dir>series</Dir>
-      <Name>view_all_series.tmpl</Name>
+      <Name>IMDBSerieMetadataFinder.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>gui</Dir>
+      <Name>mainwidget.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>base</Dir>
+      <Name>smewturl.py</Name>
+    </Source>
+    <Source>
+      <Dir>test</Dir>
+      <Name>all_tests.py</Name>
+    </Source>
+    <Source>
+      <Dir>test</Dir>
+      <Name>test_imdb.py</Name>
+    </Source>
+    <Source>
+      <Dir>test</Dir>
+      <Name>smewttest.py</Name>
+    </Source>
+    <Source>
+      <Dir>test</Dir>
+      <Name>test_episodefilename.py</Name>
+    </Source>
+    <Source>
+      <Dir>test</Dir>
+      <Dir>test_imdb</Dir>
+      <Name>blackadder.yaml</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>solvers</Dir>
+      <Name>mergesolver.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>base</Dir>
+      <Name>solvingchain.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>base</Dir>
+      <Name>workerthread.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>solvers</Dir>
+      <Name>simplesolver.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>taggers</Dir>
+      <Name>wackoutagger.py</Name>
     </Source>
   </Sources>
   <Forms>

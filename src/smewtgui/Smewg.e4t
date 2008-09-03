@@ -1,61 +1,289 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.1.dtd">
 <!-- eric4 tasks file for project Smewg -->
-<!-- Saved: 2008-07-31, 00:52:07 -->
+<!-- Saved: 2008-09-01, 01:31:31 -->
 <Tasks version="4.1">
   <Task priority="2" completed="False" bugfix="False">
     <Summary>TODO: make a .desktop file</Summary>
     <Description></Description>
     <Created>2008-07-30, 21:36:06</Created>
   </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: write a test here</Summary>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: this is not the correct way to do it...</Summary>
     <Description></Description>
-    <Created>2008-07-30, 23:47:40</Created>
+    <Created>2008-08-03, 19:07:03</Created>
+    <Resource>
+      <Filename>
+        <Dir>media</Dir>
+        <Dir>series</Dir>
+        <Name>view_episodes_by_season.html</Name>
+      </Filename>
+      <Linenumber>17</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: this is not the correct way to do it...</Summary>
+    <Description></Description>
+    <Created>2008-08-03, 19:14:43</Created>
+    <Resource>
+      <Filename>
+        <Dir>media</Dir>
+        <Dir>series</Dir>
+        <Name>view_episodes_by_season.tmpl</Name>
+      </Filename>
+      <Linenumber>17</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: encode url correctly</Summary>
+    <Description></Description>
+    <Created>2008-08-03, 23:52:51</Created>
+    <Resource>
+      <Filename>
+        <Dir>media</Dir>
+        <Dir>series</Dir>
+        <Name>IMDBSerieFetcher.py</Name>
+      </Filename>
+      <Linenumber>34</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: change this to an exception</Summary>
+    <Description></Description>
+    <Created>2008-08-20, 22:38:34</Created>
+    <Resource>
+      <Filename>
+        <Name>base.py</Name>
+      </Filename>
+      <Linenumber>40</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: subtitles don't appear when lauching smplayer...</Summary>
+    <Description></Description>
+    <Created>2008-08-20, 23:38:32</Created>
+    <Resource>
+      <Filename>
+        <Dir>gui</Dir>
+        <Name>querywidget.py</Name>
+      </Filename>
+      <Linenumber>157</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: isn't it better to implement properties as actual python properties? or attributes?</Summary>
+    <Description></Description>
+    <Created>2008-08-20, 23:39:11</Created>
+    <Resource>
+      <Filename>
+        <Name>mediaobject.py</Name>
+      </Filename>
+      <Linenumber>43</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: !!write unit tests for this class...!!</Summary>
+    <Description></Description>
+    <Created>2008-08-20, 23:39:11</Created>
+    <Resource>
+      <Filename>
+        <Name>mediaobject.py</Name>
+      </Filename>
+      <Linenumber>44</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: encode url correctly</Summary>
+    <Description></Description>
+    <Created>2008-08-21, 00:25:09</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>media</Dir>
+        <Dir>series</Dir>
+        <Name>IMDBSerieFetcher.py</Name>
+      </Filename>
+      <Linenumber>33</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: this is not the correct way to do it...</Summary>
+    <Description></Description>
+    <Created>2008-08-21, 03:24:05</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>media</Dir>
+        <Dir>series</Dir>
+        <Name>view_episodes_by_season.py</Name>
+      </Filename>
+      <Linenumber>105</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: this is not the correct way to do it...</Summary>
+    <Description></Description>
+    <Created>2008-08-21, 03:59:08</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>media</Dir>
+        <Dir>series</Dir>
+        <Name>view_episodes_by_season.tmpl</Name>
+      </Filename>
+      <Linenumber>20</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: this is a hack... How do we know we're at the root node?</Summary>
+    <Description></Description>
+    <Created>2008-08-29, 21:35:07</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>utils.py</Name>
+      </Filename>
+      <Linenumber>55</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: subtitles don't appear when lauching smplayer...</Summary>
+    <Description></Description>
+    <Created>2008-08-29, 21:47:15</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>gui</Dir>
+        <Name>querywidget.py</Name>
+      </Filename>
+      <Linenumber>157</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: subtitles don't appear when lauching smplayer...</Summary>
+    <Description></Description>
+    <Created>2008-08-29, 21:51:09</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>gui</Dir>
+        <Name>viewwidget.py</Name>
+      </Filename>
+      <Linenumber>157</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: encode url correctly</Summary>
+    <Description></Description>
+    <Created>2008-08-30, 03:41:09</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>media</Dir>
+        <Dir>series</Dir>
+        <Name>IMDBSerieMetadataFinder.py</Name>
+      </Filename>
+      <Linenumber>33</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: big hack</Summary>
+    <Description></Description>
+    <Created>2008-08-31, 20:17:54</Created>
     <Resource>
       <Filename>
         <Dir>smewt</Dir>
         <Dir>solvers</Dir>
         <Name>naivesolver.py</Name>
       </Filename>
-      <Linenumber>51</Linenumber>
+      <Linenumber>48</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
     <Summary>FIXME: subtitles don't appear when lauching smplayer...</Summary>
     <Description></Description>
-    <Created>2008-07-31, 00:04:48</Created>
-    <Resource>
-      <Filename>
-        <Dir>gui</Dir>
-        <Name>querywidget.py</Name>
-      </Filename>
-      <Linenumber>153</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: this is a hack... How do we know we're at the root node?</Summary>
-    <Description></Description>
-    <Created>2008-07-31, 00:13:46</Created>
+    <Created>2008-08-31, 22:57:21</Created>
     <Resource>
       <Filename>
         <Dir>smewt</Dir>
-        <Name>utils.py</Name>
+        <Dir>gui</Dir>
+        <Name>mainwidget.py</Name>
       </Filename>
-      <Linenumber>48</Linenumber>
+      <Linenumber>156</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: here we should import both the Media and the Metadata into the user</Summary>
+    <Description></Description>
+    <Created>2008-08-31, 23:07:29</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>collection.py</Name>
+      </Filename>
+      <Linenumber>59</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: cannot dump links correctly, need to use reference</Summary>
+    <Description></Description>
+    <Created>2008-08-31, 23:07:29</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>collection.py</Name>
+      </Filename>
+      <Linenumber>135</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: check that result is valid</Summary>
+    <Description></Description>
+    <Created>2008-09-01, 00:16:30</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>solvers</Dir>
+        <Name>solver.py</Name>
+      </Filename>
+      <Linenumber>51</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
     <Summary>FIXME: surely there is a better way to do this...</Summary>
     <Description></Description>
-    <Created>2008-07-31, 00:49:06</Created>
+    <Created>2008-09-01, 00:23:34</Created>
     <Resource>
       <Filename>
         <Dir>smewt</Dir>
         <Dir>guessers</Dir>
         <Name>epguides.py</Name>
       </Filename>
-      <Linenumber>112</Linenumber>
+      <Linenumber>116</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: isn't it better to implement properties as actual python properties? or attributes?</Summary>
+    <Description></Description>
+    <Created>2008-09-01, 01:22:31</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>mediaobject.py</Name>
+      </Filename>
+      <Linenumber>62</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: !!write unit tests for this class...!!</Summary>
+    <Description></Description>
+    <Created>2008-09-01, 01:22:31</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>mediaobject.py</Name>
+      </Filename>
+      <Linenumber>63</Linenumber>
     </Resource>
   </Task>
 </Tasks>

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Nicolas Wack
+# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,6 +21,13 @@
 
 # regexps-related functions
 import re
+from base import SmewtException
+
+def matchRegexp(string, regexp):
+    match = re.compile(regexp, re.IGNORECASE | re.DOTALL).search(string)
+    if match:
+        return match.groupdict()
+    raise SmewtException('Does not match regexp')
 
 def matchAllRegexp(string, regexps):
     result = []

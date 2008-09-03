@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Nicolas Wack
+# Copyright (c) 2008 Ricard Marxer <email@ricardmarxer.com>
+# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,12 +29,10 @@ This is not to be mistaken with the program settings, which contains the user
 preferences.
 '''
 
-# whether to connect to Smewtd
-connect_smewtd = False
 
 
 # whether to retrieve locally stored results for web queries
 test_localweb = False
 
-local_epguides_googleresult = 'testdata/allintitle: site:epguides.com futurama - Google Search.html'
-local_epguides_episodelist = 'testdata/Futurama (a Titles & Air Dates Guide).html'
+local_epguides_googleresult = '../testdata/allintitle: site:epguides.com futurama - Google Search.html'
+local_epguides_episodelist = '../testdata/Futurama (a Titles & Air Dates Guide).html'

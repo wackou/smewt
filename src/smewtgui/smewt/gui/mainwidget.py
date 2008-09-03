@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Nicolas Wack
-# Copyright (c) 2008 Ricard Marxer
+# Copyright (c) 2008 Ricard Marxer <email@ricardmarxer.com>
+# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,19 +19,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.collection import *
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtWebKit import *
-from media.series import view
-from subprocess import Popen
-from gui.bookmarkwidget import BookmarkListWidget
-import os
-from os.path import dirname,  join
+from smewt import SmewtException, Collection, SmewtUrl
+from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings
+from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog
+from PyQt4.QtWebKit import QWebView, QWebPage
+from smewt.media.series import view
+from bookmarkwidget import BookmarkListWidget
+import logging
+from os.path import join, dirname
 
-class QueryWidget(QWidget):
+class MainWidget(QWidget):
     def __init__(self):
-        super(QueryWidget, self).__init__()
+        super(MainWidget, self).__init__()
 
         backButton = QPushButton('Back')
         folderImportButton = QPushButton('Import folder...')
@@ -70,15 +69,17 @@ class QueryWidget(QWidget):
         layout.addLayout(toolbar)
         layout.addLayout(navigation)
 
-        t = QSettings().value('collection_file').toString()
+        settings = QSettings()
+        t = settings.value('collection_file').toString()
         if t == '':
-            t = join(dirname(unicode(QSettings().fileName())),  'Smewg.collection')
-            QSettings().setValue('collection_file',  QVariant(t))
+            t = join(dirname(unicode(settings.fileName())),  'Smewg.collection')
+            settings.setValue('collection_file',  QVariant(t))
+
         try:
             self.collection.load(t)
         except:
-            # if file is not found, just go on with an empty collection
-            pass
+            logging.warning('Could not load collection %s', t)
+            raise
 
         self.setLayout(layout)
 
@@ -87,6 +88,8 @@ class QueryWidget(QWidget):
         if baseUrl == '':
             baseUrl = 'smewt://serie/all'
         self.setSmewtUrl(baseUrl)
+
+        self.externalProcess = QProcess()
 
     def back(self):
         try:
@@ -114,10 +117,7 @@ class QueryWidget(QWidget):
         self.collection.load(filename)
 
     def saveCollection(self):
-        #filename = str(QFileDialog.getSaveFileName(self, 'Select file to save the collection'))
-
         filename = unicode(QSettings().value('collection_file').toString())
-
         self.collection.save(filename)
 
     def importFolder(self):
@@ -128,37 +128,37 @@ class QueryWidget(QWidget):
             self.collection.importFolder(filename)
 
     def refreshCollectionView(self):
-        smewtpath = self.smewtUrl[8:].split('/')
-        mediaType = smewtpath[0]
-        viewType = smewtpath[1]
-        args = smewtpath[2:]
-        if viewType == 'single':
-            metadata = dict([(media.getUniqueKey(), media) for media in self.collection.medias if media is not None and media.properties['serie'] == args[0] ])
-        elif viewType == 'all':
-            metadata = dict([(media.getUniqueKey(), media) for media in self.collection.medias if media is not None ])
-        else:
-            raise 'invalid view type'
+        surl = SmewtUrl(self.smewtUrl)
 
-        html = view.render(viewType,  metadata)
+        if surl.mediaType != 'serie':
+            raise SmewtException('Invalid media type: %s' % surl.mediaType)
+
+        if surl.viewType == 'single':
+            metadata = self.collection.filter('serie', surl.args[0])
+        elif surl.viewType == 'all':
+            metadata = dict([(md.uniqueKey(), md) for md in self.collection.metadata ])
+        else:
+            raise SmewtException('Invalid view type: %s' % surl.viewType)
+
+        html = view.render(surl.viewType,  metadata)
 
         # display template
-        open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
+        #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
         self.collectionView.page().mainFrame().setHtml(html)
 
     def linkClicked(self,  url):
-        print 'clicked on link',  url
+        logging.info('clicked on link %s', url)
         url = url.toString()
 
         if url.startsWith('file://'):
             action = 'smplayer'
             # FIXME: subtitles don't appear when lauching smplayer...
-            args = [ action,  str(url) ]
-            print 'opening with args =',  args
-            pid = Popen(args,  env = os.environ).pid
+            args = [ action,  str(url)[7:] ]
+            logging.debug('opening with args = %s',  args)
+            self.externalProcess.start(action, [str(url)])
+
         elif url.startsWith('smewt://'):
             self.setSmewtUrl(url)
         else:
             pass
 
-    def renderTemplate(self):
-        self.emit(SIGNAL('renderTemplate'), self.templates.currentText())
