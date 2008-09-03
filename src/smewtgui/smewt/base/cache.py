@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Ricard Marxer <email@ricardmarxer.com>
+# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,10 +18,25 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewtdict import SmewtDict
-from validatingsmewtdict import ValidatingSmewtDict
-from smewtexception import SmewtException
-from smewturl import SmewtUrl
-from solvingchain import SolvingChain
-from workerthread import WorkerThread
-from cache import cachedmethod
+globalCache = {}
+
+def cachedmethod(function):
+
+    def cached(*args):
+        # removed the first element of args for the key, which is the instance pointer
+        # we don't want the cache to know which instance called it, it is shared among all
+        # instances of the same class
+        key = (function, args[1:])
+        if key in globalCache:
+            return globalCache[key]
+
+        result = function(*args)
+
+        globalCache[key] = result
+
+        return result
+
+    cached.__doc__ = function.__doc__
+    cached.__name__ = function.__name__
+
+    return cached
