@@ -62,17 +62,25 @@ class IMDBSerieMetadataFinder(WebParser):
         imageDir = os.getcwd()+'/smewt/media/series/images'
         os.system('mkdir -p "%s"' % imageDir)
 
-        html = urlopen(serieUrl).read()
-        rexp = '<a name="poster" href="(?P<hiresUrl>[^"]*)".*?src="(?P<loresImg>[^"]*)"'
-        poster = utils.matchRegexp(html, rexp)
-        loresFilename = imageDir + '/%s_lores.jpg' % prefix
-        open(loresFilename, 'w').write(urlopen(poster['loresImg']).read())
+        loresFilename, hiresFilename = None, None
 
-        html = urlopen('http://www.imdb.com' + poster['hiresUrl']).read()
-        rexp = '<table id="principal">.*?src="(?P<hiresImg>[^"]*)"'
-        poster = utils.matchRegexp(html, rexp)
-        hiresFilename = imageDir + '/%s_hires.jpg' % prefix
-        open(hiresFilename, 'w').write(urlopen(poster['hiresImg']).read())
+        try:
+            html = urlopen(serieUrl).read()
+            rexp = '<a name="poster" href="(?P<hiresUrl>[^"]*)".*?src="(?P<loresImg>[^"]*)"'
+            poster = utils.matchRegexp(html, rexp)
+            loresFilename = imageDir + '/%s_lores.jpg' % prefix
+            open(loresFilename, 'w').write(urlopen(poster['loresImg']).read())
+        except:
+            pass
+
+        try:
+            html = urlopen('http://www.imdb.com' + poster['hiresUrl']).read()
+            rexp = '<table id="principal">.*?src="(?P<hiresImg>[^"]*)"'
+            poster = utils.matchRegexp(html, rexp)
+            hiresFilename = imageDir + '/%s_hires.jpg' % prefix
+            open(hiresFilename, 'w').write(urlopen(poster['hiresImg']).read())
+        except:
+            pass
 
         return (loresFilename, hiresFilename)
 
