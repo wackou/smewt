@@ -38,7 +38,7 @@ class SolvingChain(QObject):
 
         # connect the last solver's finished to the whole chain finish method
         self.connect(self.chain[-1], SIGNAL('finished'),
-                     self.finished)
+                     self.finished, Qt.QueuedConnection)
 
 
     def start(self, query):

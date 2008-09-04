@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2008-09-01, 01:31:29 -->
+<!-- Saved: 2008-09-04, 01:23:49 -->
 <!-- Copyright (C) 2008 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -234,6 +234,16 @@
       <Dir>smewt</Dir>
       <Dir>taggers</Dir>
       <Name>wackoutagger.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>guessers</Dir>
+      <Name>episodeimdb.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>base</Dir>
+      <Name>cache.py</Name>
     </Source>
   </Sources>
   <Forms>

@@ -6,8 +6,14 @@ from collections import defaultdict
 from smewt.media.series import Episode
 
 series = defaultdict(lambda: defaultdict(lambda: []))
+poster = None
 
 for (media, md) in eps.links:
+    try:
+        poster = md['loresImage']
+    except:
+        pass
+
     md = Episode(md)
     md['filename'] = media.filename
     series[md['serie']][md['season']].append(md)
@@ -54,6 +60,9 @@ animatedcollapse.init()
 
 <body>
 #for serieName, seasons in series.items()
+  #if poster:
+    <img src="file://$poster" />
+  #end if
   <h1>$serieName</h1>
   #for seasonNumber, eps in seasons.items():
     <h2><a href="javascript:animatedcollapse.toggle('s$seasonNumber')">Season $seasonNumber</a></h2>
@@ -62,13 +71,18 @@ animatedcollapse.init()
       #if 'filename' in ep.properties:
         #try
           #if $ep.title:
-            <div class="episode"><a href="file://$ep.filename">$ep.episodeNumber - $ep.title</div>
+            <div class="episode"><a href="file://$ep.filename">$ep.episodeNumber - $ep.title</a>
           #else
-            <div class="episode"><a href="file://$ep.filename">$ep.episodeNumber - Untitled <i>($ep.filename)</i></div>
+            <div class="episode"><a href="file://$ep.filename">$ep.episodeNumber - Untitled <i>($ep.filename)</i></a>
           #end if
         #except
-          <div class="episode"> ? - $ep.title</div>
+          <div class="episode"> ? - $ep.title
         #end try
+
+        #if $ep.synopsis:
+          <p>$ep.synopsis</p>
+        #end if
+        </div>
       #else
         <div class="episode"><em>$ep.episodeNumber - $ep.title</em></div>
       #end if

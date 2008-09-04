@@ -39,9 +39,9 @@ class EpisodeFilename(Guesser):
         self.checkValid(query)
 
         found = query.metadata
-        mediaObject = query.media[0]
+        media = query.media[0]
 
-        name = utils.splitFilename(mediaObject.filename)
+        name = utils.splitFilename(media.filename)
 
         # heuristic 1: try to guess the season & epnumber using S01E02 and 1x02 patterns
         rexps = [ 'season (?P<season>[0-9]+)',
@@ -54,7 +54,7 @@ class EpisodeFilename(Guesser):
                 result = Episode()
                 result.confidence = 1.0
                 for key, value in match.items():
-                    logging.debug('Found MD: %s: %s = %s', mediaObject.filename, key, value)
+                    logging.debug('Found MD: %s: %s = %s', media.filename, key, value)
                     result[key] = value
                 found += [ result ]
 
@@ -77,9 +77,9 @@ class EpisodeFilename(Guesser):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     guesser = EpisodeFilename()
-    mediaObject = EpisodeObject.fromDict({'filename': sys.argv[1]})
-    mediaObject.confidence['filename'] = 1.0
-    mediaObjects = [mediaObject]
+    media = EpisodeObject.fromDict({'filename': sys.argv[1]})
+    media.confidence['filename'] = 1.0
+    mediaObjects = [media]
 
     def printResults(guesses):
         for guess in guesses:

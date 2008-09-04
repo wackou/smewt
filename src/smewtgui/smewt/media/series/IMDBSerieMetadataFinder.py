@@ -18,9 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt import SmewtException, utils
+from smewt import SmewtException, utils, cachedmethod
 from smewt.media.series import Episode
 from smewt.webparser import WebParser
+from smewt.utils import matchRegexp
 from urllib import urlopen
 import re
 
@@ -29,10 +30,20 @@ class IMDBSerieMetadataFinder(WebParser):
     def __init__(self):
         WebParser.__init__(self)
 
+    @cachedmethod
     def getSerieUrl(self, serieName):
         # FIXME: encode url correctly
         queryPage = 'http://www.imdb.com/find?s=all&q=%s&x=0&y=0' % serieName.replace(' ', '+') # use urlencode or sth?
-        results = urlopen(queryPage).read()
+        resultPage = urlopen(queryPage)
+
+        # have we been sent directly to the corresponding page or are we still on the search page?
+        try:
+            url = matchRegexp(resultPage.geturl(), '(?P<url>http://www.imdb.com/title/tt[0-9]*/).*')['url']
+            return url
+        except SmewtException:
+            pass
+
+        results = resultPage.read()
         #results = open('/tmp/find.html').read()
 
         try:
@@ -43,20 +54,41 @@ class IMDBSerieMetadataFinder(WebParser):
         url = 'http://www.imdb.com' + url
         return url
 
-    def getSeriePoster(self, serieName):
-        serieUrl = self.getSerieUrl(serieName)
-        html = urlopen(serieUrl).read()
-        rexp = '<a name="poster" href="(?P<hiresUrl>[^"]*)".*?src="(?P<loresImg>[^"]*)"'
-        poster = utils.matchRegexp(html, rexp)
-        open('/tmp/lores.jpg', 'w').write(urlopen(poster['loresImg']).read())
+    @cachedmethod
+    def getSeriePoster(self, serieUrl):
+        # FIXME: big hack!
+        prefix = serieUrl.split('/')[-2]
+        import os
+        imageDir = os.getcwd()+'/smewt/media/series/images'
+        os.system('mkdir -p "%s"' % imageDir)
 
-        html = urlopen('http://www.imdb.com' + poster['hiresUrl']).read()
-        rexp = '<table id="principal">.*?src="(?P<hiresImg>[^"]*)"'
-        poster = utils.matchRegexp(html, rexp)
-        open('/tmp/hires.jpg', 'w').write(urlopen(poster['hiresImg']).read())
+        loresFilename, hiresFilename = None, None
 
-    def getAllEpisodes(self, serieName):
-        epsUrl = self.getSerieUrl(serieName) + 'episodes'
+        try:
+            html = urlopen(serieUrl).read()
+            rexp = '<a name="poster" href="(?P<hiresUrl>[^"]*)".*?src="(?P<loresImg>[^"]*)"'
+            poster = utils.matchRegexp(html, rexp)
+            loresFilename = imageDir + '/%s_lores.jpg' % prefix
+            open(loresFilename, 'w').write(urlopen(poster['loresImg']).read())
+        except:
+            pass
+
+        try:
+            html = urlopen('http://www.imdb.com' + poster['hiresUrl']).read()
+            rexp = '<table id="principal">.*?src="(?P<hiresImg>[^"]*)"'
+            poster = utils.matchRegexp(html, rexp)
+            hiresFilename = imageDir + '/%s_hires.jpg' % prefix
+            open(hiresFilename, 'w').write(urlopen(poster['hiresImg']).read())
+        except:
+            pass
+
+        return (loresFilename, hiresFilename)
+
+    @cachedmethod
+    def getAllEpisodes(self, serieName, serieUrl = None):
+        if not serieUrl:
+            serieUrl = self.getSerieUrl(serieName)
+        epsUrl =  serieUrl + 'episodes'
         epsHtml = urlopen(epsUrl).read()
         #epsHtml = open('/tmp/episodes.html').read()
 
@@ -100,8 +132,8 @@ class IMDBSerieMetadataFinder(WebParser):
 
 if __name__ == '__main__':
     md = IMDBSerieMetadataFinder()
-    #md.getSeriePoster('damages')
     #md.getSerieUrl('damages')
+    #md.getSeriePoster(md.getSerieUrl('damages'))
     eps = md.getAllEpisodes('black adder')
     for ep in eps:
         print unicode(ep)

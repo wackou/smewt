@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.1.dtd">
 <!-- eric4 tasks file for project Smewg -->
-<!-- Saved: 2008-09-01, 01:31:31 -->
+<!-- Saved: 2008-09-04, 01:23:49 -->
 <Tasks version="4.1">
   <Task priority="2" completed="False" bugfix="False">
     <Summary>TODO: make a .desktop file</Summary>
@@ -121,32 +121,6 @@
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: this is not the correct way to do it...</Summary>
-    <Description></Description>
-    <Created>2008-08-21, 03:59:08</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>media</Dir>
-        <Dir>series</Dir>
-        <Name>view_episodes_by_season.tmpl</Name>
-      </Filename>
-      <Linenumber>20</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: this is a hack... How do we know we're at the root node?</Summary>
-    <Description></Description>
-    <Created>2008-08-29, 21:35:07</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Name>utils.py</Name>
-      </Filename>
-      <Linenumber>55</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="True">
     <Summary>FIXME: subtitles don't appear when lauching smplayer...</Summary>
     <Description></Description>
     <Created>2008-08-29, 21:47:15</Created>
@@ -170,20 +144,6 @@
         <Name>viewwidget.py</Name>
       </Filename>
       <Linenumber>157</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: encode url correctly</Summary>
-    <Description></Description>
-    <Created>2008-08-30, 03:41:09</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>media</Dir>
-        <Dir>series</Dir>
-        <Name>IMDBSerieMetadataFinder.py</Name>
-      </Filename>
-      <Linenumber>33</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
@@ -249,19 +209,6 @@
       <Linenumber>51</Linenumber>
     </Resource>
   </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: surely there is a better way to do this...</Summary>
-    <Description></Description>
-    <Created>2008-09-01, 00:23:34</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>guessers</Dir>
-        <Name>epguides.py</Name>
-      </Filename>
-      <Linenumber>116</Linenumber>
-    </Resource>
-  </Task>
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: isn't it better to implement properties as actual python properties? or attributes?</Summary>
     <Description></Description>
@@ -284,6 +231,86 @@
         <Name>mediaobject.py</Name>
       </Filename>
       <Linenumber>63</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: surely there is a better way to do this...</Summary>
+    <Description></Description>
+    <Created>2008-09-03, 22:34:36</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>guessers</Dir>
+        <Name>epguides.py</Name>
+      </Filename>
+      <Linenumber>116</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: this is a hack... How do we know we're at the root node?</Summary>
+    <Description></Description>
+    <Created>2008-09-04, 00:02:36</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>utils.py</Name>
+      </Filename>
+      <Linenumber>55</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: surely there is a better way to do this...</Summary>
+    <Description></Description>
+    <Created>2008-09-04, 01:00:58</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>guessers</Dir>
+        <Name>episodeimdb.py</Name>
+      </Filename>
+      <Linenumber>116</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: this is not the correct way to do it...</Summary>
+    <Description></Description>
+    <Created>2008-09-04, 01:16:09</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>media</Dir>
+        <Dir>series</Dir>
+        <Name>view_episodes_by_season.tmpl</Name>
+      </Filename>
+      <Linenumber>26</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: encode url correctly</Summary>
+    <Description></Description>
+    <Created>2008-09-04, 01:18:42</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>media</Dir>
+        <Dir>series</Dir>
+        <Name>IMDBSerieMetadataFinder.py</Name>
+      </Filename>
+      <Linenumber>35</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: big hack!</Summary>
+    <Description></Description>
+    <Created>2008-09-04, 01:18:42</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>media</Dir>
+        <Dir>series</Dir>
+        <Name>IMDBSerieMetadataFinder.py</Name>
+      </Filename>
+      <Linenumber>59</Linenumber>
     </Resource>
   </Task>
 </Tasks>

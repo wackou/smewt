@@ -20,3 +20,4 @@
 
 from epguides import EpGuides
 from episodefilename import EpisodeFilename
+from episodeimdb import EpisodeIMDB
