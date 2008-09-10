@@ -47,7 +47,7 @@ class Media:
         return self.__repr__()
 
     def __repr__(self):
-        return self.filename
+        return self.filename.encode('utf-8')
 
 
     def type(self):
@@ -115,15 +115,13 @@ class Metadata:
 
 
     def __repr__(self):
-        #return self.typename + '(' + repr(self.properties) + ')'
         return str(self)
 
-    # check this function still works correctly
     def __str__(self):
         result = ('valid ' if self.isValid() else 'invalid ') + self.typename + ' (confidence: ' + str(self.confidence) + ') :\n{ '
 
         for propname in self.orderedProperties():
-            result += '%-10s : %s\n  ' % (propname, unicode(self.properties[propname]))
+            result += '%-10s : %s\n  ' % (propname, unicode(self.properties[propname]).encode('utf-8'))
 
         return result + '}'
 
