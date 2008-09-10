@@ -198,6 +198,10 @@ class EpisodeIMDB(Guesser):
 
         for md in list(found):
             if md['serie']:
+                # little hack: if we have no season number, add 1 as default season number
+                # (helps for series which have only 1 season)
+                if not md['season']:
+                    md['season'] = 1
                 self.webparser[md] = IMDBMetadataProvider(md)
                 self.connect(self.webparser[md], SIGNAL('finished'),
                              self.queryFinished)
