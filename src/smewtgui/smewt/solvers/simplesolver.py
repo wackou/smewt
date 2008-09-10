@@ -68,7 +68,8 @@ def fuzzyMatch(baseGuess, md):
 def fuzzyMatch2(baseGuess, md):
     for p1, p2 in zip(baseGuess.uniqueKey(), md.uniqueKey()):
         if type(p1) == str or type(p1) == unicode:
-            if levenshtein(p1.lower(), p2.lower()) > 6:
+            # TODO: levenshtein doesn't cut it here, we need a better string distance
+            if levenshtein(p1.lower(), p2.lower()) > 80:
                 return False
         else:
             if p1 != p2:
@@ -105,3 +106,12 @@ class SimpleSolver(Solver):
 
         self.found(query, baseGuess)
 
+if __name__ == '__main__':
+    from PyQt4.QtCore import QCoreApplication
+    import sys
+    a = QCoreApplication(sys.argv)
+
+    print levenshtein('Death Note', 'Desu nôto')
+    print levenshtein('Duckman', 'Duckman: Private Dick/Family Man')
+
+    a.exec_()
