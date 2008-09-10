@@ -22,10 +22,18 @@ from smewtexception import SmewtException
 
 class SmewtUrl:
     def __init__(self, url):
-        if not str(url).startswith('smewt://'):
+        self.url = unicode(url)
+        if not self.url.startswith('smewt://'):
             raise SmewtException('Could not create SmewtUrl from %s' % url)
 
-        spath = url[8:].split('/')
+        spath = self.url[8:].split('/')
+
+        # rebind '/' that were escaped
+        while '' in spath:
+            idx = spath.index('')
+            merged = spath[idx-1] + '/' + spath[idx+1]
+            spath[idx-1:idx+1] = [ merged ]
+
         self.mediaType = spath[0]
         self.viewType = spath[1]
 
@@ -33,3 +41,6 @@ class SmewtUrl:
             self.args = spath[2:]
         except IndexError:
             self.args = None
+
+    def __str__(self):
+        return self.url.encode('utf-8')
