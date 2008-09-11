@@ -66,8 +66,8 @@ class SolvingChain(QObject):
 
     def finished(self, result):
         if result.metadata:
-            logging.info('Solving chain for file %s found metadata: %s', str(result.media[0].filename), str(result.metadata[0]))
+            logging.info('Solving chain for file %s found metadata: %s', str(result.media[0]), str(result.metadata[0]))
         else:
-            logging.info('Solving chain for file %s didn\'t find any metadata...', str(result.media[0].filename))
+            logging.info('Solving chain for file %s didn\'t find any metadata...', str(result.media[0]))
 
         self.emit(SIGNAL('finished'), result)
