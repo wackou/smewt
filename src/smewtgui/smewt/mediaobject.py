@@ -95,10 +95,11 @@ class Metadata:
             self.readFromRow(headers, row)
 
     def __getstate__(self):
-        return self.toDict()
+        return self.toDict(), self.confidence
 
     def __setstate__(self, state):
-        self.__init__(state)
+        self.__init__(state[0])
+        self.confidence = state[1]
 
 
     # used to make sure the values correspond to the schema

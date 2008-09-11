@@ -23,10 +23,11 @@ import cPickle
 globalCache = {}
 
 def load(filename):
-    try:
-        globalCache = cPickle.load(open(filename, 'rb'))
-    except IOError:
-        pass
+    #try:
+    global globalCache
+    globalCache = cPickle.load(open(filename, 'rb'))
+    #except IOError:
+    #    pass
 
 def save(filename):
     cPickle.dump(globalCache, open(filename, 'wb'))
