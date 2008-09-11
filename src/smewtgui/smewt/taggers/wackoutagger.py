@@ -26,6 +26,7 @@ from PyQt4.QtCore import SIGNAL
 
 from smewt import Collection, SolvingChain
 from smewt.media.series import Episode
+import logging
 
 class WackouTagger(Tagger):
     def __init__(self):
@@ -43,7 +44,9 @@ class WackouTagger(Tagger):
         self.chain2.start(result)
 
     def solved(self, result):
+        logging.debug('Finished tagging: %s', result.media[0])
         if not result.metadata[0]:
+            logging.warning('Could not find any tag for: %s' % result.media[0])
             # we didn't find any info outside of what the filename told us
             result.metadata = [ self.filenameMetadata ]
             result.links = [ (result.media[0], result.metadata[0]) ]
