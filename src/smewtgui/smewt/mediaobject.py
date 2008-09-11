@@ -94,6 +94,12 @@ class Metadata:
         if headers and row:
             self.readFromRow(headers, row)
 
+    def __getstate__(self):
+        return self.toDict()
+
+    def __setstate__(self, state):
+        self.__init__(state)
+
 
     # used to make sure the values correspond to the schema
     def isValid(self):
