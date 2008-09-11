@@ -33,7 +33,7 @@ class IMDBSerieMetadataFinder(WebParser):
     @cachedmethod
     def getSerieUrl(self, serieName):
         # FIXME: encode url correctly
-        queryPage = 'http://www.imdb.com/find?s=all&q=%s&x=0&y=0' % serieName.replace(' ', '+') # use urlencode or sth?
+        queryPage = 'http://www.imdb.com/find?s=all&q=%s&x=0&y=0' % serieName.replace(' ', '+').replace('&', '%26') # use urlencode or sth?
         resultPage = urlopen(queryPage)
 
         # have we been sent directly to the corresponding page or are we still on the search page?
