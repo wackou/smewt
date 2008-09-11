@@ -63,13 +63,13 @@ class EpGuideQuerier(QObject):
         if self.episodeLists.has_key(self.mediaObject['serie']):
             self.emit(SIGNAL('gotEpisodeList'))
         else:
-            logging.info('Guesser: EpGuides - looking for serie %s', self.mediaObject['serie'])
+            logging.info('EpisodeIMDB Guesser: EpGuides - looking for serie %s', self.mediaObject['serie'])
             query = 'allintitle: site:epguides.com ' + self.mediaObject['serie']
             url = QUrl.fromEncoded('http://www.google.com/search?' + urlencode({'q': query},  doseq=True))
             self.queryPage.load(url)
 
     def getGoogleResult(self, ok):
-        logging.info('Guesser: EpGuides - got result url from google ok = %s', ok)
+        logging.info('EpisodeIMDB Guesser: EpGuides - got result url from google ok = %s', ok)
         if config.test_localweb:
             self.googleResult = open(config.local_epguides_googleresult).read().decode('utf-8')
         else:
@@ -91,7 +91,7 @@ class EpGuideQuerier(QObject):
             html = open(config.local_epguides_episodelist).read()
         else:
             html = urlopen(url).read()
-        logging.info('Guesser: EpGuides - got episodes list from epguides')
+        logging.info('EpisodeIMDB Guesser: EpGuides - got episodes list from epguides')
 
         # extract serie name
         try:
