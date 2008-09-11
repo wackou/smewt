@@ -45,7 +45,7 @@ class Solver(QObject):
         if not query.metadata:
             raise SmewtException('Solver: not solving anything...')
 
-        logging.debug('Solver: trying to solve %s', query)
+        logging.debug(self.__class__.__name__ + ' Solver: trying to solve %s', query)
 
     def found(self, query, result):
         # TODO: check that result is valid
