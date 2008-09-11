@@ -23,11 +23,12 @@ import cPickle
 globalCache = {}
 
 def load(filename):
-    #try:
     global globalCache
-    globalCache = cPickle.load(open(filename, 'rb'))
-    #except IOError:
-    #    pass
+    try:
+        globalCache = cPickle.load(open(filename, 'rb'))
+    except IOError:
+        import logging
+        logging.warning('Cache file doesn\'t exist')
 
 def save(filename):
     cPickle.dump(globalCache, open(filename, 'wb'))
