@@ -75,7 +75,10 @@ class Episode(Metadata):
     def __init__(self, copy = None):
         Metadata.__init__(self)
         if copy:
-            self.readFromDict(copy.toDict())
+            if type(copy) is dict:
+                self.readFromDict(copy)
+            else:
+                self.readFromDict(copy.toDict())
 
     @staticmethod
     def fromDict(d):
