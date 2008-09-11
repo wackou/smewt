@@ -18,12 +18,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import SIGNAL, QSize
+from PyQt4.QtGui import QWidget, QPushButton, QIcon, QVBoxLayout
 
 class BookmarkWidget(QPushButton):
-    def __init__(self,  desc,  url):
-        super(BookmarkWidget,  self).__init__(desc)
+    def __init__(self,  desc,  url, icon = None):
+        super(BookmarkWidget,  self).__init__()
+        if icon:
+            self.setIcon(QIcon(icon))
+            self.setIconSize(QSize(48, 48))
+        self.setText(' '*6 + desc) # FIXME: why do icon & text overlap?
         self.url = url
         self.connect(self,  SIGNAL('clicked()'),  self.sendUrl)
 
@@ -33,12 +37,14 @@ class BookmarkWidget(QPushButton):
 class BookmarkListWidget(QWidget):
     def __init__(self):
         super(BookmarkListWidget, self).__init__()
-        self.bookmarks = {'All Series':'smewt://serie/all'}
+        self.bookmarks = {'All Series': ('smewt://serie/all',
+                                         '/usr/share/icons/oxygen/48x48/categories/applications-multimedia.png')
+                          }
 
         layout = QVBoxLayout()
 
-        for name,  url in self.bookmarks.items():
-            button = BookmarkWidget(name,  url)
+        for name,  (url, icon) in self.bookmarks.items():
+            button = BookmarkWidget(name,  url, icon)
             self.connect(button,  SIGNAL('selected'),  self.sendUrl)
             layout.addWidget(button)
         layout.addStretch(1)
