@@ -46,7 +46,7 @@ class EpisodeFilename(Guesser):
         # heuristic 1: try to guess the season & epnumber using S01E02 and 1x02 patterns
         sep = '[ \._-]'
         rexps = [ 'season (?P<season>[0-9]+)',
-                  sep + '(?P<episodeNumber>[0-9]+)' + sep,
+                  sep + '(?P<episodeNumber>[0-9]+)(?:v[23])?' + sep,
                   '(?P<season>[0-9]+)x(?P<episodeNumber>[0-9]+)',
                   'S(?P<season>[0-9]+)E(?P<episodeNumber>[0-9]+)'
                   ]
