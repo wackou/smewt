@@ -44,7 +44,9 @@ class EpisodeFilename(Guesser):
         name = utils.splitFilename(media.filename)
 
         # heuristic 1: try to guess the season & epnumber using S01E02 and 1x02 patterns
+        sep = '[ \._-]'
         rexps = [ 'season (?P<season>[0-9]+)',
+                  sep + '(?P<episodeNumber>[0-9]+)(?:v[23])?' + sep,
                   '(?P<season>[0-9]+)x(?P<episodeNumber>[0-9]+)',
                   'S(?P<season>[0-9]+)E(?P<episodeNumber>[0-9]+)'
                   ]
@@ -67,6 +69,19 @@ class EpisodeFilename(Guesser):
             result['serie'] = name[1]
             result.confidence = 0.4
         found += [ result ]
+
+        # post-processing
+        # we could already clean a bit the data here by solving it and comparing it to
+        # each element we found, eg: remove all md which have an improbable episode number
+        # such as 72 if some other valid episode number has been found, etc...
+
+        # if the episode number is higher than 100, we assume it is season*100+epnumber
+        for md in found:
+            num = md['episodeNumber']
+            if num > 100:
+                md['season'] = num / 100
+                md['episodeNumber'] = num % 100
+
 
         self.emit(SIGNAL('finished'), query)
 

@@ -24,6 +24,7 @@ from smewt.webparser import WebParser
 from smewt.utils import matchRegexp
 from urllib import urlopen
 import re
+import logging
 
 
 class IMDBSerieMetadataFinder(WebParser):
@@ -33,7 +34,7 @@ class IMDBSerieMetadataFinder(WebParser):
     @cachedmethod
     def getSerieUrl(self, serieName):
         # FIXME: encode url correctly
-        queryPage = 'http://www.imdb.com/find?s=all&q=%s&x=0&y=0' % serieName.replace(' ', '+') # use urlencode or sth?
+        queryPage = 'http://www.imdb.com/find?s=all&q=%s&x=0&y=0' % serieName.replace(' ', '+').replace('&', '%26') # use urlencode or sth?
         resultPage = urlopen(queryPage)
 
         # have we been sent directly to the corresponding page or are we still on the search page?
@@ -49,7 +50,8 @@ class IMDBSerieMetadataFinder(WebParser):
         try:
             url = re.compile('<a href="([^"]*?)">&#34.*?TV series').findall(results)[0]
         except IndexError:
-            raise SmewtException('Serie "%s" not found on IMDB...' % serieName)
+            logging.warning('Serie "%s" not found on IMDB...' % serieName.encode('utf-8'))
+            return None
 
         url = 'http://www.imdb.com' + url
         return url

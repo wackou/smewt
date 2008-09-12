@@ -32,11 +32,11 @@ class WorkerThread(QThread):
                      self.finished)
 
     def run(self):
-        logging.debug('Starting worker thread event loop...')
+        logging.debug('Thread: Starting worker thread event loop...')
         self.exec_()
-        logging.debug('Worker thread finished running')
+        logging.debug('Thread: Worker thread finished running')
 
     def finished(self, result):
-        logging.debug('Worker thread received finished signal')
+        logging.debug('Thread: Worker thread received finished signal')
         self.results[0] = result
         self.quit()

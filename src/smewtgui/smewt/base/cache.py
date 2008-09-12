@@ -18,7 +18,21 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import cPickle
+
 globalCache = {}
+
+def load(filename):
+    global globalCache
+    try:
+        globalCache = cPickle.load(open(filename, 'rb'))
+    except IOError:
+        import logging
+        logging.warning('Cache: Cache file doesn\'t exist')
+
+def save(filename):
+    cPickle.dump(globalCache, open(filename, 'wb'))
+
 
 def cachedmethod(function):
 
@@ -26,7 +40,8 @@ def cachedmethod(function):
         # removed the first element of args for the key, which is the instance pointer
         # we don't want the cache to know which instance called it, it is shared among all
         # instances of the same class
-        key = (function, args[1:])
+        fkey = str(args[0].__class__), function.__name__
+        key = (fkey, args[1:])
         if key in globalCache:
             return globalCache[key]
 

@@ -24,12 +24,16 @@ import re
 from base import SmewtException
 
 def matchRegexp(string, regexp):
+    """Tries to match the given string against the regexp (using named match groups)
+    and raises a SmewtException if it didn't match."""
     match = re.compile(regexp, re.IGNORECASE | re.DOTALL).search(string)
     if match:
         return match.groupdict()
-    raise SmewtException('Does not match regexp')
+    raise SmewtException("'%s' Does not match regexp '%s'" % (string, regexp))
 
 def matchAllRegexp(string, regexps):
+    """Matches the string against a list of regexps (using named match groups) and
+    returns a list of all found matches."""
     result = []
     for regexp in regexps:
         match = re.compile(regexp, re.IGNORECASE).search(string)
@@ -38,6 +42,8 @@ def matchAllRegexp(string, regexps):
     return result
 
 def matchAnyRegexp(string, regexps):
+    """Matches the string against a list of regexps (using named match groups) and
+    returns the first match it could find, None if not found."""
     for regexp in regexps:
         result = re.compile(regexp, re.IGNORECASE).search(string)
         if result:

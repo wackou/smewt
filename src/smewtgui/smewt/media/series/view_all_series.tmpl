@@ -7,6 +7,8 @@ from collections import defaultdict
 series = defaultdict(lambda: defaultdict(lambda: []))
 
 for (serie, season, episode), md in eps.items():
+    # escape the '/' in the serie name
+    serie = serie.replace('/', '//')
     series[serie][season].append(md)
 
 for serie, seasons in series.items():
@@ -17,7 +19,7 @@ for serie, seasons in series.items():
 
 <html>
 <head>
-  <title>cheetah test</title>
+  <title>All series view</title>
 </head>
 
 <body>

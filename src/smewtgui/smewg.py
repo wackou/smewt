@@ -18,16 +18,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtWebKit import QWebView,  QWebPage
+from PyQt4.QtGui import QApplication, QMainWindow
 import sys
-import dbus
-from smewt import config
-from smewt.media.series import view
 from smewt.gui import MainWidget
-
-import logging
 
 
 class SmewtGui(QMainWindow):
@@ -45,6 +38,15 @@ if __name__ == '__main__':
     app.setOrganizationDomain("smewt.com")
     app.setApplicationName("Smewg")
 
+    from smewt.base import cache
+    cache.load('/tmp/smewt.cache')
+
+    c = cache.globalCache
+
     sgui = SmewtGui()
     sgui.show()
     app.exec_()
+
+    print 'writing cache to disk...'
+    cache.save('/tmp/smewt.cache')
+    print 'exiting'

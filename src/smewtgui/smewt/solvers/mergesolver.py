@@ -34,6 +34,7 @@ class MergeSolver(Solver):
 
         for md in results[1:]:
             for k, v in md.properties.items():
+                # TODO: if the 2 values differ, merge only the one with the higher confidence
                 result[k] = v
 
         self.found(query, result)
