@@ -18,19 +18,45 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtGui import QApplication, QMainWindow
+from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout
+from PyQt4.QtCore import  SIGNAL
 import sys
 from smewt.gui import MainWidget
 
+
+class  StatusWidget(QWidget):
+    def __init__(self):
+        super(QWidget,  self).__init__()
+        
+        layout = QHBoxLayout()
+        layout.addStretch()
+        
+        self.progressBar = QProgressBar()
+        
+        layout.addWidget(self.progressBar)
+        
+        self.setLayout(layout)
+        return
 
 class SmewtGui(QMainWindow):
 
     def __init__(self):
         super(SmewtGui, self).__init__()
         self.setWindowTitle('Smewg - An Ordinary Smewt Gui')
-        self.setCentralWidget(MainWidget())
+        self.mainWidget = MainWidget()
+        self.setCentralWidget(self.mainWidget )
+        
+        self.statusWidget = StatusWidget()
+        self.statusBar().addPermanentWidget(self.statusWidget)
 
+        self.connect(self.mainWidget .collection,  SIGNAL('progressChanged'),  self.progressChanged)
 
+    def progressChanged(self,  tagged,  total):
+        if total == 0:
+            self.statusWidget.progressBar.reset()
+        else:
+            self.statusWidget.progressBar.setMaximum(total)
+            self.statusWidget.progressBar.setValue(tagged)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

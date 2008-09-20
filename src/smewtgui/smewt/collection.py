@@ -24,35 +24,43 @@ from smewt import Media
 from smewt.media.series import Episode
 from smewt.utils import GlobDirectoryWalker
 
-class FolderImporter(QObject):
-    def __init__(self, folder):
-        super(FolderImporter, self).__init__()
+class Importer(QObject):
+    def __init__(self):
+        super(Importer, self).__init__()
 
-        self.folder = folder
         self.taggingQueue = []
         from smewt.taggers.magicepisodetagger import MagicEpisodeTagger
         from smewt.taggers.wackoutagger import WackouTagger
         self.tagger = WackouTagger()
         self.results = Collection()
-
+        self.tagCount = 0
+        self.state = 'stopped'
         self.connect(self.tagger, SIGNAL('tagFinished'), self.tagged)
 
-    def start(self):
-        # Populate the tagging queue
+    def importFolder(self,  folder):
         filetypes = [ '*.avi',  '*.ogm',  '*.mkv' ] # video files
-        for filename in GlobDirectoryWalker(self.folder, filetypes):
+        for filename in GlobDirectoryWalker(folder, filetypes):
             mediaObject = Media(filename)
             self.taggingQueue.append(mediaObject)
+        self.tagCount += len(self.taggingQueue)
+        self.emit(SIGNAL('progressChanged'),  self.tagCount - len(self.taggingQueue),  self.tagCount)
 
-        self.tagNext()
+    def start(self):
+        if self.state != 'running':
+            self.state = 'running'
+            self.tagNext()
 
     def tagNext(self):
         if self.taggingQueue:
             next = self.taggingQueue.pop()
             #print 'Collection: Tagging ''%s''' % next
             self.tagger.tag(next)
+            self.emit(SIGNAL('progressChanged'),  self.tagCount - len(self.taggingQueue),  self.tagCount)
         else:
-            self.emit(SIGNAL('importFinished'), self.results)
+            self.state = 'stopped'
+            self.tagCount = 0
+            self.emit(SIGNAL('progressChanged'),  self.tagCount - len(self.taggingQueue),  self.tagCount)
+            self.emit(SIGNAL('importFinished'),  self.results)
 
     def tagged(self, taggedMedia):
         #print 'Collection: Media tagged: %s' % taggedMedia
@@ -70,7 +78,7 @@ class Collection(QObject):
      - self.links, which contains the links from elements in self.media to elements
        in self.metadata and which correspond to the files the user has tagged.
 
-    As far as possible, Smewt's job is to collect files from the HDD and put them
+    As far as possible, Smewt''s job is to collect files from the HDD and put them
     in the self.media variable, get information from the web and fill the
     self.metadata variable, and then use the available guessers/solvers to map
     the entries in self.media to the ones in self.metadata'''
@@ -81,17 +89,25 @@ class Collection(QObject):
         self.metadata = []
         self.links = []
 
+        self.importer = None
+
     def importFolder(self, folder):
-        self.folderImporter = FolderImporter(folder)
-        self.connect(self.folderImporter, SIGNAL('importFinished'), self.mergeCollection)
-        self.folderImporter.start()
+        if self.importer is None:
+                self.importer = Importer()
+                self.connect(self.importer,   SIGNAL('importFinished'),  self.mergeCollection)
+                self.connect(self.importer,   SIGNAL('progressChanged'),  self.progressChanged)
 
-
-    def mergeCollection(self, c):
+        self.importer.importFolder(folder)
+        self.importer.start()
+    
+    def progressChanged(self,  tagged,  total):
+        self.emit(SIGNAL('progressChanged'),  tagged,  total)
+ 
+    def mergeCollection(self, result):
         #print 'Collection: Adding medias'
-        self.media += c.media
-        self.metadata += c.metadata
-        self.links += c.links
+        self.media += result.media
+        self.metadata += result.metadata
+        self.links += result.links
         self.emit(SIGNAL('collectionUpdated'))
 
     def filter(self, prop, value):

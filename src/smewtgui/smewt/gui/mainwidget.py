@@ -79,7 +79,7 @@ class MainWidget(QWidget):
             self.collection.load(t)
         except:
             logging.warning('Could not load collection %s', t)
-            raise
+            raise        
 
         self.setLayout(layout)
 
