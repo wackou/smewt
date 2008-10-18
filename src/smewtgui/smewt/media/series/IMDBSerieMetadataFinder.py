@@ -102,13 +102,13 @@ class IMDBSerieMetadataFinder(WebParser):
 
         for line in epsHtml.split('\n'):
             #<a href="/title/tt0977178/">More with Less</a>
-            if '<h4>Season ' in line and 'Episode ' in line:
+            if '<h3>Season ' in line and 'Episode ' in line:
                 rexp = 'Season (?P<season>[0-9]+), Episode (?P<episodeNumber>[0-9]+)'
                 rexp += '.*?<a href="(?P<imdbUrl>.*?)">(?P<title>.*?)</a>'
                 md = utils.matchRegexp(line, rexp)
                 md['serie'] = serieName
                 md['imdbUrl'] = 'http://www.imdb.com' + md['imdbUrl']
-                md['synopsis'] = utils.matchRegexp(line, '<br>  (?P<synopsis>.*?)<br/>')['synopsis']
+                md['synopsis'] = utils.matchRegexp(line, '<br>  (?P<synopsis>.*?)</td>')['synopsis']
 
                 try:
                     md['originalAirDate'] = utils.matchRegexp(line, 'Original Air Date: (?P<date>.*?)</b>')['date']
