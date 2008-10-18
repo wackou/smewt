@@ -109,6 +109,8 @@ class IMDBSerieMetadataFinder(WebParser):
                 md['serie'] = serieName
                 md['imdbUrl'] = 'http://www.imdb.com' + md['imdbUrl']
                 md['synopsis'] = utils.matchRegexp(line, '<br>  (?P<synopsis>.*?)</td>')['synopsis']
+                # fix in case there was some more stuff in the cell, like next US airings, etc...
+                md['synopsis'] = md['synopsis'].split('<br/>')[0]
 
                 try:
                     md['originalAirDate'] = utils.matchRegexp(line, 'Original Air Date: (?P<date>.*?)</b>')['date']
