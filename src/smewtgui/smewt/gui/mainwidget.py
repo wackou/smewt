@@ -79,7 +79,7 @@ class MainWidget(QWidget):
             self.collection.load(t)
         except:
             logging.warning('Could not load collection %s', t)
-            raise        
+            raise
 
         self.setLayout(layout)
 
@@ -152,10 +152,9 @@ class MainWidget(QWidget):
 
         if url.startsWith('file://'):
             action = 'smplayer'
-            # FIXME: subtitles don't appear when lauching smplayer...
-            args = [ action,  str(url)[7:] ]
-            logging.debug('opening with args = %s',  args)
-            self.externalProcess.start(action, [str(url)])
+            args = [ str(url)[7:] ]
+            logging.debug('launching %s with args = %s', (action, args))
+            self.externalProcess.start(action, args)
 
         elif url.startsWith('smewt://'):
             self.setSmewtUrl(url)
