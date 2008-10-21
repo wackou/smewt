@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.1.dtd">
 <!-- eric4 tasks file for project Smewg -->
-<!-- Saved: 2008-09-11, 04:45:06 -->
+<!-- Saved: 2008-10-22, 01:18:43 -->
 <Tasks version="4.1">
   <Task priority="1" completed="False" bugfix="True">
     <Summary>FIXME: big hack</Summary>
@@ -29,18 +29,6 @@
       <Linenumber>30</Linenumber>
     </Resource>
   </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: this is a hack... How do we know we're at the root node?</Summary>
-    <Description></Description>
-    <Created>2008-09-04, 23:24:57</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Name>utils.py</Name>
-      </Filename>
-      <Linenumber>61</Linenumber>
-    </Resource>
-  </Task>
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: here we should import both the Media and the Metadata into the user</Summary>
     <Description></Description>
@@ -63,19 +51,6 @@
         <Name>collection.py</Name>
       </Filename>
       <Linenumber>135</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: subtitles don't appear when lauching smplayer...</Summary>
-    <Description></Description>
-    <Created>2008-09-10, 22:55:03</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>gui</Dir>
-        <Name>mainwidget.py</Name>
-      </Filename>
-      <Linenumber>156</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
@@ -169,22 +144,21 @@
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: why do icon &amp; text overlap?</Summary>
+    <Summary>FIXME: this is a hack... How do we know we're at the root node?</Summary>
     <Description></Description>
-    <Created>2008-09-11, 04:15:58</Created>
+    <Created>2008-10-18, 14:26:30</Created>
     <Resource>
       <Filename>
         <Dir>smewt</Dir>
-        <Dir>gui</Dir>
-        <Name>bookmarkwidget.py</Name>
+        <Name>utils.py</Name>
       </Filename>
-      <Linenumber>30</Linenumber>
+      <Linenumber>61</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
     <Summary>FIXME: encode url correctly</Summary>
     <Description></Description>
-    <Created>2008-09-11, 04:44:05</Created>
+    <Created>2008-10-18, 16:04:11</Created>
     <Resource>
       <Filename>
         <Dir>smewt</Dir>
@@ -198,7 +172,7 @@
   <Task priority="1" completed="False" bugfix="True">
     <Summary>FIXME: big hack!</Summary>
     <Description></Description>
-    <Created>2008-09-11, 04:44:05</Created>
+    <Created>2008-10-18, 16:04:11</Created>
     <Resource>
       <Filename>
         <Dir>smewt</Dir>
@@ -207,6 +181,19 @@
         <Name>IMDBSerieMetadataFinder.py</Name>
       </Filename>
       <Linenumber>61</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: why do icon &amp; text overlap?</Summary>
+    <Description></Description>
+    <Created>2008-10-22, 00:42:57</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>gui</Dir>
+        <Name>bookmarkwidget.py</Name>
+      </Filename>
+      <Linenumber>30</Linenumber>
     </Resource>
   </Task>
 </Tasks>
