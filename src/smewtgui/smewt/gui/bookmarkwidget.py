@@ -38,7 +38,7 @@ class BookmarkListWidget(QWidget):
     def __init__(self):
         super(BookmarkListWidget, self).__init__()
         self.bookmarks = {'All Series': ('smewt://serie/all',
-                                         '/usr/share/icons/oxygen/48x48/categories/applications-multimedia.png')
+                                         'smewt/icons/applications-multimedia.png')
                           }
 
         layout = QVBoxLayout()
