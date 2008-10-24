@@ -38,10 +38,11 @@ class Importer(QObject):
         self.connect(self.tagger, SIGNAL('tagFinished'), self.tagged)
 
     def importFolder(self,  folder):
-        filetypes = [ '*.avi',  '*.ogm',  '*.mkv' ] # video files
+        filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ] # video files
         for filename in GlobDirectoryWalker(folder, filetypes):
             mediaObject = Media(filename)
             self.taggingQueue.append(mediaObject)
+            
         self.tagCount += len(self.taggingQueue)
         self.emit(SIGNAL('progressChanged'),  self.tagCount - len(self.taggingQueue),  self.tagCount)
 
@@ -105,18 +106,48 @@ class Collection(QObject):
  
     def mergeCollection(self, result):
         #print 'Collection: Adding medias'
-        self.media += result.media
-        self.metadata += result.metadata
-        self.links += result.links
+
+        coll = dict([(m.uniqueKey(), m) for m in self.media])
+        merging_coll = dict([(m.uniqueKey(), m) for m in result.media])
+        for k, v in merging_coll.items():
+            if coll is not None and k in coll.keys():
+                # TODO: have an update() method for medias
+                pass
+            else:
+                self.media.append( v )
+
+        coll = dict([(m.uniqueKey(), m) for m in self.metadata])
+        merging_coll = dict([(m.uniqueKey(), m) for m in result.metadata])
+        for k, v in merging_coll.items():
+            if coll is not None and k in coll.keys():
+                # TODO: rename merge() to update()
+                coll[k].merge(v)
+            else:
+                self.metadata.append( v )
+
+        if len(result.links) > 0:
+            link_dict = dict([((a.uniqueKey(), b.uniqueKey()), (a, b)) for a, b in result.links])
+            media_dict = dict([(m.uniqueKey(), m) for m in self.media])
+            metadata_dict = dict([(m.uniqueKey(), m) for m in self.metadata])
+            for (a_key, b_key), (a, b) in link_dict.items():
+                new_link = (media_dict.get(a_key, a), metadata_dict.get(b_key, b))
+                if new_link not in self.links:
+                    self.links.append(new_link)
+        
         self.emit(SIGNAL('collectionUpdated'))
 
     def filter(self, prop, value):
         result = Collection()
         for media, metadata in self.links:
             if metadata[prop] == value:
-                result.media += [ media ]
-                result.metadata += [ metadata ]
+                if media not in result.media:
+                    result.media += [ media ]
+
+                if metadata not in result.metadata:
+                    result.metadata += [ metadata ]
+                    
                 result.links += [ (media, metadata) ]
+                
         return result
 
     def __str__(self):

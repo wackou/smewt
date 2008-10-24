@@ -35,7 +35,8 @@ from smewt import SmewtDict,  ValidatingSmewtDict
 
 class Media:
 
-    types = { 'video': [ 'avi', 'ogm', 'mkv', 'mpg', 'mpeg' ]
+    types = { 'video': [ 'avi', 'ogm', 'mkv', 'mpg', 'mpeg' ],
+              'subtitle': ['sub', 'srt']
               }
 
     def __init__(self, filename = ''):
@@ -49,13 +50,16 @@ class Media:
     def __repr__(self):
         return self.filename.encode('utf-8')
 
-
     def type(self):
         for name, exts in Media.types.items():
             for ext in exts:
                 if self.filename.endswith(ext):
                     return name
         return 'unknown type'
+    
+    def uniqueKey(self):
+        return self.filename
+
 
 
 
@@ -169,6 +173,12 @@ class Metadata:
     def merge(self, other):
         for name, prop in other.properties.items():
             self.properties[name] = prop
+
+    def setdefault(self, prop, value):
+        if not prop in self.properties:
+            self.properties[prop] = value
+            
+        return self.properties[prop]
 
     def contains(self, other):
         for name, prop in other.properties.items():

@@ -30,7 +30,7 @@ from smewt.media.series import Episode
 
 class EpisodeFilename(Guesser):
 
-    supportedTypes = [ 'video' ]
+    supportedTypes = [ 'video', 'subtitle' ]
 
     def __init__(self):
         super(EpisodeFilename, self).__init__()
