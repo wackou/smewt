@@ -63,7 +63,7 @@ class IMDBMetadataProvider(QObject):
 
 class EpisodeIMDB(Guesser):
 
-    supportedTypes = [ 'video' ]
+    supportedTypes = [ 'video', 'subtitle' ]
 
     def __init__(self):
         super(EpisodeIMDB, self).__init__()
