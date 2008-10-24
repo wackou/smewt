@@ -56,7 +56,7 @@ class WackouTagger(Tagger):
 
 
     def tag(self, media):
-        if media.type() in [ 'video', 'subtitle'] :
+        if media.type() == 'video':
             if media.filename:
                 query = Collection()
                 query.media = [ media ]

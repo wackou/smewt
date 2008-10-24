@@ -8,23 +8,14 @@ from smewt.media.series import Episode
 series = defaultdict(lambda: defaultdict(lambda: []))
 poster = None
 
-# First prepare the episodes
-episodes = {}
 for (media, md) in eps.links:
     try:
         poster = md['loresImage']
     except:
         pass
 
-    md = episodes.setdefault(md.uniqueKey(), Episode(md))
-    if media.type() == 'video':
-        md['filename'] = media.filename
-
-    elif media.type() == 'subtitle':        
-        md.setdefault('subtitles', [] ).append( media.filename )
-        md['numSubtitles'] = len(md['subtitles'])
-
-for md in episodes.values():
+    md = Episode(md)
+    md['filename'] = media.filename
     series[md['serie']][md['season']].append(md)
 
 for serie, seasons in series.items():
@@ -80,11 +71,7 @@ animatedcollapse.init()
       #if 'filename' in ep.properties:
         #try
           #if $ep.title:
-            #if $ep.numSubtitles:
-                <div class="episode"><a href="file://$ep.filename">$ep.episodeNumber - $ep.title ($ep.numSubtitles subtitles) </a>
-            #else
-                <div class="episode"><a href="file://$ep.filename">$ep.episodeNumber - $ep.title </a>
-            #end if
+            <div class="episode"><a href="file://$ep.filename">$ep.episodeNumber - $ep.title</a>
           #else
             <div class="episode"><a href="file://$ep.filename">$ep.episodeNumber - Untitled <i>($ep.filename)</i></a>
           #end if
