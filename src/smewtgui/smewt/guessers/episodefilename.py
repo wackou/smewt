@@ -63,10 +63,10 @@ class EpisodeFilename(Guesser):
         # heuristic 2: try to guess the serie title from the parent directory!
         result = Episode()
         if utils.matchAnyRegexp(name[1], ['season (?P<season>[0-9]+)$']):
-            result['serie'] = name[2]
+            result['series'] = name[2]
             result.confidence = 0.8
         else:
-            result['serie'] = name[1]
+            result['series'] = name[1]
             result.confidence = 0.4
         found += [ result ]
 
@@ -79,6 +79,7 @@ class EpisodeFilename(Guesser):
         for md in found:
             num = md['episodeNumber']
             if num > 100:
+                # FIXME: Python 3000: this needs to be // instead of /
                 md['season'] = num / 100
                 md['episodeNumber'] = num % 100
 

@@ -86,7 +86,7 @@ class MainWidget(QWidget):
         self.history = []
         baseUrl = QSettings().value('base_url').toString()
         if baseUrl == '':
-            baseUrl = 'smewt://serie/all'
+            baseUrl = 'smewt://series/all'
         self.setSmewtUrl(baseUrl)
 
         self.externalProcess = QProcess()
@@ -121,7 +121,7 @@ class MainWidget(QWidget):
         self.collection.save(filename)
 
     def importFolder(self):
-        filename = unicode(QFileDialog.getExistingDirectory(self, 'Select directory to import', '/data/Series/Futurama/Season 1',
+        filename = unicode(QFileDialog.getExistingDirectory(self, 'Select directory to import', '/data/Series/',
                                                             QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
 
         if filename:
@@ -130,11 +130,11 @@ class MainWidget(QWidget):
     def refreshCollectionView(self):
         surl = SmewtUrl(self.smewtUrl)
 
-        if surl.mediaType != 'serie':
+        if surl.mediaType != 'series':
             raise SmewtException('Invalid media type: %s' % surl.mediaType)
 
         if surl.viewType == 'single':
-            metadata = self.collection.filter('serie', surl.args[0])
+            metadata = self.collection.filter('series', surl.args[0])
         elif surl.viewType == 'all':
             metadata = dict([(md.uniqueKey(), md) for md in self.collection.metadata ])
         else:

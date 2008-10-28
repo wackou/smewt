@@ -27,7 +27,7 @@ def parseEpisodeList(string):
 
 class Serie(Metadata):
 
-    typename = 'Serie'
+    typename = 'Series'
 
     schema = { 'title': unicode,
                'numberSeasons': int,
@@ -60,15 +60,15 @@ class Episode(Metadata):
 
     typename = 'Episode'
 
-    schema = { 'serie': unicode,
+    schema = { 'series': unicode,
                'season': int,
                'episodeNumber': int,
                'title': unicode
                }
 
-    order = [ 'serie', 'season', 'episodeNumber',  'title' ]
+    order = [ 'series', 'season', 'episodeNumber',  'title' ]
 
-    unique = [ 'serie', 'season', 'episodeNumber' ]
+    unique = [ 'series', 'season', 'episodeNumber' ]
 
     converters = {}
 

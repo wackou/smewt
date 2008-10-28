@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt import config
+from smewt import config, cachedmethod, utils
 from smewt.guessers.guesser import Guesser
 from smewt.media.series import Episode
 from smewt.media.series.IMDBSerieMetadataFinder import IMDBSerieMetadataFinder
@@ -28,27 +28,86 @@ from PyQt4.QtWebKit import QWebView
 
 import sys, re, logging
 from urllib import urlopen,  urlencode
+import imdb
 
 
 class IMDBMetadataProvider(QObject):
     def __init__(self, metadata):
         super(IMDBMetadataProvider, self).__init__()
 
-        if not metadata['serie']:
-            raise SmewtException('IMDBMetadataProvider: Metadata doesn\'t contain \'serie\' field: %s', md)
+        if not metadata['series']:
+            raise SmewtException("IMDBMetadataProvider: Metadata doesn't contain 'series' field: %s", md)
 
         self.metadata = metadata
-        self.imdb = IMDBSerieMetadataFinder()
+        self.imdb = imdb.IMDb()
+
+    @cachedmethod
+    def getSerie(self, name):
+        results = self.imdb.search_movie(name)
+        for r in results:
+            if r['kind'] == 'tv series':
+                return r
+        raise SmewtException("EpisodeIMDB: Could not find series '%s'" % name)
+
+    def forwardData(self, d, dname, ep, epname):
+        try:
+            d[dname] = ep[epname]
+        except: pass
+
+    @cachedmethod
+    def getEpisodes(self, series):
+        self.imdb.update(series, 'episodes')
+        eps = []
+        for season in series['episodes']:
+            for epNumber, episode in series['episodes'][season].items():
+                ep = {}
+                ep['season'] = season
+                ep['episodeNumber'] = epNumber
+                self.forwardData(ep, 'title', episode, 'title')
+                self.forwardData(ep, 'synopsis', episode, 'plot')
+                self.forwardData(ep, 'series', episode, 'series title')
+                self.forwardData(ep, 'originalAirDate', episode, 'original air date')
+                eps.append(Episode.fromDict(ep))
+        return eps
+
+    @cachedmethod
+    def getSeriesPoster(self, seriesID):
+        # FIXME: big hack!
+        #prefix = serieUrl.split('/')[-2]
+        import os
+        imageDir = os.getcwd()+'/smewt/media/series/images'
+        os.system('mkdir -p "%s"' % imageDir)
+
+        loresFilename, hiresFilename = None, None
+
+        try:
+            serieUrl = 'http://www.imdb.com/title/tt' + seriesID
+            html = urlopen(serieUrl).read()
+            rexp = '<a name="poster" href="(?P<hiresUrl>[^"]*)".*?src="(?P<loresImg>[^"]*)"'
+            poster = utils.matchRegexp(html, rexp)
+            loresFilename = imageDir + '/%s_lores.jpg' % seriesID
+            open(loresFilename, 'w').write(urlopen(poster['loresImg']).read())
+        except:
+            pass
+
+        try:
+            html = urlopen('http://www.imdb.com' + poster['hiresUrl']).read()
+            rexp = '<table id="principal">.*?src="(?P<hiresImg>[^"]*)"'
+            poster = utils.matchRegexp(html, rexp)
+            hiresFilename = imageDir + '/%s_hires.jpg' % seriesID
+            open(hiresFilename, 'w').write(urlopen(poster['hiresImg']).read())
+        except:
+            pass
+
+        return (loresFilename, hiresFilename)
+
 
     def start(self):
-        name = self.metadata['serie']
+        name = self.metadata['series']
         try:
-            url = self.imdb.getSerieUrl(name)
-            if not url:
-                self.emit(SIGNAL('finished'), self.metadata, [])
-
-            eps = self.imdb.getAllEpisodes(name, url)
-            lores, hires = self.imdb.getSeriePoster(url)
+            serie = self.getSerie(name)
+            eps = self.getEpisodes(serie)
+            lores, hires = self.getSeriesPoster(serie.movieID)
             for ep in eps:
                 ep['loresImage'] = lores
                 ep['hiresImage'] = hires
@@ -77,7 +136,7 @@ class EpisodeIMDB(Guesser):
         self.webparser = {}
 
         for md in list(found):
-            if md['serie']:
+            if md['series']:
                 # little hack: if we have no season number, add 1 as default season number
                 # (helps for series which have only 1 season)
                 if not md['season']:
@@ -86,7 +145,7 @@ class EpisodeIMDB(Guesser):
                 self.connect(self.webparser[md], SIGNAL('finished'),
                              self.queryFinished)
             else:
-                logging.warning('EpisodeIMDB: Metadata doesn\'t contain \'serie\' field: %s', md)
+                logging.warning("EpisodeIMDB: Metadata doesn't contain 'series' field: %s", md)
 
         for mdprovider in self.webparser.values():
             mdprovider.start()
