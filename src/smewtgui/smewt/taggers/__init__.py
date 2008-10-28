@@ -18,5 +18,4 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from magicepisodetagger import MagicEpisodeTagger
 from wackoutagger import WackouTagger

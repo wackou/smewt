@@ -29,7 +29,6 @@ class Importer(QObject):
         super(Importer, self).__init__()
 
         self.taggingQueue = []
-        from smewt.taggers.magicepisodetagger import MagicEpisodeTagger
         from smewt.taggers.wackoutagger import WackouTagger
         self.tagger = WackouTagger()
         self.results = Collection()
@@ -42,7 +41,7 @@ class Importer(QObject):
         for filename in GlobDirectoryWalker(folder, filetypes):
             mediaObject = Media(filename)
             self.taggingQueue.append(mediaObject)
-            
+
         self.tagCount += len(self.taggingQueue)
         self.emit(SIGNAL('progressChanged'),  self.tagCount - len(self.taggingQueue),  self.tagCount)
 
@@ -100,10 +99,10 @@ class Collection(QObject):
 
         self.importer.importFolder(folder)
         self.importer.start()
-    
+
     def progressChanged(self,  tagged,  total):
         self.emit(SIGNAL('progressChanged'),  tagged,  total)
- 
+
     def mergeCollection(self, result):
         #print 'Collection: Adding medias'
 
@@ -133,7 +132,7 @@ class Collection(QObject):
                 new_link = (media_dict.get(a_key, a), metadata_dict.get(b_key, b))
                 if new_link not in self.links:
                     self.links.append(new_link)
-        
+
         self.emit(SIGNAL('collectionUpdated'))
 
     def filter(self, prop, value):
@@ -145,9 +144,9 @@ class Collection(QObject):
 
                 if metadata not in result.metadata:
                     result.metadata += [ metadata ]
-                    
+
                 result.links += [ (media, metadata) ]
-                
+
         return result
 
     def __str__(self):

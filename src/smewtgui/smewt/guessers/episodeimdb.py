@@ -73,7 +73,6 @@ class IMDBMetadataProvider(QObject):
     @cachedmethod
     def getSeriesPoster(self, seriesID):
         # FIXME: big hack!
-        #prefix = serieUrl.split('/')[-2]
         import os
         imageDir = os.getcwd()+'/smewt/media/series/images'
         os.system('mkdir -p "%s"' % imageDir)

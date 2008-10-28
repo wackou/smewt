@@ -36,7 +36,7 @@ from smewt import SmewtDict,  ValidatingSmewtDict
 class Media:
 
     types = { 'video': [ 'avi', 'ogm', 'mkv', 'mpg', 'mpeg' ],
-              'subtitle': ['sub', 'srt']
+              'subtitle': [ 'sub', 'srt' ]
               }
 
     def __init__(self, filename = ''):
@@ -56,7 +56,7 @@ class Media:
                 if self.filename.endswith(ext):
                     return name
         return 'unknown type'
-    
+
     def uniqueKey(self):
         return self.filename
 
@@ -177,7 +177,7 @@ class Metadata:
     def setdefault(self, prop, value):
         if not prop in self.properties:
             self.properties[prop] = value
-            
+
         return self.properties[prop]
 
     def contains(self, other):
