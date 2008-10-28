@@ -28,9 +28,9 @@ from smewt import Collection, SolvingChain
 from smewt.media.series import Episode
 import logging
 
-class WackouTagger(Tagger):
+class EpisodeTagger(Tagger):
     def __init__(self):
-        super(WackouTagger, self).__init__()
+        super(EpisodeTagger, self).__init__()
 
         self.chain1 = SolvingChain(EpisodeFilename(), MergeSolver())
         self.chain2 = SolvingChain(EpisodeIMDB(), SimpleSolver())
@@ -68,4 +68,4 @@ class WackouTagger(Tagger):
             print 'Tagger: Not a video media.  Cannot tag.'
 
         # default tagger strategy if none other was applicable
-        return super(WackouTagger, self).tag(media)
+        return super(EpisodeTagger, self).tag(media)

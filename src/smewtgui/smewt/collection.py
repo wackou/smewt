@@ -29,8 +29,8 @@ class Importer(QObject):
         super(Importer, self).__init__()
 
         self.taggingQueue = []
-        from smewt.taggers.wackoutagger import WackouTagger
-        self.tagger = WackouTagger()
+        from smewt.taggers.episodetagger import EpisodeTagger
+        self.tagger = EpisodeTagger()
         self.results = Collection()
         self.tagCount = 0
         self.state = 'stopped'
