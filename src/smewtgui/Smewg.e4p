@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2008-09-04, 01:23:49 -->
+<!-- Saved: 2008-10-29, 00:33:52 -->
 <!-- Copyright (C) 2008 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -76,11 +76,6 @@
       <Dir>smewt</Dir>
       <Dir>solvers</Dir>
       <Name>naivesolver.py</Name>
-    </Source>
-    <Source>
-      <Dir>smewt</Dir>
-      <Dir>taggers</Dir>
-      <Name>magicepisodetagger.py</Name>
     </Source>
     <Source>
       <Dir>smewt</Dir>
@@ -175,12 +170,6 @@
     </Source>
     <Source>
       <Dir>smewt</Dir>
-      <Dir>media</Dir>
-      <Dir>series</Dir>
-      <Name>IMDBSerieMetadataFinder.py</Name>
-    </Source>
-    <Source>
-      <Dir>smewt</Dir>
       <Dir>gui</Dir>
       <Name>mainwidget.py</Name>
     </Source>
@@ -232,11 +221,6 @@
     </Source>
     <Source>
       <Dir>smewt</Dir>
-      <Dir>taggers</Dir>
-      <Name>wackoutagger.py</Name>
-    </Source>
-    <Source>
-      <Dir>smewt</Dir>
       <Dir>guessers</Dir>
       <Name>episodeimdb.py</Name>
     </Source>
@@ -244,6 +228,11 @@
       <Dir>smewt</Dir>
       <Dir>base</Dir>
       <Name>cache.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>taggers</Dir>
+      <Name>episodetagger.py</Name>
     </Source>
   </Sources>
   <Forms>

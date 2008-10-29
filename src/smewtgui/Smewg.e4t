@@ -1,21 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.1.dtd">
 <!-- eric4 tasks file for project Smewg -->
-<!-- Saved: 2008-10-22, 01:18:43 -->
+<!-- Saved: 2008-10-29, 01:07:48 -->
 <Tasks version="4.1">
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: big hack</Summary>
-    <Description></Description>
-    <Created>2008-09-04, 20:05:03</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>solvers</Dir>
-        <Name>naivesolver.py</Name>
-      </Filename>
-      <Linenumber>48</Linenumber>
-    </Resource>
-  </Task>
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: change this to an exception</Summary>
     <Description></Description>
@@ -27,57 +14,6 @@
         <Name>validatingsmewtdict.py</Name>
       </Filename>
       <Linenumber>30</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: here we should import both the Media and the Metadata into the user</Summary>
-    <Description></Description>
-    <Created>2008-09-10, 22:36:31</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Name>collection.py</Name>
-      </Filename>
-      <Linenumber>59</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: cannot dump links correctly, need to use reference</Summary>
-    <Description></Description>
-    <Created>2008-09-10, 22:36:31</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Name>collection.py</Name>
-      </Filename>
-      <Linenumber>135</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: this is not the correct way to do it...</Summary>
-    <Description></Description>
-    <Created>2008-09-10, 23:29:54</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>media</Dir>
-        <Dir>series</Dir>
-        <Name>view_episodes_by_season.tmpl</Name>
-      </Filename>
-      <Linenumber>26</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: if the 2 values differ, merge only the one with the higher confidence</Summary>
-    <Description></Description>
-    <Created>2008-09-11, 03:00:41</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>solvers</Dir>
-        <Name>mergesolver.py</Name>
-      </Filename>
-      <Linenumber>37</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="False">
@@ -93,19 +29,6 @@
       <Linenumber>71</Linenumber>
     </Resource>
   </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: surely there is a better way to do this...</Summary>
-    <Description></Description>
-    <Created>2008-09-11, 03:11:25</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>guessers</Dir>
-        <Name>epguides.py</Name>
-      </Filename>
-      <Linenumber>116</Linenumber>
-    </Resource>
-  </Task>
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: check that result is valid</Summary>
     <Description></Description>
@@ -119,34 +42,23 @@
       <Linenumber>51</Linenumber>
     </Resource>
   </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: isn't it better to implement properties as actual python properties? or attributes?</Summary>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: Python 3000: this needs to be // instead of /</Summary>
     <Description></Description>
-    <Created>2008-09-11, 03:50:38</Created>
+    <Created>2008-10-28, 23:41:34</Created>
     <Resource>
       <Filename>
         <Dir>smewt</Dir>
-        <Name>mediaobject.py</Name>
+        <Dir>guessers</Dir>
+        <Name>episodefilename.py</Name>
       </Filename>
-      <Linenumber>62</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: !!write unit tests for this class...!!</Summary>
-    <Description></Description>
-    <Created>2008-09-11, 03:50:38</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Name>mediaobject.py</Name>
-      </Filename>
-      <Linenumber>63</Linenumber>
+      <Linenumber>82</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
     <Summary>FIXME: this is a hack... How do we know we're at the root node?</Summary>
     <Description></Description>
-    <Created>2008-10-18, 14:26:30</Created>
+    <Created>2008-10-28, 23:47:57</Created>
     <Resource>
       <Filename>
         <Dir>smewt</Dir>
@@ -156,37 +68,62 @@
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: encode url correctly</Summary>
+    <Summary>FIXME: big hack</Summary>
     <Description></Description>
-    <Created>2008-10-18, 16:04:11</Created>
+    <Created>2008-10-29, 00:06:30</Created>
     <Resource>
       <Filename>
         <Dir>smewt</Dir>
-        <Dir>media</Dir>
-        <Dir>series</Dir>
-        <Name>IMDBSerieMetadataFinder.py</Name>
+        <Dir>solvers</Dir>
+        <Name>naivesolver.py</Name>
       </Filename>
-      <Linenumber>36</Linenumber>
+      <Linenumber>48</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
     <Summary>FIXME: big hack!</Summary>
     <Description></Description>
-    <Created>2008-10-18, 16:04:11</Created>
+    <Created>2008-10-29, 00:06:48</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>guessers</Dir>
+        <Name>episodeimdb.py</Name>
+      </Filename>
+      <Linenumber>75</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: surely there is a better way to do this...</Summary>
+    <Description></Description>
+    <Created>2008-10-29, 00:08:07</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>guessers</Dir>
+        <Name>epguides.py</Name>
+      </Filename>
+      <Linenumber>116</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: this is not the correct way to do it...</Summary>
+    <Description></Description>
+    <Created>2008-10-29, 00:08:10</Created>
     <Resource>
       <Filename>
         <Dir>smewt</Dir>
         <Dir>media</Dir>
         <Dir>series</Dir>
-        <Name>IMDBSerieMetadataFinder.py</Name>
+        <Name>view_episodes_by_season.tmpl</Name>
       </Filename>
-      <Linenumber>61</Linenumber>
+      <Linenumber>35</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
     <Summary>FIXME: why do icon &amp; text overlap?</Summary>
     <Description></Description>
-    <Created>2008-10-22, 00:42:57</Created>
+    <Created>2008-10-29, 00:08:14</Created>
     <Resource>
       <Filename>
         <Dir>smewt</Dir>
@@ -194,6 +131,91 @@
         <Name>bookmarkwidget.py</Name>
       </Filename>
       <Linenumber>30</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: if the 2 values differ, merge only the one with the higher confidence</Summary>
+    <Description></Description>
+    <Created>2008-10-29, 00:08:22</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>solvers</Dir>
+        <Name>mergesolver.py</Name>
+      </Filename>
+      <Linenumber>37</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: isn't it better to implement properties as actual python properties? or attributes?</Summary>
+    <Description></Description>
+    <Created>2008-10-29, 00:09:37</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>mediaobject.py</Name>
+      </Filename>
+      <Linenumber>66</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: !!write unit tests for this class...!!</Summary>
+    <Description></Description>
+    <Created>2008-10-29, 00:09:37</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>mediaobject.py</Name>
+      </Filename>
+      <Linenumber>67</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: here we should import both the Media and the Metadata into the user</Summary>
+    <Description></Description>
+    <Created>2008-10-29, 00:33:52</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>collection.py</Name>
+      </Filename>
+      <Linenumber>67</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: have an update() method for medias</Summary>
+    <Description></Description>
+    <Created>2008-10-29, 00:33:52</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>collection.py</Name>
+      </Filename>
+      <Linenumber>113</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: rename merge() to update()</Summary>
+    <Description></Description>
+    <Created>2008-10-29, 00:33:52</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>collection.py</Name>
+      </Filename>
+      <Linenumber>122</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: cannot dump links correctly, need to use reference</Summary>
+    <Description></Description>
+    <Created>2008-10-29, 00:33:52</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>collection.py</Name>
+      </Filename>
+      <Linenumber>181</Linenumber>
     </Resource>
   </Task>
 </Tasks>
