@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.1.dtd">
 <!-- eric4 tasks file for project Smewg -->
-<!-- Saved: 2008-10-29, 01:07:48 -->
+<!-- Saved: 2008-11-01, 16:23:24 -->
 <Tasks version="4.1">
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: change this to an exception</Summary>
@@ -40,31 +40,6 @@
         <Name>solver.py</Name>
       </Filename>
       <Linenumber>51</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: Python 3000: this needs to be // instead of /</Summary>
-    <Description></Description>
-    <Created>2008-10-28, 23:41:34</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>guessers</Dir>
-        <Name>episodefilename.py</Name>
-      </Filename>
-      <Linenumber>82</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: this is a hack... How do we know we're at the root node?</Summary>
-    <Description></Description>
-    <Created>2008-10-28, 23:47:57</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Name>utils.py</Name>
-      </Filename>
-      <Linenumber>61</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
@@ -216,6 +191,45 @@
         <Name>collection.py</Name>
       </Filename>
       <Linenumber>181</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: Python 3000: this needs to be // instead of /</Summary>
+    <Description></Description>
+    <Created>2008-11-01, 14:33:18</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>guessers</Dir>
+        <Name>episodefilename.py</Name>
+      </Filename>
+      <Linenumber>82</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: this is a hack... How do we know we're at the root node?</Summary>
+    <Description></Description>
+    <Created>2008-11-01, 14:40:17</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>utils.py</Name>
+      </Filename>
+      <Linenumber>75</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: get most likely one if more than one found</Summary>
+    <Description></Description>
+    <Created>2008-11-01, 16:23:01</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>media</Dir>
+        <Dir>subtitle</Dir>
+        <Name>subtitle_tvsubtitles_provider.py</Name>
+      </Filename>
+      <Linenumber>56</Linenumber>
     </Resource>
   </Task>
 </Tasks>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2008-10-29, 00:33:52 -->
+<!-- Saved: 2008-11-01, 16:23:24 -->
 <!-- Copyright (C) 2008 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -233,6 +233,12 @@
       <Dir>smewt</Dir>
       <Dir>taggers</Dir>
       <Name>episodetagger.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>media</Dir>
+      <Dir>subtitle</Dir>
+      <Name>subtitle_tvsubtitles_provider.py</Name>
     </Source>
   </Sources>
   <Forms>
