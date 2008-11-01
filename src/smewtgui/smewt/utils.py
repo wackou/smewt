@@ -50,6 +50,20 @@ def matchAnyRegexp(string, regexps):
             return result.groupdict()
     return None
 
+def multipleMatchRegexp(string, regexp):
+    """Matches the given string against the regexp (using named match groups) and returns
+    a list of all found matches in the string"""
+    rexp = re.compile(regexp, re.IGNORECASE | re.DOTALL)
+    result = []
+    while True:
+        match = rexp.search(string)
+        if match:
+            result += [ match.groupdict() ]
+            # keep everything after what's been matched, and try to match again
+            string = string[match.end(match.lastindex):]
+        else:
+            return result
+
 
 
 # filename-related functions
