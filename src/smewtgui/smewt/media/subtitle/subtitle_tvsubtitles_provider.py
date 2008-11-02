@@ -86,7 +86,7 @@ class TVSubtitlesProvider:
 
 
 if __name__ == '__main__':
-    series, season, episode, language = 'californication', 2, 3, 'en'
+    series, season, episode, language = 'heroes', 3, 5, 'fr'
 
     tvsub = TVSubtitlesProvider()
     subs = tvsub.getAvailableSubtitlesID(series, season, episode)
@@ -105,6 +105,8 @@ if __name__ == '__main__':
             zf = zipfile.ZipFile(tmpfile)
             filename = zf.infolist()[0].filename
             subtext = zf.read(filename)
+            subf = open('/tmp/' + filename, 'w')
+            subf.write(subtext)
             unicodeSub = subtext.decode('iso-8859-1')
 
             import locale
