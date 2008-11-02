@@ -86,7 +86,7 @@ class MainWidget(QWidget):
         self.history = []
         baseUrl = QSettings().value('base_url').toString()
         if baseUrl == '':
-            baseUrl = 'smewt://series/all'
+            baseUrl = 'smewt://media/series/all'
         self.setSmewtUrl(baseUrl)
 
         self.externalProcess = QProcess()
