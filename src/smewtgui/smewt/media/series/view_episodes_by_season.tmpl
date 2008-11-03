@@ -20,12 +20,12 @@ for (media, md) in eps.links:
     if media.type() == 'video':
         md['filename'] = media.filename
 
-    elif media.type() == 'subtitle':        
+    elif media.type() == 'subtitle':
         md.setdefault('subtitles', [] ).append( media.filename )
         md['numSubtitles'] = len(md['subtitles'])
 
 for md in episodes.values():
-    series[md['serie']][md['season']].append(md)
+    series[md['series']][md['season']].append(md)
 
 for serie, seasons in series.items():
     for season, eps in seasons.items():
@@ -72,6 +72,11 @@ animatedcollapse.init()
   #if poster:
     <img src="file://$poster" />
   #end if
+
+  <a href="smewt://action/getsubtitles/$serieName/en">Get missing English subtitles</a>
+  -
+  <a href="smewt://action/getsubtitles/$serieName/fr">Get missing French subtitles</a>
+
   <h1>$serieName</h1>
   #for seasonNumber, eps in seasons.items():
     <h2><a href="javascript:animatedcollapse.toggle('s$seasonNumber')">Season $seasonNumber</a></h2>

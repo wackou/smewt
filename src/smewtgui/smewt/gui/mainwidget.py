@@ -26,7 +26,7 @@ from PyQt4.QtWebKit import QWebView, QWebPage
 from smewt.media.series import view
 from bookmarkwidget import BookmarkListWidget
 import logging
-from os.path import join, dirname
+from os.path import join, dirname, splitext
 
 class MainWidget(QWidget):
     def __init__(self):
@@ -98,6 +98,9 @@ class MainWidget(QWidget):
             pass
 
     def setSmewtUrl(self, url):
+        if not isinstance(url, SmewtUrl):
+            url = SmewtUrl(url)
+
         self.smewtUrl = url
 
         try:
@@ -108,7 +111,7 @@ class MainWidget(QWidget):
 
         self.history.append(url)
 
-        QSettings().setValue('base_url',  QVariant(self.smewtUrl))
+        QSettings().setValue('base_url',  QVariant(str(self.smewtUrl)))
         self.refreshCollectionView()
 
 
@@ -128,10 +131,10 @@ class MainWidget(QWidget):
             self.collection.importFolder(filename)
 
     def refreshCollectionView(self):
-        surl = SmewtUrl(self.smewtUrl)
+        surl = self.smewtUrl
 
         if surl.mediaType != 'series':
-            raise SmewtException('Invalid media type: %s' % surl.mediaType)
+            raise SmewtException('MainWidget: Invalid media type: %s' % surl.mediaType)
 
         if surl.viewType == 'single':
             metadata = self.collection.filter('series', surl.args[0])
@@ -157,7 +160,48 @@ class MainWidget(QWidget):
             self.externalProcess.start(action, args)
 
         elif url.startsWith('smewt://'):
-            self.setSmewtUrl(url)
+            surl = SmewtUrl(url)
+            if surl.mediaType:
+                self.setSmewtUrl(surl)
+            elif surl.actionType:
+                # TODO: use an ActionFactory to dispatch action to a registered plugin that
+                # can provide this type of service, ie: getsubtitles action may be fulfilled
+                # by tvsubtitles, opensubtitles, etc...
+                if surl.actionType == 'getsubtitles':
+                    from smewt.media.subtitle import TVSubtitlesProvider
+                    tvsub = TVSubtitlesProvider()
+                    languageMap = { 'en': u'English', 'fr': u'Français' }
+
+                    # find episodes which don't have subtitles and get it directly
+                    series, language = surl.args
+                    files = self.collection.filter('series', series).media
+                    videos = [ f for f in files if f.type() == 'video' ]
+                    subtitles = [ f for f in files if f.type() == 'subtitle' ]
+
+                    reimport = set()
+                    for video in videos:
+                        basename = splitext(video.filename)[0]
+                        subsBasename = basename + '.' + languageMap[language]
+                        foundSubs = [ s for s in subtitles if splitext(s.filename)[0] == subsBasename ]
+
+                        if foundSubs: continue
+
+                        # look which episode metadata is connected to this media file
+                        for a, b in self.collection.links:
+                            if a is video: episode = b
+                            if b is video: episode = a
+
+                        print 'gettings subs for', episode
+                        tvsub.downloadSubtitle(subsBasename, episode['series'],
+                                               episode['season'], episode['episodeNumber'], language,
+                                               video.filename)
+
+                        reimport.add(dirname(video.filename))
+
+                    for dir in reimport:
+                        self.collection.importFolder(dir)
+
+
         else:
             pass
 
