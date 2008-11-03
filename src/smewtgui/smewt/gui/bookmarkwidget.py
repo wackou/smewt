@@ -20,6 +20,7 @@
 
 from PyQt4.QtCore import SIGNAL, QSize
 from PyQt4.QtGui import QWidget, QPushButton, QIcon, QVBoxLayout
+from smewt import SmewtUrl
 
 class BookmarkWidget(QPushButton):
     def __init__(self,  desc,  url, icon = None):
@@ -37,7 +38,7 @@ class BookmarkWidget(QPushButton):
 class BookmarkListWidget(QWidget):
     def __init__(self):
         super(BookmarkListWidget, self).__init__()
-        self.bookmarks = {'All Series': ('smewt://media/series/all',
+        self.bookmarks = {'All Series': (SmewtUrl('media', 'series/all'),
                                          'smewt/icons/applications-multimedia.png')
                           }
 

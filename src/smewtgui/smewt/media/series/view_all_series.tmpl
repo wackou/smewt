@@ -3,18 +3,15 @@
 <%
 from itertools import groupby
 from collections import defaultdict
+from smewt import SmewtUrl
 
 series = defaultdict(lambda: defaultdict(lambda: []))
 
+series = set()
 for (serie, season, episode), md in eps.items():
-    # escape the '/' in the serie name
-    serie = serie.replace('/', '//')
-    series[serie][season].append(md)
+    series.add(serie)
 
-for serie, seasons in series.items():
-    for season, eps in seasons.items():
-        series[serie][season] = sorted(eps, key = lambda x: x['episodeNumber'])
-
+series = sorted([ (title, SmewtUrl('media', 'series/single', { 'title': title })) for title in series ])
 %>
 
 <html>
@@ -26,8 +23,8 @@ for serie, seasons in series.items():
 
 ALL SERIES
 
-#for serieName in sorted(series.keys())
-  <h1><a href='smewt://media/series/single/$serieName'>$serieName</a></h1>
+#for title, url in series
+  <h1><a href='$url'>$title</a></h1>
 #end for
 
 </body>

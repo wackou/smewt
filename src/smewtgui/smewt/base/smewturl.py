@@ -19,42 +19,43 @@
 #
 
 from smewtexception import SmewtException
+from urlparse import ParseResult, urlparse, urlunparse
+from urllib import urlencode, unquote_plus
 
 class SmewtUrl:
-    def __init__(self, url):
-        self.url = unicode(url)
-        if not self.url.startswith('smewt://'):
-            raise SmewtException('Could not create SmewtUrl from %s' % url)
+    def __init__(self, type=None, path=None, args = {}, url = None):
+        if type and path and not url:
+            if path[0] != '/': path = '/' + path
+            self.spath = ParseResult('http', type, path, '', urlencode(args), None)
 
-        spath = self.url[8:].split('/')
+        elif url and not type and not path:
+            if not unicode(url).startswith('smewt://'):
+                raise SmewtException('Could not create SmewtUrl from %s' % url)
 
-        # rebind '/' that were escaped
-        while '' in spath:
-            idx = spath.index('')
-            merged = spath[idx-1] + '/' + spath[idx+1]
-            spath[idx-1:idx+1] = [ merged ]
+            url = unicode(url).replace('smewt://', 'http://')
+            self.spath = urlparse(url)
+        else:
+            raise SmewtException('SmewtUrl: you need to specify either a string url or the components of the SmewtUrl you want to build')
 
         # set member vars in function of url type
         self.mediaType = self.viewType = self.actionType = None
 
         try:
-            if spath[0] == 'media':
-                self.mediaType = spath[1]
-                self.viewType = spath[2]
-                argsidx = 3
-            elif spath[0] == 'action':
-                self.actionType = spath[1]
-                argsidx = 2
+            if self.spath.netloc == 'media':
+                self.mediaType, self.viewType = self.spath.path.split('/')[1:]
+            elif self.spath.netloc == 'action':
+                self.actionType, = self.spath.path.split('/')[1:]
             else:
-                raise SmewtException("SmewtUrl: invalid url type '%s'" % spath[0])
+                raise SmewtException("SmewtUrl: invalid url type '%s'" % self.spath.netloc)
 
-        except IndexError:
-            raise SmewtException("SmewtUrl: incomplete url '%s'" % self.url)
+        except ValueError:
+            raise SmewtException("SmewtUrl: incomplete url '%s'" % self)
 
-        try:
-            self.args = spath[argsidx:]
-        except IndexError:
-            self.args = None
+        # TODO: in python 2.6 use parse_qs
+        if self.spath.query:
+            self.args = dict([ kv.split('=') for kv in self.spath.query.split('&') ])
+            for key, value in self.args.items():
+                self.args[unquote_plus(key)] = unquote_plus(value)
 
     def __str__(self):
-        return self.url.encode('utf-8')
+        return urlunparse(self.spath).replace('http://', 'smewt://')

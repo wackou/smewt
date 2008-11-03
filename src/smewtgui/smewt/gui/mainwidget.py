@@ -99,7 +99,7 @@ class MainWidget(QWidget):
 
     def setSmewtUrl(self, url):
         if not isinstance(url, SmewtUrl):
-            url = SmewtUrl(url)
+            url = SmewtUrl(url = url)
 
         self.smewtUrl = url
 
@@ -137,7 +137,7 @@ class MainWidget(QWidget):
             raise SmewtException('MainWidget: Invalid media type: %s' % surl.mediaType)
 
         if surl.viewType == 'single':
-            metadata = self.collection.filter('series', surl.args[0])
+            metadata = self.collection.filter('series', surl.args['title'])
         elif surl.viewType == 'all':
             metadata = dict([(md.uniqueKey(), md) for md in self.collection.metadata ])
         else:
@@ -160,20 +160,27 @@ class MainWidget(QWidget):
             self.externalProcess.start(action, args)
 
         elif url.startsWith('smewt://'):
-            surl = SmewtUrl(url)
+            surl = SmewtUrl(url = url)
             if surl.mediaType:
                 self.setSmewtUrl(surl)
             elif surl.actionType:
                 # TODO: use an ActionFactory to dispatch action to a registered plugin that
                 # can provide this type of service, ie: getsubtitles action may be fulfilled
                 # by tvsubtitles, opensubtitles, etc...
+                if surl.actionType == 'play':
+                    action = 'smplayer'
+                    args = [ surl.args['filename'] ]
+                    logging.debug('launching %s with args = %s', (action, args))
+                    self.externalProcess.start(action, args)
+
                 if surl.actionType == 'getsubtitles':
                     from smewt.media.subtitle import TVSubtitlesProvider
                     tvsub = TVSubtitlesProvider()
                     languageMap = { 'en': u'English', 'fr': u'Français' }
 
                     # find episodes which don't have subtitles and get it directly
-                    series, language = surl.args
+                    series = surl.args['title']
+                    language = surl.args['language']
                     files = self.collection.filter('series', series).media
                     videos = [ f for f in files if f.type() == 'video' ]
                     subtitles = [ f for f in files if f.type() == 'subtitle' ]

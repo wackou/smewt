@@ -4,13 +4,19 @@
 from itertools import groupby
 from collections import defaultdict
 from smewt.media.series import Episode
+from smewt import SmewtUrl
 
 series = defaultdict(lambda: defaultdict(lambda: []))
 poster = None
+englishSubsLink = None
+frenchSubsLink = None
 
 # First prepare the episodes
 episodes = {}
 for (media, md) in eps.links:
+    englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': md['series'], 'language': 'en' })
+    frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': md['series'], 'language': 'fr' })
+
     try:
         poster = md['loresImage']
     except:
@@ -19,6 +25,7 @@ for (media, md) in eps.links:
     md = episodes.setdefault(md.uniqueKey(), Episode(md))
     if media.type() == 'video':
         md['filename'] = media.filename
+        md['url'] = SmewtUrl('action', 'play', { 'filename': media.filename })
 
     elif media.type() == 'subtitle':
         md.setdefault('subtitles', [] ).append( media.filename )
@@ -73,9 +80,9 @@ animatedcollapse.init()
     <img src="file://$poster" />
   #end if
 
-  <a href="smewt://action/getsubtitles/$serieName/en">Get missing English subtitles</a>
+  <a href="$englishSubsLink">Get missing English subtitles</a>
   -
-  <a href="smewt://action/getsubtitles/$serieName/fr">Get missing French subtitles</a>
+  <a href="$frenchSubsLink">Get missing French subtitles</a>
 
   <h1>$serieName</h1>
   #for seasonNumber, eps in seasons.items():
@@ -86,12 +93,12 @@ animatedcollapse.init()
         #try
           #if $ep.title:
             #if $ep.numSubtitles:
-                <div class="episode"><a href="file://$ep.filename">$ep.episodeNumber - $ep.title ($ep.numSubtitles subtitles) </a>
+                <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title ($ep.numSubtitles subtitles) </a>
             #else
-                <div class="episode"><a href="file://$ep.filename">$ep.episodeNumber - $ep.title </a>
+                <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title </a>
             #end if
           #else
-            <div class="episode"><a href="file://$ep.filename">$ep.episodeNumber - Untitled <i>($ep.filename)</i></a>
+            <div class="episode"><a href="$ep.url">$ep.episodeNumber - Untitled <i>($ep.filename)</i></a>
           #end if
         #except
           <div class="episode"> ? - $ep.title
