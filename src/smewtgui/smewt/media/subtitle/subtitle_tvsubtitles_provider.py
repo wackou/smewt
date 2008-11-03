@@ -101,8 +101,8 @@ class TVSubtitlesProvider:
         if len(subs) > 1:
             logging.warning('More than 1 possible subtitle found: %s', str(subs))
             if videoFilename:
-                subsdist = [ (sub, utils.levenshtein(videoFilename, sub['title'])) for sub in subs ]
-                print subsdist
+                dists = [ (utils.levenshtein(videoFilename, sub['title']), sub) for sub in subs ]
+                sub = sorted(dists)[0][1]
             logging.warning('Choosing %s' % sub)
 
         f = open(tmpfile, 'wb')

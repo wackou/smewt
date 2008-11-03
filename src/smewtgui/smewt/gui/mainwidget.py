@@ -191,7 +191,7 @@ class MainWidget(QWidget):
                             if a is video: episode = b
                             if b is video: episode = a
 
-                        print 'gettings subs for', episode
+                        logging.info('MainWidget: trying to download subs for %s' % episode)
                         tvsub.downloadSubtitle(subsBasename, episode['series'],
                                                episode['season'], episode['episodeNumber'], language,
                                                video.filename)
