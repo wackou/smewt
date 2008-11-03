@@ -35,18 +35,24 @@ class SmewtUrl:
             spath[idx-1:idx+1] = [ merged ]
 
         # set member vars in function of url type
-        self.mediaType = self.viewType = None
-
-        if spath[0] == 'media':
-            self.mediaType = spath[1]
-            self.viewType = spath[2]
-        elif spath[0] == 'action':
-            pass
-        else:
-            raise SmewtException("SmewtUrl: invalid url type '%s'" % spath[0])
+        self.mediaType = self.viewType = self.actionType = None
 
         try:
-            self.args = spath[3:]
+            if spath[0] == 'media':
+                self.mediaType = spath[1]
+                self.viewType = spath[2]
+                argsidx = 3
+            elif spath[0] == 'action':
+                self.actionType = spath[1]
+                argsidx = 2
+            else:
+                raise SmewtException("SmewtUrl: invalid url type '%s'" % spath[0])
+
+        except IndexError:
+            raise SmewtException("SmewtUrl: incomplete url '%s'" % self.url)
+
+        try:
+            self.args = spath[argsidx:]
         except IndexError:
             self.args = None
 
