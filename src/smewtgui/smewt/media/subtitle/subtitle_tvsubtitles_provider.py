@@ -18,9 +18,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import re
+import re, logging
 from urllib import urlopen, urlencode
-from smewt import utils, SmewtException
+from smewt import utils, SmewtException, cachedmethod
 
 def simpleMatch(string, regexp):
     return re.compile(regexp).search(string).groups()[0]
@@ -32,6 +32,7 @@ class TVSubtitlesProvider:
 
     baseUrl = 'http://www.tvsubtitles.net'
 
+    @cachedmethod
     def getLikelySeriesUrl(self, name):
         data = urlencode({ 'q': name })
         searchHtml = urlopen(self.baseUrl + '/search.php', data).read()
@@ -52,11 +53,13 @@ class TVSubtitlesProvider:
 
         return matches
 
+    @cachedmethod
     def getSeriesID(self, name):
         # TODO: get most likely one if more than one found
         url = self.getLikelySeriesUrl(name)[0]['url']
         return simpleMatch(url, 'tvshow-(.*?).html')
 
+    @cachedmethod
     def getEpisodeID(self, series, season, number):
         seriesID = self.getSeriesID(series)
         seasonHtml = urlopen(self.baseUrl + '/tvshow-%s-%d.html' % (seriesID, season)).read()
@@ -73,6 +76,7 @@ class TVSubtitlesProvider:
         result['title'] = simpleMatch(string, 'hspace=4>(.*?)</h5>')
         return result
 
+    @cachedmethod
     def getAvailableSubtitlesID(self, series, season, number):
         episodeID = self.getEpisodeID(series, season, number)
         episodeHtml = urlopen(self.baseUrl + '/episode-%s.html' % episodeID).read()
@@ -83,6 +87,34 @@ class TVSubtitlesProvider:
 
         return result
 
+    def downloadSubtitle(self, basename, series, season, episode, language, videoFilename = None):
+        """videoFilename is just used a hint when we find multiple subtitles"""
+        import urllib2, zipfile, os.path
+        # TODO: do this in memory instead of tmp file
+        tmpfile = '/tmp/sub.zip'
+        subs = [ sub for sub in self.getAvailableSubtitlesID(series, season, episode) if sub['code'] == language ]
+
+        if not subs:
+            return
+
+        sub = subs[0]
+        if len(subs) > 1:
+            logging.warning('More than 1 possible subtitle found: %s', str(subs))
+            if videoFilename:
+                subsdist = [ (sub, utils.levenshtein(videoFilename, sub['title'])) for sub in subs ]
+                print subsdist
+            logging.warning('Choosing %s' % sub)
+
+        f = open(tmpfile, 'wb')
+        f.write(urllib2.urlopen(self.baseUrl + '/download-%s.html' % sub['id']).read())
+        f.close()
+
+        zf = zipfile.ZipFile(tmpfile)
+        filename = zf.infolist()[0].filename
+        extension = os.path.splitext(filename)[1]
+        subtext = zf.read(filename)
+        subf = open(basename + extension, 'w')
+        subf.write(subtext)
 
 
 if __name__ == '__main__':
