@@ -84,9 +84,13 @@ elif sys.platform == 'darwin':
 provides = packages
 
 requires = ['IMDbPY(>=0.38)',
+            'Cheetah(>=1.0)',
+            'PyQt(>=4.4.3)'
             ]
 
 install_requires = ['IMDbPY',
+                    'Cheetah',
+                    'PyQt'
                     ]
 
 dependency_links = []
@@ -108,7 +112,10 @@ setup(name = 'Smewt',
       packages = packages,
       scripts = scripts,
       package_data = {'smewt.icons': ['applications-multimedia.png'],
-                      'smewt.media.series': ['*.tmpl']},
+                      'smewt.media.series': ['view_episodes_by_season.tmpl',
+                                             'view_all_series.tmpl',
+                                             'jquery-1.2.2.pack.js',
+                                             'animatedcollapse.js']},
       data_files = data_files,
       classifiers =
             [ 'Development Status :: 1 - Beta',

@@ -4,3 +4,6 @@ include Smewg.e4q
 include Smewg.e4t
 include reset_config.sh
 include ez_setup.py
+include smewt/media/series/*.tmpl
+include smewt/media/series/*.js
+recursive-include smewt/icons *.png
