@@ -1,2 +1,6 @@
 prune utils
+include Smewg.e4p
+include Smewg.e4q
+include Smewg.e4t
+include reset_config.sh
 include ez_setup.py
