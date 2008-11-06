@@ -21,7 +21,6 @@
 from smewt import config, cachedmethod, utils
 from smewt.guessers.guesser import Guesser
 from smewt.media.series import Episode
-from smewt.media.series.IMDBSerieMetadataFinder import IMDBSerieMetadataFinder
 
 from PyQt4.QtCore import SIGNAL, QObject, QUrl
 from PyQt4.QtWebKit import QWebView
