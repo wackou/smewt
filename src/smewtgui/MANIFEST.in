@@ -1,0 +1,2 @@
+prune utils
+include ez_setup.py
