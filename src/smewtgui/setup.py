@@ -83,9 +83,9 @@ elif sys.platform == 'darwin':
 
 provides = packages
 
-requires = ['IMDbPY(>=0.38)',
+requires = ['IMDbPY(>=3.7)',
             'Cheetah(>=1.0)',
-            'PyQt(>=4.4.3)'
+            'PyQt(>=4.4.0)'
             ]
 
 install_requires = ['IMDbPY',
