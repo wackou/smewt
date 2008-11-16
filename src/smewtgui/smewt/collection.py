@@ -166,7 +166,7 @@ class Collection(QObject):
         self.media = cPickle.load(f)
 
         dicts = cPickle.load(f)
-        self.metadata = [ Episode.fromDict(d) for d in dicts ]
+        self.metadata = [ Episode().fromDict(d) for d in dicts ]
 
         nlinks = cPickle.load(f)
         for (mn, mdn) in nlinks:

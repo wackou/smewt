@@ -119,7 +119,7 @@ class EpGuideQuerier(QObject):
                 for name, value in d.items():
                     if type(value) == str:
                         d[name] = value.decode('iso-8859-1')
-                newep = Episode.fromDict(d)
+                newep = Episode().fromDict(d)
                 newep['serie'] = unicode(serieName)
 
                 episodes.append(newep)
@@ -202,9 +202,9 @@ class EpGuides(Guesser):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     guesser = EpGuides()
-    mediaObjects = [Episode.fromDict({'serie': sys.argv[1],
-                                            'title': sys.argv[2],
-                                            'episodeNumber': sys.argv[3]})]
+    mediaObjects = [ Episode().fromDict({ 'serie': sys.argv[1],
+                                          'title': sys.argv[2],
+                                          'episodeNumber': sys.argv[3]}) ]
     def printResults(guesses):
         for guess in guesses:
             print guess

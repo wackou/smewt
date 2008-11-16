@@ -210,6 +210,10 @@ class Metadata(object):
         for prop, value in d.items():
             self.properties[prop] = self.parseProperty(prop, value)
 
+    def fromDict(self, d):
+        self.readFromDict(d)
+        return self
+
     def readFromRow(self, headers, row):
         '''giving too much information in the row is not a problem,
         extra fields will be ignored'''
@@ -226,3 +230,6 @@ class Metadata(object):
                 # property name is not in the schema
                 pass
 
+    def fromRow(self, headers, row):
+        self.readFromRow(headers, row)
+        return self

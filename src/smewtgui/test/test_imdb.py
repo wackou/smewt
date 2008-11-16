@@ -43,7 +43,7 @@ class TestIMDB(TestCase):
         self.assertEqual(result.metadata, [None])
 
         query.media = [ Media('/data/Series/Futurama/Season 1/Futurama.1x03.I,.Roommate.DVDRiP-frankysan.[tvu.org.ru].ogm') ]
-        expected = Episode.fromDict(yaml.load('''
+        expected = Episode().fromDict(yaml.load('''
 serie : Futurama
 season     : 1
 episodeNumber : 3

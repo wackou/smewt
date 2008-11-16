@@ -39,18 +39,6 @@ class Serie(Metadata):
     def __init__(self):
         Metadata.__init__(self)
 
-    @staticmethod
-    def fromDict(d):
-        result = Serie()
-        Metadata.readFromDict(result, headers, row)
-        return result
-
-    @staticmethod
-    def fromRow(headers, row):
-        result = Serie()
-        Metadata.readFromRow(result, headers, row)
-        return result
-
 
 class Episode(Metadata):
 
@@ -75,15 +63,3 @@ class Episode(Metadata):
                 self.readFromDict(copy)
             else:
                 self.readFromDict(copy.toDict())
-
-    @staticmethod
-    def fromDict(d):
-        result = Episode()
-        Metadata.readFromDict(result, d)
-        return result
-
-    @staticmethod
-    def fromRow(headers, row):
-        result = EpisodeObject()
-        Metadata.readFromRow(result, headers, row)
-        return result

@@ -66,7 +66,7 @@ class IMDBMetadataProvider(QObject):
                 self.forwardData(ep, 'synopsis', episode, 'plot')
                 self.forwardData(ep, 'series', episode, 'series title')
                 self.forwardData(ep, 'originalAirDate', episode, 'original air date')
-                eps.append(Episode.fromDict(ep))
+                eps.append(Episode().fromDict(ep))
         return eps
 
     @cachedmethod
