@@ -76,13 +76,3 @@ class SimpleSolver(Solver):
                 baseGuess.merge(md)
 
         self.found(query, baseGuess)
-
-if __name__ == '__main__':
-    from PyQt4.QtCore import QCoreApplication
-    import sys
-    a = QCoreApplication(sys.argv)
-
-    print levenshtein('Death Note', 'Desu nôto')
-    print levenshtein('Duckman', 'Duckman: Private Dick/Family Man')
-
-    a.exec_()

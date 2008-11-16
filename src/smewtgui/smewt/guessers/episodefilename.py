@@ -85,24 +85,3 @@ class EpisodeFilename(Guesser):
 
 
         self.emit(SIGNAL('finished'), query)
-
-
-
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    guesser = EpisodeFilename()
-    media = EpisodeObject.fromDict({'filename': sys.argv[1]})
-    media.confidence['filename'] = 1.0
-    mediaObjects = [media]
-
-    def printResults(guesses):
-        for guess in guesses:
-            print guess
-
-    app.connect(guesser, SIGNAL('finished'), printResults)
-
-    guesser.start(mediaObjects)
-
-    app.exec_()

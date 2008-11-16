@@ -198,19 +198,3 @@ class EpGuides(Guesser):
     def exitNow(self):
         print 'exiting'
         QCoreApplication.exit()
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    guesser = EpGuides()
-    mediaObjects = [ Episode().fromDict({ 'serie': sys.argv[1],
-                                          'title': sys.argv[2],
-                                          'episodeNumber': sys.argv[3]}) ]
-    def printResults(guesses):
-        for guess in guesses:
-            print guess
-
-    app.connect(guesser, SIGNAL('finished'), printResults)
-
-    guesser.start(mediaObjects)
-
-    app.exec_()

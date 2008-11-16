@@ -185,18 +185,3 @@ class Collection(QObject):
         cPickle.dump(nlinks, f)
 
         f.close()
-
-if __name__ == '__main__':
-    import sys
-
-    app = QApplication(sys.argv)
-    col = Collection()
-    col.importFolder(sys.argv[1])
-
-    def printCollection():
-        for media in col.medias:
-            print media
-
-    app.connect(col, SIGNAL('collectionUpdated'), printCollection)
-
-    app.exec_()
