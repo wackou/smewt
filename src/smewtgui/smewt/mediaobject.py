@@ -33,7 +33,7 @@ from smewt import SmewtDict,  ValidatingSmewtDict
 # The job of a guesser is to map a MediaObject to its corresponding AbstractMediaObject
 
 
-class Media:
+class Media(object):
 
     types = { 'video': [ 'avi', 'ogm', 'mkv', 'mpg', 'mpeg' ],
               'subtitle': [ 'sub', 'srt' ]
@@ -65,7 +65,7 @@ class Media:
 
 # TODO: isn't it better to implement properties as actual python properties? or attributes?
 # TODO: !!write unit tests for this class...!!
-class Metadata:
+class Metadata(object):
     ''' This is the class which all the metadata objects should inherit.
     We assume the implementation of the Metadata objects come from plugins.
 
