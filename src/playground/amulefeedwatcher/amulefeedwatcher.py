@@ -27,9 +27,10 @@ organizationName = 'DigitalGaia'
 applicationName = 'AmuleFeedWatcher'
 
 def amuleDownload(ed2kLink):
-    cmd = [ 'amulecmd', '--password=download', '--command="Add %s"' % ed2kLink ]
+    cmd = [ 'amulecmd', '--password=download', '--command=Add %s' % ed2kLink ]
     amuleReply = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout.read()
     #print 'amule said:', amuleReply
+    return '> Operation was successful.' in amuleReply
 
 def feedListToQVariant(feedList):
     return QVariant([ QVariant([ QVariant(f['url']),
@@ -84,11 +85,11 @@ def downloadNewEpisodes(feed):
 
     for ep in f.entries:
         if list(ep.updated_parsed) > feed['lastUpdate']:
-            lastUpdate = list(ep.updated_parsed)
             print 'Found new episode:', ep.title
             episodeHtml = urllib2.urlopen(ep.id).read()
             ed2kLink = re.compile('href="(?P<url>ed2k://\|file.*?)">').search(episodeHtml).groups()[0]
-            amuleDownload(ed2kLink)
+            if amuleDownload(ed2kLink):
+                lastUpdate = list(ep.updated_parsed)
 
     if lastUpdate == feed['lastUpdate']:
         print 'No new episodes...'
