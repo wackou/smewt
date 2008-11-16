@@ -24,17 +24,17 @@ import sys
 from smewt.gui import MainWidget
 
 
-class  StatusWidget(QWidget):
+class StatusWidget(QWidget):
     def __init__(self):
         super(QWidget,  self).__init__()
-        
+
         layout = QHBoxLayout()
         layout.addStretch()
-        
+
         self.progressBar = QProgressBar()
-        
+
         layout.addWidget(self.progressBar)
-        
+
         self.setLayout(layout)
         return
 
@@ -45,7 +45,7 @@ class SmewtGui(QMainWindow):
         self.setWindowTitle('Smewg - An Ordinary Smewt Gui')
         self.mainWidget = MainWidget()
         self.setCentralWidget(self.mainWidget )
-        
+
         self.statusWidget = StatusWidget()
         self.statusBar().addPermanentWidget(self.statusWidget)
 

@@ -20,10 +20,6 @@
 
 from smewt.mediaobject import Metadata
 
-def parseEpisodeList(string):
-    # blah
-    return []
-
 
 class Serie(Metadata):
 
@@ -36,7 +32,7 @@ class Serie(Metadata):
 
     unique = [ 'title' ]
 
-    converters = { 'episodeList': parseEpisodeList }
+    converters = { 'episodeList': lambda x:x } #parseEpisodeList }
 
 
 
@@ -45,13 +41,13 @@ class Serie(Metadata):
 
     @staticmethod
     def fromDict(d):
-        result = SerieObject()
+        result = Serie()
         Metadata.readFromDict(result, headers, row)
         return result
 
     @staticmethod
     def fromRow(headers, row):
-        result = SerieObject()
+        result = Serie()
         Metadata.readFromRow(result, headers, row)
         return result
 
