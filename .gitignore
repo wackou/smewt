@@ -1,2 +1,5 @@
-.gitgnore
 *.pyc
+
+.waf-*
+.ropeproject
+src/smewtgui/smewt/media/series/images/
