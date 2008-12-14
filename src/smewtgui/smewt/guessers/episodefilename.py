@@ -79,8 +79,7 @@ class EpisodeFilename(Guesser):
         for md in found:
             num = md['episodeNumber']
             if num > 100:
-                # FIXME: Python 3000: this needs to be // instead of /
-                md['season'] = num / 100
+                md['season'] = num // 100
                 md['episodeNumber'] = num % 100
 
 
