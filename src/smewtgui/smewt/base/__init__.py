@@ -25,3 +25,4 @@ from smewturl import SmewtUrl
 from solvingchain import SolvingChain
 from workerthread import WorkerThread
 from cache import cachedmethod
+from eventserver import EventServer
