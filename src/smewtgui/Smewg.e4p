@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2008-11-03, 01:31:25 -->
+<!-- Saved: 2008-12-14, 20:17:23 -->
 <!-- Copyright (C) 2008 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -245,6 +245,26 @@
       <Dir>media</Dir>
       <Dir>subtitle</Dir>
       <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>gui</Dir>
+      <Name>feedwatchwidget.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>plugins</Dir>
+      <Name>amulefeedwatcher.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>plugins</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>base</Dir>
+      <Name>eventserver.py</Name>
     </Source>
   </Sources>
   <Forms>

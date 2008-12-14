@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.1.dtd">
 <!-- eric4 tasks file for project Smewg -->
-<!-- Saved: 2008-11-16, 22:50:09 -->
+<!-- Saved: 2008-12-14, 20:17:23 -->
 <Tasks version="4.1">
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: change this to an exception</Summary>
@@ -56,19 +56,6 @@
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: why do icon &amp; text overlap?</Summary>
-    <Description></Description>
-    <Created>2008-11-03, 20:58:44</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>gui</Dir>
-        <Name>bookmarkwidget.py</Name>
-      </Filename>
-      <Linenumber>31</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="True">
     <Summary>FIXME: this is not the correct way to do it...</Summary>
     <Description></Description>
     <Created>2008-11-03, 21:16:03</Created>
@@ -93,31 +80,6 @@
         <Name>smewturl.py</Name>
       </Filename>
       <Linenumber>54</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: use an ActionFactory to dispatch action to a registered plugin that</Summary>
-    <Description></Description>
-    <Created>2008-11-03, 21:21:49</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>gui</Dir>
-        <Name>mainwidget.py</Name>
-      </Filename>
-      <Linenumber>167</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: this is a hack... How do we know we're at the root node?</Summary>
-    <Description></Description>
-    <Created>2008-11-06, 22:56:46</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Name>utils.py</Name>
-      </Filename>
-      <Linenumber>106</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
@@ -218,19 +180,6 @@
       <Linenumber>116</Linenumber>
     </Resource>
   </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: Python 3000: this needs to be // instead of /</Summary>
-    <Description></Description>
-    <Created>2008-11-16, 22:47:54</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>guessers</Dir>
-        <Name>episodefilename.py</Name>
-      </Filename>
-      <Linenumber>82</Linenumber>
-    </Resource>
-  </Task>
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: get most likely one if more than one found</Summary>
     <Description></Description>
@@ -270,6 +219,70 @@
         <Name>simplesolver.py</Name>
       </Filename>
       <Linenumber>42</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: use an ActionFactory to dispatch action to a registered plugin that</Summary>
+    <Description></Description>
+    <Created>2008-12-14, 16:24:39</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>gui</Dir>
+        <Name>mainwidget.py</Name>
+      </Filename>
+      <Linenumber>167</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: why do icon &amp; text overlap?</Summary>
+    <Description></Description>
+    <Created>2008-12-14, 16:32:02</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>gui</Dir>
+        <Name>bookmarkwidget.py</Name>
+      </Filename>
+      <Linenumber>31</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: this is a hack... How do we know we're at the root node?</Summary>
+    <Description></Description>
+    <Created>2008-12-14, 19:10:54</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Name>utils.py</Name>
+      </Filename>
+      <Linenumber>106</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: use dataChanged instead</Summary>
+    <Description></Description>
+    <Created>2008-12-14, 19:17:36</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>base</Dir>
+        <Name>eventserver.py</Name>
+      </Filename>
+      <Linenumber>48</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: we should emit dataChanged here rather than call reset() (same goes for removeFeed)</Summary>
+    <Description></Description>
+    <Created>2008-12-14, 20:07:20</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>plugins</Dir>
+        <Name>amulefeedwatcher.py</Name>
+      </Filename>
+      <Linenumber>91</Linenumber>
     </Resource>
   </Task>
 </Tasks>
