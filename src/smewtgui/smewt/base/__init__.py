@@ -22,7 +22,7 @@ from smewtdict import SmewtDict
 from validatingsmewtdict import ValidatingSmewtDict
 from smewtexception import SmewtException
 from smewturl import SmewtUrl
-from solvingchain import SolvingChain
+from solvingchain import SolvingChain, BlockingChain
 from workerthread import WorkerThread
 from cache import cachedmethod
 from eventserver import EventServer

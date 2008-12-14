@@ -23,23 +23,38 @@ from smewtexception import SmewtException
 from workerthread import WorkerThread
 import logging
 
-class SolvingChain(QObject):
+class BaseChain(QObject):
     def __init__(self, *args):
-        super(SolvingChain, self).__init__()
+        super(BaseChain, self).__init__()
 
         self.chain = args
         if not args:
             raise SmewtException('Tried to build an empty solving chain')
 
+    def connectChain(self, connectionType):
         # connect each element (guesser, solver) to the next
         for elem, next in zip(self.chain[:-1], self.chain[1:]):
             self.connect(elem, SIGNAL('finished'),
-                         next.start, Qt.QueuedConnection)
+                         next.start, connectionType)
 
         # connect the last solver's finished to the whole chain finish method
         self.connect(self.chain[-1], SIGNAL('finished'),
-                     self.finished, Qt.QueuedConnection)
+                     self.finished, connectionType)
 
+    def finished(self, result):
+        self.result = result
+        if result.metadata:
+            logging.info('Solving chain for file %s found metadata: %s', str(result.media[0]), str(result.metadata[0]))
+        else:
+            logging.info('Solving chain for file %s didn\'t find any metadata...', str(result.media[0]))
+
+        self.emit(SIGNAL('finished'), result)
+
+
+class SolvingChain(BaseChain):
+    def __init__(self, *args):
+        super(SolvingChain, self).__init__(*args)
+        self.connectChain(Qt.QueuedConnection)
 
     def start(self, query):
         '''Launches the solving chain process asynchronously, eg: it returns
@@ -47,27 +62,15 @@ class SolvingChain(QObject):
         it when done.'''
         self.chain[0].start(query)
 
-    def launchAndWait(self, query):
+
+class BlockingChain(BaseChain):
+    def __init__(self, *args):
+        super(BlockingChain, self).__init__(*args)
+        self.connectChain(Qt.DirectConnection)
+
+    def solve(self, query):
         '''Launches the solving chain process synchronously, eg: it will only
         return when it has finished solving the chain. This method returns the
         result of the chain.'''
-        results = [ None ]
-        t = WorkerThread(self, query, results)
-        t.start()
-
-        # hack to make sure the worker thread could enter its event loop
-        from PyQt4.QtCore import QThread
-        QThread.msleep(100)
-
-        self.start(query)
-        t.wait()
-
-        return results[0]
-
-    def finished(self, result):
-        if result.metadata:
-            logging.info('Solving chain for file %s found metadata: %s', str(result.media[0]), str(result.metadata[0]))
-        else:
-            logging.info('Solving chain for file %s didn\'t find any metadata...', str(result.media[0]))
-
-        self.emit(SIGNAL('finished'), result)
+        self.chain[0].start(query)
+        return self.result
