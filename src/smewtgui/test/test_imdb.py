@@ -36,10 +36,10 @@ class TestIMDB(TestCase):
 
     def testEpGuides(self):
         query = Collection()
-        chain = SolvingChain(EpisodeFilename(), MergeSolver(), EpGuides(), SimpleSolver())
+        chain = BlockingChain(EpisodeFilename(), MergeSolver(), EpGuides(), SimpleSolver())
 
         query.media = [ Media('/data/Series/Futurama/Season 1/Futurama.Extras.-.Trailer.DVDRiP-frankysan.[tvu.org.ru].ogm') ]
-        result = chain.launchAndWait(query)
+        result = chain.solve(query)
         self.assertEqual(result.metadata, [None])
 
         query.media = [ Media('/data/Series/Futurama/Season 1/Futurama.1x03.I,.Roommate.DVDRiP-frankysan.[tvu.org.ru].ogm') ]
@@ -49,7 +49,7 @@ season     : 1
 episodeNumber : 3
 title      : I, Roommate'''))
 
-        result = chain.launchAndWait(query)
+        result = chain.solve(query)
         self.assert_(result.metadata[0].contains(expected))
 
 suite = allTests(TestIMDB)
