@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.1.dtd">
 <!-- eric4 tasks file for project Smewg -->
-<!-- Saved: 2008-12-14, 20:17:23 -->
+<!-- Saved: 2008-12-14, 23:18:34 -->
 <Tasks version="4.1">
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: change this to an exception</Summary>
@@ -14,45 +14,6 @@
         <Name>validatingsmewtdict.py</Name>
       </Filename>
       <Linenumber>30</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: check that result is valid</Summary>
-    <Description></Description>
-    <Created>2008-09-11, 03:13:06</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>solvers</Dir>
-        <Name>solver.py</Name>
-      </Filename>
-      <Linenumber>51</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="True">
-    <Summary>FIXME: big hack</Summary>
-    <Description></Description>
-    <Created>2008-10-29, 00:06:30</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>solvers</Dir>
-        <Name>naivesolver.py</Name>
-      </Filename>
-      <Linenumber>48</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: if the 2 values differ, merge only the one with the higher confidence</Summary>
-    <Description></Description>
-    <Created>2008-10-29, 00:08:22</Created>
-    <Resource>
-      <Filename>
-        <Dir>smewt</Dir>
-        <Dir>solvers</Dir>
-        <Name>mergesolver.py</Name>
-      </Filename>
-      <Linenumber>37</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="True">
@@ -283,6 +244,45 @@
         <Name>amulefeedwatcher.py</Name>
       </Filename>
       <Linenumber>91</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: if the 2 values differ, merge only the one with the higher confidence</Summary>
+    <Description></Description>
+    <Created>2008-12-14, 20:35:53</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>solvers</Dir>
+        <Name>mergesolver.py</Name>
+      </Filename>
+      <Linenumber>37</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: check that result is valid</Summary>
+    <Description></Description>
+    <Created>2008-12-14, 20:36:01</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>solvers</Dir>
+        <Name>solver.py</Name>
+      </Filename>
+      <Linenumber>51</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="True">
+    <Summary>FIXME: big hack</Summary>
+    <Description></Description>
+    <Created>2008-12-14, 21:49:23</Created>
+    <Resource>
+      <Filename>
+        <Dir>smewt</Dir>
+        <Dir>solvers</Dir>
+        <Name>naivesolver.py</Name>
+      </Filename>
+      <Linenumber>48</Linenumber>
     </Resource>
   </Task>
 </Tasks>
