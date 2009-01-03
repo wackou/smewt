@@ -59,14 +59,20 @@ class IMDBMetadataProvider(QObject):
         eps = []
         for season in series['episodes']:
             for epNumber, episode in series['episodes'][season].items():
-                ep = {}
-                ep['season'] = season
-                ep['episodeNumber'] = epNumber
+                ep = Episode()
+                try:
+                    ep['season'] = season
+                    ep['episodeNumber'] = epNumber
+                except:
+                    # episode could not be entirely identified, what to do?
+                    # can happen with 'unaired pilot', for instance, which has episodeNumber = 'unknown'
+                    pass
+
                 self.forwardData(ep, 'title', episode, 'title')
                 self.forwardData(ep, 'synopsis', episode, 'plot')
                 self.forwardData(ep, 'series', episode, 'series title')
                 self.forwardData(ep, 'originalAirDate', episode, 'original air date')
-                eps.append(Episode().fromDict(ep))
+                eps.append(ep)
         return eps
 
     @cachedmethod
