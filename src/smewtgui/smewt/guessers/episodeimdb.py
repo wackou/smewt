@@ -66,7 +66,7 @@ class IMDBMetadataProvider(QObject):
                 except:
                     # episode could not be entirely identified, what to do?
                     # can happen with 'unaired pilot', for instance, which has episodeNumber = 'unknown'
-                    pass
+                    continue # just ignore this episode for now
 
                 self.forwardData(ep, 'title', episode, 'title')
                 self.forwardData(ep, 'synopsis', episode, 'plot')
