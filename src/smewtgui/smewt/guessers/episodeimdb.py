@@ -57,6 +57,11 @@ class IMDBMetadataProvider(QObject):
     def getEpisodes(self, series):
         self.imdb.update(series, 'episodes')
         eps = []
+        # FIXME: find a better way to know whether there are episodes or not
+        try:
+            series['episodes']
+        except:
+            return []
         for season in series['episodes']:
             for epNumber, episode in series['episodes'][season].items():
                 ep = Episode()
