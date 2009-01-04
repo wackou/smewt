@@ -57,16 +57,27 @@ class IMDBMetadataProvider(QObject):
     def getEpisodes(self, series):
         self.imdb.update(series, 'episodes')
         eps = []
+        # FIXME: find a better way to know whether there are episodes or not
+        try:
+            series['episodes']
+        except:
+            return []
         for season in series['episodes']:
             for epNumber, episode in series['episodes'][season].items():
-                ep = {}
-                ep['season'] = season
-                ep['episodeNumber'] = epNumber
+                ep = Episode()
+                try:
+                    ep['season'] = season
+                    ep['episodeNumber'] = epNumber
+                except:
+                    # episode could not be entirely identified, what to do?
+                    # can happen with 'unaired pilot', for instance, which has episodeNumber = 'unknown'
+                    continue # just ignore this episode for now
+
                 self.forwardData(ep, 'title', episode, 'title')
                 self.forwardData(ep, 'synopsis', episode, 'plot')
                 self.forwardData(ep, 'series', episode, 'series title')
                 self.forwardData(ep, 'originalAirDate', episode, 'original air date')
-                eps.append(Episode().fromDict(ep))
+                eps.append(ep)
         return eps
 
     @cachedmethod

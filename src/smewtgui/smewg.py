@@ -18,10 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout
+from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout, QTabWidget
 from PyQt4.QtCore import  SIGNAL
 import sys
-from smewt.gui import MainWidget
+from smewt.gui import MainWidget, FeedWatchWidget
 
 
 class StatusWidget(QWidget):
@@ -44,7 +44,13 @@ class SmewtGui(QMainWindow):
         super(SmewtGui, self).__init__()
         self.setWindowTitle('Smewg - An Ordinary Smewt Gui')
         self.mainWidget = MainWidget()
-        self.setCentralWidget(self.mainWidget )
+        self.feedWatchWidget = FeedWatchWidget()
+
+        self.tabWidget = QTabWidget()
+        self.tabWidget.addTab(self.mainWidget, 'Media')
+        self.tabWidget.addTab(self.feedWatchWidget, 'Feed Watcher')
+
+        self.setCentralWidget(self.tabWidget)
 
         self.statusWidget = StatusWidget()
         self.statusBar().addPermanentWidget(self.statusWidget)

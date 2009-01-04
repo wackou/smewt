@@ -28,17 +28,17 @@ from PyQt4.QtCore import *
 
 tests = '''
 /data/Series/Black Adder/Black_Adder_-_1x01_-_The_Foretelling.digitaldistractions.[www.the-realworld.de].avi:
-    serie      : Black Adder
+    series     : Black Adder
     season     : 1
     episodeNumber : 1
 
 /data/Series/Black Adder/Black_Adder_-_1x02_-_Born_To_Be_King.digitaldistractions.[www.the-realworld.de].avi:
-    serie      : Black Adder
+    series     : Black Adder
     season     : 1
     episodeNumber : 2
 
 /data/Series/Northern Exposure/Northern Exposure - S01E02 - Brains Know-How and Native Intelligence.avi:
-    serie      : Northern Exposure
+    series     : Northern Exposure
     season     : 1
     episodeNumber : 2
 '''
@@ -52,8 +52,8 @@ class TestEpisodeFilename(TestCase):
             query = Collection()
             query.media = [ Media(filename) ]
 
-            schain = SolvingChain(EpisodeFilename(), solver)
-            result = schain.launchAndWait(query)
+            schain = BlockingChain(EpisodeFilename(), solver)
+            result = schain.solve(query)
 
             self.assertEqual(len(result.metadata), 1, 'Solver coudn\'t solve anything...')
             result = result.metadata[0]
@@ -62,12 +62,11 @@ class TestEpisodeFilename(TestCase):
                 self.assertEqual(result[key], value)
 
 
-
     def testMergeSolver(self):
         self.withSolver(MergeSolver())
 
-    def testNaiveSolver(self):
-        self.withSolver(NaiveSolver())
+    #def testNaiveSolver(self):
+    #    self.withSolver(NaiveSolver())
 
 
 

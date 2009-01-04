@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Ricard Marxer <email@ricardmarxer.com>
+# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,12 +17,3 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-from smewtdict import SmewtDict
-from validatingsmewtdict import ValidatingSmewtDict
-from smewtexception import SmewtException
-from smewturl import SmewtUrl
-from solvingchain import SolvingChain, BlockingChain
-from workerthread import WorkerThread
-from cache import cachedmethod
-from eventserver import EventServer
