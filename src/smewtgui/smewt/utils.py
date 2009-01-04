@@ -65,6 +65,22 @@ def multipleMatchRegexp(string, regexp):
             return result
 
 
+#string-related functions
+def toUtf8(o):
+    '''converts all unicode strings found in the given object to utf-8 strings'''
+    if isinstance(o, unicode):
+        return o.encode('utf-8')
+    elif isinstance(o, list):
+        return [ toUtf8(i) for i in o ]
+    elif isinstance(o, dict):
+        result = {}
+        for key, value in o.items():
+            result[toUtf8(key)] = toUtf8(value)
+        return result
+
+    else:
+        return o
+
 
 def levenshtein(a, b):
     if not a: return len(b)
