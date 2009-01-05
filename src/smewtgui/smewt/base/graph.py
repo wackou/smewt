@@ -18,6 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from mediaobject import Metadata
+
 class Graph:
     '''This class represents an acyclic directed graph of nodes, where the nodes can either be
     Media or Metadata objects. The links are direct references from one node to the other, and
@@ -26,27 +28,65 @@ class Graph:
     One can filter by type, property or any combination of those.
     '''
 
-    def findOrCreate(self, type = None, **kwargs):
+    def __init__(self):
+        self.nodes = set()
+
+    def findOrCreate(self, type, **kwargs):
         '''This method returns the first object in this graph which has the specified type and
         properties which match the given keyword args dictionary.
         If no match is found, it creates a new object with the keyword args, inserts it in the
         graph, and returns it.
 
         example: g.findOrCreate(Series, title = 'Arrested Development')'''
-        pass
+        result = []
+        # FIXME: also filter by kwargs
+        for node in self.nodes:
+            if isinstance(node, type):
+                return node
 
-    def findAll(self, type = None, **kwargs):
+        node = type(kwargs)
+        self += node
+        return node
+
+    def findAll(self, type, **kwargs):
         '''This method returns all the objects in this graph which have the specified type and
         properties which match the given keyword args dictionary. If no keyword args are specified,
         it matches all the object of the given type.
         If no match is found, it returns an empty list.
 
         example: g.findAll(Episodes)'''
-        pass
+        result = []
+        # FIXME: also filter by kwargs
+        for node in self.nodes:
+            if isinstance(node, type):
+                result.append(node)
+        return result
 
     def __iadd__(self, obj):
         '''Adds the object to the current graph. It can be either a single Node, a list of nodes,
         or another Graph.
         In case there are duplicates nodes (ie: they have the same unique properties), they will
         be merged to use a single Node.'''
-        pass
+        # FIXME: detect duplicates
+
+        if isinstance(obj, list):
+            for o in obj:
+                self.addNode(o)
+        elif isinstance(obj, Graph):
+            for o in obj.nodes:
+                self.addNode(o)
+        else:
+            self.addNode(obj)
+
+        return self
+
+    def addNode(self, obj):
+        '''adds a single node and its links recursively.'''
+        # add object itself...
+        self.nodes.add(obj)
+
+        # ...and follow links if any
+        if isinstance(obj, Metadata):
+            for prop, type in obj.schema.items():
+                if isinstance(type, Metadata):
+                    self.addNode(obj[prop])
