@@ -24,7 +24,7 @@ from smewt.guessers import *
 from smewt.solvers import *
 from PyQt4.QtCore import SIGNAL
 
-from smewt import Collection, SolvingChain
+from smewt import Graph, SolvingChain
 from smewt.media.series import Episode
 import logging
 
@@ -40,11 +40,11 @@ class EpisodeTagger(Tagger):
         self.connect(self.chain2, SIGNAL('finished'), self.solved)
 
     def gotFilenameMetadata(self, result):
-        self.filenameMetadata = result.metadata[0]
+        self.filenameMetadata = result.findAll(Metadata)[0]
         self.chain2.start(result)
 
     def solved(self, result):
-        logging.debug('Finished tagging: %s', result.media[0])
+        logging.debug('Finished tagging: %s', result.findAll(Media)
         if not result.metadata[0]:
             logging.warning('Could not find any tag for: %s' % result.media[0])
             # we didn't find any info outside of what the filename told us
@@ -54,18 +54,17 @@ class EpisodeTagger(Tagger):
         self.emit(SIGNAL('tagFinished'), result)
 
 
-
     def tag(self, media):
         if media.type() in [ 'video', 'subtitle'] :
             if media.filename:
-                query = Collection()
-                query.media = [ media ]
+                query = Graph()
+                query += media
                 self.chain1.start(query)
                 return
             else:
                 print 'Tagger: filename hasn\'t been set on Media object.'
         else:
-            print 'Tagger: Not a video media.  Cannot tag.'
+            print 'Tagger: Not a video media. Cannot tag.'
 
         # default tagger strategy if none other was applicable
         return super(EpisodeTagger, self).tag(media)

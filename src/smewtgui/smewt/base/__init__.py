@@ -26,3 +26,4 @@ from solvingchain import SolvingChain, BlockingChain
 from workerthread import WorkerThread
 from cache import cachedmethod
 from eventserver import EventServer
+from graph import Graph
