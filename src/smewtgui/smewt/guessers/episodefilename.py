@@ -26,7 +26,7 @@ from PyQt4.QtGui import *
 import sys
 import logging
 
-from smewt.media.series import Episode
+from smewt.media import Episode, Series
 
 class EpisodeFilename(Guesser):
 
@@ -58,17 +58,19 @@ class EpisodeFilename(Guesser):
                 for key, value in match.items():
                     logging.debug('Found MD: %s: %s = %s', media.filename, key, value)
                     result[key] = value
-                found += [ result ]
+                found += result
 
         # heuristic 2: try to guess the serie title from the parent directory!
         result = Episode()
         if utils.matchAnyRegexp(name[1], ['season (?P<season>[0-9]+)']):
-            result['series'] = name[2]
+            s = query.findOrCreate(Series, title = name[2])
+            result['series'] = s
             result.confidence = 0.8
         else:
-            result['series'] = name[1]
+            s = query.findOrCreate(Series, title = name[1])
+            result['series'] = s
             result.confidence = 0.4
-        found += [ result ]
+        query += result
 
         # post-processing
         # we could already clean a bit the data here by solving it and comparing it to
@@ -76,7 +78,7 @@ class EpisodeFilename(Guesser):
         # such as 72 if some other valid episode number has been found, etc...
 
         # if the episode number is higher than 100, we assume it is season*100+epnumber
-        for md in found:
+        for md in query.findAll(Episode):
             num = md['episodeNumber']
             if num > 100:
                 md['season'] = num // 100

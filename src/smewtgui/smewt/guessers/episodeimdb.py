@@ -31,13 +31,13 @@ import imdb
 
 
 class IMDBMetadataProvider(QObject):
-    def __init__(self, metadata):
+    def __init__(self, episode):
         super(IMDBMetadataProvider, self).__init__()
 
-        if not metadata['series']:
-            raise SmewtException("IMDBMetadataProvider: Metadata doesn't contain 'series' field: %s", md)
+        if not episode['series']:
+            raise SmewtException("IMDBMetadataProvider: Episode doesn't contain 'series' field: %s", md)
 
-        self.metadata = metadata
+        self.episode = episode
         self.imdb = imdb.IMDb()
 
     @cachedmethod
@@ -62,9 +62,12 @@ class IMDBMetadataProvider(QObject):
             series['episodes']
         except:
             return []
+
+        # TODO: debug to see if this is the correct way to access the series' title
+        smewtSeries = Series({ 'title': series['title'] })
         for season in series['episodes']:
             for epNumber, episode in series['episodes'][season].items():
-                ep = Episode()
+                ep = Episode({ 'series': smewtSeries })
                 try:
                     ep['season'] = season
                     ep['episodeNumber'] = epNumber
@@ -75,7 +78,6 @@ class IMDBMetadataProvider(QObject):
 
                 self.forwardData(ep, 'title', episode, 'title')
                 self.forwardData(ep, 'synopsis', episode, 'plot')
-                self.forwardData(ep, 'series', episode, 'series title')
                 self.forwardData(ep, 'originalAirDate', episode, 'original air date')
                 eps.append(ep)
         return eps
@@ -112,7 +114,7 @@ class IMDBMetadataProvider(QObject):
 
 
     def start(self):
-        name = self.metadata['series']
+        name = self.episode['series']['title']
         try:
             serie = self.getSerie(name)
             eps = self.getEpisodes(serie)
@@ -121,20 +123,17 @@ class IMDBMetadataProvider(QObject):
                 ep['loresImage'] = lores
                 ep['hiresImage'] = hires
 
-            self.emit(SIGNAL('finished'), self.metadata, eps)
+            self.emit(SIGNAL('finished'), self.episode, eps)
 
         except Exception, e:
             logging.warning(str(e))
-            self.emit(SIGNAL('finished'), self.metadata, [])
+            self.emit(SIGNAL('finished'), self.episode, [])
 
 
 
 class EpisodeIMDB(Guesser):
 
     supportedTypes = [ 'video', 'subtitle' ]
-
-    def __init__(self):
-        super(EpisodeIMDB, self).__init__()
 
     def start(self, query):
         self.checkValid(query)
@@ -144,25 +143,25 @@ class EpisodeIMDB(Guesser):
         media = query.media[0]
         self.webparser = {}
 
-        for md in list(found):
-            if md['series']:
+        for ep in query.findAll(Episode):
+            if ep['series']:
                 # little hack: if we have no season number, add 1 as default season number
                 # (helps for series which have only 1 season)
-                if not md['season']:
-                    md['season'] = 1
-                self.webparser[md] = IMDBMetadataProvider(md)
-                self.connect(self.webparser[md], SIGNAL('finished'),
+                if not ep['season']:
+                    ep['season'] = 1
+                self.webparser[ep] = IMDBMetadataProvider(ep)
+                self.connect(self.webparser[ep], SIGNAL('finished'),
                              self.queryFinished)
             else:
-                logging.warning("EpisodeIMDB: Metadata doesn't contain 'series' field: %s", md)
+                logging.warning("EpisodeIMDB: Episode doesn't contain 'series' field: %s", ep)
 
         for mdprovider in self.webparser.values():
             mdprovider.start()
 
-    def queryFinished(self, metadata, guesses):
-        del self.webparser[metadata]
+    def queryFinished(self, ep, guesses):
+        del self.webparser[ep]
 
-        self.query.metadata += guesses
+        self.query += guesses
 
         if len(self.webparser) == 0:
             self.emit(SIGNAL('finished'), self.query)
