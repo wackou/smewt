@@ -20,7 +20,7 @@
 #
 
 from PyQt4.QtCore import SIGNAL,  QObject
-from smewt import Media
+from smewt import Media, Graph
 from smewt.media.series import Episode
 from smewt.utils import GlobDirectoryWalker
 
@@ -31,7 +31,7 @@ class Importer(QObject):
         self.taggingQueue = []
         from smewt.taggers.episodetagger import EpisodeTagger
         self.tagger = EpisodeTagger()
-        self.results = Collection()
+        self.results = Graph()
         self.tagCount = 0
         self.state = 'stopped'
         self.connect(self.tagger, SIGNAL('tagFinished'), self.tagged)

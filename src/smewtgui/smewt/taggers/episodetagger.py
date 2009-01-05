@@ -27,6 +27,7 @@ from PyQt4.QtCore import SIGNAL
 from smewt import Graph, SolvingChain
 from smewt.media.series import Episode
 import logging
+from smewt.base.mediaobject import Media, Metadata
 
 class EpisodeTagger(Tagger):
     def __init__(self):
@@ -44,7 +45,7 @@ class EpisodeTagger(Tagger):
         self.chain2.start(result)
 
     def solved(self, result):
-        logging.debug('Finished tagging: %s', result.findAll(Media)
+        logging.debug('Finished tagging: %s', result.findAll(Media))
         if not result.metadata[0]:
             logging.warning('Could not find any tag for: %s' % result.media[0])
             # we didn't find any info outside of what the filename told us

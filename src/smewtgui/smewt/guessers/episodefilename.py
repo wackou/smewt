@@ -27,6 +27,7 @@ import sys
 import logging
 
 from smewt.media import Episode, Series
+from smewt.base.mediaobject import Media, Metadata
 
 class EpisodeFilename(Guesser):
 
@@ -38,8 +39,7 @@ class EpisodeFilename(Guesser):
     def start(self, query):
         self.checkValid(query)
 
-        found = query.metadata
-        media = query.media[0]
+        media = query.findAll(Media)[0]
 
         name = utils.splitFilename(media.filename)
 
@@ -58,7 +58,7 @@ class EpisodeFilename(Guesser):
                 for key, value in match.items():
                     logging.debug('Found MD: %s: %s = %s', media.filename, key, value)
                     result[key] = value
-                found += result
+                query += result
 
         # heuristic 2: try to guess the serie title from the parent directory!
         result = Episode()

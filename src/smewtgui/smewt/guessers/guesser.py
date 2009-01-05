@@ -21,6 +21,7 @@
 
 from PyQt4.QtCore import SIGNAL, QObject
 from smewt import SmewtException
+from smewt.base.mediaobject import Media
 
 class Guesser(QObject):
     """Abstract class from which all guessers must inherit.  Guessers are objects
@@ -44,11 +45,12 @@ class Guesser(QObject):
     def checkValid(self, query):
         '''Checks that we have only one object in Collection.media list and that
         its type is supported by our guesser'''
-        if len(query.media) != 1:
+        media = query.findAll(Media)
+        if len(media) != 1:
             raise SmewtException('Guesser: your query should contain exactly 1 element in the Collection.media list')
 
-        if query.media[0].type() not in self.supportedTypes:
-            raise SmewtException('Guesser: this guesser only supports files of type: %s but you provided a file of type: %s' % (str(self.supportedTypes), query.media[0].type()))
+        if media[0].type() not in self.supportedTypes:
+            raise SmewtException('Guesser: this guesser only supports files of type: %s but you provided a file of type: %s' % (str(self.supportedTypes), media[0].type()))
 
 
     def start(self, query):

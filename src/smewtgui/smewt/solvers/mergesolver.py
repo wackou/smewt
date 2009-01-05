@@ -21,6 +21,7 @@
 
 from smewt.solvers.solver import Solver
 import copy
+from smewt.base.mediaobject import Media, Metadata
 
 class MergeSolver(Solver):
 

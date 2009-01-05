@@ -18,8 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from base import SmewtDict, ValidatingSmewtDict, SmewtException, SmewtUrl, SolvingChain, BlockingChain, cachedmethod, EventServer
-from mediaobject import Media, Metadata
+from base import SmewtDict, ValidatingSmewtDict, SmewtException, SmewtUrl, SolvingChain, BlockingChain, cachedmethod, EventServer, Graph
+from base.mediaobject import Media, Metadata
 from collection import Collection
 
 import logging

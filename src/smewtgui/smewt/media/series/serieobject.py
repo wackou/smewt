@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.mediaobject import Metadata
+from smewt.base.mediaobject import Metadata
 
 
 class Series(Metadata):

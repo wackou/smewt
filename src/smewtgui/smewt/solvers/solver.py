@@ -20,7 +20,8 @@
 #
 
 from PyQt4.QtCore import SIGNAL, QObject
-from smewt import Collection
+from smewt import Collection, Graph
+from smewt.base.mediaobject import Media, Metadata
 import logging
 
 class Solver(QObject):
@@ -47,7 +48,7 @@ class Solver(QObject):
     def found(self, query, result):
         # TODO: check that result is valid
         solved = Graph()
-        media = query.findAll(Media)
+        media = query.findAll(Media)[0]
         media.metadata = result
         solved += media # no need to add metadata explicitly because media links to it
 
