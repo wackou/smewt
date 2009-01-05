@@ -84,7 +84,7 @@ class Metadata(object):
     4- 'unique' which is the list of properties that form a primary key
     '''
 
-    def __init__(self, dictionary = {}, headers = [], row = []):
+    def __init__(self, copy = None, dictionary = {}, headers = [], row = []):
         # create the properties
         self.properties = ValidatingSmewtDict(self.schema)
         self.confidence = None
@@ -92,11 +92,20 @@ class Metadata(object):
         #for prop in self.schema:
         #    self.properties[prop] = None
 
+        if copy:
+            if isinstance(copy, dict):
+                self.readFromDict(copy)
+            else:
+                self.readFromDict(copy.toDict())
+            return
+
         if dictionary:
             self.readFromDict(dictionary)
+            return
 
         if headers and row:
             self.readFromRow(headers, row)
+            return
 
     def __getstate__(self):
         return self.toDict(), self.confidence
@@ -166,9 +175,12 @@ class Metadata(object):
         return self.properties[prop]
 
     def __setitem__(self, prop, value):
-        #self.properties[prop] = value
-        # automatic conversion, is that good?
-        self.properties[prop] = self.parse(self, prop, value)
+        # if we have a preexisting smewt object of the correct type (ie: no literal), use the ref to it
+        if isinstance(value, self.schema[prop]):
+            self.properties[prop] = value
+        else:
+            # it should be a literal, parse it to its correct type
+            self.properties[prop] = self.parse(self, prop, value)
 
     def merge(self, other):
         for name, prop in other.properties.items():

@@ -21,7 +21,7 @@
 from smewt.mediaobject import Metadata
 
 
-class Serie(Metadata):
+class Series(Metadata):
 
     typename = 'Series'
 
@@ -35,16 +35,11 @@ class Serie(Metadata):
     converters = { 'episodeList': lambda x:x } #parseEpisodeList }
 
 
-
-    def __init__(self):
-        Metadata.__init__(self)
-
-
 class Episode(Metadata):
 
     typename = 'Episode'
 
-    schema = { 'series': unicode,
+    schema = { 'series': Series,
                'season': int,
                'episodeNumber': int,
                'title': unicode
@@ -56,10 +51,3 @@ class Episode(Metadata):
 
     converters = {}
 
-    def __init__(self, copy = None):
-        Metadata.__init__(self)
-        if copy:
-            if type(copy) is dict:
-                self.readFromDict(copy)
-            else:
-                self.readFromDict(copy.toDict())
