@@ -33,32 +33,27 @@ class Solver(QObject):
     corresponding to the best solution or None in case no solution is available.
     """
 
-    def __init__(self):
-        super(Solver, self).__init__()
-
     def checkValid(self, query):
         '''Checks that we have only one object in Collection.media list and that
         its type is supported by our guesser'''
-        if len(query.media) != 1:
-            raise SmewtException('Solver: your query should contain exactly 1 element in the Collection.media list')
+        if len(query.findAll(Media)) != 1:
+            raise SmewtException('Solver: your query should contain exactly 1 Media object')
 
-        if not query.metadata:
+        if not query.findAll(Metadata):
             raise SmewtException('Solver: not solving anything...')
 
         logging.debug(self.__class__.__name__ + ' Solver: trying to solve %s', query)
 
     def found(self, query, result):
         # TODO: check that result is valid
-        solved = Collection()
-        solved.media = [ query.media[0] ]
-        solved.metadata = [ result ]
-        solved.links = [ (query.media[0], result) ]
+        solved = Graph()
+        media = query.findAll(Media)
+        media.metadata = result
+        solved += media # no need to add metadata explicitly because media links to it
 
-        logging.debug('Solver: found for %s: %s', query.media[0], solved.metadata[0])
+        logging.debug('Solver: found for %s: %s', media, result)
 
         self.emit(SIGNAL('finished'), solved)
-
-
 
     def start(self, query):
         self.emit(SIGNAL('finished'), None)

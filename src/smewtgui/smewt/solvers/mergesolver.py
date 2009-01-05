@@ -23,13 +23,11 @@ from smewt.solvers.solver import Solver
 import copy
 
 class MergeSolver(Solver):
-    def __init__(self):
-        super(MergeSolver, self).__init__()
 
     def start(self, query):
         self.checkValid(query)
 
-        results = sorted(query.metadata, cmp = lambda x, y: x.confidence > y.confidence)
+        results = sorted(query.findAll(Metadata), cmp = lambda x, y: x.confidence > y.confidence)
         result = copy.copy(results[0])
 
         for md in results[1:]:

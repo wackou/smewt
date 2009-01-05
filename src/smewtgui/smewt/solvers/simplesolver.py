@@ -63,7 +63,9 @@ class SimpleSolver(Solver):
         self.checkValid(query)
 
         baseGuess = None
-        for md in query.metadata:
+        metadata = query.findAll(Metadata)
+
+        for md in metadata:
             if md.isUnique() and md.confidence >= 0.9:
                 baseGuess = copy.copy(md)
 
@@ -71,7 +73,7 @@ class SimpleSolver(Solver):
             self.found(query, None)
             return
 
-        for md in query.metadata:
+        for md in metadata:
             if fuzzyMatch2(baseGuess, md):
                 baseGuess.merge(md)
 
