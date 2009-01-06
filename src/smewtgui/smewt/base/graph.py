@@ -62,10 +62,15 @@ class Graph(QObject):
 
         example: g.findAll(Episodes)'''
         result = []
-        # FIXME: also filter by kwargs
         for node in self.nodes:
             if isinstance(node, type):
-                result.append(node)
+                valid = True
+                for prop, value in kwargs.items():
+                    if node[prop] != value:
+                        valid = False
+                        break
+                if valid:
+                    result.append(node)
         return result
 
     def __iadd__(self, obj):
@@ -100,15 +105,18 @@ class Graph(QObject):
 
         elif isinstance(obj, Metadata):
             for prop, type in obj.schema.items():
-                if isinstance(type, Metadata):
+                if issubclass(type, Metadata):
                     # check whether it is already in the set and update ref accordingly, add it otherwise
                     value = obj[prop]
+                    found = None # need to keep it a separate var to add later cause we can't do it while iterating the set
                     for elem in self.nodes:
                         if elem == value:
                             obj[prop] = elem
+                            found = elem
                             break
-                        else:
-                            self.addNode(obj[prop])
+                    if not found:
+                        self.addNode(value)
+
 
     def load(self, filename):
         try:
