@@ -34,7 +34,7 @@ class EpisodeTagger(Tagger):
         super(EpisodeTagger, self).__init__()
 
         self.chain1 = SolvingChain(EpisodeFilename(), MergeSolver(Episode))
-        self.chain2 = SolvingChain(EpisodeIMDB(), SimpleSolver())
+        self.chain2 = SolvingChain(EpisodeIMDB(), SimpleSolver(Episode))
 
         # Connect the chains to our slots
         self.connect(self.chain1, SIGNAL('finished'), self.gotFilenameMetadata)

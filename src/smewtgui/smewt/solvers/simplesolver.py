@@ -61,14 +61,15 @@ class SimpleSolver(Solver):
       same unique ID.
     '''
 
-    def __init__(self):
+    def __init__(self, type):
         super(SimpleSolver, self).__init__()
+        self.type = type
 
     def start(self, query):
         self.checkValid(query)
 
         baseGuess = None
-        metadata = query.findAll(Metadata)
+        metadata = query.findAll(self.type)
 
         for md in metadata:
             if md.isUnique() and md.confidence >= 0.9:
