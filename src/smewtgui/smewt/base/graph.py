@@ -73,8 +73,6 @@ class Graph(QObject):
         or another Graph.
         In case there are duplicates nodes (ie: they have the same unique properties), they will
         be merged to use a single Node.'''
-        # FIXME: detect duplicates
-
         if isinstance(obj, list):
             for o in obj:
                 self.addNode(o)
@@ -89,6 +87,10 @@ class Graph(QObject):
 
     def addNode(self, obj):
         '''adds a single node and its links recursively.'''
+        # if node is already in there, don't do anything
+        if obj in self.nodes:
+            return
+
         # add object itself...
         self.nodes.add(obj)
 
@@ -99,7 +101,14 @@ class Graph(QObject):
         elif isinstance(obj, Metadata):
             for prop, type in obj.schema.items():
                 if isinstance(type, Metadata):
-                    self.addNode(obj[prop])
+                    # check whether it is already in the set and update ref accordingly, add it otherwise
+                    value = obj[prop]
+                    for elem in self.nodes:
+                        if elem == value:
+                            obj[prop] = elem
+                            break
+                        else:
+                            self.addNode(obj[prop])
 
     def load(self, filename):
         try:
