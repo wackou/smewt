@@ -55,7 +55,7 @@ class SmewtGui(QMainWindow):
         self.statusWidget = StatusWidget()
         self.statusBar().addPermanentWidget(self.statusWidget)
 
-        self.connect(self.mainWidget .collection,  SIGNAL('progressChanged'),  self.progressChanged)
+        self.connect(self.mainWidget, SIGNAL('progressChanged'), self.progressChanged)
 
     def progressChanged(self,  tagged,  total):
         if total == 0:
