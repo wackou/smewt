@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2009-01-05, 19:22:08 -->
+<!-- Saved: 2009-01-06, 23:37:21 -->
 <!-- Copyright (C) 2009 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -271,6 +271,10 @@
       <Dir>smewt</Dir>
       <Dir>base</Dir>
       <Name>mediaobject.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Name>importer.py</Name>
     </Source>
   </Sources>
   <Forms>
