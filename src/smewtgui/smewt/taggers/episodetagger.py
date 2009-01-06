@@ -33,7 +33,7 @@ class EpisodeTagger(Tagger):
     def __init__(self):
         super(EpisodeTagger, self).__init__()
 
-        self.chain1 = SolvingChain(EpisodeFilename(), MergeSolver())
+        self.chain1 = SolvingChain(EpisodeFilename(), MergeSolver(Episode))
         self.chain2 = SolvingChain(EpisodeIMDB(), SimpleSolver())
 
         # Connect the chains to our slots
@@ -45,12 +45,12 @@ class EpisodeTagger(Tagger):
         self.chain2.start(result)
 
     def solved(self, result):
-        logging.debug('Finished tagging: %s', result.findAll(Media))
-        if not result.metadata[0]:
-            logging.warning('Could not find any tag for: %s' % result.media[0])
+        media = result.findAll(Media)[0]
+        logging.debug('Finished tagging: %s', media)
+        if not media.metadata:
+            logging.warning('Could not find any tag for: %s' % media)
             # we didn't find any info outside of what the filename told us
-            result.metadata = [ self.filenameMetadata ]
-            result.links = [ (result.media[0], result.metadata[0]) ]
+            media.metadata = self.filenameMetadata
 
         self.emit(SIGNAL('tagFinished'), result)
 
