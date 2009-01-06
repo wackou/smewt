@@ -18,9 +18,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from PyQt4.QtCore import QObject, SIGNAL
 from mediaobject import Media, Metadata
+import yaml, logging
 
-class Graph:
+class Graph(QObject):
     '''This class represents an acyclic directed graph of nodes, where the nodes can either be
     Media or Metadata objects. The links are direct references from one node to the other, and
     are not represented explicitly.
@@ -29,7 +31,11 @@ class Graph:
     '''
 
     def __init__(self):
+        super(Graph, self).__init__()
         self.nodes = set()
+
+    def __str__(self):
+        return 'Graph: { %s }' % self.nodes
 
     def findOrCreate(self, type, **kwargs):
         '''This method returns the first object in this graph which has the specified type and
@@ -78,6 +84,7 @@ class Graph:
         else:
             self.addNode(obj)
 
+        self.emit(SIGNAL('updated'))
         return self
 
     def addNode(self, obj):
@@ -93,3 +100,17 @@ class Graph:
             for prop, type in obj.schema.items():
                 if isinstance(type, Metadata):
                     self.addNode(obj[prop])
+
+    def load(self, filename):
+        try:
+            f = open(filename)
+        except:
+            # if file is not found, just go on with an empty collection
+            logging.warning('Collection "%s" does not exist' % filename)
+            self.nodes = set()
+            return
+
+        self.nodes = yaml.load(f.read())
+
+    def save(self, filename):
+        open(filename, 'w').write(yaml.dump(self.nodes))

@@ -173,6 +173,8 @@ class Metadata(object):
         return self.getAttributes(self.unique)
 
     def __eq__(self, other):
+        if other is None or type(self) != type(other):
+            return False
         return self.uniqueKey() == other.uniqueKey()
 
     def __neq__(self, other):

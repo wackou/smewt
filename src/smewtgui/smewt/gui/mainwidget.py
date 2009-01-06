@@ -19,7 +19,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt import SmewtException, Collection, SmewtUrl
+from smewt import SmewtException, SmewtUrl, Graph
+from smewt.base.mediaobject import Media, Metadata
+from smewt.importer import Importer
 from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings
 from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog
 from PyQt4.QtWebKit import QWebView, QWebPage
@@ -40,10 +42,10 @@ class MainWidget(QWidget):
         self.connect(folderImportButton, SIGNAL('clicked()'),
                      self.importFolder)
 
-        self.collection = Collection()
-        self.connect(self.collection, SIGNAL('collectionUpdated'),
+        self.collection = Graph()
+        self.connect(self.collection, SIGNAL('updated'),
                      self.refreshCollectionView)
-        self.connect(self.collection, SIGNAL('collectionUpdated'),
+        self.connect(self.collection, SIGNAL('updated'),
                      self.saveCollection)
 
         self.collectionView = QWebView()
@@ -90,6 +92,7 @@ class MainWidget(QWidget):
         self.setSmewtUrl(baseUrl)
 
         self.externalProcess = QProcess()
+        self.importer = None
 
     def back(self):
         try:
@@ -128,7 +131,21 @@ class MainWidget(QWidget):
                                                             QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
 
         if filename:
-            self.collection.importFolder(filename)
+            if self.importer is None:
+                self.importer = Importer()
+                self.connect(self.importer, SIGNAL('importFinished'), self.mergeCollection)
+                self.connect(self.importer, SIGNAL('progressChanged'), self.progressChanged)
+
+            self.importer.importFolder(filename)
+            self.importer.start()
+
+    def progressChanged(self,  tagged,  total):
+        self.emit(SIGNAL('progressChanged'),  tagged,  total)
+
+    def mergeCollection(self, result):
+        print '*'*100
+        print 'imported', result
+        self.collection += result
 
     def refreshCollectionView(self):
         surl = self.smewtUrl
@@ -139,7 +156,7 @@ class MainWidget(QWidget):
         if surl.viewType == 'single':
             metadata = self.collection.filter('series', surl.args['title'])
         elif surl.viewType == 'all':
-            metadata = dict([(md.uniqueKey(), md) for md in self.collection.metadata ])
+            metadata = dict([(md.uniqueKey(), md) for md in self.collection.findAll(Metadata) ])
         else:
             raise SmewtException('Invalid view type: %s' % surl.viewType)
 
