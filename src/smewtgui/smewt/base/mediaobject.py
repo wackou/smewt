@@ -172,16 +172,17 @@ class Metadata(object):
     def uniqueKey(self):
         return self.getAttributes(self.unique)
 
+    def __eq__(self, other):
+        return self.uniqueKey() == other.uniqueKey()
+
+    def __neq__(self, other):
+        return not self == other
+
     def __getitem__(self, prop):
         return self.properties[prop]
 
     def __setitem__(self, prop, value):
-        # if we have a preexisting smewt object of the correct type (ie: no literal), use the ref to it
-        if isinstance(value, self.schema[prop]):
-            self.properties[prop] = value
-        else:
-            # it should be a literal, parse it to its correct type
-            self.properties[prop] = self.parse(self, prop, value)
+        self.properties[prop] = self.parse(self, prop, value)
 
     def merge(self, other):
         for name, prop in other.properties.items():
@@ -204,7 +205,11 @@ class Metadata(object):
         if name not in cls.schema:
             return value
 
-        if name in cls.converters:
+        elif isinstance(value, cls.schema[name]):
+            # if we have a preexisting smewt object of the correct type (ie: no literal), use the ref to it
+            return value
+
+        elif name in cls.converters:
             # types that need a specific conversion
             return cls.converters[name](value)
 
