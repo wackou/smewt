@@ -5,22 +5,27 @@ from itertools import groupby
 from collections import defaultdict
 from smewt.media.series import Episode
 from smewt import SmewtUrl
+from smewt.base.mediaobject import Media
 
-series = defaultdict(lambda: defaultdict(lambda: []))
-poster = None
-englishSubsLink = None
-frenchSubsLink = None
+seasons = defaultdict(lambda: defaultdict(lambda: []))
+
+series = eps[0]['series']
+seriesName = series['title']
+poster = series['loresImage']
+englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': series['title'], 'language': 'en' })
+frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': series['title'], 'language': 'fr' })
 
 # First prepare the episodes
 episodes = {}
-for (media, md) in eps.links:
-    englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': md['series'], 'language': 'en' })
-    frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': md['series'], 'language': 'fr' })
 
-    try:
-        poster = md['loresImage']
-    except:
-        pass
+for ep in eps:
+    if isinstance(ep, Media) and ep.type == 'video':
+        md = episodes.setdefault(ep.metadata.uniqueKey(), ep.metadata.toDict())
+        md['filename'] = ep.filename
+        md['url'] = SmewtUrl('action', 'play', { 'filename': ep.filename })
+
+'''
+for (media, md) in eps.links:
 
     md = episodes.setdefault(md.uniqueKey(), Episode(md))
     if media.type() == 'video':
@@ -28,15 +33,15 @@ for (media, md) in eps.links:
         md['url'] = SmewtUrl('action', 'play', { 'filename': media.filename })
 
     elif media.type() == 'subtitle':
-        md.setdefault('subtitles', [] ).append( media.filename )
+        md.setdefault('subtitles', []).append(media.filename)
         md['numSubtitles'] = len(md['subtitles'])
+        '''
 
 for md in episodes.values():
-    series[md['series']][md['season']].append(md)
+    seasons[md['season']].append(md)
 
-for serie, seasons in series.items():
-    for season, eps in seasons.items():
-        series[serie][season] = sorted(eps, key = lambda x: x['episodeNumber'])
+for season, eps in seasons.items():
+    seasons[season] = sorted(eps, key = lambda x: x['episodeNumber'])
 
 import os, os.path
 # FIXME: this is not the correct way to do it...
@@ -47,7 +52,7 @@ import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'series')
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-<title>cheetah test</title>
+<title>single serie display</title>
 <script type="text/javascript" src="file://$(import_dir)/jquery-1.2.2.pack.js"></script>
 <script type="text/javascript" src="file://$(import_dir)/animatedcollapse.js">
 
@@ -62,10 +67,8 @@ import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'series')
 
 <script type="text/javascript">
 
-#for serie, seasons in series.items():
-  #for seasonNumber, eps in seasons.items():
-    animatedcollapse.addDiv('s$(seasonNumber)', 'fade=0,speed=400,group=seasons,hide=1')
-  #end for
+#for seasonNumber, eps in seasons.items():
+  animatedcollapse.addDiv('s$(seasonNumber)', 'fade=0,speed=400,group=seasons,hide=1')
 #end for
 
 animatedcollapse.init()
@@ -75,45 +78,43 @@ animatedcollapse.init()
 </head>
 
 <body>
-#for serieName, seasons in series.items()
-  #if poster:
-    <img src="file://$poster" />
-  #end if
+#if poster:
+  <img src="file://$poster" />
+#end if
 
-  <a href="$englishSubsLink">Get missing English subtitles</a>
-  -
-  <a href="$frenchSubsLink">Get missing French subtitles</a>
+<a href="$englishSubsLink">Get missing English subtitles</a>
+-
+<a href="$frenchSubsLink">Get missing French subtitles</a>
 
-  <h1>$serieName</h1>
-  #for seasonNumber, eps in seasons.items():
-    <h2><a href="javascript:animatedcollapse.toggle('s$seasonNumber')">Season $seasonNumber</a></h2>
-    <div id="s$seasonNumber">
-    #for $ep in $eps
-      #if 'filename' in ep.properties:
-        #try
-          #if $ep.title:
-            #if $ep.numSubtitles:
-                <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title ($ep.numSubtitles subtitles) </a>
-            #else
-                <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title </a>
-            #end if
+<h1>$seriesName</h1>
+#for seasonNumber, eps in seasons.items():
+  <h2><a href="javascript:animatedcollapse.toggle('s$seasonNumber')">Season $seasonNumber</a></h2>
+  <div id="s$seasonNumber">
+  #for $ep in $eps
+    #if 'filename' in ep.properties:
+      #try
+        #if $ep.title:
+          #if $ep.numSubtitles:
+              <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title ($ep.numSubtitles subtitles) </a>
           #else
-            <div class="episode"><a href="$ep.url">$ep.episodeNumber - Untitled <i>($ep.filename)</i></a>
+              <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title </a>
           #end if
-        #except
-          <div class="episode"> ? - $ep.title
-        #end try
-
-        #if $ep.synopsis:
-          <p>$ep.synopsis</p>
+        #else
+          <div class="episode"><a href="$ep.url">$ep.episodeNumber - Untitled <i>($ep.filename)</i></a>
         #end if
-        </div>
-      #else
-        <div class="episode"><em>$ep.episodeNumber - $ep.title</em></div>
+      #except
+        <div class="episode"> ? - $ep.title
+      #end try
+
+      #if $ep.synopsis:
+        <p>$ep.synopsis</p>
       #end if
-    #end for
-    </div>
+      </div>
+    #else
+      <div class="episode"><em>$ep.episodeNumber - $ep.title</em></div>
+    #end if
   #end for
+  </div>
 #end for
 
 </body>

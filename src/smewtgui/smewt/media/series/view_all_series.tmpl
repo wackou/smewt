@@ -1,17 +1,9 @@
-#set eps = $episodes
+#set allseries = $series
 
 <%
-from itertools import groupby
-from collections import defaultdict
 from smewt import SmewtUrl
 
-series = defaultdict(lambda: defaultdict(lambda: []))
-
-series = set()
-for (serie, season, episode), md in eps.items():
-    series.add(serie)
-
-series = sorted([ (title, SmewtUrl('media', 'series/single', { 'title': title })) for title in series ])
+series = sorted([ (s['title'], SmewtUrl('media', 'series/single', { 'title': s['title'] })) for s in allseries ])
 %>
 
 <html>

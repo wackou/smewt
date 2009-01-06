@@ -29,6 +29,7 @@ from smewt.media.series import view
 from bookmarkwidget import BookmarkListWidget
 import logging
 from os.path import join, dirname, splitext
+from smewt.media import Series, Episode
 
 class MainWidget(QWidget):
     def __init__(self):
@@ -154,9 +155,14 @@ class MainWidget(QWidget):
             raise SmewtException('MainWidget: Invalid media type: %s' % surl.mediaType)
 
         if surl.viewType == 'single':
-            metadata = self.collection.filter('series', surl.args['title'])
+            metadata = self.collection.findAll(Episode, series = Series(surl.args))
+            for f in self.collection.findAll(Media):
+                if f.metadata in metadata:
+                    metadata.append(f)
+
         elif surl.viewType == 'all':
-            metadata = dict([(md.uniqueKey(), md) for md in self.collection.findAll(Metadata) ])
+            metadata = self.collection.findAll(Series)
+
         else:
             raise SmewtException('Invalid view type: %s' % surl.viewType)
 
