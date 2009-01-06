@@ -25,10 +25,14 @@ from smewt.base.mediaobject import Media, Metadata
 
 class MergeSolver(Solver):
 
+    def __init__(self, type):
+        super(MergeSolver, self).__init__()
+        self.type = type
+
     def start(self, query):
         self.checkValid(query)
 
-        results = sorted(query.findAll(Metadata), cmp = lambda x, y: x.confidence > y.confidence)
+        results = sorted(query.findAll(self.type), cmp = lambda x, y: x.confidence > y.confidence)
         result = copy.copy(results[0])
 
         for md in results[1:]:

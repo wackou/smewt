@@ -20,7 +20,9 @@
 
 from smewt.solvers.solver import Solver
 from smewt.utils import levenshtein
+from smewt.base.mediaobject import Media, Metadata
 import copy
+import logging
 
 
 def exactMatch(baseGuess, md):
@@ -41,6 +43,9 @@ def fuzzyMatch2(baseGuess, md):
         if type(p1) == str or type(p1) == unicode:
             # TODO: levenshtein doesn't cut it here, we need a better string distance
             if levenshtein(p1.lower(), p2.lower()) > 80:
+                return False
+        elif isinstance(p1, Metadata):
+            if not fuzzyMatch2(p1, p2):
                 return False
         else:
             if p1 != p2:
@@ -65,9 +70,12 @@ class SimpleSolver(Solver):
         baseGuess = None
         metadata = query.findAll(Metadata)
 
+        logging.debug('SimpleSolver: solving %s' % metadata)
+
         for md in metadata:
             if md.isUnique() and md.confidence >= 0.9:
                 baseGuess = copy.copy(md)
+                break
 
         if not baseGuess:
             self.found(query, None)
