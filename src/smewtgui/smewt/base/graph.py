@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from mediaobject import Metadata
+from mediaobject import Media, Metadata
 
 class Graph:
     '''This class represents an acyclic directed graph of nodes, where the nodes can either be
@@ -86,7 +86,10 @@ class Graph:
         self.nodes.add(obj)
 
         # ...and follow links if any
-        if isinstance(obj, Metadata):
+        if isinstance(obj, Media):
+            self.addNode(obj.metadata)
+
+        elif isinstance(obj, Metadata):
             for prop, type in obj.schema.items():
                 if isinstance(type, Metadata):
                     self.addNode(obj[prop])
