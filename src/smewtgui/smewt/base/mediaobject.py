@@ -165,6 +165,9 @@ class Metadata(object):
     def keys(self):
         return self.properties.keys()
 
+    def items(self):
+        return self.properties.items()
+
     def getAttributes(self, attrs):
         result = [ self[attr] for attr in attrs ]
         return tuple(result)
@@ -177,8 +180,8 @@ class Metadata(object):
             return False
         return self.uniqueKey() == other.uniqueKey()
 
-    def __neq__(self, other):
-        return not self == other
+    def __ne__(self, other):
+        return not (self == other)
 
     def __getitem__(self, prop):
         return self.properties[prop]
