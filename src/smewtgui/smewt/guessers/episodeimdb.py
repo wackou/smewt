@@ -20,7 +20,7 @@
 
 from smewt import config, cachedmethod, utils
 from smewt.guessers.guesser import Guesser
-from smewt.media.series import Episode
+from smewt.media.series import Episode, Series
 
 from PyQt4.QtCore import SIGNAL, QObject, QUrl
 from PyQt4.QtWebKit import QWebView
@@ -126,7 +126,7 @@ class IMDBMetadataProvider(QObject):
             self.emit(SIGNAL('finished'), self.episode, eps)
 
         except Exception, e:
-            logging.warning(str(e))
+            logging.warning(str(e) + ' -- ' + str(ep))
             self.emit(SIGNAL('finished'), self.episode, [])
 
 
@@ -138,11 +138,9 @@ class EpisodeIMDB(Guesser):
     def start(self, query):
         self.checkValid(query)
         self.query = query
-
-        found = query.metadata
-        media = query.media[0]
         self.webparser = {}
 
+        logging.debug('EpisodeImdb: finding more info on %s' % query.findAll(Episode))
         for ep in query.findAll(Episode):
             if ep['series']:
                 # little hack: if we have no season number, add 1 as default season number
