@@ -23,5 +23,5 @@ from base.mediaobject import Media, Metadata
 from collection import Collection
 
 import logging
-logging.basicConfig(level = logging.WARNING,
+logging.basicConfig(level = logging.DEBUG,
                     format = '%(levelname)-8s %(module)s:%(funcName)s -- %(message)s')
