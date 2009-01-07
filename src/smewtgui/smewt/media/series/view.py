@@ -31,13 +31,9 @@ def render(name, metadata):
     #print '---- Rendering episode:', episodes
 
     if name == 'single':
-        print '*'*100
-        print 'rendering', metadata
         t = Template(file = 'smewt/media/series/view_episodes_by_season.tmpl',
                      searchList = { 'episodes': metadata })
     elif name == 'all':
-        print '*'*100
-        print 'rendering', metadata
         t = Template(file = 'smewt/media/series/view_all_series.tmpl',
                      searchList = { 'series': metadata })
     else:

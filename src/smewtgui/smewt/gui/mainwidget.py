@@ -155,10 +155,12 @@ class MainWidget(QWidget):
             raise SmewtException('MainWidget: Invalid media type: %s' % surl.mediaType)
 
         if surl.viewType == 'single':
-            metadata = self.collection.findAll(Episode, series = Series(surl.args))
+            # creates a new graph with all the media related to the given series
+            episodes = self.collection.findAll(Episode, series = Series(surl.args))
+            metadata = Graph()
             for f in self.collection.findAll(Media):
-                if f.metadata in metadata:
-                    metadata.append(f)
+                if f.metadata in episodes:
+                    metadata += f
 
         elif surl.viewType == 'all':
             metadata = self.collection.findAll(Series)

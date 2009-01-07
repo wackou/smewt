@@ -3,39 +3,29 @@
 <%
 from itertools import groupby
 from collections import defaultdict
-from smewt.media.series import Episode
+from smewt.media.series import Episode, Series
 from smewt import SmewtUrl
 from smewt.base.mediaobject import Media
 
-seasons = defaultdict(lambda: defaultdict(lambda: []))
+seasons = defaultdict(lambda: [])
 
-series = eps[0]['series']
+series = eps.findAll(Series)[0]
 seriesName = series['title']
 poster = series['loresImage']
-englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': series['title'], 'language': 'en' })
-frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': series['title'], 'language': 'fr' })
+englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'en' })
+frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'fr' })
 
 # First prepare the episodes
 episodes = {}
 
-for ep in eps:
-    if isinstance(ep, Media) and ep.type == 'video':
-        md = episodes.setdefault(ep.metadata.uniqueKey(), ep.metadata.toDict())
-        md['filename'] = ep.filename
-        md['url'] = SmewtUrl('action', 'play', { 'filename': ep.filename })
-
-'''
-for (media, md) in eps.links:
-
-    md = episodes.setdefault(md.uniqueKey(), Episode(md))
+for media in eps.findAll(Media):
+    md = episodes.setdefault(media.metadata.uniqueKey(), media.metadata.toDict())
     if media.type() == 'video':
         md['filename'] = media.filename
         md['url'] = SmewtUrl('action', 'play', { 'filename': media.filename })
-
     elif media.type() == 'subtitle':
         md.setdefault('subtitles', []).append(media.filename)
         md['numSubtitles'] = len(md['subtitles'])
-        '''
 
 for md in episodes.values():
     seasons[md['season']].append(md)
@@ -90,11 +80,11 @@ animatedcollapse.init()
 #for seasonNumber, eps in seasons.items():
   <h2><a href="javascript:animatedcollapse.toggle('s$seasonNumber')">Season $seasonNumber</a></h2>
   <div id="s$seasonNumber">
-  #for $ep in $eps
-    #if 'filename' in ep.properties:
+  #for ep in eps
+    #if 'filename' in ep:
       #try
         #if $ep.title:
-          #if $ep.numSubtitles:
+          #if 'numSubtitles' in ep:
               <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title ($ep.numSubtitles subtitles) </a>
           #else
               <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title </a>
