@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2009-01-06, 23:37:21 -->
+<!-- Saved: 2009-01-08, 00:24:03 -->
 <!-- Copyright (C) 2009 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -21,10 +21,6 @@
     <Source>
       <Dir>smewt</Dir>
       <Name>__init__.py</Name>
-    </Source>
-    <Source>
-      <Dir>smewt</Dir>
-      <Name>collection.py</Name>
     </Source>
     <Source>
       <Dir>smewt</Dir>
