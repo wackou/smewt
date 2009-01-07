@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt import SmewtException, Collection, SmewtUrl, EventServer
+from smewt import SmewtException, SmewtUrl, EventServer
 from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings, QThread
 from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QListWidget, QListView, QInputDialog, QLineEdit, QAbstractItemView, QLabel, QMessageBox
 from smewt.plugins.amulefeedwatcher import AmuleFeedWatcher

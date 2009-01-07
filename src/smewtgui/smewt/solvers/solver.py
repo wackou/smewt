@@ -20,7 +20,7 @@
 #
 
 from PyQt4.QtCore import SIGNAL, QObject
-from smewt import Collection, Graph
+from smewt import Graph
 from smewt.base.mediaobject import Media, Metadata
 import logging
 

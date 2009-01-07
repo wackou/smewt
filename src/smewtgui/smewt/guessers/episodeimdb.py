@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt import config, cachedmethod, utils
+from smewt import config, cachedmethod, utils, SmewtException
 from smewt.guessers.guesser import Guesser
 from smewt.media.series import Episode, Series
 
