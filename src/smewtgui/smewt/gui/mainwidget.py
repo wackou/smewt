@@ -206,7 +206,8 @@ class MainWidget(QWidget):
                     # find episodes which don't have subtitles and get it directly
                     series = surl.args['title']
                     language = surl.args['language']
-                    files = self.collection.filter('series', series).media
+                    episodes = self.collection.findAll(Metadata, series = Series({ 'title': series }))
+                    files = [ media for media in self.collection.nodes if isinstance(media, Media) and media.metadata in episodes ]
                     videos = [ f for f in files if f.type() == 'video' ]
                     subtitles = [ f for f in files if f.type() == 'subtitle' ]
 
@@ -218,13 +219,9 @@ class MainWidget(QWidget):
 
                         if foundSubs: continue
 
-                        # look which episode metadata is connected to this media file
-                        for a, b in self.collection.links:
-                            if a is video: episode = b
-                            if b is video: episode = a
-
+                        episode = video.metadata
                         logging.info('MainWidget: trying to download subs for %s' % episode)
-                        tvsub.downloadSubtitle(subsBasename, episode['series'],
+                        tvsub.downloadSubtitle(subsBasename, episode['series']['title'],
                                                episode['season'], episode['episodeNumber'], language,
                                                video.filename)
 
