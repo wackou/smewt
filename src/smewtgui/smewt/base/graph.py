@@ -92,14 +92,18 @@ class Graph(QObject):
 
     def addNode(self, obj):
         '''adds a single node and its links recursively.'''
-        # if node is already in there, don't do anything
-        if obj in self.nodes:
+        # FIXME: when reimporting, subtitles do not get merged correctly but added...
+        if obj is None:
             return
 
-        # add object itself...
-        self.nodes.add(obj)
+        # if node is already in there, merge the info we don't have yet
+        if obj in self.nodes and isinstance(obj, Metadata):
+            for elem in self.nodes:
+                if elem == obj:
+                    elem.mergeNew(obj)
+            return
 
-        # ...and follow links if any
+        # first, follow links if any...
         if isinstance(obj, Media):
             self.addNode(obj.metadata)
 
@@ -110,12 +114,26 @@ class Graph(QObject):
                     value = obj[prop]
                     found = None # need to keep it a separate var to add later cause we can't do it while iterating the set
                     for elem in self.nodes:
+                        # we need to update the ref only if there is an equivalent object in there which is NOT the same
+                        # in that case, we also need to make a copy of the object otherwise we might change the ref from
+                        # an outside object which we shouldn't be touching
                         if elem == value:
-                            obj[prop] = elem
                             found = elem
+                            if elem is not value:
+                                obj = obj.__class__(obj)
+                                obj[prop] = elem
+                                # also merge additional info we might have
+                                # FIXME: this needs to be recursive
+                                obj[prop].mergeNew(value)
                             break
                     if not found:
                         self.addNode(value)
+
+            # object needs to be immutable because we need its __hash__ method to be correct from now on
+            obj.mutable = False
+
+        # ...then add object itself once its refs have been correctly updated
+        self.nodes.add(obj)
 
 
     def load(self, filename):
@@ -131,3 +149,4 @@ class Graph(QObject):
 
     def save(self, filename):
         open(filename, 'w').write(yaml.dump(self.nodes))
+

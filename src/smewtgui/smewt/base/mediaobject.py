@@ -20,6 +20,7 @@
 #
 
 from smewtdict import SmewtDict
+from smewtexception import SmewtException
 from validatingsmewtdict import ValidatingSmewtDict
 
 # This file contains the 2 base MediaObject types used in Smewt:
@@ -89,6 +90,11 @@ class Metadata(object):
         # create the properties
         self.properties = ValidatingSmewtDict(self.schema)
         self.confidence = None
+
+        # self.mutable should be set to False whenever the object needs to be hashable, such as when
+        # we want to put it in a set or a Graph. When self.mutable is False, none of the properties which
+        # are in its self.unique list can be changed anymore, although the other ones still can.
+        self.mutable = True
 
         #for prop in self.schema:
         #    self.properties[prop] = None
@@ -183,15 +189,26 @@ class Metadata(object):
     def __ne__(self, other):
         return not (self == other)
 
+    def __hash__(self):
+        return hash((self.__class__, self.uniqueKey()))
+
     def __getitem__(self, prop):
         return self.properties[prop]
 
     def __setitem__(self, prop, value):
+        if not self.mutable and prop in self.unique:
+            raise SmewtException("Metadata: cannot change property '%s' because object '%s' is immutable" % (prop, self))
         self.properties[prop] = self.parse(self, prop, value)
 
     def merge(self, other):
         for name, prop in other.properties.items():
             self.properties[name] = prop
+
+    def mergeNew(self, other):
+        for name, value in other.properties.items():
+            if name not in self.properties:
+                self.properties[name] = value
+
 
     def setdefault(self, prop, value):
         if not prop in self.properties:
