@@ -96,7 +96,7 @@ animatedcollapse.init()
         <div class="episode"> ? - $ep.title
       #end try
 
-      #if $ep.synopsis:
+      #if 'synopsis' in ep:
         <p>$ep.synopsis</p>
       #end if
       </div>
