@@ -52,6 +52,24 @@ class Media(object):
     def __repr__(self):
         return self.filename.encode('utf-8')
 
+    def __eq__(self, other):
+        # FIXME: why do we need that try/except?
+        try:
+            return isinstance(other, Media) and self.filename == other.filename
+        except AttributeError:
+            return hash(None)
+
+    def __ne__(self, other):
+        return not (self == other)
+
+    def __hash__(self):
+        # should be sha1 when we have it
+        # FIXME: why do we need that try/except?
+        try:
+            return hash(self.filename)
+        except AttributeError:
+            return hash(None)
+
     def type(self):
         for name, exts in Media.types.items():
             for ext in exts:

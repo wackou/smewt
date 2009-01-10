@@ -97,10 +97,12 @@ class Graph(QObject):
             return
 
         # if node is already in there, merge the info we don't have yet
-        if obj in self.nodes and isinstance(obj, Metadata):
-            for elem in self.nodes:
-                if elem == obj:
-                    elem.mergeNew(obj)
+        if obj in self.nodes:
+            if isinstance(obj, Metadata):
+                for elem in self.nodes:
+                    if elem == obj:
+                        elem.mergeNew(obj)
+
             return
 
         # first, follow links if any...
