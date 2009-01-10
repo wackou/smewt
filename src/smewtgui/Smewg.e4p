@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2009-01-08, 00:24:03 -->
+<!-- Saved: 2009-01-10, 17:47:18 -->
 <!-- Copyright (C) 2009 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -83,11 +83,6 @@
       <Dir>smewt</Dir>
       <Dir>base</Dir>
       <Name>smewtdict.py</Name>
-    </Source>
-    <Source>
-      <Dir>smewt</Dir>
-      <Dir>base</Dir>
-      <Name>validatingsmewtdict.py</Name>
     </Source>
     <Source>
       <Dir>smewt</Dir>
