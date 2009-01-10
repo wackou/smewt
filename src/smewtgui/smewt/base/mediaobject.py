@@ -19,9 +19,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewtdict import SmewtDict
+from smewtdict import SmewtDict, ValidatingSmewtDict
 from smewtexception import SmewtException
-from validatingsmewtdict import ValidatingSmewtDict
 
 # This file contains the 2 base MediaObject types used in Smewt:
 #  - Media: is the type used to represent physical files on the hard disk.
