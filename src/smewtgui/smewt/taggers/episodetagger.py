@@ -24,10 +24,9 @@ from smewt.guessers import *
 from smewt.solvers import *
 from PyQt4.QtCore import SIGNAL
 
-from smewt import Graph, SolvingChain
-from smewt.media.series import Episode
+from smewt import Graph, SolvingChain, Media, Metadata
+from smewt.media import Episode
 import logging
-from smewt.base.mediaobject import Media, Metadata
 
 class EpisodeTagger(Tagger):
     def __init__(self):

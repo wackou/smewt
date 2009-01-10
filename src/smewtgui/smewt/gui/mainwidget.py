@@ -19,8 +19,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt import SmewtException, SmewtUrl, Graph
-from smewt.base.mediaobject import Media, Metadata
+from smewt import SmewtException, SmewtUrl, Graph, Media, Metadata
+from smewt.media import Series, Episode
 from smewt.importer import Importer
 from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings
 from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog
@@ -29,7 +29,6 @@ from smewt.media.series import view
 from bookmarkwidget import BookmarkListWidget
 import logging
 from os.path import join, dirname, splitext
-from smewt.media import Series, Episode
 
 class MainWidget(QWidget):
     def __init__(self):

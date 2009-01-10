@@ -20,8 +20,7 @@
 #
 
 from PyQt4.QtCore import SIGNAL, QObject
-from smewt import Graph
-from smewt.base.mediaobject import Media, Metadata
+from smewt import Graph, Media, Metadata
 import logging
 
 class Solver(QObject):

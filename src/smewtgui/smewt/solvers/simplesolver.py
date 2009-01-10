@@ -18,9 +18,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from smewt import Media, Metadata
 from smewt.solvers.solver import Solver
 from smewt.utils import levenshtein
-from smewt.base.mediaobject import Media, Metadata
 import copy
 import logging
 

@@ -26,8 +26,8 @@ from PyQt4.QtGui import *
 import sys
 import logging
 
+from smewt import Media, Metadata
 from smewt.media import Episode, Series
-from smewt.base.mediaobject import Media, Metadata
 
 class EpisodeFilename(Guesser):
 
