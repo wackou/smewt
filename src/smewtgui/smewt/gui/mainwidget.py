@@ -143,8 +143,6 @@ class MainWidget(QWidget):
         self.emit(SIGNAL('progressChanged'),  tagged,  total)
 
     def mergeCollection(self, result):
-        print '*'*100
-        print 'imported', result
         self.collection += result
 
     def refreshCollectionView(self):
