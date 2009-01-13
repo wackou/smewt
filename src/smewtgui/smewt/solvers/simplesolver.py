@@ -74,6 +74,7 @@ class SimpleSolver(Solver):
         for md in metadata:
             if md.isUnique() and md.confidence >= 0.9:
                 baseGuess = copy.copy(md)
+                orig = md
                 break
 
         if not baseGuess:
@@ -82,7 +83,7 @@ class SimpleSolver(Solver):
 
         for md in metadata:
             # do not inadvertently overwrite some data we could have found from another instance
-            if md is baseGuess:
+            if md is orig:
                 continue
 
             # if there is a match, merge the data
