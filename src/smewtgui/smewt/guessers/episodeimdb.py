@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt import config, cachedmethod, utils, SmewtException
+from smewt import config, cachedmethod, utils, SmewtException, Graph, Media
 from smewt.guessers.guesser import Guesser
 from smewt.media.series import Episode, Series
 
@@ -138,28 +138,27 @@ class EpisodeIMDB(Guesser):
     def start(self, query):
         self.checkValid(query)
         self.query = query
-        self.webparser = {}
 
         logging.debug('EpisodeImdb: finding more info on %s' % query.findAll(Episode))
-        for ep in query.findAll(Episode):
-            if ep['series']:
-                # little hack: if we have no season number, add 1 as default season number
-                # (helps for series which have only 1 season)
-                if not ep['season']:
-                    ep['season'] = 1
-                self.webparser[ep] = IMDBMetadataProvider(ep)
-                self.connect(self.webparser[ep], SIGNAL('finished'),
-                             self.queryFinished)
-            else:
-                logging.warning("EpisodeIMDB: Episode doesn't contain 'series' field: %s", ep)
+        ep = query.findOne(Episode)
+        if ep['series']:
+            # little hack: if we have no season number, add 1 as default season number
+            # (helps for series which have only 1 season)
+            if not ep['season']:
+                ep['season'] = 1
+            self.mdprovider = IMDBMetadataProvider(ep)
+            self.connect(self.mdprovider, SIGNAL('finished'),
+                         self.queryFinished)
+            self.mdprovider.start()
 
-        for mdprovider in self.webparser.values():
-            mdprovider.start()
+        else:
+            logging.warning("EpisodeIMDB: Episode doesn't contain 'series' field: %s", ep)
+            self.emit(SIGNAL('finished'), self.query)
+
 
     def queryFinished(self, ep, guesses):
-        del self.webparser[ep]
+        del self.mdprovider # why is that useful again?
 
         self.query += guesses
 
-        if len(self.webparser) == 0:
-            self.emit(SIGNAL('finished'), self.query)
+        self.emit(SIGNAL('finished'), self.query)
