@@ -60,7 +60,7 @@ class Graph(QObject):
         it matches all the object of the given type.
         If no match is found, it returns an empty list.
 
-        example: g.findAll(Episodes)'''
+        example: g.findAll(Episode)'''
         result = []
         for node in self.nodes:
             if isinstance(node, type):
@@ -72,6 +72,24 @@ class Graph(QObject):
                 if valid:
                     result.append(node)
         return result
+
+    def findOne(self, type, **kwargs):
+        '''This method returns the first object in this graph which has the specified type and
+        properties which match the given keyword args dictionary. If no keyword args are specified,
+        it matches the first object of the given type.
+        If no match is found, it raises a SmewtException.
+
+        example: g.findOne(Series)'''
+        for node in self.nodes:
+            if isinstance(node, type):
+                valid = True
+                for prop, value in kwargs.items():
+                    if node[prop] != value:
+                        valid = False
+                        break
+                if valid:
+                    return node
+        raise SmewtException('Graph: could not find %s matching the following criteria: %s' % (type.typename, str(kwargs)))
 
     def __iadd__(self, obj):
         '''Adds the object to the current graph. It can be either a single Node, a list of nodes,
