@@ -44,7 +44,7 @@ class BaseChain(QObject):
 
     def finished(self, result):
         self.result = result
-        media = result.findAll(Media)[0]
+        media = result.findOne(Media)
         if media.metadata:
             logging.info('Solving chain for file %s found metadata: %s', str(media), str(media.metadata))
         else:

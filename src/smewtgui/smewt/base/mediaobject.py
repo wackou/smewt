@@ -36,6 +36,8 @@ from smewtexception import SmewtException
 
 class Media(object):
 
+    typename = 'Media' # useful for printing sometimes when mixed with Metadata objs
+
     types = { 'video': [ 'avi', 'ogm', 'mkv', 'mpg', 'mpeg' ],
               'subtitle': [ 'sub', 'srt' ]
               }

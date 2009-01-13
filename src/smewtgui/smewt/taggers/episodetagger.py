@@ -40,11 +40,11 @@ class EpisodeTagger(Tagger):
         self.connect(self.chain2, SIGNAL('finished'), self.solved)
 
     def gotFilenameMetadata(self, result):
-        self.filenameMetadata = result.findAll(Metadata)[0]
+        self.filenameMetadata = result.findOne(Metadata)
         self.chain2.start(result)
 
     def solved(self, result):
-        media = result.findAll(Media)[0]
+        media = result.findOne(Media)
         logging.debug('Finished tagging: %s', media)
         if not media.metadata:
             logging.warning('Could not find any tag for: %s' % media)
