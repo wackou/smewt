@@ -20,6 +20,7 @@
 
 from PyQt4.QtCore import QObject, SIGNAL
 from mediaobject import Media, Metadata
+from smewtexception import SmewtException
 import yaml, logging
 
 class Graph(QObject):
