@@ -34,6 +34,9 @@ class Graph(QObject):
         super(Graph, self).__init__()
         self.nodes = set()
 
+    def clear(self):
+        self.nodes = set()
+
     def __str__(self):
         return 'Graph: { %s }' % self.nodes
 
