@@ -51,7 +51,7 @@ class Media(object):
         return self.__repr__()
 
     def __repr__(self):
-        return self.filename.encode('utf-8')
+        return "Media('%s')" % self.filename.encode('utf-8')
 
     def __eq__(self, other):
         # FIXME: why do we need that try/except?
@@ -121,6 +121,13 @@ class Metadata(object):
         if copy:
             if isinstance(copy, dict):
                 self.readFromDict(copy)
+            elif isinstance(copy, str) or isinstance(copy, unicode):
+                # little hack: if it's a string, try to build an object using the first string attribute
+                for name, type in self.schema.items():
+                    if type is str or type is unicode:
+                        self.readFromDict({ name: copy })
+                        return
+                raise SmewtException('Cannot build a %s with only the given string "%s"' % (self.typename, copy))
             else:
                 self.readFromDict(copy.toDict())
             return
