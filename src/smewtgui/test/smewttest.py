@@ -23,6 +23,10 @@ from unittest import TestCase as BaseTestCase
 
 import yaml, logging
 
+from smewt import *
+from smewt.solvers import *
+from smewt.guessers import *
+from smewt.media import *
 
 
 def allTests(testClass):

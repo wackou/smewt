@@ -19,12 +19,7 @@
 #
 
 from smewttest import *
-from smewt import *
-from smewt.solvers import *
-from smewt.guessers import *
-import yaml
 import glob
-from smewt.media import Episode
 
 class TestIMDB(TestCase):
 
@@ -35,27 +30,30 @@ class TestIMDB(TestCase):
 
 
     def testEpGuides(self):
-        query = Collection()
-        chain = BlockingChain(EpisodeFilename(), MergeSolver(), EpGuides(), SimpleSolver())
+        query = Graph()
+        chain = BlockingChain(EpisodeFilename(), MergeSolver(Episode), EpisodeIMDB(), SimpleSolver(Episode))
 
-        query.media = [ Media('/data/Series/Futurama/Season 1/Futurama.Extras.-.Trailer.DVDRiP-frankysan.[tvu.org.ru].ogm') ]
-        result = chain.solve(query)
-        self.assertEqual(result.metadata, [None])
+        query += Media('/data/Series/Futurama/Season 1/Futurama.Extras.-.Trailer.DVDRiP-frankysan.[tvu.org.ru].ogm')
+        result = chain.solve(query).findAll(Episode)
+        self.assertEqual(result, [])
 
-        query.media = [ Media('/data/Series/Futurama/Season 1/Futurama.1x03.I,.Roommate.DVDRiP-frankysan.[tvu.org.ru].ogm') ]
-        expected = Episode().fromDict(yaml.load('''
-serie : Futurama
+        query.clear()
+        query += Media('/data/Series/Futurama/Season 1/Futurama.1x03.I,.Roommate.DVDRiP-frankysan.[tvu.org.ru].ogm')
+        expected = Episode(yaml.load('''
+series : Futurama
 season     : 1
 episodeNumber : 3
 title      : I, Roommate'''))
 
-        result = chain.solve(query)
-        self.assert_(result.metadata[0].contains(expected))
+        result = chain.solve(query).findOne(Episode)
+        self.assert_(result.contains(expected))
+
+        query.clear()
+        query += Media('/data/Series/Duckman/Duckman - 102 (02) - 20021112 - TV or Not To Be.avi')
+        result = chain.solve(query).findOne(Episode)
+        print 'duckman result', result
 
 suite = allTests(TestIMDB)
 
 if __name__ == '__main__':
-    from PyQt4.QtCore import QCoreApplication
-    import sys
-    a = QCoreApplication(sys.argv)
     TextTestRunner(verbosity=2).run(suite)

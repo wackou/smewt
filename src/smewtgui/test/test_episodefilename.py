@@ -19,12 +19,8 @@
 #
 
 from smewttest import *
-from smewt import *
-from smewt.guessers.episodefilename import EpisodeFilename
-from smewt.solvers.naivesolver import NaiveSolver
-from smewt.solvers.mergesolver import MergeSolver
 import glob
-from PyQt4.QtCore import *
+
 
 tests = '''
 /data/Series/Black Adder/Black_Adder_-_1x01_-_The_Foretelling.digitaldistractions.[www.the-realworld.de].avi:
@@ -49,31 +45,31 @@ class TestEpisodeFilename(TestCase):
         data = yaml.load(tests)
 
         for filename, md in data.items():
-            query = Collection()
-            query.media = [ Media(filename) ]
+            query = Graph()
+            query += Media(filename)
 
             schain = BlockingChain(EpisodeFilename(), solver)
-            result = schain.solve(query)
+            result = schain.solve(query).findAll(Episode)
 
-            self.assertEqual(len(result.metadata), 1, 'Solver coudn\'t solve anything...')
-            result = result.metadata[0]
+            self.assertEqual(len(result), 1, 'Solver coudn\'t solve anything...')
+            result = result[0]
 
             for key, value in md.items():
-                self.assertEqual(result[key], value)
+                if key == 'series':
+                    self.assertEqual(result[key]['title'], value)
+                else:
+                    self.assertEqual(result[key], value)
 
 
     def testMergeSolver(self):
-        self.withSolver(MergeSolver())
+        self.withSolver(MergeSolver(Episode))
 
     #def testNaiveSolver(self):
-    #    self.withSolver(NaiveSolver())
+    #    self.withSolver(NaiveSolver(Episode))
 
 
 
 suite = allTests(TestEpisodeFilename)
 
 if __name__ == '__main__':
-    from PyQt4.QtCore import QCoreApplication
-    import sys
-    a = QCoreApplication(sys.argv)
     TextTestRunner(verbosity=2).run(suite)
