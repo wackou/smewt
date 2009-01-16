@@ -20,17 +20,18 @@
 
 from PyQt4.QtCore import Qt, SIGNAL, QObject
 from smewtexception import SmewtException
-from workerthread import WorkerThread
 from mediaobject import Media, Metadata
 import logging
 
-class BaseChain(QObject):
+class SolvingChain(QObject):
     def __init__(self, *args):
-        super(BaseChain, self).__init__()
+        super(SolvingChain, self).__init__()
 
         self.chain = args
         if not args:
             raise SmewtException('Tried to build an empty solving chain')
+
+        self.connectChain(Qt.QueuedConnection)
 
     def connectChain(self, connectionType):
         # connect each element (guesser, solver) to the next
@@ -41,6 +42,12 @@ class BaseChain(QObject):
         # connect the last solver's finished to the whole chain finish method
         self.connect(self.chain[-1], SIGNAL('finished'),
                      self.finished, connectionType)
+
+    def start(self, query):
+        '''Launches the solving chain process asynchronously, eg: it returns
+        immediately and will emit the signal 'finished' along with the result of
+        it when done.'''
+        self.chain[0].start(query)
 
     def finished(self, result):
         self.result = result
@@ -53,26 +60,33 @@ class BaseChain(QObject):
         self.emit(SIGNAL('finished'), result)
 
 
-class SolvingChain(BaseChain):
-    def __init__(self, *args):
-        super(SolvingChain, self).__init__(*args)
-        self.connectChain(Qt.QueuedConnection)
+class BlockingChain(SolvingChain):
 
-    def start(self, query):
-        '''Launches the solving chain process asynchronously, eg: it returns
-        immediately and will emit the signal 'finished' along with the result of
-        it when done.'''
-        self.chain[0].start(query)
+    # global QCoreApplication object
+    app = None
 
-
-class BlockingChain(BaseChain):
     def __init__(self, *args):
         super(BlockingChain, self).__init__(*args)
-        self.connectChain(Qt.DirectConnection)
+        self.connect(self, SIGNAL('finished'),
+                     self.returnResult)
 
     def solve(self, query):
         '''Launches the solving chain process synchronously, eg: it will only
         return when it has finished solving the chain. This method returns the
         result of the chain.'''
-        self.chain[0].start(query)
+        import sys
+        from PyQt4.QtCore import QCoreApplication, QTimer
+        self.query = query
+        if self.app is None:
+            self.app = QCoreApplication(sys.argv)
+
+        QTimer.singleShot(0, self.startChain)
+        self.app.exec_()
+
         return self.result
+
+    def startChain(self):
+        self.start(self.query)
+
+    def returnResult(self, result):
+        self.app.quit()
