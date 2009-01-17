@@ -23,40 +23,28 @@ import glob
 
 class TestIMDB(TestCase):
 
-    def testRegression(self):
-        for filename in glob.glob('test_imdb/*.yaml'):
-            data = yaml.load(open(filename).read())
-            #print data
-
-
-    def testEpGuides(self):
+    def runtestEpisodeIMDB(self, filename):
         query = Graph()
         chain = BlockingChain(EpisodeFilename(), MergeSolver(Episode), EpisodeIMDB(), SimpleSolver(Episode))
 
-        query += Media('/data/Series/Futurama/Season 1/Futurama.Extras.-.Trailer.DVDRiP-frankysan.[tvu.org.ru].ogm')
-        result = chain.solve(query).findAll(Episode)
-        self.assertEqual(result, [])
+        testcases = yaml.load(open(filename).read())
 
-        query.clear()
-        query += Media('/data/Series/Futurama/Season 1/Futurama.1x03.I,.Roommate.DVDRiP-frankysan.[tvu.org.ru].ogm')
-        expected = Episode(yaml.load('''
-series : Futurama
-season     : 1
-episodeNumber : 3
-title      : I, Roommate'''))
+        for filename, expected in testcases.items():
+            query.clear()
+            query += Media(filename)
+            result = chain.solve(query).findAll(Episode)
 
-        result = chain.solve(query).findOne(Episode)
-        self.assert_(result.contains(expected))
+            if expected:
+                self.assertEqual(len(result), 1)
+                self.assert_(result[0].contains(Episode(expected)))
+            else:
+                self.assertEqual(result, [])
 
-        query.clear()
-        query += Media('/data/Series/Duckman/Duckman - 102 (02) - 20021112 - TV or Not To Be.avi')
-        expected = Episode(yaml.load('''
-series : "Duckman: Private Dick/Family Man"
-season     : 1
-episodeNumber : 2
-title      : T.V. or Not to Be'''))
-        result = chain.solve(query).findOne(Episode)
-        self.assert_(result.contains(expected))
+
+for filename in glob.glob('test_imdb/*.yaml'):
+    testName = filename[10].upper() + filename[11:-5]
+    setattr(TestIMDB, 'test' + testName, lambda self: self.runtestEpisodeIMDB(filename))
+
 
 suite = allTests(TestIMDB)
 

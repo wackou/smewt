@@ -21,7 +21,7 @@
 from unittest import *
 from unittest import TestCase as BaseTestCase
 
-import yaml, logging
+import yaml, logging, sys
 
 from smewt import *
 from smewt.solvers import *

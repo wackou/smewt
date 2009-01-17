@@ -18,9 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import sys
-import unittest
-import glob
+import sys, glob
+from unittest import *
 
 def importTest(name):
     cmd = 'import test_%s; setattr(sys.modules[__name__], \'%s\', test_%s.suite)' % (name, name, name)
@@ -34,10 +33,7 @@ for test in listTests:
 
 testObjectsList = [ getattr(sys.modules[__name__], name) for name in listTests ]
 
-all = unittest.TestSuite(testObjectsList)
+suite = TestSuite(testObjectsList)
 
 if __name__ == '__main__':
-    from PyQt4.QtCore import QCoreApplication
-    import sys
-    a = QCoreApplication(sys.argv)
     TextTestRunner(verbosity=2).run(suite)
