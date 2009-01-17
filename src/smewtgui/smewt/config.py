@@ -28,11 +28,3 @@ the program to use.
 This is not to be mistaken with the program settings, which contains the user
 preferences.
 '''
-
-
-
-# whether to retrieve locally stored results for web queries
-test_localweb = False
-
-local_epguides_googleresult = '../testdata/allintitle: site:epguides.com futurama - Google Search.html'
-local_epguides_episodelist = '../testdata/Futurama (a Titles & Air Dates Guide).html'

@@ -18,6 +18,5 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from epguides import EpGuides
 from episodefilename import EpisodeFilename
 from episodeimdb import EpisodeIMDB
