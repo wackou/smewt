@@ -131,13 +131,16 @@ class MainWidget(QWidget):
                                                             QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
 
         if filename:
-            if self.importer is None:
-                self.importer = Importer()
-                self.connect(self.importer, SIGNAL('importFinished'), self.mergeCollection)
-                self.connect(self.importer, SIGNAL('progressChanged'), self.progressChanged)
+            self.importSingleFolder(filename)
 
-            self.importer.importFolder(filename)
-            self.importer.start()
+    def importSingleFolder(self, path):
+        if self.importer is None:
+            self.importer = Importer()
+            self.connect(self.importer, SIGNAL('importFinished'), self.mergeCollection)
+            self.connect(self.importer, SIGNAL('progressChanged'), self.progressChanged)
+
+        self.importer.importFolder(path)
+        self.importer.start()
 
     def progressChanged(self,  tagged,  total):
         self.emit(SIGNAL('progressChanged'),  tagged,  total)
@@ -225,7 +228,7 @@ class MainWidget(QWidget):
                         reimport.add(dirname(video.filename))
 
                     for dir in reimport:
-                        self.collection.importFolder(dir)
+                        self.importSingleFolder(dir)
 
 
         else:

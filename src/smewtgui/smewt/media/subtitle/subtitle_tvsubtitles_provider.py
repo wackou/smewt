@@ -89,9 +89,7 @@ class TVSubtitlesProvider:
 
     def downloadSubtitle(self, basename, series, season, episode, language, videoFilename = None):
         """videoFilename is just used a hint when we find multiple subtitles"""
-        import urllib2, zipfile, os.path
-        # TODO: do this in memory instead of tmp file
-        tmpfile = '/tmp/sub.zip'
+        import cStringIO, zipfile, os.path
         subs = [ sub for sub in self.getAvailableSubtitlesID(series, season, episode) if sub['code'] == language ]
 
         if not subs:
@@ -105,11 +103,13 @@ class TVSubtitlesProvider:
                 sub = sorted(dists)[0][1]
             logging.warning('Choosing %s' % sub)
 
-        f = open(tmpfile, 'wb')
-        f.write(urllib2.urlopen(self.baseUrl + '/download-%s.html' % sub['id']).read())
-        f.close()
+        cd = utils.CurlDownloader()
+        # first get this page to get session cookies...
+        cd.get(self.baseUrl + '/subtitle-%s.html' % sub['id'])
+        # ...then grab the sub file
+        cd.get(self.baseUrl + '/download-%s.html' % sub['id'])
 
-        zf = zipfile.ZipFile(tmpfile)
+        zf = zipfile.ZipFile(cStringIO.StringIO(cd.contents))
         filename = zf.infolist()[0].filename
         extension = os.path.splitext(filename)[1]
         subtext = zf.read(filename)
