@@ -18,8 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout, QTabWidget
-from PyQt4.QtCore import  SIGNAL
+from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout, QTabWidget, QIcon, QSystemTrayIcon, QAction, QMenu
+from PyQt4.QtCore import SIGNAL
 import sys
 from smewt.gui import MainWidget, FeedWatchWidget
 
@@ -57,6 +57,39 @@ class SmewtGui(QMainWindow):
 
         self.connect(self.mainWidget, SIGNAL('progressChanged'), self.progressChanged)
 
+        self.icon = QIcon('smewt/icons/nepomuk.png')
+        self.setWindowIcon(self.icon)
+
+        self.createTrayIcon()
+
+    def createTrayIcon(self):
+        self.quitAction = QAction('Quit', self)
+        self.connect(self.quitAction, SIGNAL('triggered()'),
+                     QApplication.instance().quit)
+
+        trayMenu = QMenu(self)
+        trayMenu.addAction(self.quitAction)
+
+
+        self.trayIcon = QSystemTrayIcon(self.icon, self)
+        self.trayIcon.setContextMenu(trayMenu)
+        self.trayIcon.setVisible(True)
+
+        self.connect(self.trayIcon, SIGNAL('activated(QSystemTrayIcon::ActivationReason)'),
+                     self.iconActivated)
+
+
+    def iconActivated(self, reason):
+        if reason == QSystemTrayIcon.Trigger or reason == QSystemTrayIcon.DoubleClick:
+            if self.isVisible():
+                self.setVisible(False)
+            else:
+                self.setVisible(True)
+
+    def closeEvent(self, event):
+        self.hide()
+        event.ignore()
+
     def progressChanged(self,  tagged,  total):
         if total == 0:
             self.statusWidget.progressBar.reset()
@@ -82,3 +115,4 @@ if __name__ == '__main__':
     print 'writing cache to disk...'
     cache.save('/tmp/smewt.cache')
     print 'exiting'
+    sys.exit() # why is this necessary when running from eric?
