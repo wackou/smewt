@@ -36,9 +36,13 @@ def matchAllRegexp(string, regexps):
     returns a list of all found matches."""
     result = []
     for regexp in regexps:
-        match = re.compile(regexp, re.IGNORECASE).search(string)
-        if match:
+        s = string
+        rexp = re.compile(regexp, re.IGNORECASE)
+        match = rexp.search(s)
+        while match:
             result.append(match.groupdict())
+            s = s[match.span()[1]:]
+            match = rexp.search(s)
     return result
 
 def matchAnyRegexp(string, regexps):
