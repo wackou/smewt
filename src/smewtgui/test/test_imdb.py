@@ -50,8 +50,13 @@ title      : I, Roommate'''))
 
         query.clear()
         query += Media('/data/Series/Duckman/Duckman - 102 (02) - 20021112 - TV or Not To Be.avi')
+        expected = Episode(yaml.load('''
+series : "Duckman: Private Dick/Family Man"
+season     : 1
+episodeNumber : 2
+title      : T.V. or Not to Be'''))
         result = chain.solve(query).findOne(Episode)
-        print 'duckman result', result
+        self.assert_(result.contains(expected))
 
 suite = allTests(TestIMDB)
 

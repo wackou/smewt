@@ -95,6 +95,33 @@ class Graph(QObject):
                     return node
         raise SmewtException('Graph: could not find %s matching the following criteria: %s' % (type.typename, str(kwargs)))
 
+    def findExact(self, md):
+        '''Returns the exact object in that graph which corresponds to the given Metadata object.'''
+        result = None
+        for obj in self.nodes:
+            if md == obj:
+                return obj
+
+        raise SmewtException('Graph: could not find given object inside graph!')
+
+    def update(self, md, prop, value):
+        '''Updates a property part of the unique-defining ones from an object already in the collection.
+        This is usually not possible directly because the object is immutable.'''
+        # NB: we won't have to update any refs because this is still the same object,
+        #     we're not making any copy
+        obj = self.findExact(md)
+
+        # first remove it from the graph...
+        self.nodes.remove(obj)
+
+        # ...update the value...
+        obj.mutable = True
+        obj[prop] = value
+        obj.mutable = False
+
+        # ...and insert object back in the graph
+        self.nodes.add(obj)
+
     def __iadd__(self, obj):
         '''Adds the object to the current graph. It can be either a single Node, a list of nodes,
         or another Graph.

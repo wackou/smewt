@@ -81,18 +81,10 @@ class EpisodeFilename(Guesser):
         for md in query.findAll(Episode):
             num = md['episodeNumber']
             if num > 100:
-                if len(query.findAll(Episode)) > 1:
-                    # probably a false positive, remove it
-                    # FIXME: Graph should have a remove or pop method
-                    query.nodes.remove(md)
-                else:
-                    # it's the only guess we have, make it look like it's an episode
-                    # maybe we should check if we have an estimate for the season number?
-                    query.nodes.remove(md)
-                    md.mutable = True
-                    md['season'] = num // 100
-                    md['episodeNumber'] = num % 100
-                    query += md
+                # it's the only guess we have, make it look like it's an episode
+                # maybe we should check if we have an estimate for the season number?
+                query.update(md, 'season', num // 100)
+                query.update(md, 'episodeNumber', num % 100)
 
 
         self.emit(SIGNAL('finished'), query)
