@@ -21,7 +21,7 @@
 from PyQt4.QtCore import QObject, SIGNAL
 from mediaobject import Media, Metadata
 from smewtexception import SmewtException
-import yaml, logging
+import logging, cPickle
 
 class Graph(QObject):
     '''This class represents an acyclic directed graph of nodes, where the nodes can either be
@@ -169,8 +169,8 @@ class Graph(QObject):
             self.nodes = set()
             return
 
-        self.nodes = yaml.load(f.read())
+        self.nodes = cPickle.load(f)
 
     def save(self, filename):
-        open(filename, 'w').write(yaml.dump(self.nodes))
+        cPickle.dump(self.nodes, open(filename, 'w'))
 
