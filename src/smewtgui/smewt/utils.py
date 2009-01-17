@@ -113,8 +113,9 @@ def levenshtein(a, b):
     return d[m][n]
 
 
-# filename-related functions
+# filename- and network-related functions
 import os.path,  fnmatch
+import pycurl
 
 def splitFilename(filename):
     root, path = os.path.split(filename)
@@ -152,3 +153,24 @@ class GlobDirectoryWalker:
                 for pattern in self.patterns:
                     if fnmatch.fnmatch(file, pattern):
                         return fullname
+
+
+class CurlDownloader:
+    def __init__(self):
+        self.contents = ''
+        self.c = pycurl.Curl()
+
+    def callback(self, buf):
+        self.contents += buf
+
+    def get(self, url):
+        self.contents = ''
+        c = self.c
+        c.setopt(c.URL, url)
+        c.setopt(c.WRITEFUNCTION, self.callback)
+        c.setopt(c.COOKIEFILE, '')
+        c.setopt(c.FOLLOWLOCATION, 1)
+        c.perform()
+
+    def __del__(self):
+        self.c.close()
