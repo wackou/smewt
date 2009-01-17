@@ -43,6 +43,15 @@ class SmewtGui(QMainWindow):
     def __init__(self):
         super(SmewtGui, self).__init__()
         self.setWindowTitle('Smewg - An Ordinary Smewt Gui')
+
+        self.icon = QIcon('smewt/icons/nepomuk.png')
+        self.setWindowIcon(self.icon)
+
+        self.createWidgets()
+        self.createActions()
+        self.createTrayIcon()
+
+    def createWidgets(self):
         self.mainWidget = MainWidget()
         self.feedWatchWidget = FeedWatchWidget()
 
@@ -57,19 +66,26 @@ class SmewtGui(QMainWindow):
 
         self.connect(self.mainWidget, SIGNAL('progressChanged'), self.progressChanged)
 
-        self.icon = QIcon('smewt/icons/nepomuk.png')
-        self.setWindowIcon(self.icon)
-
-        self.createTrayIcon()
-
-    def createTrayIcon(self):
+    def createActions(self):
         self.quitAction = QAction('Quit', self)
         self.connect(self.quitAction, SIGNAL('triggered()'),
                      QApplication.instance().quit)
 
-        trayMenu = QMenu(self)
-        trayMenu.addAction(self.quitAction)
+        self.minimizeAction = QAction('Minimize', self)
+        self.connect(self.minimizeAction, SIGNAL('triggered()'),
+                     self.hide)
 
+        self.restoreAction = QAction('Restore', self)
+        self.connect(self.restoreAction, SIGNAL('triggered()'),
+                     self.showNormal)
+
+
+    def createTrayIcon(self):
+        trayMenu = QMenu(self)
+        trayMenu.addAction(self.minimizeAction)
+        trayMenu.addAction(self.restoreAction)
+        trayMenu.addSeparator()
+        trayMenu.addAction(self.quitAction)
 
         self.trayIcon = QSystemTrayIcon(self.icon, self)
         self.trayIcon.setContextMenu(trayMenu)
@@ -77,6 +93,11 @@ class SmewtGui(QMainWindow):
 
         self.connect(self.trayIcon, SIGNAL('activated(QSystemTrayIcon::ActivationReason)'),
                      self.iconActivated)
+
+    def setVisible(self, visible):
+        self.minimizeAction.setEnabled(visible)
+        self.restoreAction.setEnabled(not visible)
+        QMainWindow.setVisible(self, visible)
 
 
     def iconActivated(self, reason):
