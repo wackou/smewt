@@ -46,7 +46,7 @@ class EpisodeFilename(Guesser):
         # heuristic 1: try to guess the season & epnumber using S01E02 and 1x02 patterns
         sep = '[ \._-]'
         rexps = [ 'season (?P<season>[0-9]+)',
-                  sep + '(?P<episodeNumber>[0-9]+)(?:v[23])?' + sep,
+                  sep + '(?P<episodeNumber>[0-9]+)(?:v[23])?' + sep, # v2 or v3 for some mangas which have multiples rips
                   '(?P<season>[0-9]+)x(?P<episodeNumber>[0-9]+)',
                   'S(?P<season>[0-9]+)E(?P<episodeNumber>[0-9]+)'
                   ]
@@ -59,6 +59,23 @@ class EpisodeFilename(Guesser):
                     logging.debug('Found MD: %s: %s = %s', media.filename, key, value)
                     result[key] = value
                 query += result
+
+        # cleanup a bit by removing unlikely eps numbers which are probably numbers in the title
+        # or even dates in the filename, etc...
+        niceGuess = None
+        for md in query.findAll(Episode):
+            if 'episodeNumber' in md.properties and 'season' in md.properties:
+                niceGuess = md
+            if 'episodeNumber' in md.properties and 'season' not in md.properties and md['episodeNumber'] > 1000:
+                logging.debug('Removing unlikely %s', str(md))
+                query.nodes.remove(md)
+        # if we have season+epnumber, remove single epnumber guesses
+        if niceGuess:
+            for md in query.findAll(Episode):
+                if 'episodeNumber' in md.properties and 'season' not in md.properties:
+                    logging.debug('Removing %s because %s looks better' % (md, niceGuess))
+                    query.nodes.remove(md)
+
 
         # heuristic 2: try to guess the serie title from the parent directory!
         result = Episode()
