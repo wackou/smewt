@@ -21,6 +21,7 @@
 
 from smewtdict import SmewtDict, ValidatingSmewtDict
 from smewtexception import SmewtException
+from smewt.utils import toUtf8
 
 # This file contains the 2 base MediaObject types used in Smewt:
 #  - Media: is the type used to represent physical files on the hard disk.
@@ -174,7 +175,11 @@ class Metadata(object):
         result = ('valid ' if self.isValid() else 'invalid ') + self.typename + ' (confidence: ' + str(self.confidence) + ') :\n{ '
 
         for propname in self.orderedProperties():
-            result += '%-10s : %s\n  ' % (propname, unicode(self.properties[propname]).encode('utf-8'))
+            if propname in self.schema and issubclass(self.schema[propname], Metadata):
+                s = str(self.properties[propname])
+            else:
+                s = toUtf8(self.properties[propname])
+            result += '%-10s : %s\n  ' % (propname, s)
 
         return result + '}'
 

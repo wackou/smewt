@@ -62,3 +62,6 @@ class SmewtUrl:
 
     def __str__(self):
         return urlunparse(self.spath).replace('http://', 'smewt://')
+
+    def __unicode__(self):
+        return urlunparse(self.spath).replace('http://', 'smewt://')

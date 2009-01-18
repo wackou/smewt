@@ -114,7 +114,7 @@ class MainWidget(QWidget):
 
         self.history.append(url)
 
-        QSettings().setValue('base_url',  QVariant(str(self.smewtUrl)))
+        QSettings().setValue('base_url',  QVariant(unicode(self.smewtUrl)))
         self.refreshCollectionView()
 
 
