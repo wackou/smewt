@@ -126,7 +126,7 @@ class IMDBMetadataProvider(QObject):
             self.emit(SIGNAL('finished'), self.episode, eps)
 
         except Exception, e:
-            logging.warning(str(e) + ' -- ' + str(ep))
+            logging.warning(str(e) + ' -- ' + str(self.episode))
             self.emit(SIGNAL('finished'), self.episode, [])
 
 
