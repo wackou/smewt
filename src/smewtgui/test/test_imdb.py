@@ -36,14 +36,22 @@ class TestIMDB(TestCase):
 
             if expected:
                 self.assertEqual(len(result), 1)
-                self.assert_(result[0].contains(Episode(expected)))
+                self.assert_(result[0].contains(Episode(expected)),
+                             msg = 'Expected: %s\nReceived %s' % (Episode(expected), result[0]))
             else:
                 self.assertEqual(result, [])
 
 
-for filename in glob.glob('test_imdb/*.yaml'):
-    testName = filename[10].upper() + filename[11:-5]
-    setattr(TestIMDB, 'test' + testName, lambda self: self.runtestEpisodeIMDB(filename))
+# add a single test function for each file contained in the test_imdb/ directory
+for filename in glob.glob(join(currentPath(), 'test_imdb', '*.yaml')):
+    testName = basename(filename)[0].upper() + basename(filename)[1:-5]
+    # dammit what a laborious hack... closure seems to work oddly otherwise...
+    fcode = '''
+def test%s(self):
+    self.runtestEpisodeIMDB('%s')
+testFunc = test%s''' % (testName, filename, testName)
+    exec(fcode)
+    setattr(TestIMDB, 'test' + testName, testFunc)
 
 
 suite = allTests(TestIMDB)

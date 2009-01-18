@@ -18,15 +18,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import sys, glob
-from unittest import *
+from smewttest import *
+import glob
 
 def importTest(name):
     cmd = 'import test_%s; setattr(sys.modules[__name__], \'%s\', test_%s.suite)' % (name, name, name)
     exec(cmd)
 
-
-listTests = [ filename[5:-3] for filename in glob.glob('test_*.py') ]
+listTests = [ basename(filename)[5:-3] for filename in glob.glob(join(currentPath(), 'test_*.py')) ]
 
 for test in listTests:
     importTest(test)

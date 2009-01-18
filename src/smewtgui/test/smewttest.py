@@ -21,7 +21,21 @@
 from unittest import *
 from unittest import TestCase as BaseTestCase
 
-import yaml, logging, sys
+import yaml, logging, sys, os
+from os.path import *
+
+def currentPath():
+    '''Returns the path in which the calling file is located.'''
+    return dirname(join(os.getcwd(), sys._getframe(1).f_globals['__file__']))
+
+def addImportPath(path):
+    '''Function that adds the specified path to the import path. The path can be
+    absolute or relative to the calling file.'''
+    importPath = join(currentPath(), path)
+    sys.path.append(importPath)
+
+addImportPath('.')  # for the tests
+addImportPath('..') # for import smewt
 
 from smewt import *
 from smewt.solvers import *
