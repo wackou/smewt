@@ -18,7 +18,9 @@ frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'lang
 episodes = {}
 
 for media in eps.findAll(Media):
-    md = episodes.setdefault(media.metadata.uniqueKey(), media.metadata.toDict())
+    d = defaultdict(lambda:None)
+    d.update(media.metadata.toDict())
+    md = episodes.setdefault(media.metadata.uniqueKey(), d)
     if media.type() == 'video':
         md['filename'] = media.filename
         md['url'] = SmewtUrl('action', 'play', { 'filename': media.filename })
