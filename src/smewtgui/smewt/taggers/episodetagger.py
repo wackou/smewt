@@ -40,7 +40,7 @@ class EpisodeTagger(Tagger):
         self.connect(self.chain2, SIGNAL('finished'), self.solved)
 
     def gotFilenameMetadata(self, result):
-        self.filenameMetadata = result.findOne(Metadata)
+        self.filenameMetadata = result.findOne(Episode)
         self.chain2.start(result)
 
     def solved(self, result):
@@ -51,7 +51,7 @@ class EpisodeTagger(Tagger):
             # we didn't find any info outside of what the filename told us
             media.metadata = self.filenameMetadata
 
-        self.emit(SIGNAL('tagFinished'), result)
+        self.emit(SIGNAL('tagFinished'), media)
 
 
     def tag(self, media):
