@@ -176,7 +176,7 @@ class MainWidget(QWidget):
 
     def linkClicked(self,  url):
         logging.info('clicked on link %s', url)
-        url = url.toString()
+        url = url.toEncoded()
 
         if url.startsWith('file://'):
             action = 'smplayer'
