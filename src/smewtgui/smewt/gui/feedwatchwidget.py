@@ -19,8 +19,8 @@
 #
 
 from smewt import SmewtException, SmewtUrl, EventServer
-from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings, QThread
-from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QListWidget, QListView, QInputDialog, QLineEdit, QAbstractItemView, QLabel, QMessageBox
+from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings, QThread, QTimer, QString
+from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QListWidget, QListView, QInputDialog, QLineEdit, QAbstractItemView, QLabel, QMessageBox, QDialog, QListWidget
 from smewt.plugins.amulefeedwatcher import AmuleFeedWatcher
 import logging
 
@@ -32,6 +32,47 @@ class CheckThread(QThread):
 
     def run(self):
         self.feedList.checkAllFeeds()
+
+class EpisodeSelector(QDialog):
+    def __init__(self, feed):
+        super(EpisodeSelector, self).__init__()
+
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel(feed['title']))
+
+        self.eplist = QListWidget()
+        self.eps = sorted(feed['entries'], key = lambda x: x['updated'])
+        selectionIndex = -1
+        i = 0
+        for ep in self.eps:
+            self.eplist.addItem(QString(ep['title']))
+            if ep['updated'] == feed['lastUpdate']:
+                selectionIndex = i
+            i += 1
+        self.eplist.setCurrentRow(selectionIndex)
+
+        layout.addWidget(self.eplist)
+
+        cancelButton = QPushButton('Cancel')
+        okButton = QPushButton('Set as last episode')
+        self.connect(cancelButton, SIGNAL('clicked()'),
+                     self.reject)
+        self.connect(okButton, SIGNAL('clicked()'),
+                     self.acceptLocal)
+
+        buttonsLayout = QHBoxLayout()
+        buttonsLayout.addStretch()
+        buttonsLayout.addWidget(cancelButton)
+        buttonsLayout.addWidget(okButton)
+
+        layout.addLayout(buttonsLayout)
+
+        self.setLayout(layout)
+
+    def acceptLocal(self):
+        self.lastUpdate = self.eps[self.eplist.currentRow()]['updated']
+        self.accept()
+
 
 
 class FeedWatchWidget(QWidget):
@@ -72,17 +113,32 @@ class FeedWatchWidget(QWidget):
         self.feedView.setModel(self.feedList)
         layout.addWidget(self.feedView)
 
+        self.connect(self.feedView, SIGNAL('doubleClicked(const QModelIndex&)'),
+                     self.feedEdit)
+
         layout.addLayout(buttons)
 
-        eventView = QListView()
-        eventView.setSelectionMode(QAbstractItemView.NoSelection)
-        eventView.setModel(self.eventList)
-        layout.addWidget(eventView)
+        self.eventView = QListView()
+        self.eventView.setSelectionMode(QAbstractItemView.NoSelection)
+        self.eventView.setModel(self.eventList)
+        layout.addWidget(self.eventView)
 
         self.setLayout(layout)
 
+        # check for feeds every half hour
+        self.timer = QTimer(self)
+        self.connect(self.timer, SIGNAL('timeout()'),
+                     self.checkNow)
+        self.timer.start(30*60*1000)
+
     def saveAmulePwd(self):
         QSettings().setValue('amulePwd', QVariant(self.amulePwdEdit.text()))
+
+    def feedEdit(self, index):
+        fullFeed = self.feedList.getFullFeedIndex(index.row())
+        epSelect = EpisodeSelector(fullFeed)
+        if epSelect.exec_() == QDialog.Accepted:
+            self.feedList.setLastUpdateIndex(index.row(), epSelect.lastUpdate)
 
     def checkNow(self):
         # this can last a while, do not block the UI meanwhile
