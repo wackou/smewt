@@ -95,17 +95,11 @@ class FeedWatchWidget(QWidget):
         self.connect(removeFeedButton, SIGNAL('clicked()'),
                      self.removeFeed)
 
-        self.amulePwdEdit = QLineEdit(QSettings().value('amulePwd').toString())
-        self.connect(self.amulePwdEdit, SIGNAL('editingFinished()'),
-                     self.saveAmulePwd)
-
         buttons = QHBoxLayout()
         buttons.addWidget(addFeedButton)
         buttons.addWidget(removeFeedButton)
         buttons.addStretch()
         buttons.addWidget(checkNowButton)
-        buttons.addWidget(QLabel('Amule password:'))
-        buttons.addWidget(self.amulePwdEdit)
 
         # main layout
         layout = QVBoxLayout()
@@ -130,9 +124,6 @@ class FeedWatchWidget(QWidget):
         self.connect(self.timer, SIGNAL('timeout()'),
                      self.checkNow)
         self.timer.start(2*60*60*1000)
-
-    def saveAmulePwd(self):
-        QSettings().setValue('amulePwd', QVariant(self.amulePwdEdit.text()))
 
     def feedEdit(self, index):
         fullFeed = self.feedList.getFullFeedIndex(index.row())

@@ -46,10 +46,6 @@ class AmuleFeedWatcher(QAbstractListModel):
                                      QVariant(f['lastTitle'])
                                      ]) for f in feedList ])
 
-    '''
-    def toQVariant(self):
-        return self.feedListToQVariant(self.feedList)'''
-
     def variantToFeedList(self, v):
         result = []
         for f in v.toList():
@@ -132,12 +128,10 @@ class AmuleFeedWatcher(QAbstractListModel):
 
 
     def amuleDownload(self, ed2kLink, amulePwd):
-        cmd = [ 'amulecmd', '--password=%s' % amulePwd, '--command=Add %s' % ed2kLink ]
-        amuleReply = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout.read()
-        #print 'amule said:', amuleReply
-        return '> Operation was successful.' in amuleReply
+        from amulecommand import AmuleCommand
+        return AmuleCommand().download(ed2kLink)
 
-    def downloadNewEpisodes(self, feed, amulePwd):
+    def downloadNewEpisodes(self, feed):
         EventServer.publish('Checking new episodes for: %s' % feed['title'])
         f = feedparser.parse(feed['url'])
         lastUpdate = feed['lastUpdate']
@@ -148,12 +142,13 @@ class AmuleFeedWatcher(QAbstractListModel):
                 episodeHtml = urllib2.urlopen(ep.id).read()
                 ed2kLink = re.compile('href="(?P<url>ed2k://\|file.*?)">').search(episodeHtml).groups()[0]
                 EventServer.publish('Sending file to aMule...')
-                if self.amuleDownload(ed2kLink, amulePwd):
+                ok, msg = self.amuleDownload(ed2kLink)
+                if ok:
                     EventServer.publish('Successfully sent to aMule!')
                     if list(ep.updated_parsed) > lastUpdate:
                         lastUpdate = list(ep.updated_parsed)
                 else:
-                    EventServer.publish('Error while sending to aMule. Will try again next time...')
+                    EventServer.publish('Error while sending to aMule. %s. Will try again next time...' % msg)
 
         if lastUpdate == feed['lastUpdate']:
             EventServer.publish('No new episodes...')
@@ -161,9 +156,8 @@ class AmuleFeedWatcher(QAbstractListModel):
             self.setLastUpdate(feed, lastUpdate)
 
     def checkAllFeeds(self):
-        amulePwd = str(QSettings().value('amulePwd').toString())
         for feed in self.feedList:
-            self.downloadNewEpisodes(feed, amulePwd)
+            self.downloadNewEpisodes(feed)
 
         # write back feed list with latest updates
         self.saveFeeds()
