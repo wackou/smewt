@@ -125,11 +125,11 @@ class FeedWatchWidget(QWidget):
 
         self.setLayout(layout)
 
-        # check for feeds every half hour
+        # check for feeds every 2 hours
         self.timer = QTimer(self)
         self.connect(self.timer, SIGNAL('timeout()'),
                      self.checkNow)
-        self.timer.start(30*60*1000)
+        self.timer.start(2*60*60*1000)
 
     def saveAmulePwd(self):
         QSettings().setValue('amulePwd', QVariant(self.amulePwdEdit.text()))
