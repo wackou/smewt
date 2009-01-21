@@ -51,6 +51,8 @@ import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'series')
 <body>
 #if poster:
   <img src="file://$poster" />
+#else:
+  <img src="file://$(import_dir)/noposter.png">
 #end if
 
 <div class="rightshifted">
