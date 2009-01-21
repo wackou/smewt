@@ -45,10 +45,12 @@ packages = ['smewt',
             'smewt.solvers',
             'smewt.taggers',
             'smewt.guessers',
-            'smewt.icons'
+            'smewt.icons',
+            'smewt.plugins'
             ]
 
-data_files = []
+data_files = [('share/applications' , ['smewt.desktop']),
+              ('share/icons' ,        ['icons/smewt.png'])]
 
 opts = {}
 
@@ -85,12 +87,12 @@ provides = packages
 
 requires = ['IMDbPY(>=3.7)',
             'Cheetah(>=1.0)',
-            'PyQt(>=4.4.0)'
+            #'PyQt(>=4.4.0)'
             ]
 
 install_requires = ['IMDbPY',
                     'Cheetah',
-                    'PyQt'
+                    #'PyQt'
                     ]
 
 dependency_links = []
@@ -111,7 +113,7 @@ setup(name = 'Smewt',
       provides = provides,
       packages = packages,
       scripts = scripts,
-      package_data = {'smewt.icons': ['applications-multimedia.png'],
+      package_data = {'smewt.gui.icon': ['nepomuk.png'],
                       'smewt.media.series': ['view_episodes_by_season.tmpl',
                                              'view_all_series.tmpl',
                                              'jquery-1.2.2.pack.js',
@@ -119,12 +121,8 @@ setup(name = 'Smewt',
       data_files = data_files,
       classifiers =
             [ 'Development Status :: 1 - Beta',
-              'Environment :: Console',
-              'Intended Audience :: Developers',
               'Intended Audience :: Entertainment',
               'License :: OSI Approved :: GPL License',
               'Topic :: Multimedia :: Sound/Audio'],
-      zip_safe=True, # the package can run out of an .egg file
-      console=scripts,
-      options = opts
+      zip_safe=True # the package can run out of an .egg file
       )

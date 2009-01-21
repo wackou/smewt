@@ -7,3 +7,5 @@ include ez_setup.py
 include smewt/media/series/*.tmpl
 include smewt/media/series/*.js
 recursive-include smewt/icons *.png
+recursive-include icons *.png
+include smewt.desktop
