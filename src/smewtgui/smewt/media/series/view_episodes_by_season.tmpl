@@ -45,6 +45,7 @@ import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'series')
 <head>
 <title>single serie display</title>
 <script type="text/javascript" src="file://$(import_dir)/tabber.js"></script>
+<script type="text/javascript" src="file://$(import_dir)/styler.js"></script>
 <link rel="stylesheet" href="file://$(import_dir)/series.css" type="text/css">
 </head>
 
@@ -60,6 +61,7 @@ import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'series')
 
   <a href="$englishSubsLink">Get missing English subtitles</a>
   <a href="$frenchSubsLink">Get missing French subtitles</a>
+  <a href="javascript:toggleByName('synopsis')">Toggle synopsis</a>
 </div>
 
 <div class="tabber">
@@ -84,7 +86,7 @@ import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'series')
       #end try
 
       #if 'synopsis' in ep:
-        <p>$ep.synopsis</p>
+        <div name="synopsis" style="display:none">$ep.synopsis</div>
       #end if
       </div>
     #else
