@@ -44,28 +44,8 @@ import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'series')
 
 <head>
 <title>single serie display</title>
-<script type="text/javascript" src="file://$(import_dir)/jquery-1.2.2.pack.js"></script>
-<script type="text/javascript" src="file://$(import_dir)/animatedcollapse.js">
-
-/***********************************************
-* Animated Collapsible DIV v2.0- (c) Dynamic Drive DHTML code library (www.dynamicdrive.com)
-* This notice MUST stay intact for legal use
-* Visit Dynamic Drive at http://www.dynamicdrive.com/ for this script and 100s more
-***********************************************/
-
-</script>
-
-
-<script type="text/javascript">
-
-#for seasonNumber, eps in seasons.items():
-  animatedcollapse.addDiv('s$(seasonNumber)', 'fade=0,speed=400,group=seasons,hide=1')
-#end for
-
-animatedcollapse.init()
-
-</script>
-
+<script type="text/javascript" src="file://$(import_dir)/tabber.js"></script>
+<link rel="stylesheet" href="file://$(import_dir)/series.css" type="text/css">
 </head>
 
 <body>
@@ -73,20 +53,24 @@ animatedcollapse.init()
   <img src="file://$poster" />
 #end if
 
-<a href="$englishSubsLink">Get missing English subtitles</a>
--
-<a href="$frenchSubsLink">Get missing French subtitles</a>
+<div class="rightshifted">
+  <h1>$seriesName</h1>
 
-<h1>$seriesName</h1>
+  <a href="$englishSubsLink">Get missing English subtitles</a>
+  <a href="$frenchSubsLink">Get missing French subtitles</a>
+</div>
+
+<div class="tabber">
 #for seasonNumber, eps in seasons.items():
-  <h2><a href="javascript:animatedcollapse.toggle('s$seasonNumber')">Season $seasonNumber</a></h2>
-  <div id="s$seasonNumber">
+  <div class="tabbertab">
+  <h2>Season $seasonNumber</h2>
+  <p>
   #for ep in eps
     #if 'filename' in ep:
       #try
         #if 'title' in ep:
           #if 'numSubtitles' in ep:
-              <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title ($ep.numSubtitles subtitles) </a>
+              <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title </a> ($ep.numSubtitles subtitles)
           #else
               <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title </a>
           #end if
@@ -105,7 +89,7 @@ animatedcollapse.init()
       <div class="episode"><em>$ep.episodeNumber - $ep.title</em></div>
     #end if
   #end for
-  </div>
+  </p></div>
 #end for
 
 </body>
