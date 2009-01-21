@@ -18,9 +18,68 @@
  margin-top:1em;
 }
 
+/**** smewt style rules *****************************************/
+/**** for all series view                                      **/ 
+#wrapper {
+ text-align: left;
+ margin: 0px auto;
+ padding: 0px;
+ border:0;
+ width: 100%;
+}
+
+#header {
+ margin: 0 0 10px 0;
+ background-color: #F0F0F0;
+ padding-top: 10px;
+ padding-bottom: 10px;
+ text-align: center;
+ font: bold 18px Verdana, sans-serif;
+ color: #333333;
+}
+
+#left-side {
+ float: left;
+ width: 50%;
+}
+
+#right-side { 
+ margin: 0;
+ float: left;
+ width: 50%;
+ height: 1% /* Holly hack for Peekaboo Bug */
+}
+
+.series {
+ height: 90px;
+ border: 1px solid #778;
+ background-color: #F0F0F0;
+ margin: 5px;
+ margin-left: 0px;
+}
+
+.series img {
+ position: relative;
+ top: 5px;
+ left: 5px;
+ height: 80px;
+ float: left;
+}
+
+.series a {
+ text-decoration: none;
+ font: bold 24px Verdana, sans-serif;
+ color: #448;
+ margin-left: 30px;
+ position: relative;
+ top: 30px;
+}
+
+/**** end of smewt style rules **********************************/
+
 
 /**** smewt style rules *****************************************/
-
+/**** for single series view                                   **/ 
 img {
  position: absolute;
  top: 10px;

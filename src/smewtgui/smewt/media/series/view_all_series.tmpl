@@ -3,21 +3,50 @@
 <%
 from smewt import SmewtUrl
 
-series = sorted([ (s['title'], SmewtUrl('media', 'series/single', { 'title': s['title'] })) for s in allseries ])
+series = sorted([ { 'title': s['title'],
+                    'url': SmewtUrl('media', 'series/single', { 'title': s['title'] }),
+                    'poster': s['loresImage'] } for s in allseries ], key = lambda x: x['title'])
+
+import os, os.path
+# FIXME: this is not the correct way to do it...
+import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'series')
+
 %>
 
 <html>
 <head>
   <title>All series view</title>
+  <link rel="stylesheet" href="file://$(import_dir)/series.css">
 </head>
 
 <body>
 
-ALL SERIES
+<div id="wrapper">
+	<div id="header">
+		ALL SERIES
+	</div>
+	<div id="container">
 
-#for title, url in series
-  <h1><a href='$url'>$title</a></h1>
-#end for
+		<div id="left-side">
+      #for s in series[::2]
+        <div class="series">
+          <img src="file://$s.poster" />
+          <a href='$s.url'>$s.title</a>
+        </div>
+      #end for
+    </div>
+
+    <div id="right-side">
+      #for s in series[1::2]
+        <div class="series">
+          <img src="file://$s.poster" />
+          <a href='$s.url'>$s.title</a>
+        </div>
+      #end for
+    </div>
+
+  </div>
+</div>
 
 </body>
 </html>
