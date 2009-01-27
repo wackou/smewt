@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2009-01-20, 23:25:50 -->
+<!-- Saved: 2009-01-27, 21:31:51 -->
 <!-- Copyright (C) 2009 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -261,6 +261,12 @@
       <Dir>smewt</Dir>
       <Dir>plugins</Dir>
       <Name>amulecommand.py</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>series.css</Name>
     </Source>
   </Sources>
   <Forms>
