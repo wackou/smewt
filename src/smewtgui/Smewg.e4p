@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2009-01-27, 21:31:51 -->
+<!-- Saved: 2009-01-28, 01:30:55 -->
 <!-- Copyright (C) 2009 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -125,18 +125,6 @@
     <Source>
       <Dir>utils</Dir>
       <Name>regenerate_headers.py</Name>
-    </Source>
-    <Source>
-      <Dir>smewt</Dir>
-      <Dir>media</Dir>
-      <Dir>series</Dir>
-      <Name>animatedcollapse.js</Name>
-    </Source>
-    <Source>
-      <Dir>smewt</Dir>
-      <Dir>media</Dir>
-      <Dir>series</Dir>
-      <Name>jquery-1.2.2.pack.js</Name>
     </Source>
     <Source>
       <Dir>smewt</Dir>
@@ -267,6 +255,18 @@
       <Dir>media</Dir>
       <Dir>series</Dir>
       <Name>series.css</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>styler.js</Name>
+    </Source>
+    <Source>
+      <Dir>smewt</Dir>
+      <Dir>media</Dir>
+      <Dir>series</Dir>
+      <Name>tabber.js</Name>
     </Source>
   </Sources>
   <Forms>
