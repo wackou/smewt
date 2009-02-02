@@ -15,20 +15,21 @@ englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'lan
 frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'fr' })
 
 # First prepare the episodes
-episodes = {}
+episodes = []
 
 for media in eps.findAll(Media):
-    d = defaultdict(lambda:None)
-    d.update(media.metadata.toDict())
-    md = episodes.setdefault(media.metadata.uniqueKey(), d)
+    md = defaultdict(lambda:None)
+    md.update(media.metadata.toDict())
+
     if media.type() == 'video':
+        episodes += [ md ]
         md['filename'] = media.filename
         md['url'] = SmewtUrl('action', 'play', { 'filename': media.filename })
     elif media.type() == 'subtitle':
         md.setdefault('subtitles', []).append(media.filename)
         md['numSubtitles'] = len(md['subtitles'])
 
-for md in episodes.values():
+for md in episodes:
     seasons[md['season']].append(md)
 
 for season, eps in seasons.items():
@@ -69,17 +70,13 @@ import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'series')
   <div class="tabbertab">
   <h2>Season $seasonNumber</h2>
   <p>
-  #for ep in eps
+  #for ep in [ ep for ep in eps if 'title' in ep ]
     #if 'filename' in ep:
       #try
-        #if 'title' in ep:
-          #if 'numSubtitles' in ep:
-              <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title </a> ($ep.numSubtitles subtitles)
-          #else
-              <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title </a>
-          #end if
+        #if 'numSubtitles' in ep:
+            <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title </a> ($ep.numSubtitles subtitles)
         #else
-          <div class="episode"><a href="$ep.url">$ep.episodeNumber - Untitled <i>($ep.filename)</i></a>
+            <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title </a>
         #end if
       #except
         <div class="episode"> ? - $ep.title
@@ -92,6 +89,20 @@ import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'series')
     #else
       <div class="episode"><em>$ep.episodeNumber - $ep.title</em></div>
     #end if
+  #end for
+
+<%
+import os.path
+extras = [ ep for ep in eps if 'title' not in ep ]
+for ep in extras:
+    ep['title'] = os.path.basename(ep['filename'])
+%>
+
+  #if extras
+    <div class="extras">Extras / Untitled / Metadata unknown</div>
+  #end if
+  #for ep in extras
+    <div class="episode"><a href="$ep.url"><i>$ep.title</i></a></div>
   #end for
   </p></div>
 #end for

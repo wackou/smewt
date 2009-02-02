@@ -148,6 +148,12 @@ h1 {
  text-decoration: underline;
 }
 
+.tabberlive .tabbertab .extras {
+ margin: 20px;
+ font: bold 20px Verdana, sans-serif;
+ color: #333333;
+}
+
 /**** end of smewt style rules **********************************/
 
 /*--------------------------------------------------
