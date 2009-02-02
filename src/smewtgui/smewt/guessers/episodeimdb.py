@@ -44,7 +44,7 @@ class IMDBMetadataProvider(QObject):
     def getSerie(self, name):
         results = self.imdb.search_movie(name)
         for r in results:
-            if r['kind'] == 'tv series':
+            if r['kind'] == 'tv series' or r['kind'] == 'tv mini series':
                 return r
         raise SmewtException("EpisodeIMDB: Could not find series '%s'" % name)
 
