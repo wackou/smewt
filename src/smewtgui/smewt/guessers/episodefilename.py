@@ -103,5 +103,13 @@ class EpisodeFilename(Guesser):
                 query.update(md, 'season', num // 100)
                 query.update(md, 'episodeNumber', num % 100)
 
+            # FIXME: ugly fix for imdbpy not recognizing anymore the "house" series...
+            try:
+                if md['series']['title'].lower() == 'house':
+                    query.update(md, 'series', Series({ 'title': 'house md' }))
+            except:
+                pass
+
+
 
         self.emit(SIGNAL('finished'), query)
