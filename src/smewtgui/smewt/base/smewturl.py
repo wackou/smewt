@@ -27,15 +27,15 @@ class SmewtUrl:
     def __init__(self, type=None, path=None, args = {}, url = None):
         if type and path and not url:
             if path[0] != '/': path = '/' + path
-            # FIXME: unicode stuff again
             args = utils.toUtf8(args)
             self.spath = ParseResult('http', type, path, '', urlencode(args), None)
 
         elif url and not type and not path:
+
             if not unicode(url).startswith('smewt://'):
                 raise SmewtException('Could not create SmewtUrl from %s' % url)
 
-            url = unicode(url).replace('smewt://', 'http://')
+            url = str(url).replace('smewt://', 'http://')
             self.spath = urlparse(url)
         else:
             raise SmewtException('SmewtUrl: you need to specify either a string url or the components of the SmewtUrl you want to build')
@@ -58,7 +58,7 @@ class SmewtUrl:
         if self.spath.query:
             self.args = dict([ kv.split('=') for kv in self.spath.query.split('&') ])
             for key, value in self.args.items():
-                self.args[unquote_plus(key)] = unquote_plus(value)
+                self.args[unquote_plus(key)] = unquote_plus(value).decode('utf-8')
 
     def __str__(self):
         return urlunparse(self.spath).replace('http://', 'smewt://')
