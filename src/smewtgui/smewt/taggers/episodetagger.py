@@ -25,7 +25,7 @@ from smewt.solvers import *
 from PyQt4.QtCore import SIGNAL
 
 from smewt import Graph, SolvingChain, Media, Metadata
-from smewt.media import Episode
+from smewt.media import Episode, Series
 import logging
 
 class EpisodeTagger(Tagger):
@@ -50,6 +50,12 @@ class EpisodeTagger(Tagger):
             logging.warning('Could not find any tag for: %s' % media)
             # we didn't find any info outside of what the filename told us
             media.metadata = self.filenameMetadata
+            # try anyway to get the correct series name
+            from smewt.guessers.episodeimdb import IMDBMetadataProvider
+            seriesName = IMDBMetadataProvider(media.metadata).getSerie(media.metadata['series']['title'])
+            result += media.metadata
+            result.update(media.metadata, 'series', Series({ 'title': seriesName }))
+            result.update(media.metadata, 'episodeNumber', -1)
 
         self.emit(SIGNAL('tagFinished'), media)
 
