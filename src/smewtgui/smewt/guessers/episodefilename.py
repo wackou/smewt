@@ -79,7 +79,9 @@ class EpisodeFilename(Guesser):
 
         # heuristic 2: try to guess the serie title from the parent directory!
         result = Episode()
-        if utils.matchAnyRegexp(name[1], ['season (?P<season>[0-9]+)']):
+        if utils.matchAnyRegexp(name[1], [ 'season (?P<season>[0-9]+)',
+                                           # TODO: need to find a better way to have language packs for regexps
+                                           'saison (?P<season>[0-9]+)' ]):
             s = query.findOrCreate(Series, title = name[2])
             result['series'] = s
             result.confidence = 0.8
