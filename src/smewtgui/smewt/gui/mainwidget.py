@@ -23,7 +23,7 @@ from smewt import SmewtException, SmewtUrl, Graph, Media, Metadata
 from smewt.media import Series, Episode
 from smewt.importer import Importer
 from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings
-from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog
+from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QSizePolicy
 from PyQt4.QtWebKit import QWebView, QWebPage
 from smewt.media.series import view
 from bookmarkwidget import BookmarkListWidget
@@ -62,6 +62,7 @@ class MainWidget(QWidget):
         navigation = QHBoxLayout()
 
         bookmarks = BookmarkListWidget()
+        bookmarks.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
         self.connect(bookmarks,  SIGNAL('selected'),
                      self.setSmewtUrl)
         navigation.addWidget(bookmarks)
