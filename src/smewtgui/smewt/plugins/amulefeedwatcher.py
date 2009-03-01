@@ -42,7 +42,7 @@ class AmuleFeedWatcher(QAbstractListModel):
     def feedListToQVariant(self, feedList):
         return QVariant([ QVariant([ QVariant(f['url']),
                                      QVariant(f['title']),
-                                     QVariant([ QVariant(n) for n in f['lastUpdate'] ]),
+                                     QVariant([ QVariant(float(n)) for n in f['lastUpdate'] ]),
                                      QVariant(f['lastTitle'])
                                      ]) for f in feedList ])
 
