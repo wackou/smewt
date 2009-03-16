@@ -127,7 +127,7 @@ class AmuleFeedWatcher(QAbstractListModel):
         self.reset()
 
 
-    def amuleDownload(self, ed2kLink, amulePwd):
+    def amuleDownload(self, ed2kLink):
         from amulecommand import AmuleCommand
         return AmuleCommand().download(ed2kLink)
 
