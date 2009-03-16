@@ -135,10 +135,11 @@ class IMDBMetadataProvider(QObject):
 def cleanMovieFilename(filename):
     import os.path
     filename = os.path.basename(filename)
-    print filename
+
     seps = [ ' ', '-', '.' ]
     for sep in seps:
         filename = filename.replace(sep, ' ')
+
     name = filename.split(' ')
 
     properties = { 'format': [ 'DVDRip', 'HDDVD' ],
