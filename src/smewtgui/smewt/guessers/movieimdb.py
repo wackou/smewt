@@ -28,7 +28,7 @@ from PyQt4.QtWebKit import QWebView
 import sys, re, logging
 from urllib import urlopen,  urlencode
 import imdb
-
+from smewt.base.textutils import stripBrackets
 
 class IMDBMetadataProvider(QObject):
     def __init__(self, movie):
@@ -172,13 +172,6 @@ def cleanMovieFilename(filename):
         except ValueError:
             return False
 
-    def stripBrackets(s):
-        if not s:
-            return s
-        if s[0] == '[' and s[-1] == ']': return s[1:-1]
-        if s[0] == '(' and s[-1] == ')': return s[1:-1]
-        if s[0] == '{' and s[-1] == '}': return s[1:-1]
-        return s
 
     for part in list(name):
         year = stripBrackets(part)
