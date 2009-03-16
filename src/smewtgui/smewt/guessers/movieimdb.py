@@ -142,15 +142,19 @@ def cleanMovieFilename(filename):
 
     name = filename.split(' ')
 
-    properties = { 'format': [ 'DVDRip', 'HDDVD' ],
+    properties = { 'format': [ 'DVDRip', 'HDDVD', 'BDRip', 'R5' ],
                    'container': [ 'avi', 'mkv', 'ogv', 'wmv', 'mp4', 'mov' ],
                    'screenSize': [ '720p' ],
                    'videoCodec': [ 'XviD', 'DivX', 'x264' ],
-                   'audioCodec': [ 'AC3', 'DTS' ],
+                   'audioCodec': [ 'AC3', 'DTS', 'AAC' ],
                    'language': [ 'english', 'eng',
-                                  'spanish', 'esp',
-                                ],
-                   'releaseGroup': [ 'ESiR', 'WAF' ]
+                                 'spanish', 'esp',
+                                 'vo', 'vf'
+                                 ],
+                   'releaseGroup': [ 'ESiR', 'WAF', 'SEPTiC', '[XCT]', 'iNT', 'PUKKA', 'CHD' ],
+                   'other': [ '5ch', 'PROPER', 'REPACK',
+                              'ws', # widescreen
+                              ],
                    }
 
     # ensure they're all lowercase
@@ -186,6 +190,13 @@ def cleanMovieFilename(filename):
             name.remove(by)
             name.remove(who)
             md['ripper'] = who
+
+    # subtitles
+    for sub, lang in zip(name[:-1], name[1:]):
+        if sub.lower() == 'sub':
+            name.remove(sub)
+            name.remove(lang)
+            md['subtitleLanguage'] = lang
 
     # get CD number (if any)
     cdrexp = re.compile('[Cc][Dd]([0-9]+)')
