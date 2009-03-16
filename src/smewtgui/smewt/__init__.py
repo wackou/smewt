@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from base import SmewtDict, ValidatingSmewtDict, SmewtException, SmewtUrl, SolvingChain, BlockingChain, cachedmethod, EventServer, Graph
+from base import SmewtDict, ValidatingSmewtDict, SmewtException, SmewtUrl, SolvingChain, BlockingChain, cachedmethod, EventServer, Graph, utils, textutils
 from base.mediaobject import Media, Metadata
 
 import logging
