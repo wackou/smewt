@@ -21,7 +21,7 @@
 
 # regexps-related functions
 import re
-from base import SmewtException
+from smewtexception import SmewtException
 
 def matchRegexp(string, regexp):
     """Tries to match the given string against the regexp (using named match groups)
