@@ -31,7 +31,7 @@ import imdb
 from smewt.base.textutils import stripBrackets
 
 class IMDBMetadataProvider(QObject):
-    def __init__(self, movie):
+    def __init__(self, movie, metadata):
         super(IMDBMetadataProvider, self).__init__()
 
         '''
@@ -39,16 +39,17 @@ class IMDBMetadataProvider(QObject):
             raise SmewtException("IMDBMetadataProvider: Episode doesn't contain 'series' field: %s", md)
             '''
 
-        self.movie = movie
+        self.movieName = movie
+        self.metadata = metadata
         self.imdb = imdb.IMDb()
 
     @cachedmethod
-    def getSerie(self, name):
+    def getMovie(self, name):
         results = self.imdb.search_movie(name)
         for r in results:
             if r['kind'] == 'tv series' or r['kind'] == 'tv mini series':
                 return r
-        raise SmewtException("EpisodeIMDB: Could not find series '%s'" % name)
+        raise SmewtException("EpisodeIMDB: Could not find movie '%s'" % name)
 
     def forwardData(self, d, dname, ep, epname):
         try:
@@ -56,36 +57,15 @@ class IMDBMetadataProvider(QObject):
         except: pass
 
     @cachedmethod
-    def getEpisodes(self, series):
-        self.imdb.update(series, 'episodes')
-        eps = []
-        # FIXME: find a better way to know whether there are episodes or not
-        try:
-            series['episodes']
-        except:
-            return []
-
-        # TODO: debug to see if this is the correct way to access the series' title
-        smewtSeries = Series({ 'title': series['title'] })
-        for season in series['episodes']:
-            for epNumber, episode in series['episodes'][season].items():
-                ep = Episode({ 'series': smewtSeries })
-                try:
-                    ep['season'] = season
-                    ep['episodeNumber'] = epNumber
-                except:
-                    # episode could not be entirely identified, what to do?
-                    # can happen with 'unaired pilot', for instance, which has episodeNumber = 'unknown'
-                    continue # just ignore this episode for now
-
-                self.forwardData(ep, 'title', episode, 'title')
-                self.forwardData(ep, 'synopsis', episode, 'plot')
-                self.forwardData(ep, 'originalAirDate', episode, 'original air date')
-                eps.append(ep)
-        return eps
+    def getMovieData(self, movieImdb):
+        self.imdb.update(movieImdb)
+        movie = Movie({ 'title': movieImdb['title'],
+                        'year': movieImdb['year']
+                        })
+        return movie
 
     @cachedmethod
-    def getSeriesPoster(self, seriesID):
+    def getMoviePoster(self, seriesID):
         # FIXME: big hack!
         import os
         imageDir = os.getcwd()+'/smewt/media/series/images'
@@ -116,20 +96,18 @@ class IMDBMetadataProvider(QObject):
 
 
     def start(self):
-        name = self.episode['series']['title']
         try:
-            serie = self.getSerie(name)
-            eps = self.getEpisodes(serie)
-            lores, hires = self.getSeriesPoster(serie.movieID)
-            if eps:
-                eps[0]['series']['loresImage'] = lores
-                eps[0]['series']['hiresImage'] = hires
+            movieImdb = self.getMovie(self.movieName)
+            movie = self.getMovieData(movieImdb)
+            lores, hires = self.getMoviePoster(movieImdb.movieID)
+            movie['loresImage'] = lores
+            movie['hiresImage'] = hires
 
-            self.emit(SIGNAL('finished'), self.episode, eps)
+            self.emit(SIGNAL('finished'), self.movieName, movie)
 
         except Exception, e:
-            logging.warning(str(e) + ' -- ' + str(self.episode))
-            self.emit(SIGNAL('finished'), self.episode, [])
+            logging.warning(str(e) + ' -- ' + str(self.movieName))
+            self.emit(SIGNAL('finished'), self.movieName, [])
 
 
 def cleanMovieFilename(filename):
@@ -226,14 +204,15 @@ class MovieIMDB(Guesser):
 
         name, md = cleanMovieFilename(movie.filename)
 
-        self.mdprovider = IMDBMetadataProvider(name)
+        self.mdprovider = IMDBMetadataProvider(name, md)
         self.connect(self.mdprovider, SIGNAL('finished'),
                      self.queryFinished)
         self.mdprovider.start()
 
-    def queryFinished(self, ep, guesses):
+    def queryFinished(self, name, guesses):
         del self.mdprovider # why is that useful again?
 
+        # TODO: should we set self.query = guesses here?
         self.query += guesses
 
         self.emit(SIGNAL('finished'), self.query)
