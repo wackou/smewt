@@ -195,8 +195,7 @@ def cleanMovieFilename(filename):
         except AttributeError:
             pass
 
-    print 'found md=', md
-    return ' '.join(name)
+    return (' '.join(name), md)
 
 
 
@@ -213,7 +212,7 @@ class MovieIMDB(Guesser):
         movie = query.findOne(Video)
         # if valid movie
 
-        name = cleanMovieFilename(movie.filename)
+        name, md = cleanMovieFilename(movie.filename)
 
         self.mdprovider = IMDBMetadataProvider(name)
         self.connect(self.mdprovider, SIGNAL('finished'),
