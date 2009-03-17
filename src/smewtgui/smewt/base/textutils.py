@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# string cleaning related functions
 def stripBrackets(s):
     if not s:
         return s
@@ -25,3 +26,101 @@ def stripBrackets(s):
     if s[0] == '(' and s[-1] == ')': return s[1:-1]
     if s[0] == '{' and s[-1] == '}': return s[1:-1]
     return s
+
+
+# regexps-related functions
+import re
+from smewtexception import SmewtException
+
+def matchRegexp(string, regexp):
+    """Tries to match the given string against the regexp (using named match groups)
+    and raises a SmewtException if it didn't match."""
+    match = re.compile(regexp, re.IGNORECASE | re.DOTALL).search(string)
+    if match:
+        return match.groupdict()
+    raise SmewtException("'%s' Does not match regexp '%s'" % (string, regexp))
+
+def matchAllRegexp(string, regexps):
+    """Matches the string against a list of regexps (using named match groups) and
+    returns a list of all found matches."""
+    result = []
+    for regexp in regexps:
+        s = string
+        rexp = re.compile(regexp, re.IGNORECASE)
+        match = rexp.search(s)
+        while match:
+            result.append(match.groupdict())
+            s = s[match.span()[1]:]
+            match = rexp.search(s)
+    return result
+
+def matchAnyRegexp(string, regexps):
+    """Matches the string against a list of regexps (using named match groups) and
+    returns the first match it could find, None if not found."""
+    for regexp in regexps:
+        result = re.compile(regexp, re.IGNORECASE).search(string)
+        if result:
+            return result.groupdict()
+    return None
+
+def multipleMatchRegexp(string, regexp):
+    """Matches the given string against the regexp (using named match groups) and returns
+    a list of all found matches in the string"""
+    rexp = re.compile(regexp, re.IGNORECASE | re.DOTALL)
+    result = []
+    while True:
+        match = rexp.search(string)
+        if match:
+            result += [ match.groupdict() ]
+            # keep everything after what's been matched, and try to match again
+            string = string[match.end(match.lastindex):]
+        else:
+            return result
+
+
+#string-related functions
+def toUtf8(o):
+    '''converts all unicode strings found in the given object to utf-8 strings'''
+    if isinstance(o, unicode):
+        return o.encode('utf-8')
+    elif isinstance(o, list):
+        return [ toUtf8(i) for i in o ]
+    elif isinstance(o, dict):
+        result = {}
+        for key, value in o.items():
+            result[toUtf8(key)] = toUtf8(value)
+        return result
+
+    else:
+        return o
+
+
+def levenshtein(a, b):
+    if not a: return len(b)
+    if not b: return len(a)
+
+    m = len(a)
+    n = len(b)
+    d = []
+    for i in range(m+1):
+        d.append([0] * (n+1))
+
+    for i in range(m+1):
+        d[i][0] = i
+
+    for j in range(n+1):
+        d[0][j] = j
+
+    for i in range(1, m+1):
+        for j in range(1, n+1):
+            if a[i-1] == b[j-1]:
+                cost = 0
+            else:
+                cost = 1
+
+            d[i][j] = min(d[i-1][j] + 1,     # deletion
+                          d[i][j-1] + 1,     # insertion
+                          d[i-1][j-1] + cost # substitution
+                          )
+
+    return d[m][n]

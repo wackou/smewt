@@ -20,7 +20,7 @@
 #
 
 from smewt.guessers.guesser import Guesser
-from smewt import utils
+from smewt import utils, textutils
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import sys
@@ -52,7 +52,7 @@ class EpisodeFilename(Guesser):
                   ]
 
         for n in name:
-            for match in utils.matchAllRegexp(n, rexps):
+            for match in textutils.matchAllRegexp(n, rexps):
                 result = Episode()
                 result.confidence = 1.0
                 for key, value in match.items():
@@ -79,9 +79,9 @@ class EpisodeFilename(Guesser):
 
         # heuristic 2: try to guess the serie title from the parent directory!
         result = Episode()
-        if utils.matchAnyRegexp(name[1], [ 'season (?P<season>[0-9]+)',
-                                           # TODO: need to find a better way to have language packs for regexps
-                                           'saison (?P<season>[0-9]+)' ]):
+        if textutils.matchAnyRegexp(name[1], [ 'season (?P<season>[0-9]+)',
+                                               # TODO: need to find a better way to have language packs for regexps
+                                               'saison (?P<season>[0-9]+)' ]):
             s = query.findOrCreate(Series, title = name[2])
             result['series'] = s
             result.confidence = 0.8
