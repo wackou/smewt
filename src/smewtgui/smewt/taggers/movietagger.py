@@ -45,6 +45,7 @@ class MovieTagger(Tagger):
         logging.debug('Finished tagging: %s', media)
         if not media.metadata:
             logging.warning('Could not find any tag for: %s' % media)
+            media.metadata = None
 
         self.emit(SIGNAL('tagFinished'), media)
 

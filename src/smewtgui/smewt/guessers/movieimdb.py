@@ -61,8 +61,19 @@ class IMDBMetadataProvider(QObject):
     def getMovieData(self, movieImdb):
         self.imdb.update(movieImdb)
         movie = Movie({ 'title': movieImdb['title'],
-                        'year': movieImdb['year']
+                        'year': movieImdb['year'],
+                        'rating': movieImdb['rating'],
+                        'director': [ unicode(p) for p in movieImdb['director'] ],
+                        'writer': [ unicode(p) for p in movieImdb['writer'] ],
+                        'genres': [ unicode(p) for p in movieImdb['genres'] ],
+                        'plot': movieImdb['plot'],
+                        'plotOutline': movieImdb['plot outline'],
                         })
+        try:
+            movie['cast'] = [ (unicode(p), unicode(p.currentRole)) for p in movieImdb['cast'][:15] ]
+        except:
+            movie['cast'] = []
+
         return movie
 
     @cachedmethod
@@ -114,24 +125,49 @@ class IMDBMetadataProvider(QObject):
 def cleanMovieFilename(filename):
     import os.path
     filename = os.path.basename(filename)
+    md = {}
 
+    # TODO: fix those cases
+    # - DVDRip.Xvid-$(grpname) should be automatically guessed
+
+    # first apply specific methods which are very strict but have a very high confidence
+
+    # DVDRip.Xvid-$(grpname)
+    grpnames = [ '\.Xvid-(?P<releaseGroup>.*?)\.',
+                 '\.DviX-(?P<releaseGroup>.*?)\.'
+                 ]
+    for match in utils.matchAllRegexp(filename, grpnames):
+        for key, value in match.items():
+            md[key] = value
+            filename = filename.replace(value, '')
+
+
+    # remove punctuation for looser matching now
     seps = [ ' ', '-', '.', '_' ]
     for sep in seps:
         filename = filename.replace(sep, ' ')
 
+    remove = [ '[', ']', '(', ')' ]
+    for rem in remove:
+        filename = filename.replace(rem, '')
+
     name = filename.split(' ')
 
-    properties = { 'format': [ 'DVDRip', 'HDDVD', 'BDRip', 'R5' ],
+
+    properties = { 'format': [ 'DVDRip', 'HDDVD', 'BDRip', 'R5', 'HDRip', 'DVD', 'Rip' ],
                    'container': [ 'avi', 'mkv', 'ogv', 'wmv', 'mp4', 'mov' ],
                    'screenSize': [ '720p' ],
                    'videoCodec': [ 'XviD', 'DivX', 'x264' ],
                    'audioCodec': [ 'AC3', 'DTS', 'AAC' ],
                    'language': [ 'english', 'eng',
                                  'spanish', 'esp',
+                                 'italian',
                                  'vo', 'vf'
                                  ],
-                   'releaseGroup': [ 'ESiR', 'WAF', 'SEPTiC', '[XCT]', 'iNT', 'PUKKA', 'CHD' ],
-                   'other': [ '5ch', 'PROPER', 'REPACK',
+                   'releaseGroup': [ 'ESiR', 'WAF', 'SEPTiC', '[XCT]', 'iNT', 'PUKKA', 'CHD', 'ViTE', 'DiAMOND', 'TLF',
+                                     'DEiTY', 'FLAiTE', 'MDX', 'GM4F', 'DVL', 'SVD', 'iLUMiNADOS', ' FiNaLe', 'UnSeeN' ],
+                   'other': [ '5ch', 'PROPER', 'REPACK', 'LIMITED', 'DualAudio', 'iNTERNAL',
+                              'classic', # not so sure about this one, could appear in a title
                               'ws', # widescreen
                               ],
                    }
@@ -139,8 +175,6 @@ def cleanMovieFilename(filename):
     # ensure they're all lowercase
     for prop, value in properties.items():
         properties[prop] = [ s.lower() for s in value ]
-
-    md = {}
 
     # get specific properties
     for prop, value in properties.items():
@@ -189,11 +223,22 @@ def cleanMovieFilename(filename):
     name = ' '.join(name)
 
     # last chance on the full name: try some popular regexps
-    rexps = [ '(?P<dircut>director\'s cut)' ]
+    general = [ '(?P<dircut>director\'s cut)',
+                '(?P<edition>edition collector)' ]
+    websites = [ 'sharethefiles.com' ]
+    websites = [ '(?P<website>%s)' % w.replace('.', ' ') for w in websites ] # dots have been previously converted to spaces
+    rexps = general + websites
+
     matched = utils.matchAllRegexp(name, rexps)
     for match in matched:
         for key, value in match.items():
             name = name.replace(value, '')
+
+    # try website names
+    # TODO: generic website url guesser
+    websites = [ 'sharethefiles.com' ]
+
+
 
     # remove leftover tokens
     name = name.replace('()', '')

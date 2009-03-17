@@ -10,6 +10,9 @@ seasons = defaultdict(lambda: [])
 movie = movieData.findAll(Movie)[0]
 movieName = movie['title']
 poster = movie['loresImage']
+director = ', '.join(movie['director'])
+writer = ', '.join(movie['writer'])
+genres = ', '.join(movie['genres'])
 englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': movieName, 'language': 'en' })
 frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': movieName, 'language': 'fr' })
 
@@ -51,10 +54,27 @@ import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'movie')
 
 <div class="tabber">
   <div class="tabbertab">
-  <h2>Movie Data</h2>
-  <p>
-    year: $movie.year
-  </p>
+    <h2>Overview</h2>
+    <p><b>year:</b> $movie.year</p>
+    <p><b>rating:</b> $movie.rating</p>
+    <p><b>director:</b> $director</p>
+    <p><b>writer:</b> $writer</p>
+    <p><b>genres:</b> $genres</p>
+    <p><b>plot outline:</b> $movie.plotOutline</p>
+    <p><b>plot:</b> $movie.plot[0]</p>
+    #if len($movie.plot) > 1:
+      <p><b>detailed plot:</b> $movie.plot[1]</p>
+    #end if
+  </div>
+
+  <div class="tabbertab">
+    <h2>Cast</h2>
+    #for person, role in $movie.cast
+      <p>$person  ---  $role</p>
+    #end for
+    <p></p>
+  </div>
+
 </div>
 
 
