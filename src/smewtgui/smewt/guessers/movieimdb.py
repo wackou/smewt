@@ -20,7 +20,7 @@
 
 from smewt import config, cachedmethod, utils, SmewtException, Graph, Media
 from smewt.guessers.guesser import Guesser
-from smewt.media.series import Episode, Series
+from smewt.media.movie import Movie
 
 from PyQt4.QtCore import SIGNAL, QObject, QUrl
 from PyQt4.QtWebKit import QWebView
@@ -47,7 +47,7 @@ class IMDBMetadataProvider(QObject):
     def getMovie(self, name):
         results = self.imdb.search_movie(name)
         for r in results:
-            if r['kind'] == 'tv series' or r['kind'] == 'tv mini series':
+            if r['kind'] == 'movie':
                 return r
         raise SmewtException("EpisodeIMDB: Could not find movie '%s'" % name)
 
@@ -185,7 +185,21 @@ def cleanMovieFilename(filename):
         except AttributeError:
             pass
 
-    return (' '.join(name), md)
+    name = ' '.join(name)
+
+    # last chance on the full name: try some popular regexps
+    rexps = [ '(?P<dircut>director\'s cut)' ]
+    matched = utils.matchAllRegexp(name, rexps)
+    for match in matched:
+        for key, value in match.items():
+            name = name.replace(value, '')
+
+    # remove leftover tokens
+    name = name.replace('()', '')
+    name = name.replace('[]', '')
+
+
+    return (name, md)
 
 
 
@@ -198,8 +212,8 @@ class MovieIMDB(Guesser):
         self.checkValid(query)
         self.query = query
 
-        logging.debug('MovieImdb: finding more info on %s' % query.findAll(Video))
-        movie = query.findOne(Video)
+        logging.debug('MovieImdb: finding more info on %s' % query.findAll(Media))
+        movie = query.findOne(Media)
         # if valid movie
 
         name, md = cleanMovieFilename(movie.filename)

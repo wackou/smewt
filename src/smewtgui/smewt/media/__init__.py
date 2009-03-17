@@ -19,3 +19,4 @@
 #
 
 from series import *
+from movie import *
