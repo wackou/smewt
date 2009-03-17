@@ -20,7 +20,7 @@
 
 from smewt import Media, Metadata
 from smewt.solvers.solver import Solver
-from smewt.utils import levenshtein
+from smewt.base.utils import levenshtein
 import copy
 import logging
 

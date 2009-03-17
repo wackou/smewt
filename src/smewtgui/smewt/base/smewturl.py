@@ -21,7 +21,7 @@
 from smewtexception import SmewtException
 from urlparse import ParseResult, urlparse, urlunparse
 from urllib import urlencode, unquote_plus
-from smewt import utils
+import utils
 
 class SmewtUrl:
     def __init__(self, type=None, path=None, args = {}, url = None):

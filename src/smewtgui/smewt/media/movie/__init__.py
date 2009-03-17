@@ -19,3 +19,4 @@
 #
 
 from movieobject import Movie
+import view

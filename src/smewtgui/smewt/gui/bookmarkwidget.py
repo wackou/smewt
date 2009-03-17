@@ -38,7 +38,10 @@ class BookmarkWidget(QPushButton):
 class BookmarkListWidget(QWidget):
     def __init__(self):
         super(BookmarkListWidget, self).__init__()
-        self.bookmarks = {'All Series': (SmewtUrl('media', 'series/all'),
+        self.bookmarks = { 'All Series': (SmewtUrl('media', 'series/all'),
+                                          'smewt/icons/applications-multimedia.png'),
+
+                           'All Movies': (SmewtUrl('media', 'movie/all'),
                                          'smewt/icons/applications-multimedia.png')
                           }
 

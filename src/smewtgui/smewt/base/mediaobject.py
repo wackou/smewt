@@ -21,7 +21,7 @@
 
 from smewtdict import SmewtDict, ValidatingSmewtDict
 from smewtexception import SmewtException
-from smewt.utils import toUtf8
+from utils import toUtf8
 
 # This file contains the 2 base MediaObject types used in Smewt:
 #  - Media: is the type used to represent physical files on the hard disk.

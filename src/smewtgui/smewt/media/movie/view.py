@@ -18,5 +18,25 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from serieobject import Episode, Series
-import view
+from Cheetah.Template import Template
+
+
+# all the logic of rendering should be contained in the template
+# we shall always pass only a list of the basic media object
+# (eg for series, we have SerieObject, EpisodeObject, SeasonObject...
+#  but the base type is EpisodeObject (a single file)
+#  That means that if the view should represent a list of all
+#  the series available, it needs to do its groupby by itself)
+def render(name, metadata):
+
+    if name == 'all':
+        t = Template(file = 'smewt/media/movie/view_all_movies.tmpl',
+                     searchList = { 'movies': metadata })
+    else:
+        return 'Invalid view name'
+
+    return t.respond()
+
+
+
+

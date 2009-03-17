@@ -20,12 +20,12 @@
 #
 
 from smewt import SmewtException, SmewtUrl, Graph, Media, Metadata
-from smewt.media import Series, Episode
+from smewt.media import Series, Episode, Movie
 from smewt.importer import Importer
 from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings
 from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QSizePolicy
 from PyQt4.QtWebKit import QWebView, QWebPage
-from smewt.media.series import view
+from smewt.media import series, movie
 from bookmarkwidget import BookmarkListWidget
 import logging
 from os.path import join, dirname, splitext
@@ -166,24 +166,36 @@ class MainWidget(QWidget):
     def refreshCollectionView(self):
         surl = self.smewtUrl
 
-        if surl.mediaType != 'series':
-            raise SmewtException('MainWidget: Invalid media type: %s' % surl.mediaType)
+        if surl.mediaType == 'series':
 
-        if surl.viewType == 'single':
-            # creates a new graph with all the media related to the given series
-            episodes = self.collection.findAll(Episode, series = Series(surl.args))
-            metadata = Graph()
-            for f in self.collection.findAll(Media):
-                if f.metadata in episodes:
-                    metadata += f
+            if surl.viewType == 'single':
+                # creates a new graph with all the media related to the given series
+                episodes = self.collection.findAll(Episode, series = Series(surl.args))
+                metadata = Graph()
+                for f in self.collection.findAll(Media):
+                    if f.metadata in episodes:
+                        metadata += f
 
-        elif surl.viewType == 'all':
-            metadata = self.collection.findAll(Series)
+            elif surl.viewType == 'all':
+                metadata = self.collection.findAll(Series)
+
+            else:
+                raise SmewtException('Invalid view type: %s' % surl.viewType)
+
+            html = series.view.render(surl.viewType,  metadata)
+
+        elif surl.mediaType == 'movie':
+
+            if surl.viewType == 'all':
+                metadata = self.collection.findAll(Movie)
+
+            else:
+                raise SmewtException('Invalid view type: %s' % surl.viewType)
+
+            html = movie.view.render(surl.viewType,  metadata)
 
         else:
-            raise SmewtException('Invalid view type: %s' % surl.viewType)
-
-        html = view.render(surl.viewType,  metadata)
+            raise SmewtException('MainWidget: Invalid media type: %s' % surl.mediaType)
 
         # display template
         #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))

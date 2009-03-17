@@ -22,7 +22,7 @@
 from PyQt4.QtCore import SIGNAL,  QObject
 from smewt import Media, Graph
 from smewt.media.series import Episode
-from smewt.utils import GlobDirectoryWalker
+from smewt.base.utils import GlobDirectoryWalker
 
 class Importer(QObject):
     def __init__(self, tagger, filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]):

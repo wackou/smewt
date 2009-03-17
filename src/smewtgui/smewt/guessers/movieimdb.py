@@ -69,7 +69,7 @@ class IMDBMetadataProvider(QObject):
     def getMoviePoster(self, seriesID):
         # FIXME: big hack!
         import os
-        imageDir = os.getcwd()+'/smewt/media/series/images'
+        imageDir = os.getcwd()+'/smewt/media/movie/images'
         os.system('mkdir -p "%s"' % imageDir)
 
         loresFilename, hiresFilename = None, None
