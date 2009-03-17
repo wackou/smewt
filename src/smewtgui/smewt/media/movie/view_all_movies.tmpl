@@ -33,7 +33,7 @@ for m in movies:
 
 		<div id="left-side">
       #for m in movies[::2]
-        <div class="series">
+        <div class="movie">
           <img src="file://$m.poster" />
           <a href='$m.url'>$m.title</a>
         </div>
@@ -42,7 +42,7 @@ for m in movies:
 
     <div id="right-side">
       #for m in movies[1::2]
-        <div class="series">
+        <div class="movie">
           <img src="file://$m.poster" />
           <a href='$m.url'>$m.title</a>
         </div>

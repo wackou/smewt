@@ -1,0 +1,62 @@
+#set movieData = $movie
+
+<%
+from collections import defaultdict
+from smewt import SmewtUrl, Media
+from smewt.media import Movie
+
+seasons = defaultdict(lambda: [])
+
+movie = movieData.findAll(Movie)[0]
+movieName = movie['title']
+poster = movie['loresImage']
+englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': movieName, 'language': 'en' })
+frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': movieName, 'language': 'fr' })
+
+playLink = None
+for media in movieData.findAll(Media):
+    if media.type() == 'video':
+        playLink = SmewtUrl('action', 'play', { 'filename': media.filename })
+
+import os, os.path
+# FIXME: this is not the correct way to do it...
+import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'movie')
+%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>single movie display</title>
+<script type="text/javascript" src="file://$(import_dir)/tabber.js"></script>
+<link rel="stylesheet" href="file://$(import_dir)/movies.css" type="text/css">
+</head>
+
+<body>
+#if poster:
+  <img src="file://$poster" />
+#else:
+  <img src="file://$(import_dir)/noposter.png">
+#end if
+
+<div class="rightshifted">
+  <h1>$movieName</h1>
+
+  <a href="$englishSubsLink">Get missing English subtitles</a>
+  <a href="$frenchSubsLink">Get missing French subtitles</a>
+#if playLink:
+  <a href="$playLink">Play Movie</a>
+#end if
+</div>
+
+<div class="tabber">
+  <div class="tabbertab">
+  <h2>Movie Data</h2>
+  <p>
+    year: $movie.year
+  </p>
+</div>
+
+
+</body>
+</html>

@@ -29,7 +29,10 @@ from Cheetah.Template import Template
 #  the series available, it needs to do its groupby by itself)
 def render(name, metadata):
 
-    if name == 'all':
+    if name == 'single':
+        t = Template(file = 'smewt/media/movie/view_movie.tmpl',
+                     searchList = { 'movie': metadata })
+    elif name == 'all':
         t = Template(file = 'smewt/media/movie/view_all_movies.tmpl',
                      searchList = { 'movies': metadata })
     else:

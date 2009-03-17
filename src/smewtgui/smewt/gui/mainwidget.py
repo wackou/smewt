@@ -186,7 +186,15 @@ class MainWidget(QWidget):
 
         elif surl.mediaType == 'movie':
 
-            if surl.viewType == 'all':
+            if surl.viewType == 'single':
+                # creates a new graph with all the media related to the given series
+                movieMD = self.collection.findAll(Movie, title = surl.args['title'])[0]
+                metadata = Graph()
+                for f in self.collection.findAll(Media):
+                    if f.metadata == movieMD:
+                        metadata += f
+
+            elif surl.viewType == 'all':
                 metadata = self.collection.findAll(Movie)
 
             else:

@@ -19,7 +19,7 @@
 }
 
 /**** smewt style rules *****************************************/
-/**** for all series view                                      **/
+/**** for all movies view                                      **/
 #wrapper {
  text-align: left;
  margin: 0px auto;
@@ -50,7 +50,7 @@
  height: 1% /* Holly hack for Peekaboo Bug */
 }
 
-.series {
+.movie {
  height: 90px;
  border: 1px solid #778;
  background-color: #F0F0F0;
@@ -58,7 +58,7 @@
  margin-left: 0px;
 }
 
-.series img {
+.movie img {
  position: relative;
  top: 5px;
  left: 5px;
@@ -66,7 +66,7 @@
  float: left;
 }
 
-.series a {
+.movie a {
  text-decoration: none;
  font: bold 24px Verdana, sans-serif;
  color: #448;
@@ -79,7 +79,7 @@
 
 
 /**** smewt style rules *****************************************/
-/**** for single series view                                   **/
+/**** for single movie view                                    **/
 img {
  position: absolute;
  top: 10px;
@@ -119,9 +119,6 @@ h1 {
 
 .tabberlive .tabbertab {
  color: #7F7F7F;
-}
-
-.tabberlive .tabbertab .episode {
  font: 16px Verdana, sans-serif;
  margin-left: 3px;
  border: 1px solid #778;
@@ -130,7 +127,7 @@ h1 {
  background-color: #F0F0F0;
 }
 
-.tabberlive .tabbertab .episode p {
+.tabberlive .tabbertab p {
  color: #000000;
  padding: 0px;
  margin: 0px;
@@ -138,13 +135,13 @@ h1 {
 }
 
 
-.tabberlive .tabbertab .episode a {
+.tabberlive .tabbertab a {
  text-decoration: none;
  font-weight: bold;
  color: #448;
 }
 
-.tabberlive .tabbertab .episode a:hover {
+.tabberlive .tabbertab a:hover {
  text-decoration: underline;
 }
 
