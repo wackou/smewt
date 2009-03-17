@@ -45,6 +45,7 @@ class IMDBMetadataProvider(QObject):
 
     @cachedmethod
     def getMovie(self, name):
+        logging.debug('MovieIMDB: looking for movie %s', name)
         results = self.imdb.search_movie(name)
         for r in results:
             if r['kind'] == 'movie':
@@ -114,7 +115,7 @@ def cleanMovieFilename(filename):
     import os.path
     filename = os.path.basename(filename)
 
-    seps = [ ' ', '-', '.' ]
+    seps = [ ' ', '-', '.', '_' ]
     for sep in seps:
         filename = filename.replace(sep, ' ')
 
@@ -223,10 +224,11 @@ class MovieIMDB(Guesser):
                      self.queryFinished)
         self.mdprovider.start()
 
-    def queryFinished(self, name, guesses):
+    def queryFinished(self, name, guess):
         del self.mdprovider # why is that useful again?
 
         # TODO: should we set self.query = guesses here?
-        self.query += guesses
+        self.query.findOne(Media).metadata = guess
+        self.query += guess
 
         self.emit(SIGNAL('finished'), self.query)

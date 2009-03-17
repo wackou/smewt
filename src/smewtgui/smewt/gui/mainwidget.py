@@ -29,6 +29,8 @@ from smewt.media.series import view
 from bookmarkwidget import BookmarkListWidget
 import logging
 from os.path import join, dirname, splitext
+from smewt.taggers import EpisodeTagger, MovieTagger
+
 
 class MainWidget(QWidget):
     def __init__(self):
@@ -36,11 +38,14 @@ class MainWidget(QWidget):
 
         backButton = QPushButton('Back')
         folderImportButton = QPushButton('Import folder...')
+        movieFolderImportButton = QPushButton('Import movie folder...')
 
         self.connect(backButton, SIGNAL('clicked()'),
                      self.back)
         self.connect(folderImportButton, SIGNAL('clicked()'),
                      self.importFolder)
+        self.connect(movieFolderImportButton, SIGNAL('clicked()'),
+                     self.importMovieFolder)
 
         self.collection = Graph()
         self.connect(self.collection, SIGNAL('updated'),
@@ -58,6 +63,7 @@ class MainWidget(QWidget):
         toolbar.addWidget(backButton)
         toolbar.addStretch(1)
         toolbar.addWidget(folderImportButton)
+        toolbar.addWidget(movieFolderImportButton)
 
         navigation = QHBoxLayout()
 
@@ -132,11 +138,19 @@ class MainWidget(QWidget):
                                                             QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
 
         if filename:
-            self.importSingleFolder(filename)
+            self.importSingleFolder(filename, EpisodeTagger(), filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ])
 
-    def importSingleFolder(self, path):
+    def importMovieFolder(self):
+        filename = unicode(QFileDialog.getExistingDirectory(self, 'Select directory to import', '/data/Movies/',
+                                                            QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
+
+        if filename:
+            self.importSingleFolder(filename, MovieTagger(), filetypes = [ '*.avi', '*.mkv' ])
+
+
+    def importSingleFolder(self, path, tagger, filetypes):
         if self.importer is None:
-            self.importer = Importer()
+            self.importer = Importer(tagger = tagger, filetypes = filetypes)
             self.connect(self.importer, SIGNAL('importFinished'), self.mergeCollection)
             self.connect(self.importer, SIGNAL('progressChanged'), self.progressChanged)
 

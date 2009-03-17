@@ -25,20 +25,19 @@ from smewt.media.series import Episode
 from smewt.utils import GlobDirectoryWalker
 
 class Importer(QObject):
-    def __init__(self):
+    def __init__(self, tagger, filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]):
         super(Importer, self).__init__()
 
         self.taggingQueue = []
-        from smewt.taggers.episodetagger import EpisodeTagger
-        self.tagger = EpisodeTagger()
+        self.tagger = tagger
+        self.filetypes = filetypes
         self.results = Graph()
         self.tagCount = 0
         self.state = 'stopped'
         self.connect(self.tagger, SIGNAL('tagFinished'), self.tagged)
 
     def importFolder(self,  folder):
-        filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ] # video files
-        for filename in GlobDirectoryWalker(folder, filetypes):
+        for filename in GlobDirectoryWalker(folder, self.filetypes):
             mediaObject = Media(filename)
             self.taggingQueue.append(mediaObject)
 
@@ -53,7 +52,7 @@ class Importer(QObject):
     def tagNext(self):
         if self.taggingQueue:
             next = self.taggingQueue.pop()
-            #print 'Collection: Tagging ''%s''' % next
+            #print 'Collection: Tagging ''%s'' %s' % (next, self.tagger.__class__)
             self.tagger.tag(next)
             self.emit(SIGNAL('progressChanged'),  self.tagCount - len(self.taggingQueue),  self.tagCount)
         else:
