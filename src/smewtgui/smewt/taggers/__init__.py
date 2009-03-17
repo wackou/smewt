@@ -19,3 +19,4 @@
 #
 
 from episodetagger import EpisodeTagger
+from movietagger import MovieTagger
