@@ -38,7 +38,7 @@ class MainWidget(QWidget):
         super(MainWidget, self).__init__()
 
         backButton = QPushButton('Back')
-        folderImportButton = QPushButton('Import folder...')
+        folderImportButton = QPushButton('Import series folder...')
         movieFolderImportButton = QPushButton('Import movie folder...')
 
         self.connect(backButton, SIGNAL('clicked()'),
