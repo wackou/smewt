@@ -27,6 +27,8 @@ from smewt import Graph, SolvingChain, Media, Metadata
 from smewt.media import Movie
 import logging
 
+log = logging.getLogger('smewt.taggers.movietagger')
+
 class MovieTagger(Tagger):
     def __init__(self):
         super(MovieTagger, self).__init__()
@@ -42,9 +44,9 @@ class MovieTagger(Tagger):
 
     def solved(self, result):
         media = result.findOne(Media)
-        logging.debug('Finished tagging: %s', media)
+        log.debug('Finished tagging: %s', media)
         if not media.metadata:
-            logging.warning('Could not find any tag for: %s' % media)
+            log.warning('Could not find any tag for: %s' % media)
             media.metadata = None
 
         self.emit(SIGNAL('tagFinished'), media)

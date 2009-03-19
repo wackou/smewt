@@ -31,6 +31,7 @@ import logging
 from os.path import join, dirname, splitext
 from smewt.taggers import EpisodeTagger, MovieTagger
 
+log = logging.getLogger('smewt.gui.mainwidget')
 
 class MainWidget(QWidget):
     def __init__(self):
@@ -87,7 +88,7 @@ class MainWidget(QWidget):
         try:
             self.collection.load(t)
         except:
-            logging.warning('Could not load collection %s', t)
+            log.warning('Could not load collection %s', t)
             raise
 
         self.setLayout(layout)
@@ -210,13 +211,13 @@ class MainWidget(QWidget):
         self.collectionView.page().mainFrame().setHtml(html)
 
     def linkClicked(self,  url):
-        logging.info('clicked on link %s', url)
+        log.info('clicked on link %s', url)
         url = url.toEncoded()
 
         if url.startsWith('file://'):
             action = 'smplayer'
             args = [ str(url)[7:] ]
-            logging.debug('launching %s with args = %s', (action, args))
+            log.debug('launching %s with args = %s', (action, args))
             self.externalProcess.start(action, args)
 
         elif url.startsWith('smewt://'):
@@ -230,7 +231,7 @@ class MainWidget(QWidget):
                 if surl.actionType == 'play':
                     action = 'smplayer'
                     args = [ surl.args['filename'] ]
-                    logging.debug('launching %s with args = %s', (action, args))
+                    log.debug('launching %s with args = %s', (action, args))
                     self.externalProcess.start(action, args)
 
                 if surl.actionType == 'getsubtitles':
@@ -255,7 +256,7 @@ class MainWidget(QWidget):
                         if foundSubs: continue
 
                         episode = video.metadata
-                        logging.info('MainWidget: trying to download subs for %s' % episode)
+                        log.info('MainWidget: trying to download subs for %s' % episode)
                         tvsub.downloadSubtitle(subsBasename, episode['series']['title'],
                                                episode['season'], episode['episodeNumber'], language,
                                                video.filename)

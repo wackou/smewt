@@ -29,6 +29,8 @@ import sys, re, logging
 from urllib import urlopen,  urlencode
 import imdb
 
+log = logging.getLogger('smewt.base.episodeimdb')
+
 
 class IMDBMetadataProvider(QObject):
     def __init__(self, episode):
@@ -126,7 +128,7 @@ class IMDBMetadataProvider(QObject):
             self.emit(SIGNAL('finished'), self.episode, eps)
 
         except Exception, e:
-            logging.warning(str(e) + ' -- ' + str(self.episode))
+            log.warning(str(e) + ' -- ' + str(self.episode))
             self.emit(SIGNAL('finished'), self.episode, [])
 
 
@@ -139,7 +141,7 @@ class EpisodeIMDB(Guesser):
         self.checkValid(query)
         self.query = query
 
-        logging.debug('EpisodeImdb: finding more info on %s' % query.findAll(Episode))
+        log.debug('EpisodeImdb: finding more info on %s' % query.findAll(Episode))
         ep = query.findOne(Episode)
         if ep['series']:
             # little hack: if we have no season number, add 1 as default season number
@@ -153,7 +155,7 @@ class EpisodeIMDB(Guesser):
             self.mdprovider.start()
 
         else:
-            logging.warning("EpisodeIMDB: Episode doesn't contain 'series' field: %s", ep)
+            log.warning("EpisodeIMDB: Episode doesn't contain 'series' field: %s", ep)
             self.emit(SIGNAL('finished'), self.query)
 
 

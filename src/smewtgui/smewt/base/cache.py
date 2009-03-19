@@ -19,6 +19,9 @@
 #
 
 import cPickle
+import logging
+
+log = logging.getLogger('smewt.base.cache')
 
 globalCache = {}
 
@@ -27,8 +30,7 @@ def load(filename):
     try:
         globalCache = cPickle.load(open(filename, 'rb'))
     except IOError:
-        import logging
-        logging.warning('Cache: Cache file doesn\'t exist')
+        log.warning('Cache: Cache file doesn\'t exist')
 
 def save(filename):
     cPickle.dump(globalCache, open(filename, 'wb'))

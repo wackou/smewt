@@ -23,6 +23,8 @@ from PyQt4.QtCore import SIGNAL, QObject
 from smewt import Graph, Media, Metadata
 import logging
 
+log = logging.getLogger('smewt.solvers.solver')
+
 class Solver(QObject):
     """Abstract class from which all Solvers must inherit.  Solvers are objects
     that implement a slot called start(self, query) that returns immediately,
@@ -42,7 +44,7 @@ class Solver(QObject):
         if not query.findAll(Metadata):
             raise SmewtException('Solver: not solving anything...')
 
-        logging.debug(self.__class__.__name__ + ' Solver: trying to solve %s', query)
+        log.debug(self.__class__.__name__ + ' Solver: trying to solve %s', query)
 
     def found(self, query, result):
         # TODO: check that result is valid
@@ -51,7 +53,7 @@ class Solver(QObject):
         media.metadata = result
         solved += media # no need to add metadata explicitly because media links to it
 
-        logging.debug('Solver: found for %s: %s', media, result)
+        log.debug('Solver: found for %s: %s', media, result)
 
         self.emit(SIGNAL('finished'), solved)
 

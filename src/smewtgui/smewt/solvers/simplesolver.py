@@ -22,7 +22,6 @@ from smewt import Media, Metadata
 from smewt.solvers.solver import Solver
 from smewt.base.textutils import levenshtein
 import copy
-import logging
 
 
 def exactMatch(baseGuess, md):

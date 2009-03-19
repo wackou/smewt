@@ -23,6 +23,8 @@ from mediaobject import Media, Metadata
 from smewtexception import SmewtException
 import logging, cPickle
 
+log = logging.getLogger('smewt.base.graph')
+
 class Graph(QObject):
     '''This class represents an acyclic directed graph of nodes, where the nodes can either be
     Media or Metadata objects. The links are direct references from one node to the other, and
@@ -192,7 +194,7 @@ class Graph(QObject):
             f = open(filename)
         except:
             # if file is not found, just go on with an empty collection
-            logging.warning('Collection "%s" does not exist' % filename)
+            log.warning('Collection "%s" does not exist' % filename)
             self.nodes = set()
             return
 

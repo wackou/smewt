@@ -28,6 +28,8 @@ from smewt import Graph, SolvingChain, Media, Metadata
 from smewt.media import Episode, Series
 import logging
 
+log = logging.getLogger('smewt.taggers.episodetagger')
+
 class EpisodeTagger(Tagger):
     def __init__(self):
         super(EpisodeTagger, self).__init__()
@@ -45,9 +47,9 @@ class EpisodeTagger(Tagger):
 
     def solved(self, result):
         media = result.findOne(Media)
-        logging.debug('Finished tagging: %s', media)
+        log.debug('Finished tagging: %s', media)
         if not media.metadata:
-            logging.warning('Could not find any tag for: %s' % media)
+            log.warning('Could not find any tag for: %s' % media)
             # we didn't find any info outside of what the filename told us
             media.metadata = self.filenameMetadata
             # try anyway to get the correct series name

@@ -20,7 +20,7 @@
 
 from smewt import config, cachedmethod, utils, SmewtException, Graph, Media
 from smewt.guessers.guesser import Guesser
-from smewt.media.movie import Movie
+from smewt.media import Movie
 
 from PyQt4.QtCore import SIGNAL, QObject, QUrl
 from PyQt4.QtWebKit import QWebView
@@ -29,6 +29,8 @@ import sys, re, logging
 from urllib import urlopen,  urlencode
 import imdb
 from smewt.base.textutils import stripBrackets
+
+log = logging.getLogger('smewt.guessers.movieimdb')
 
 class IMDBMetadataProvider(QObject):
     def __init__(self, movie, metadata):
@@ -45,7 +47,7 @@ class IMDBMetadataProvider(QObject):
 
     @cachedmethod
     def getMovie(self, name):
-        logging.debug('MovieIMDB: looking for movie %s', name)
+        log.debug('MovieIMDB: looking for movie %s', name)
         results = self.imdb.search_movie(name)
         for r in results:
             if r['kind'] == 'movie':
@@ -118,7 +120,7 @@ class IMDBMetadataProvider(QObject):
             self.emit(SIGNAL('finished'), self.movieName, movie)
 
         except Exception, e:
-            logging.warning(str(e) + ' -- ' + str(self.movieName))
+            log.warning(str(e) + ' -- ' + str(self.movieName))
             self.emit(SIGNAL('finished'), self.movieName, [])
 
 
@@ -258,7 +260,7 @@ class MovieIMDB(Guesser):
         self.checkValid(query)
         self.query = query
 
-        logging.debug('MovieImdb: finding more info on %s' % query.findAll(Media))
+        log.debug('MovieImdb: finding more info on %s' % query.findAll(Media))
         movie = query.findOne(Media)
         # if valid movie
 

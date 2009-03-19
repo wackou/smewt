@@ -26,6 +26,8 @@ from PyQt4.QtGui import *
 import sys
 import logging
 
+log = logging.getLogger('smewt.guessers.episodefilename')
+
 from smewt import Media, Metadata
 from smewt.media import Episode, Series
 
@@ -56,7 +58,7 @@ class EpisodeFilename(Guesser):
                 result = Episode()
                 result.confidence = 1.0
                 for key, value in match.items():
-                    logging.debug('Found MD: %s: %s = %s', media.filename, key, value)
+                    log.debug('Found MD: %s: %s = %s', media.filename, key, value)
                     result[key] = value
                 query += result
 
@@ -67,13 +69,13 @@ class EpisodeFilename(Guesser):
             if 'episodeNumber' in md.properties and 'season' in md.properties:
                 niceGuess = md
             if 'episodeNumber' in md.properties and 'season' not in md.properties and md['episodeNumber'] > 1000:
-                logging.debug('Removing unlikely %s', str(md))
+                log.debug('Removing unlikely %s', str(md))
                 query.nodes.remove(md)
         # if we have season+epnumber, remove single epnumber guesses
         if niceGuess:
             for md in query.findAll(Episode):
                 if 'episodeNumber' in md.properties and 'season' not in md.properties:
-                    logging.debug('Removing %s because %s looks better' % (md, niceGuess))
+                    log.debug('Removing %s because %s looks better' % (md, niceGuess))
                     query.nodes.remove(md)
 
 

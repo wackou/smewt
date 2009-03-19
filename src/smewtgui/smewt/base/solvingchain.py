@@ -23,6 +23,8 @@ from smewtexception import SmewtException
 from mediaobject import Media, Metadata
 import logging
 
+log = logging.getLogger('smewt.base.solvingchain')
+
 class SolvingChain(QObject):
     def __init__(self, *args):
         super(SolvingChain, self).__init__()
@@ -53,9 +55,9 @@ class SolvingChain(QObject):
         self.result = result
         media = result.findOne(Media)
         if media.metadata:
-            logging.info('Solving chain for file %s found metadata: %s', str(media), str(media.metadata))
+            log.info('Solving chain for file %s found metadata: %s', str(media), str(media.metadata))
         else:
-            logging.info('Solving chain for file %s didn\'t find any metadata...', str(media))
+            log.info('Solving chain for file %s didn\'t find any metadata...', str(media))
 
         self.emit(SIGNAL('finished'), result)
 
