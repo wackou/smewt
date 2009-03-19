@@ -21,10 +21,12 @@
 import os, os.path, subprocess, logging
 import threading, time
 
-class SentinelThread(threading.Thread):
+log = logging.getLogger('smewt.plugins.amulecommand')
+
+class ProcessTimeout(threading.Thread):
     '''Class that checks that the given process doesn't run for longer than a given number of seconds.'''
     def __init__(self, process, maxSeconds = 5):
-        super(SentinelThread, self).__init__()
+        super(ProcessTimeout, self).__init__()
         self.process = process
         self.maxSeconds = maxSeconds
 
@@ -47,8 +49,8 @@ def recreateAmuleRemoteConf():
         cmd = [ amulecmd, '--create-config-from=' + amuleConf ]
         subprocess.Popen(cmd)
     else:
-        logging.warning('AmuleCommand: you need amule and amulecmd to be installed for aMule integration...')
-        logging.warning('AmuleCommand: on Debian/Ubuntu systems you can find the amulecmd in the "amule-utils" package')
+        log.warning('AmuleCommand: you need amule and amulecmd to be installed for aMule integration...')
+        log.warning('AmuleCommand: on Debian/Ubuntu systems you can find the amulecmd in the "amule-utils" package')
 
 # try to regenerate remote.conf when we import that module
 recreateAmuleRemoteConf()
@@ -61,7 +63,7 @@ class AmuleCommand():
     def download(self, ed2kLink):
         cmd = [ 'amulecmd', '--command=Add %s' % ed2kLink ]
         amuleProc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-        SentinelThread(amuleProc).start()
+        ProcessTimeout(amuleProc, maxSeconds = 5).start()
         amuleReply = amuleProc.stdout.read()
 
         #print 'amule said:', amuleReply
