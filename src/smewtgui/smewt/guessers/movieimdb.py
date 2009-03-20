@@ -28,9 +28,22 @@ from PyQt4.QtWebKit import QWebView
 import sys, re, logging
 from urllib import urlopen,  urlencode
 import imdb
-from smewt.base.textutils import stripBrackets
+from smewt.base import textutils
 
 log = logging.getLogger('smewt.guessers.movieimdb')
+
+class Getter:
+    def __init__(self, md, d):
+        self.md = md
+        self.d = d
+
+    def get(self, name, fromName = None):
+        if not fromName:
+            fromName = name
+        try:
+            self.md[name] = self.d[fromName]
+        except:
+            pass
 
 class IMDBMetadataProvider(QObject):
     def __init__(self, movie, metadata):
@@ -68,9 +81,13 @@ class IMDBMetadataProvider(QObject):
                         'director': [ unicode(p) for p in movieImdb['director'] ],
                         'writer': [ unicode(p) for p in movieImdb['writer'] ],
                         'genres': [ unicode(p) for p in movieImdb['genres'] ],
-                        'plot': movieImdb['plot'],
-                        'plotOutline': movieImdb['plot outline'],
+                        #'plot': movieImdb['plot'],
+                        #'plotOutline': movieImdb['plot outline'],
                         })
+        g = Getter(movie, movieImdb)
+        g.get('plot')
+        g.get('plotOutline', 'plot outline')
+
         try:
             movie['cast'] = [ (unicode(p), unicode(p.currentRole)) for p in movieImdb['cast'][:15] ]
         except:
@@ -168,7 +185,7 @@ def guessXCT(filename):
         md['title'] = title
 
     finally:
-        return filename, md
+        return title, md
 
 def cleanMovieFilename(filename):
     import os.path
@@ -185,7 +202,7 @@ def cleanMovieFilename(filename):
     grpnames = [ '\.Xvid-(?P<releaseGroup>.*?)\.',
                  '\.DviX-(?P<releaseGroup>.*?)\.'
                  ]
-    for match in utils.matchAllRegexp(filename, grpnames):
+    for match in textutils.matchAllRegexp(filename, grpnames):
         for key, value in match.items():
             md[key] = value
             filename = filename.replace(value, '')
@@ -241,7 +258,7 @@ def cleanMovieFilename(filename):
 
 
     for part in list(name):
-        year = stripBrackets(part)
+        year = textutils.stripBrackets(part)
         if validYear(year):
             md['year'] = int(year)
             name.remove(part)
@@ -278,7 +295,7 @@ def cleanMovieFilename(filename):
     websites = [ '(?P<website>%s)' % w.replace('.', ' ') for w in websites ] # dots have been previously converted to spaces
     rexps = general + websites
 
-    matched = utils.matchAllRegexp(name, rexps)
+    matched = textutils.matchAllRegexp(name, rexps)
     for match in matched:
         for key, value in match.items():
             name = name.replace(value, '')
