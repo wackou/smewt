@@ -123,6 +123,52 @@ class IMDBMetadataProvider(QObject):
             log.warning(str(e) + ' -- ' + str(self.movieName))
             self.emit(SIGNAL('finished'), self.movieName, [])
 
+def validYear(year):
+    try:
+        return int(year) > 1920 and int(year) < 2015
+    except ValueError:
+        return False
+
+def guessXCT(filename):
+    if not '[XCT]' in filename:
+        return filename, {}
+
+    filename = filename.replace('[XCT]', '')
+    md = {}
+
+    try:
+        # find metadata
+        mdstr = textutils.matchRegexp(filename, '\[(?P<mdstr>.*?)\]')['mdstr']
+        filename = filename.replace(mdstr, '')
+
+        # find subs
+        subs = textutils.matchRegexp(mdstr, 'St[{\(](?P<subs>.*?)[}\)]')['subs']
+        mdstr.replace(subs, '')
+        md['subs'] = subs.split('-')
+
+        # find audio
+        audio = textutils.matchRegexp(mdstr, 'aac[0-9\.-]*[{\(](?P<audio>.*?)[}\)]')['audio']
+        mdstr.replace(audio, '')
+        md['language'] = audio.split('-')
+
+        # find year: if we found it, then the english title of the movie is either what's inside
+        # the parentheses before the year, or everything before the year
+        title = filename
+        years = [ m['year'] for m in textutils.multipleMatchRegexp(filename, '(?P<year>[0-9]{4})') if validYear(m['year']) ]
+        if len(years) == 1:
+            title = filename[:filename.index(years[0])]
+        elif len(years) >= 2:
+            log.warning('Ambiguous filename: possible years are ' + ', '.join(years))
+
+        try:
+            title = textutils.matchRegexp(title, '\((?P<title>.*?)\)')['title']
+        except:
+            pass
+
+        md['title'] = title
+
+    finally:
+        return filename, md
 
 def cleanMovieFilename(filename):
     import os.path
@@ -133,6 +179,7 @@ def cleanMovieFilename(filename):
     # - DVDRip.Xvid-$(grpname) should be automatically guessed
 
     # first apply specific methods which are very strict but have a very high confidence
+    filename, md = guessXCT(filename)
 
     # DVDRip.Xvid-$(grpname)
     grpnames = [ '\.Xvid-(?P<releaseGroup>.*?)\.',
