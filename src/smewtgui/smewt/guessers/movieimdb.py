@@ -95,7 +95,7 @@ class IMDBMetadataProvider(QObject):
         return movie
 
     @cachedmethod
-    def getMoviePoster(self, seriesID):
+    def getMoviePoster(self, movieID):
         # FIXME: big hack!
         import os
         imageDir = os.getcwd()+'/smewt/media/movie/images'
@@ -104,23 +104,23 @@ class IMDBMetadataProvider(QObject):
         loresFilename, hiresFilename = None, None
 
         try:
-            serieUrl = 'http://www.imdb.com/title/tt' + seriesID
-            html = urlopen(serieUrl).read()
+            movieUrl = 'http://www.imdb.com/title/tt' + movieID
+            html = urlopen(movieUrl).read()
             rexp = '<a name="poster" href="(?P<hiresUrl>[^"]*)".*?src="(?P<loresImg>[^"]*)"'
-            poster = utils.matchRegexp(html, rexp)
-            loresFilename = imageDir + '/%s_lores.jpg' % seriesID
+            poster = textutils.matchRegexp(html, rexp)
+            loresFilename = imageDir + '/%s_lores.jpg' % movieID
             open(loresFilename, 'w').write(urlopen(poster['loresImg']).read())
-        except:
-            pass
+        except Exception, e:
+            log.warning('Could not find lores poster for imdb ID %s because: %s' % (movieID, str(e)))
 
         try:
             html = urlopen('http://www.imdb.com' + poster['hiresUrl']).read()
             rexp = '<table id="principal">.*?src="(?P<hiresImg>[^"]*)"'
-            poster = utils.matchRegexp(html, rexp)
-            hiresFilename = imageDir + '/%s_hires.jpg' % seriesID
+            poster = textutils.matchRegexp(html, rexp)
+            hiresFilename = imageDir + '/%s_hires.jpg' % movieID
             open(hiresFilename, 'w').write(urlopen(poster['hiresImg']).read())
-        except:
-            pass
+        except Exception, e:
+            log.warning('Could not find hires poster for imdb ID %s because: %s' % (movieID, str(e)))
 
         return (loresFilename, hiresFilename)
 
