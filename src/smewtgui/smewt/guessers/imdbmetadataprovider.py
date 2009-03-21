@@ -158,7 +158,7 @@ class IMDBMetadataProvider(QObject):
             open(loresFilename, 'w').write(urlopen(poster['loresImg']).read())
         except Exception, e:
             loresFilename = join(os.getcwd(), 'noposter.png')
-            log.warning('Could not find lores poster for imdb ID %s because: %s' % (imdbID, str(e)))
+            log.warning('Could not find lores poster for imdb ID %s because: %s' % (imdbID, str(e)[:100]))
 
         try:
             html = urlopen('http://www.imdb.com' + poster['hiresUrl']).read()
@@ -168,7 +168,7 @@ class IMDBMetadataProvider(QObject):
             open(hiresFilename, 'w').write(urlopen(poster['hiresImg']).read())
         except Exception, e:
             hiresFilename = join(os.getcwd(), 'noposter.png')
-            log.warning('Could not find hires poster for imdb ID %s because: %s' % (imdbID, str(e)))
+            log.warning('Could not find hires poster for imdb ID %s because: %s' % (imdbID, str(e)[:100]))
 
 
         return (loresFilename, hiresFilename)
