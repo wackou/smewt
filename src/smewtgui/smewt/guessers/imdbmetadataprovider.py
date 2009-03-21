@@ -89,9 +89,6 @@ class IMDBMetadataProvider(QObject):
                     # can happen with 'unaired pilot', for instance, which has episodeNumber = 'unknown'
                     continue # just ignore this episode for now
 
-                #self.forwardData(ep, 'title', episode, 'title')
-                #self.forwardData(ep, 'synopsis', episode, 'plot')
-                #self.forwardData(ep, 'originalAirDate', episode, 'original air date')
                 g = Getter(ep, episode)
                 g.get('title')
                 g.get('synopsis', 'plot')
@@ -109,12 +106,6 @@ class IMDBMetadataProvider(QObject):
                 return r
         raise SmewtException("EpisodeIMDB: Could not find movie '%s'" % name)
 
-    '''
-    def forwardData(self, d, dname, ep, epname):
-        try:
-            d[dname] = ep[epname]
-        except: pass'''
-
     @cachedmethod
     def getMovieData(self, movieImdb):
         self.imdb.update(movieImdb)
@@ -124,8 +115,6 @@ class IMDBMetadataProvider(QObject):
                         'director': [ unicode(p) for p in movieImdb['director'] ],
                         'writer': [ unicode(p) for p in movieImdb['writer'] ],
                         'genres': [ unicode(p) for p in movieImdb['genres'] ],
-                        #'plot': movieImdb['plot'],
-                        #'plotOutline': movieImdb['plot outline'],
                         })
         g = Getter(movie, movieImdb)
         g.get('plot')
