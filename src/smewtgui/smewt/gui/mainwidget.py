@@ -100,7 +100,7 @@ class MainWidget(QWidget):
         self.setSmewtUrl(baseUrl)
 
         self.externalProcess = QProcess()
-        self.importer = None
+        self.importers = {}
 
     def back(self):
         try:
@@ -139,24 +139,24 @@ class MainWidget(QWidget):
                                                             QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
 
         if filename:
-            self.importSingleFolder(filename, EpisodeTagger(), filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ])
+            self.importSingleFolder(filename, EpisodeTagger, filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ])
 
     def importMovieFolder(self):
         filename = unicode(QFileDialog.getExistingDirectory(self, 'Select directory to import', '/data/Movies/',
                                                             QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
 
         if filename:
-            self.importSingleFolder(filename, MovieTagger(), filetypes = [ '*.avi', '*.mkv' ])
+            self.importSingleFolder(filename, MovieTagger, filetypes = [ '*.avi', '*.mkv' ])
 
 
-    def importSingleFolder(self, path, tagger, filetypes):
-        if self.importer is None:
-            self.importer = Importer(tagger = tagger, filetypes = filetypes)
-            self.connect(self.importer, SIGNAL('importFinished'), self.mergeCollection)
-            self.connect(self.importer, SIGNAL('progressChanged'), self.progressChanged)
+    def importSingleFolder(self, path, taggerType, filetypes):
+        if taggerType not in self.importers:
+            self.importers[taggerType] = Importer(tagger = taggerType(), filetypes = filetypes)
+            self.connect(self.importers[taggerType], SIGNAL('importFinished'), self.mergeCollection)
+            self.connect(self.importers[taggerType], SIGNAL('progressChanged'), self.progressChanged)
 
-        self.importer.importFolder(path)
-        self.importer.start()
+        self.importers[taggerType].importFolder(path)
+        self.importers[taggerType].start()
 
     def progressChanged(self,  tagged,  total):
         self.emit(SIGNAL('progressChanged'),  tagged,  total)

@@ -28,11 +28,13 @@ from PyQt4.QtWebKit import QWebView
 import sys, re, logging
 from urllib import urlopen,  urlencode
 import imdb
+from imdbmetadataprovider import IMDBMetadataProvider
 
-log = logging.getLogger('smewt.base.episodeimdb')
+
+log = logging.getLogger('smewt.guessers.episodeimdb')
 
 
-class IMDBMetadataProvider(QObject):
+class IMDBMetadataProviderb(QObject):
     def __init__(self, episode):
         super(IMDBMetadataProvider, self).__init__()
 
@@ -97,7 +99,7 @@ class IMDBMetadataProvider(QObject):
             serieUrl = 'http://www.imdb.com/title/tt' + seriesID
             html = urlopen(serieUrl).read()
             rexp = '<a name="poster" href="(?P<hiresUrl>[^"]*)".*?src="(?P<loresImg>[^"]*)"'
-            poster = utils.matchRegexp(html, rexp)
+            poster = textutils.matchRegexp(html, rexp)
             loresFilename = imageDir + '/%s_lores.jpg' % seriesID
             open(loresFilename, 'w').write(urlopen(poster['loresImg']).read())
         except:
@@ -106,7 +108,7 @@ class IMDBMetadataProvider(QObject):
         try:
             html = urlopen('http://www.imdb.com' + poster['hiresUrl']).read()
             rexp = '<table id="principal">.*?src="(?P<hiresImg>[^"]*)"'
-            poster = utils.matchRegexp(html, rexp)
+            poster = textutils.matchRegexp(html, rexp)
             hiresFilename = imageDir + '/%s_hires.jpg' % seriesID
             open(hiresFilename, 'w').write(urlopen(poster['hiresImg']).read())
         except:
@@ -149,10 +151,11 @@ class EpisodeIMDB(Guesser):
             if not ep['season']:
                 query.update(ep, 'season', 1)
 
-            self.mdprovider = IMDBMetadataProvider(ep)
+            self.mdprovider = IMDBMetadataProvider()
             self.connect(self.mdprovider, SIGNAL('finished'),
                          self.queryFinished)
-            self.mdprovider.start()
+
+            self.mdprovider.startEpisode(ep)
 
         else:
             log.warning("EpisodeIMDB: Episode doesn't contain 'series' field: %s", ep)

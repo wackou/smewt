@@ -54,7 +54,7 @@ class EpisodeTagger(Tagger):
             media.metadata = self.filenameMetadata
             # try anyway to get the correct series name
             from smewt.guessers.episodeimdb import IMDBMetadataProvider
-            seriesName = IMDBMetadataProvider(media.metadata).getSerie(media.metadata['series']['title'])
+            seriesName = IMDBMetadataProvider().getSeries(media.metadata['series']['title'])
             result += media.metadata
             result.update(media.metadata, 'series', Series({ 'title': seriesName }))
             result.update(media.metadata, 'episodeNumber', -1)
