@@ -4,6 +4,5 @@ Smewg.e4t
 
 .waf-*
 .ropeproject
-src/smewtgui/smewt/media/series/images/
-src/smewtgui/smewt/media/movie/images/
+src/smewtgui/smewt/media/common/images/
 src/smewtgui/test/smewt
