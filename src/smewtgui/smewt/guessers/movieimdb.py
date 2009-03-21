@@ -46,7 +46,7 @@ class Getter:
             pass
 
 class IMDBMetadataProvider(QObject):
-    def __init__(self, movie, metadata):
+    def __init__(self, movie):
         super(IMDBMetadataProvider, self).__init__()
 
         '''
@@ -55,7 +55,6 @@ class IMDBMetadataProvider(QObject):
             '''
 
         self.movieName = movie
-        self.metadata = metadata
         self.imdb = imdb.IMDb()
 
     @cachedmethod
@@ -134,185 +133,11 @@ class IMDBMetadataProvider(QObject):
             movie['loresImage'] = lores
             movie['hiresImage'] = hires
 
-            self.emit(SIGNAL('finished'), self.movieName, movie)
+            self.emit(SIGNAL('finished'), movie)
 
         except Exception, e:
             log.warning(str(e) + ' -- ' + str(self.movieName))
             self.emit(SIGNAL('finished'), self.movieName, [])
-
-def validYear(year):
-    try:
-        return int(year) > 1920 and int(year) < 2015
-    except ValueError:
-        return False
-
-def guessXCT(filename):
-    if not '[XCT]' in filename:
-        return filename, {}
-
-    filename = filename.replace('[XCT]', '')
-    md = {}
-
-    try:
-        # find metadata
-        mdstr = textutils.matchRegexp(filename, '\[(?P<mdstr>.*?)\]')['mdstr']
-        filename = filename.replace(mdstr, '')
-
-        # find subs
-        subs = textutils.matchRegexp(mdstr, 'St[{\(](?P<subs>.*?)[}\)]')['subs']
-        mdstr.replace(subs, '')
-        md['subs'] = subs.split('-')
-
-        # find audio
-        audio = textutils.matchRegexp(mdstr, 'aac[0-9\.-]*[{\(](?P<audio>.*?)[}\)]')['audio']
-        mdstr.replace(audio, '')
-        md['language'] = audio.split('-')
-
-        # find year: if we found it, then the english title of the movie is either what's inside
-        # the parentheses before the year, or everything before the year
-        title = filename
-        years = [ m['year'] for m in textutils.multipleMatchRegexp(filename, '(?P<year>[0-9]{4})') if validYear(m['year']) ]
-        if len(years) == 1:
-            title = filename[:filename.index(years[0])]
-        elif len(years) >= 2:
-            log.warning('Ambiguous filename: possible years are ' + ', '.join(years))
-
-        try:
-            title = textutils.matchRegexp(title, '\((?P<title>.*?)\)')['title']
-        except:
-            pass
-
-        md['title'] = title
-
-    finally:
-        return title, md
-
-def cleanMovieFilename(filename):
-    import os.path
-    filename = os.path.basename(filename)
-    md = {}
-
-    # TODO: fix those cases
-    # - DVDRip.Xvid-$(grpname) should be automatically guessed
-
-    # first apply specific methods which are very strict but have a very high confidence
-    filename, md = guessXCT(filename)
-
-    # DVDRip.Xvid-$(grpname)
-    grpnames = [ '\.Xvid-(?P<releaseGroup>.*?)\.',
-                 '\.DviX-(?P<releaseGroup>.*?)\.'
-                 ]
-    for match in textutils.matchAllRegexp(filename, grpnames):
-        for key, value in match.items():
-            md[key] = value
-            filename = filename.replace(value, '')
-
-
-    # remove punctuation for looser matching now
-    seps = [ ' ', '-', '.', '_' ]
-    for sep in seps:
-        filename = filename.replace(sep, ' ')
-
-    remove = [ '[', ']', '(', ')' ]
-    for rem in remove:
-        filename = filename.replace(rem, '')
-
-    name = filename.split(' ')
-
-
-    properties = { 'format': [ 'DVDRip', 'HDDVD', 'BDRip', 'R5', 'HDRip', 'DVD', 'Rip' ],
-                   'container': [ 'avi', 'mkv', 'ogv', 'wmv', 'mp4', 'mov' ],
-                   'screenSize': [ '720p' ],
-                   'videoCodec': [ 'XviD', 'DivX', 'x264' ],
-                   'audioCodec': [ 'AC3', 'DTS', 'AAC' ],
-                   'language': [ 'english', 'eng',
-                                 'spanish', 'esp',
-                                 'italian',
-                                 'vo', 'vf'
-                                 ],
-                   'releaseGroup': [ 'ESiR', 'WAF', 'SEPTiC', '[XCT]', 'iNT', 'PUKKA', 'CHD', 'ViTE', 'DiAMOND', 'TLF',
-                                     'DEiTY', 'FLAiTE', 'MDX', 'GM4F', 'DVL', 'SVD', 'iLUMiNADOS', ' FiNaLe', 'UnSeeN' ],
-                   'other': [ '5ch', 'PROPER', 'REPACK', 'LIMITED', 'DualAudio', 'iNTERNAL',
-                              'classic', # not so sure about this one, could appear in a title
-                              'ws', # widescreen
-                              ],
-                   }
-
-    # ensure they're all lowercase
-    for prop, value in properties.items():
-        properties[prop] = [ s.lower() for s in value ]
-
-    # get specific properties
-    for prop, value in properties.items():
-        for part in list(name):
-            if part.lower() in value:
-                md[prop] = part
-                name.remove(part)
-
-    # get year
-    def validYear(year):
-        try:
-            return int(year) > 1920 and int(year) < 2015
-        except ValueError:
-            return False
-
-
-    for part in list(name):
-        year = textutils.stripBrackets(part)
-        if validYear(year):
-            md['year'] = int(year)
-            name.remove(part)
-
-    # remove ripper name
-    for by, who in zip(name[:-1], name[1:]):
-        if by.lower() == 'by':
-            name.remove(by)
-            name.remove(who)
-            md['ripper'] = who
-
-    # subtitles
-    for sub, lang in zip(name[:-1], name[1:]):
-        if sub.lower() == 'sub':
-            name.remove(sub)
-            name.remove(lang)
-            md['subtitleLanguage'] = lang
-
-    # get CD number (if any)
-    cdrexp = re.compile('[Cc][Dd]([0-9]+)')
-    for part in list(name):
-        try:
-            md['cdNumber'] = int(cdrexp.search(part).groups()[0])
-            name.remove(part)
-        except AttributeError:
-            pass
-
-    name = ' '.join(name)
-
-    # last chance on the full name: try some popular regexps
-    general = [ '(?P<dircut>director\'s cut)',
-                '(?P<edition>edition collector)' ]
-    websites = [ 'sharethefiles.com' ]
-    websites = [ '(?P<website>%s)' % w.replace('.', ' ') for w in websites ] # dots have been previously converted to spaces
-    rexps = general + websites
-
-    matched = textutils.matchAllRegexp(name, rexps)
-    for match in matched:
-        for key, value in match.items():
-            name = name.replace(value, '')
-
-    # try website names
-    # TODO: generic website url guesser
-    websites = [ 'sharethefiles.com' ]
-
-
-
-    # remove leftover tokens
-    name = name.replace('()', '')
-    name = name.replace('[]', '')
-
-
-    return (name, md)
-
 
 
 
@@ -325,21 +150,20 @@ class MovieIMDB(Guesser):
         self.query = query
 
         log.debug('MovieImdb: finding more info on %s' % query.findAll(Media))
-        movie = query.findOne(Media)
+        movie = query.findOne(Movie)
         # if valid movie
 
-        name, md = cleanMovieFilename(movie.filename)
-
-        self.mdprovider = IMDBMetadataProvider(name, md)
+        self.mdprovider = IMDBMetadataProvider(movie['title'])
         self.connect(self.mdprovider, SIGNAL('finished'),
                      self.queryFinished)
         self.mdprovider.start()
 
-    def queryFinished(self, name, guess):
+    def queryFinished(self, guess):
         del self.mdprovider # why is that useful again?
 
-        # TODO: should we set self.query = guesses here?
-        self.query.findOne(Media).metadata = guess
-        self.query += guess
+        media = self.query.findOne(Media)
+        media.metadata = guess
+        result = Graph()
+        result += media
 
-        self.emit(SIGNAL('finished'), self.query)
+        self.emit(SIGNAL('finished'), result)

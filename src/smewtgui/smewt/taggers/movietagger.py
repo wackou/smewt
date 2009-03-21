@@ -33,13 +33,15 @@ class MovieTagger(Tagger):
     def __init__(self):
         super(MovieTagger, self).__init__()
 
-        self.chain = SolvingChain(MovieIMDB())
+        self.chain1 = SolvingChain(MovieFilename())
+        self.chain2 = SolvingChain(MovieIMDB())
 
         # Connect the chains to our slots
-        self.connect(self.chain, SIGNAL('finished'), self.solved)
+        self.connect(self.chain1, SIGNAL('finished'), self.gotFilenameMetadata)
+        self.connect(self.chain2, SIGNAL('finished'), self.solved)
 
     def gotFilenameMetadata(self, result):
-        self.filenameMetadata = result.findOne(Episode)
+        self.filenameMetadata = result.findOne(Movie)
         self.chain2.start(result)
 
     def solved(self, result):
@@ -57,7 +59,7 @@ class MovieTagger(Tagger):
             if media.filename:
                 query = Graph()
                 query += media
-                self.chain.start(query)
+                self.chain1.start(query)
                 return
             else:
                 print 'Tagger: filename hasn\'t been set on Media object.'
