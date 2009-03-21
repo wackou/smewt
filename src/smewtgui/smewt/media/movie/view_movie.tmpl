@@ -36,11 +36,8 @@ import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'movie')
 </head>
 
 <body>
-#if poster:
-  <img src="file://$poster" />
-#else:
-  <img src="file://$(import_dir)/noposter.png">
-#end if
+
+<img src="file://$poster" />
 
 <div class="rightshifted">
   <h1>$movieName</h1>
@@ -61,9 +58,11 @@ import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'movie')
     <p><b>writer:</b> $writer</p>
     <p><b>genres:</b> $genres</p>
     <p><b>plot outline:</b> $movie.plotOutline</p>
-    <p><b>plot:</b> $movie.plot[0]</p>
-    #if len($movie.plot) > 1:
-      <p><b>detailed plot:</b> $movie.plot[1]</p>
+    #if $movie.plot:
+      <p><b>plot:</b> $movie.plot[0]</p>
+      #if len($movie.plot) > 1:
+        <p><b>detailed plot:</b> $movie.plot[1]</p>
+      #end if
     #end if
   </div>
 

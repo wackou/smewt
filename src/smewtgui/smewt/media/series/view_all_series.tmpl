@@ -11,10 +11,6 @@ import os, os.path
 # FIXME: this is not the correct way to do it...
 import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'series')
 
-# default poster if none is found
-for s in series:
-    if not s['poster']:
-        s['poster'] = import_dir + '/noposter.png'
 %>
 
 <html>
