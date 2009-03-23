@@ -230,8 +230,13 @@ class MainWidget(QWidget):
                 # by tvsubtitles, opensubtitles, etc...
                 if surl.actionType == 'play':
                     action = 'smplayer'
-                    args = [ surl.args['filename'] ]
-                    log.debug('launching %s with args = %s', (action, args))
+                    args = []
+                    nfile = 1
+                    while 'filename%d' % nfile in surl.args:
+                        args.append(surl.args['filename%d' % nfile])
+                        nfile += 1
+
+                    log.debug('launching %s with args = %s' % (action, str(args)))
                     self.externalProcess.start(action, args)
 
                 if surl.actionType == 'getsubtitles':

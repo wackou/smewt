@@ -24,7 +24,7 @@ for media in eps.findAll(Media):
     if media.type() == 'video':
         episodes += [ md ]
         md['filename'] = media.filename
-        md['url'] = SmewtUrl('action', 'play', { 'filename': media.filename })
+        md['url'] = SmewtUrl('action', 'play', { 'filename1': media.filename })
     elif media.type() == 'subtitle':
         md.setdefault('subtitles', []).append(media.filename)
         md['numSubtitles'] = len(md['subtitles'])

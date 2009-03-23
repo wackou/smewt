@@ -17,9 +17,19 @@ englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': movieName, 'lang
 frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': movieName, 'language': 'fr' })
 
 playLink = None
+files = []
 for media in movieData.findAll(Media):
     if media.type() == 'video':
-        playLink = SmewtUrl('action', 'play', { 'filename': media.filename })
+        files.append(media.filename)
+
+nfile = 1
+args = {}
+for f in sorted(files):
+    args['filename%d' % nfile] = f
+    nfile += 1
+
+if args:
+    playLink = SmewtUrl('action', 'play', args)
 
 import os, os.path
 # FIXME: this is not the correct way to do it...
