@@ -55,7 +55,7 @@ class GlobDirectoryWalker:
             else:
                 # got a filename
                 fullname = os.path.join(self.directory, file)
-                if os.path.isdir(fullname) and not os.path.islink(fullname):
+                if os.path.isdir(fullname):
                     self.stack.append(fullname)
                 for pattern in self.patterns:
                     if fnmatch.fnmatch(file, pattern):
