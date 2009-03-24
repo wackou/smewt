@@ -84,16 +84,20 @@ def cleanMovieFilename(filename):
     md = {}
 
     # TODO: fix those cases
-    # - DVDRip.Xvid-$(grpname) should be automatically guessed
 
     # first apply specific methods which are very strict but have a very high confidence
     filename, md = guessXCT(filename)
 
     # DVDRip.Xvid-$(grpname)
     grpnames = [ '\.Xvid-(?P<releaseGroup>.*?)\.',
-                 '\.DviX-(?P<releaseGroup>.*?)\.'
+                 '\.DivX-(?P<releaseGroup>.*?)\.'
                  ]
-    for match in textutils.matchAllRegexp(filename, grpnames):
+    editions = [ '(?P<edition>(special|unrated|criterion).edition)'
+                 ]
+    audio = [ '(?P<audioChannels>5\.1)' ]
+
+    specific = grpnames + editions + audio
+    for match in textutils.matchAllRegexp(filename, specific):
         for key, value in match.items():
             md[key] = value
             filename = filename.replace(value, '')
@@ -104,6 +108,7 @@ def cleanMovieFilename(filename):
     for sep in seps:
         filename = filename.replace(sep, ' ')
 
+    # TODO: replace this with a getMetadataGroups function that splits on parentheses/braces/brackets
     remove = [ '[', ']', '(', ')' ]
     for rem in remove:
         filename = filename.replace(rem, '')
@@ -111,7 +116,7 @@ def cleanMovieFilename(filename):
     name = filename.split(' ')
 
 
-    properties = { 'format': [ 'DVDRip', 'HDDVD', 'BDRip', 'R5', 'HDRip', 'DVD', 'Rip' ],
+    properties = { 'format': [ 'DVDRip', 'HDDVD', 'HDDVDRip', 'BDRip', 'R5', 'HDRip', 'DVD', 'Rip' ],
                    'container': [ 'avi', 'mkv', 'ogv', 'wmv', 'mp4', 'mov' ],
                    'screenSize': [ '720p' ],
                    'videoCodec': [ 'XviD', 'DivX', 'x264' ],
@@ -123,7 +128,7 @@ def cleanMovieFilename(filename):
                                  ],
                    'releaseGroup': [ 'ESiR', 'WAF', 'SEPTiC', '[XCT]', 'iNT', 'PUKKA', 'CHD', 'ViTE', 'DiAMOND', 'TLF',
                                      'DEiTY', 'FLAiTE', 'MDX', 'GM4F', 'DVL', 'SVD', 'iLUMiNADOS', ' FiNaLe', 'UnSeeN' ],
-                   'other': [ '5ch', 'PROPER', 'REPACK', 'LIMITED', 'DualAudio', 'iNTERNAL',
+                   'other': [ '5ch', 'PROPER', 'REPACK', 'LIMITED', 'DualAudio', 'iNTERNAL', 'Audiofixed',
                               'classic', # not so sure about this one, could appear in a title
                               'ws', # widescreen
                               ],
