@@ -29,4 +29,5 @@ class Tagger(QtCore.QObject):
         super(Tagger, self).__init__()
 
     def tag(self, mediaObject):
-        self.emit(QtCore.SIGNAL('tagFinished()'), None)
+        print 'Tagger: emmiting an empty tagFinished'
+        self.emit(QtCore.SIGNAL('tagFinished'), None)

@@ -42,14 +42,15 @@ class Importer(QThread, QObject):
 
         self.tagCount += len(self.taggingQueue)
         self.emit(SIGNAL('progressChanged'),  self.tagCount - len(self.taggingQueue),  self.tagCount)
-
-    def start(self):
+        self.begin()
+        
+    def begin(self):
         if self.state != 'running':
             self.state = 'running'
             self.tagNext()
 
     def run(self):
-        exec()
+        self.exec_()
 
     def tagNext(self):
         if self.taggingQueue:
@@ -70,6 +71,6 @@ class Importer(QThread, QObject):
             self.emit(SIGNAL('importFinished'),  self.results)
 
     def tagged(self, taggedMedia):
-        #print 'Collection: Media tagged: %s' % taggedMedia
+        print 'Importer: Media tagged: %s' % taggedMedia
         self.results += taggedMedia
         self.tagNext()

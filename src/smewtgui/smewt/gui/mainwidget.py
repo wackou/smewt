@@ -22,7 +22,7 @@
 from smewt import SmewtException, SmewtUrl, Graph, Media, Metadata
 from smewt.media import Series, Episode, Movie
 from smewt.importer import Importer
-from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings
+from PyQt4.QtCore import SIGNAL, SLOT, QVariant, QProcess, QSettings
 from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QSizePolicy
 from PyQt4.QtWebKit import QWebView, QWebPage
 from smewt.media import series, movie
@@ -104,7 +104,9 @@ class MainWidget(QWidget):
         self.importer = Importer(filetypes = filetypes)
         self.connect(self.importer, SIGNAL('importFinished'), self.mergeCollection)
         self.connect(self.importer, SIGNAL('progressChanged'), self.progressChanged)
-
+        self.connect(self, SIGNAL('importFolder'), self.importer.importFolder)
+        self.importer.start()
+        
     def back(self):
         try:
             self.setSmewtUrl(self.history[-2])
@@ -153,8 +155,7 @@ class MainWidget(QWidget):
 
 
     def importSingleFolder(self, path, taggerType):
-        self.importer.importFolder(path, taggerType)
-        self.importer.start()
+        self.emit(SIGNAL('importFolder'), path, taggerType)
 
     def progressChanged(self,  tagged,  total):
         self.emit(SIGNAL('progressChanged'),  tagged,  total)
