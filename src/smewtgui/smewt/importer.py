@@ -19,27 +19,26 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import SIGNAL,  QObject
+from PyQt4.QtCore import SIGNAL,  QObject, QThread
 from smewt import Media, Graph
 from smewt.media.series import Episode
 from smewt.base.utils import GlobDirectoryWalker
 
-class Importer(QObject):
-    def __init__(self, tagger, filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]):
+class Importer(QThread, QObject):
+    def __init__(self, filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]):
         super(Importer, self).__init__()
 
         self.taggingQueue = []
-        self.tagger = tagger
+        self.taggers = {}
         self.filetypes = filetypes
         self.results = Graph()
         self.tagCount = 0
         self.state = 'stopped'
-        self.connect(self.tagger, SIGNAL('tagFinished'), self.tagged)
 
-    def importFolder(self,  folder):
+    def importFolder(self, folder, tagger):
         for filename in GlobDirectoryWalker(folder, self.filetypes):
             mediaObject = Media(filename)
-            self.taggingQueue.append(mediaObject)
+            self.taggingQueue.append(( tagger, mediaObject ))
 
         self.tagCount += len(self.taggingQueue)
         self.emit(SIGNAL('progressChanged'),  self.tagCount - len(self.taggingQueue),  self.tagCount)
@@ -49,11 +48,20 @@ class Importer(QObject):
             self.state = 'running'
             self.tagNext()
 
+    def run(self):
+        exec()
+
     def tagNext(self):
         if self.taggingQueue:
-            next = self.taggingQueue.pop()
+            tagger, next = self.taggingQueue.pop()
+            
             #print 'Collection: Tagging ''%s'' %s' % (next, self.tagger.__class__)
-            self.tagger.tag(next)
+            if tagger not in self.taggers:
+                self.taggers[tagger] = tagger()
+                self.connect(self.taggers[tagger], SIGNAL('tagFinished'), self.tagged)
+
+            self.taggers[tagger].tag(next)
+            
             self.emit(SIGNAL('progressChanged'),  self.tagCount - len(self.taggingQueue),  self.tagCount)
         else:
             self.state = 'stopped'

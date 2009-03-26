@@ -100,7 +100,10 @@ class MainWidget(QWidget):
         self.setSmewtUrl(baseUrl)
 
         self.externalProcess = QProcess()
-        self.importers = {}
+        filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]
+        self.importer = Importer(filetypes = filetypes)
+        self.connect(self.importer, SIGNAL('importFinished'), self.mergeCollection)
+        self.connect(self.importer, SIGNAL('progressChanged'), self.progressChanged)
 
     def back(self):
         try:
@@ -139,24 +142,19 @@ class MainWidget(QWidget):
                                                             QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
 
         if filename:
-            self.importSingleFolder(filename, EpisodeTagger, filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ])
+            self.importSingleFolder(filename, EpisodeTagger)
 
     def importMovieFolder(self):
         filename = unicode(QFileDialog.getExistingDirectory(self, 'Select directory to import', '/data/Movies/',
                                                             QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
 
         if filename:
-            self.importSingleFolder(filename, MovieTagger, filetypes = [ '*.avi', '*.mkv' ])
+            self.importSingleFolder(filename, MovieTagger)
 
 
-    def importSingleFolder(self, path, taggerType, filetypes):
-        if taggerType not in self.importers:
-            self.importers[taggerType] = Importer(tagger = taggerType(), filetypes = filetypes)
-            self.connect(self.importers[taggerType], SIGNAL('importFinished'), self.mergeCollection)
-            self.connect(self.importers[taggerType], SIGNAL('progressChanged'), self.progressChanged)
-
-        self.importers[taggerType].importFolder(path)
-        self.importers[taggerType].start()
+    def importSingleFolder(self, path, taggerType):
+        self.importer.importFolder(path, taggerType)
+        self.importer.start()
 
     def progressChanged(self,  tagged,  total):
         self.emit(SIGNAL('progressChanged'),  tagged,  total)
