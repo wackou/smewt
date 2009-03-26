@@ -19,14 +19,42 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import SIGNAL,  QObject, QThread
+from PyQt4.QtCore import SIGNAL, Qt, QObject, QThread
 from smewt import Media, Graph
 from smewt.media.series import Episode
 from smewt.base.utils import GlobDirectoryWalker
+import logging
 
-class Importer(QThread, QObject):
-    def __init__(self, filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]):
+log = logging.getLogger('smewt.importer')
+
+class Importer(QThread):
+    def __init__(self, filetypes):
         super(Importer, self).__init__()
+        self.filetypes = filetypes
+
+    def run(self):
+        self.worker = Worker(self, self.filetypes)
+        self.connect(self, SIGNAL('importFolder'),
+                     self.worker.importFolder) #, Qt.QueuedConnection)
+        self.exec_()
+
+    def __del__(self):
+        self.wait()
+
+    def importFolder(self, folder, tagger):
+        self.emit(SIGNAL('importFolder'), folder, tagger)
+
+    def importFinished(self, results):
+        self.emit(SIGNAL('importFinished'), results)
+
+    def progressChanged(self, current, total):
+        self.emit(SIGNAL('progressChanged'), current, total)
+
+
+class Worker(QObject):
+    def __init__(self, importer, filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]):
+        super(Worker, self).__init__()
+        self.importer = importer
         self.filetypes = filetypes
         self.taggingQueue = []
         self.taggers = {}
@@ -34,45 +62,41 @@ class Importer(QThread, QObject):
         self.tagCount = 0
         self.state = 'stopped'
 
-    def __del__(self):
-        self.wait()
-
     def importFolder(self, folder, tagger):
         for filename in GlobDirectoryWalker(folder, self.filetypes):
             mediaObject = Media(filename)
             self.taggingQueue.append(( tagger, mediaObject ))
 
         self.tagCount += len(self.taggingQueue)
-        self.emit(SIGNAL('progressChanged'),  self.tagCount - len(self.taggingQueue),  self.tagCount)
+        self.importer.progressChanged(self.tagCount - len(self.taggingQueue),  self.tagCount)
         self.begin()
-        
+
     def begin(self):
         if self.state != 'running':
             self.state = 'running'
             self.tagNext()
 
-    def run(self):
-        self.exec_()
 
     def tagNext(self):
         if self.taggingQueue:
             tagger, next = self.taggingQueue.pop()
-            
+
             #print 'Collection: Tagging ''%s'' %s' % (next, self.tagger.__class__)
             if tagger not in self.taggers:
                 self.taggers[tagger] = tagger()
                 self.connect(self.taggers[tagger], SIGNAL('tagFinished'), self.tagged)
 
             self.taggers[tagger].tag(next)
-            
-            self.emit(SIGNAL('progressChanged'),  self.tagCount - len(self.taggingQueue),  self.tagCount)
+
+            self.importer.progressChanged(self.tagCount - len(self.taggingQueue),  self.tagCount)
+
         else:
             self.state = 'stopped'
             self.tagCount = 0
-            self.emit(SIGNAL('progressChanged'),  self.tagCount - len(self.taggingQueue),  self.tagCount)
-            self.emit(SIGNAL('importFinished'),  self.results)
+            self.importer.progressChanged(self.tagCount - len(self.taggingQueue),  self.tagCount)
+            self.importer.importFinished(self.results)
 
     def tagged(self, taggedMedia):
-        print 'Importer: Media tagged: %s' % taggedMedia
+        log.info('Media tagged: %s' % taggedMedia)
         self.results += taggedMedia
         self.tagNext()
