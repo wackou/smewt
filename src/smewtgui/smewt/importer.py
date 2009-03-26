@@ -27,13 +27,15 @@ from smewt.base.utils import GlobDirectoryWalker
 class Importer(QThread, QObject):
     def __init__(self, filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]):
         super(Importer, self).__init__()
-
+        self.filetypes = filetypes
         self.taggingQueue = []
         self.taggers = {}
-        self.filetypes = filetypes
         self.results = Graph()
         self.tagCount = 0
         self.state = 'stopped'
+
+    def __del__(self):
+        self.wait()
 
     def importFolder(self, folder, tagger):
         for filename in GlobDirectoryWalker(folder, self.filetypes):

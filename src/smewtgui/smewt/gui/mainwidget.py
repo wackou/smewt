@@ -44,7 +44,7 @@ class MainWidget(QWidget):
         self.connect(backButton, SIGNAL('clicked()'),
                      self.back)
         self.connect(folderImportButton, SIGNAL('clicked()'),
-                     self.importFolder)
+                     self.importSeriesFolder)
         self.connect(movieFolderImportButton, SIGNAL('clicked()'),
                      self.importMovieFolder)
 
@@ -101,6 +101,7 @@ class MainWidget(QWidget):
 
         self.externalProcess = QProcess()
         filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]
+
         self.importer = Importer(filetypes = filetypes)
         self.connect(self.importer, SIGNAL('importFinished'), self.mergeCollection)
         self.connect(self.importer, SIGNAL('progressChanged'), self.progressChanged)
@@ -139,7 +140,7 @@ class MainWidget(QWidget):
         filename = unicode(QSettings().value('collection_file').toString())
         self.collection.save(filename)
 
-    def importFolder(self):
+    def importSeriesFolder(self):
         filename = unicode(QFileDialog.getExistingDirectory(self, 'Select directory to import', '/data/Series/',
                                                             QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
 
@@ -242,7 +243,9 @@ class MainWidget(QWidget):
                     series = surl.args['title']
                     language = surl.args['language']
                     episodes = self.collection.findAll(Metadata, series = Series({ 'title': series }))
-                    files = [ media for media in self.collection.nodes if isinstance(media, Media) and media.metadata in episodes ]
+                    files = [ media for media in self.collection.nodes
+                              if isinstance(media, Media) and media.metadata in episodes ]
+
                     videos = [ f for f in files if f.type() == 'video' ]
                     subtitles = [ f for f in files if f.type() == 'subtitle' ]
 
