@@ -20,6 +20,9 @@
 #
 
 from PyQt4 import QtCore
+import logging
+
+log = logging.getLogger('smewt.taggers.tagger')
 
 class Tagger(QtCore.QObject):
     """Abstract class from which all Solvers must inherit.  Solvers are objects that implement a slot called solve(self, guesses) that returns immediately, and begins the process of solving the merge of mediaObjects.
@@ -29,5 +32,5 @@ class Tagger(QtCore.QObject):
         super(Tagger, self).__init__()
 
     def tag(self, mediaObject):
-        print 'Tagger: emmiting an empty tagFinished'
+        log.warning('emiting an empty tagFinished signal')
         self.emit(QtCore.SIGNAL('tagFinished'), None)
