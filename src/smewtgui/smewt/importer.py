@@ -81,7 +81,6 @@ class Worker(QObject):
         if self.taggingQueue:
             tagger, next = self.taggingQueue.pop()
 
-            #print 'Collection: Tagging ''%s'' %s' % (next, self.tagger.__class__)
             if tagger not in self.taggers:
                 self.taggers[tagger] = tagger()
                 self.connect(self.taggers[tagger], SIGNAL('tagFinished'), self.tagged)

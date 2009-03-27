@@ -64,7 +64,7 @@ class MovieTagger(Tagger):
             else:
                 log.warning('filename hasn\'t been set on Media object.')
         else:
-            print log.warning('Not a video media. Cannot tag. Filename = \'%s\'' % media.filename)
+            log.warning('Not a video media. Cannot tag. Filename = \'%s\'' % media.filename)
 
         # default tagger strategy if none other was applicable
         return super(MovieTagger, self).tag(media)

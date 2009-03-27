@@ -28,7 +28,6 @@ from Cheetah.Template import Template
 #  That means that if the view should represent a list of all
 #  the series available, it needs to do its groupby by itself)
 def render(name, metadata):
-    #print '---- Rendering episode:', episodes
 
     if name == 'single':
         t = Template(file = 'smewt/media/series/view_episodes_by_season.tmpl',
