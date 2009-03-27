@@ -70,9 +70,9 @@ class EpisodeTagger(Tagger):
                 self.chain1.start(query)
                 return
             else:
-                print 'Tagger: filename hasn\'t been set on Media object.'
+                log.warning('filename hasn\'t been set on Media object.')
         else:
-            print 'Tagger: Not a video media. Cannot tag.'
+            print log.warning('Not a video media. Cannot tag. Filename = \'%s\'' % media.filename)
 
         # default tagger strategy if none other was applicable
         return super(EpisodeTagger, self).tag(media)

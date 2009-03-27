@@ -22,7 +22,7 @@
 from smewt import SmewtException, SmewtUrl, Graph, Media, Metadata
 from smewt.media import Series, Episode, Movie
 from smewt.importer import Importer
-from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings
+from PyQt4.QtCore import SIGNAL, SLOT, QVariant, QProcess, QSettings
 from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QSizePolicy
 from PyQt4.QtWebKit import QWebView, QWebPage
 from smewt.media import series, movie
@@ -44,7 +44,7 @@ class MainWidget(QWidget):
         self.connect(backButton, SIGNAL('clicked()'),
                      self.back)
         self.connect(folderImportButton, SIGNAL('clicked()'),
-                     self.importFolder)
+                     self.importSeriesFolder)
         self.connect(movieFolderImportButton, SIGNAL('clicked()'),
                      self.importMovieFolder)
 
@@ -100,8 +100,14 @@ class MainWidget(QWidget):
         self.setSmewtUrl(baseUrl)
 
         self.externalProcess = QProcess()
-        self.importers = {}
+        filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]
 
+        self.importer = Importer(filetypes = filetypes)
+        self.connect(self.importer, SIGNAL('importFinished'), self.mergeCollection)
+        self.connect(self.importer, SIGNAL('progressChanged'), self.progressChanged)
+        self.connect(self, SIGNAL('importFolder'), self.importer.importFolder)
+        self.importer.start()
+        
     def back(self):
         try:
             self.setSmewtUrl(self.history[-2])
@@ -134,29 +140,23 @@ class MainWidget(QWidget):
         filename = unicode(QSettings().value('collection_file').toString())
         self.collection.save(filename)
 
-    def importFolder(self):
+    def importSeriesFolder(self):
         filename = unicode(QFileDialog.getExistingDirectory(self, 'Select directory to import', '/data/Series/',
                                                             QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
 
         if filename:
-            self.importSingleFolder(filename, EpisodeTagger, filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ])
+            self.importSingleFolder(filename, EpisodeTagger)
 
     def importMovieFolder(self):
         filename = unicode(QFileDialog.getExistingDirectory(self, 'Select directory to import', '/data/Movies/',
                                                             QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
 
         if filename:
-            self.importSingleFolder(filename, MovieTagger, filetypes = [ '*.avi', '*.mkv' ])
+            self.importSingleFolder(filename, MovieTagger)
 
 
-    def importSingleFolder(self, path, taggerType, filetypes):
-        if taggerType not in self.importers:
-            self.importers[taggerType] = Importer(tagger = taggerType(), filetypes = filetypes)
-            self.connect(self.importers[taggerType], SIGNAL('importFinished'), self.mergeCollection)
-            self.connect(self.importers[taggerType], SIGNAL('progressChanged'), self.progressChanged)
-
-        self.importers[taggerType].importFolder(path)
-        self.importers[taggerType].start()
+    def importSingleFolder(self, path, taggerType):
+        self.emit(SIGNAL('importFolder'), path, taggerType)
 
     def progressChanged(self,  tagged,  total):
         self.emit(SIGNAL('progressChanged'),  tagged,  total)
@@ -248,7 +248,9 @@ class MainWidget(QWidget):
                     series = surl.args['title']
                     language = surl.args['language']
                     episodes = self.collection.findAll(Metadata, series = Series({ 'title': series }))
-                    files = [ media for media in self.collection.nodes if isinstance(media, Media) and media.metadata in episodes ]
+                    files = [ media for media in self.collection.nodes
+                              if isinstance(media, Media) and media.metadata in episodes ]
+
                     videos = [ f for f in files if f.type() == 'video' ]
                     subtitles = [ f for f in files if f.type() == 'subtitle' ]
 
