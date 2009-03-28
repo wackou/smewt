@@ -102,9 +102,9 @@ class IMDBMetadataProvider(QObject):
         log.debug('MovieIMDB: looking for movie %s', name)
         results = self.imdb.search_movie(name)
         for r in results:
-            if r['kind'] == 'movie':
+            if r['kind'] == 'movie' or r['kind'] == 'video movie':
                 return r
-        raise SmewtException("EpisodeIMDB: Could not find movie '%s'" % name)
+        raise SmewtException("MovieIMDB: Could not find movie '%s'" % name)
 
     @cachedmethod
     def getMovieData(self, movieImdb):

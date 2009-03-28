@@ -109,9 +109,9 @@ def cleanMovieFilename(filename):
         filename = filename.replace(sep, ' ')
 
     # TODO: replace this with a getMetadataGroups function that splits on parentheses/braces/brackets
-    remove = [ '[', ']', '(', ')' ]
+    remove = [ '[', ']', '(', ')', '{', '}' ]
     for rem in remove:
-        filename = filename.replace(rem, '')
+        filename = filename.replace(rem, ' ')
 
     name = filename.split(' ')
 
@@ -123,7 +123,8 @@ def cleanMovieFilename(filename):
                    'audioCodec': [ 'AC3', 'DTS', 'AAC' ],
                    'language': [ 'english', 'eng',
                                  'spanish', 'esp',
-                                 'italian',
+                                 'french', 'fr',
+                                 'italian', # no 'it', too common a word in english
                                  'vo', 'vf'
                                  ],
                    'releaseGroup': [ 'ESiR', 'WAF', 'SEPTiC', '[XCT]', 'iNT', 'PUKKA', 'CHD', 'ViTE', 'DiAMOND', 'TLF',
@@ -138,12 +139,19 @@ def cleanMovieFilename(filename):
     for prop, value in properties.items():
         properties[prop] = [ s.lower() for s in value ]
 
+
+    # to try to guess what part of the filename is the movie title, we only keep as
+    # possible title the first characters of the filename up to the leftmost metadata
+    # element we found, no more
+    minIdx = len(name)
+
     # get specific properties
     for prop, value in properties.items():
-        for part in list(name):
+        for part in name:
             if part.lower() in value:
                 md[prop] = part
-                name.remove(part)
+                minIdx = min(minIdx, name.index(part))
+
 
     # get year
     def validYear(year):
@@ -153,36 +161,35 @@ def cleanMovieFilename(filename):
             return False
 
 
-    for part in list(name):
+    for part in name:
         year = textutils.stripBrackets(part)
         if validYear(year):
             md['year'] = int(year)
-            name.remove(part)
+            minIdx = min(minIdx, name.index(part))
 
     # remove ripper name
     for by, who in zip(name[:-1], name[1:]):
         if by.lower() == 'by':
-            name.remove(by)
-            name.remove(who)
             md['ripper'] = who
+            minIdx = min(minIdx, name.index(by))
 
     # subtitles
     for sub, lang in zip(name[:-1], name[1:]):
         if sub.lower() == 'sub':
-            name.remove(sub)
-            name.remove(lang)
             md['subtitleLanguage'] = lang
+            minIdx = min(minIdx, name.index(sub))
 
     # get CD number (if any)
     cdrexp = re.compile('[Cc][Dd]([0-9]+)')
-    for part in list(name):
+    for part in name:
         try:
             md['cdNumber'] = int(cdrexp.search(part).groups()[0])
-            name.remove(part)
+            minIdx = min(minIdx, name.index(part))
         except AttributeError:
             pass
 
-    name = ' '.join(name)
+    name = ' '.join(name[:minIdx])
+    minIdx = len(name)
 
     # last chance on the full name: try some popular regexps
     general = [ '(?P<dircut>director\'s cut)',
@@ -194,19 +201,16 @@ def cleanMovieFilename(filename):
     matched = textutils.matchAllRegexp(name, rexps)
     for match in matched:
         for key, value in match.items():
-            name = name.replace(value, '')
+            minIdx = min(minIdx, name.find(value))
+
+    name = name[:minIdx]
 
     # try website names
     # TODO: generic website url guesser
     websites = [ 'sharethefiles.com' ]
 
 
-
-    # remove leftover tokens
-    name = name.replace('()', '')
-    name = name.replace('[]', '')
-
-
+    # return final name as a guess for the movie title
     md['title'] = name
     return md
 
@@ -220,25 +224,9 @@ class MovieFilename(Guesser):
 
     def start(self, query):
         self.checkValid(query)
-
         media = query.findAll(Media)[0]
 
         movie = cleanMovieFilename(media.filename)
 
         query += Movie(dictionary = movie)
-
-        # heuristic 1: try to guess the season & epnumber using S01E02 and 1x02 patterns
-        #query += result
-
-        # cleanup a bit by removing unlikely eps numbers which are probably numbers in the title
-        # or even dates in the filename, etc...
-
-        # heuristic 2: try to guess the serie title from the parent directory!
-        #query += result
-
-        # post-processing
-        # we could already clean a bit the data here by solving it and comparing it to
-        # each element we found, eg: remove all md which have an improbable episode number
-        # such as 72 if some other valid episode number has been found, etc...
-
         self.emit(SIGNAL('finished'), query)
