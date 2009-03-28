@@ -193,6 +193,6 @@ class IMDBMetadataProvider(QObject):
             self.emit(SIGNAL('finished'), movie)
 
         except Exception, e:
-            log.warning(str(e) + ' -- ' + str(movieName))
+            log.warning(str(e) + ' -- ' + textutils.toUtf8(movieName))
             self.emit(SIGNAL('finished'), movieName, [])
 
