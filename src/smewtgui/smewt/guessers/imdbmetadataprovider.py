@@ -47,12 +47,10 @@ class Getter:
             pass
 
     def getMultiUnicode(self, name):
-        self.md[name] = []
-        for s in self.d[name]:
-            try:
-                self.md[name].append(unicode(self.d[name]))
-            except KeyError:
-                pass
+        try:
+            self.md[name] = [ unicode(s) for s in self.d[name] ]
+        except KeyError:
+            pass
 
 
 class IMDBMetadataProvider(QObject):
@@ -69,10 +67,6 @@ class IMDBMetadataProvider(QObject):
                 return r
         raise SmewtException("EpisodeIMDB: Could not find series '%s'" % name)
 
-    def forwardData(self, d, dname, ep, epname):
-        try:
-            d[dname] = ep[epname]
-        except: pass
 
     @cachedmethod
     def getEpisodes(self, series):
@@ -103,6 +97,7 @@ class IMDBMetadataProvider(QObject):
                 g.get('originalAirDate', 'original air date')
 
                 eps.append(ep)
+
         return eps
 
     @cachedmethod
@@ -187,7 +182,7 @@ class IMDBMetadataProvider(QObject):
             self.emit(SIGNAL('finished'), episode, eps)
 
         except Exception, e:
-            log.warning(str(e) + ' -- ' + str(episode))
+            log.warning(str(e) + ' -- ' + textutils.toUtf8(episode))
             self.emit(SIGNAL('finished'), episode, [])
 
     def startMovie(self, movieName):
