@@ -105,9 +105,10 @@ class MainWidget(QWidget):
         self.importer = Importer(filetypes = filetypes)
         self.connect(self.importer, SIGNAL('importFinished'), self.mergeCollection)
         self.connect(self.importer, SIGNAL('progressChanged'), self.progressChanged)
+        self.connect(self.importer, SIGNAL('foundData'), self.mergeCollection)
         self.connect(self, SIGNAL('importFolder'), self.importer.importFolder)
         self.importer.start()
-        
+
     def back(self):
         try:
             self.setSmewtUrl(self.history[-2])

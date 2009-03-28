@@ -50,6 +50,9 @@ class Importer(QThread):
     def progressChanged(self, current, total):
         self.emit(SIGNAL('progressChanged'), current, total)
 
+    def foundData(self, md):
+        self.emit(SIGNAL('foundData'), md)
+
 
 class Worker(QObject):
     def __init__(self, importer, filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]):
@@ -97,5 +100,5 @@ class Worker(QObject):
 
     def tagged(self, taggedMedia):
         log.info('Media tagged: %s' % taggedMedia)
-        self.results += taggedMedia
+        self.importer.foundData(taggedMedia)
         self.tagNext()
