@@ -43,8 +43,16 @@ class Getter:
             fromName = name
         try:
             self.md[name] = self.d[fromName]
-        except:
+        except KeyError:
             pass
+
+    def getMultiUnicode(self, name):
+        self.md[name] = []
+        for s in self.d[name]:
+            try:
+                self.md[name].append(self.d[name])
+            except KeyError:
+                pass
 
 
 class IMDBMetadataProvider(QObject):
@@ -111,14 +119,14 @@ class IMDBMetadataProvider(QObject):
         self.imdb.update(movieImdb)
         movie = Movie({ 'title': movieImdb['title'],
                         'year': movieImdb['year'],
-                        'rating': movieImdb['rating'],
                         'director': [ unicode(p) for p in movieImdb['director'] ],
-                        'writer': [ unicode(p) for p in movieImdb['writer'] ],
                         'genres': [ unicode(p) for p in movieImdb['genres'] ],
                         })
         g = Getter(movie, movieImdb)
+        g.get('rating')
         g.get('plot')
         g.get('plotOutline', 'plot outline')
+        g.getMultiUnicode('writer') # documentaries don't have writers...
 
         try:
             movie['cast'] = [ (unicode(p), unicode(p.currentRole)) for p in movieImdb['cast'][:15] ]
