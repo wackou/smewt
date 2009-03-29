@@ -10,9 +10,13 @@ seasons = defaultdict(lambda: [])
 movie = movieData.findAll(Movie)[0]
 movieName = movie['title']
 poster = movie['loresImage']
-director = ', '.join(movie['director'])
-writer = ', '.join(movie['writer'])
-genres = ', '.join(movie['genres'])
+
+def getAll(prop):
+    return ', '.join(movie[prop] or [])
+
+director = getAll('director')
+writer = getAll('writer')
+genres = getAll('genres')
 englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': movieName, 'language': 'en' })
 frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': movieName, 'language': 'fr' })
 

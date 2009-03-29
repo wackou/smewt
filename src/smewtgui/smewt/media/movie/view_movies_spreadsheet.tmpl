@@ -6,7 +6,7 @@ from smewt import SmewtUrl
 movies = sorted([ { 'title': m['title'],
                     'year': m['year'],
                     'rating': m['rating'] or '-',
-                    'genres': ', '.join(m['genres']) or '-',
+                    'genres': ', '.join(m['genres'] or []) or '-',
                     'url': SmewtUrl('media', 'movie/single', { 'title': m['title'] }),
                     'poster': m['loresImage'] } for m in allmovies ], key = lambda x: x['title'])
 
