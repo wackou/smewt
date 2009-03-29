@@ -35,6 +35,9 @@ def render(name, metadata):
     elif name == 'all':
         t = Template(file = 'smewt/media/movie/view_all_movies.tmpl',
                      searchList = { 'movies': metadata })
+    elif name == 'spreadsheet':
+        t = Template(file = 'smewt/media/movie/view_movies_spreadsheet.tmpl',
+                     searchList = { 'movies': metadata })
     else:
         return 'Invalid view name'
 

@@ -42,6 +42,9 @@ class BookmarkListWidget(QWidget):
                                           'smewt/icons/applications-multimedia.png'),
 
                            'All Movies': (SmewtUrl('media', 'movie/all'),
+                                         'smewt/icons/applications-multimedia.png'),
+
+                           'All Movies\n     (Spreadsheet)': (SmewtUrl('media', 'movie/spreadsheet'),
                                          'smewt/icons/applications-multimedia.png')
                           }
 

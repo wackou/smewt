@@ -196,7 +196,7 @@ class MainWidget(QWidget):
                     if f.metadata == movieMD:
                         metadata += f
 
-            elif surl.viewType == 'all':
+            elif surl.viewType == 'all' or surl.viewType == 'spreadsheet':
                 metadata = self.collection.findAll(Movie)
 
             else:
