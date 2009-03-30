@@ -19,27 +19,35 @@
 #
 
 from Cheetah.Template import Template
+from smewt import SmewtException, Graph, Media
+from movieobject import Movie
 
+# This function always receive an URL and a full graph of all the collection as metadata input
+# This is the place to put some logic before the html rendering is done, such as filtering out
+# items we don't want to display, or shape the data so that it's more suited for html rendering, etc...
+def render(url, collection):
 
-# all the logic of rendering should be contained in the template
-# we shall always pass only a list of the basic media object
-# (eg for series, we have SerieObject, EpisodeObject, SeasonObject...
-#  but the base type is EpisodeObject (a single file)
-#  That means that if the view should represent a list of all
-#  the series available, it needs to do its groupby by itself)
-def render(name, metadata):
+    if url.viewType == 'single':
+        # creates a new graph with all the media related to the given movie
+        movieMD = collection.findAll(Movie, title = url.args['title'])[0]
+        metadata = Graph()
+        for f in collection.findAll(Media):
+            if f.metadata == movieMD:
+                metadata += f
 
-    if name == 'single':
         t = Template(file = 'smewt/media/movie/view_movie.tmpl',
                      searchList = { 'movie': metadata })
-    elif name == 'all':
+
+    elif url.viewType == 'all':
         t = Template(file = 'smewt/media/movie/view_all_movies.tmpl',
-                     searchList = { 'movies': metadata })
-    elif name == 'spreadsheet':
+                     searchList = { 'movies': collection.findAll(Movie) })
+
+    elif url.viewType == 'spreadsheet':
         t = Template(file = 'smewt/media/movie/view_movies_spreadsheet.tmpl',
-                     searchList = { 'movies': metadata })
+                     searchList = { 'movies': collection.findAll(Movie) })
+
     else:
-        return 'Invalid view name'
+        raise SmewtException('Invalid view type: %s' % url.viewType)
 
     return t.respond()
 

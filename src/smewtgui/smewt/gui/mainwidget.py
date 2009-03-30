@@ -187,22 +187,7 @@ class MainWidget(QWidget):
             html = series.view.render(surl.viewType,  metadata)
 
         elif surl.mediaType == 'movie':
-
-            if surl.viewType == 'single':
-                # creates a new graph with all the media related to the given series
-                movieMD = self.collection.findAll(Movie, title = surl.args['title'])[0]
-                metadata = Graph()
-                for f in self.collection.findAll(Media):
-                    if f.metadata == movieMD:
-                        metadata += f
-
-            elif surl.viewType == 'all' or surl.viewType == 'spreadsheet':
-                metadata = self.collection.findAll(Movie)
-
-            else:
-                raise SmewtException('Invalid view type: %s' % surl.viewType)
-
-            html = movie.view.render(surl.viewType,  metadata)
+            html = movie.view.render(surl,  self.collection)
 
         else:
             raise SmewtException('MainWidget: Invalid media type: %s' % surl.mediaType)
