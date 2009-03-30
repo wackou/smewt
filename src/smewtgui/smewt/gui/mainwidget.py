@@ -169,22 +169,7 @@ class MainWidget(QWidget):
         surl = self.smewtUrl
 
         if surl.mediaType == 'series':
-
-            if surl.viewType == 'single':
-                # creates a new graph with all the media related to the given series
-                episodes = self.collection.findAll(Episode, series = Series(surl.args))
-                metadata = Graph()
-                for f in self.collection.findAll(Media):
-                    if f.metadata in episodes:
-                        metadata += f
-
-            elif surl.viewType == 'all':
-                metadata = self.collection.findAll(Series)
-
-            else:
-                raise SmewtException('Invalid view type: %s' % surl.viewType)
-
-            html = series.view.render(surl.viewType,  metadata)
+            html = series.view.render(surl, self.collection)
 
         elif surl.mediaType == 'movie':
             html = movie.view.render(surl,  self.collection)
