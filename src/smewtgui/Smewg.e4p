@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2009-03-21, 21:55:12 -->
+<!-- Saved: 2009-03-30, 23:26:48 -->
 <!-- Copyright (C) 2009 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -39,11 +39,6 @@
     <Source>smewt/media/series/view_episodes_by_season.tmpl</Source>
     <Source>smewt/gui/mainwidget.py</Source>
     <Source>smewt/base/smewturl.py</Source>
-    <Source>test/all_tests.py</Source>
-    <Source>test/test_imdb.py</Source>
-    <Source>test/smewttest.py</Source>
-    <Source>test/test_episodefilename.py</Source>
-    <Source>test/test_imdb/blackadder.yaml</Source>
     <Source>smewt/solvers/mergesolver.py</Source>
     <Source>smewt/base/solvingchain.py</Source>
     <Source>smewt/solvers/simplesolver.py</Source>
@@ -75,7 +70,7 @@
     <Source>smewt/media/movie/view_movie.tmpl</Source>
     <Source>smewt/guessers/moviefilename.py</Source>
     <Source>smewt/guessers/imdbmetadataprovider.py</Source>
-    <Source>test/test_movieimdb.py</Source>
+    <Source>smewt/media/movie/view_movies_spreadsheet.tmpl</Source>
   </Sources>
   <Forms>
   </Forms>
