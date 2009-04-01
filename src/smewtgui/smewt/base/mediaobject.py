@@ -47,6 +47,7 @@ class Media(object):
         self.filename = unicode(filename)
         self.sha1 = ''
         self.metadata = None # ref to a Metadata object
+        self.watched = False
 
     def __str__(self):
         return self.__repr__()
@@ -110,6 +111,7 @@ class Metadata(object):
         # create the properties
         self.properties = ValidatingSmewtDict(self.schema)
         self.confidence = None
+        self.watched = False
 
         # self.mutable should be set to False whenever the object needs to be hashable, such as when
         # we want to put it in a set or a Graph. When self.mutable is False, none of the properties which
@@ -142,11 +144,12 @@ class Metadata(object):
             return
 
     def __getstate__(self):
-        return self.toDict(), self.confidence
+        return self.toDict(), self.confidence, self.watched
 
     def __setstate__(self, state):
         self.__init__(state[0])
         self.confidence = state[1]
+        self.watched = state[2]
 
 
     # used to make sure the values correspond to the schema
