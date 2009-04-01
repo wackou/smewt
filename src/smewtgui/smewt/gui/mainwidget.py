@@ -22,7 +22,7 @@
 from smewt import SmewtException, SmewtUrl, Graph, Media, Metadata
 from smewt.media import Series, Episode, Movie
 from smewt.importer import Importer
-from PyQt4.QtCore import SIGNAL, SLOT, QVariant, QProcess, QSettings
+from PyQt4.QtCore import SIGNAL, SLOT, QVariant, QProcess, QSettings, pyqtSignature
 from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QSizePolicy
 from PyQt4.QtWebKit import QWebView, QWebPage
 from smewt.media import series, movie
@@ -170,16 +170,27 @@ class MainWidget(QWidget):
 
         if surl.mediaType == 'series':
             html = series.view.render(surl, self.collection)
+            #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
+            self.collectionView.page().mainFrame().setHtml(html)
 
         elif surl.mediaType == 'movie':
             html = movie.view.render(surl,  self.collection)
+            #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
+            self.collectionView.page().mainFrame().setHtml(html)
+            # insert listener object for checkboxes inside the JS environment
+            self.connect(self.collectionView.page().mainFrame(), SIGNAL('javaScriptWindowObjectCleared()'),
+                         self.connectJavaScript)
 
         else:
             raise SmewtException('MainWidget: Invalid media type: %s' % surl.mediaType)
 
-        # display template
-        #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
-        self.collectionView.page().mainFrame().setHtml(html)
+
+    def connectJavaScript(self):
+        self.collectionView.page().mainFrame().addToJavaScriptWindowObject('mainWidget', self)
+
+    @pyqtSignature("QString, bool")
+    def updateWatched(self, title, watched):
+        self.collection.findOne(Movie, title = title).watched = watched
 
     def linkClicked(self,  url):
         log.info('clicked on link %s', url)
