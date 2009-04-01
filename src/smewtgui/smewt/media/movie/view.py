@@ -46,6 +46,10 @@ def render(url, collection):
         t = Template(file = 'smewt/media/movie/view_movies_spreadsheet.tmpl',
                      searchList = { 'movies': collection.findAll(Movie) })
 
+    elif url.viewType == 'unwatched':
+        t = Template(file = 'smewt/media/movie/view_movies_spreadsheet.tmpl',
+                     searchList = { 'movies': [ m for m in collection.findAll(Movie) if not m.watched ] })
+
     else:
         raise SmewtException('Invalid view type: %s' % url.viewType)
 
