@@ -22,10 +22,11 @@ from Cheetah.Template import Template
 from smewt import SmewtException, Graph, Media
 from movieobject import Movie
 
-# This function always receive an URL and a full graph of all the collection as metadata input
-# This is the place to put some logic before the html rendering is done, such as filtering out
-# items we don't want to display, or shape the data so that it's more suited for html rendering, etc...
+
 def render(url, collection):
+    '''This function always receive an URL and a full graph of all the collection as metadata input.
+    This is the place to put some logic before the html rendering is done, such as filtering out
+    items we don't want to display, or shape the data so that it's more suited for html rendering, etc...'''
 
     if url.viewType == 'single':
         # creates a new graph with all the media related to the given movie
