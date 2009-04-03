@@ -100,7 +100,7 @@ class MainWidget(QWidget):
         self.history = []
         baseUrl = QSettings().value('base_url').toString()
         if baseUrl == '':
-            baseUrl = 'smewt://media/series/all'
+            baseUrl = 'smewt://media/speeddial/'
         self.setSmewtUrl(baseUrl)
 
         self.externalProcess = QProcess()
