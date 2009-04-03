@@ -37,20 +37,6 @@ class MainWidget(QWidget):
     def __init__(self):
         super(MainWidget, self).__init__()
 
-        backButton = QPushButton('Back')
-        homeButton = QPushButton('Home')
-        folderImportButton = QPushButton('Import series folder...')
-        movieFolderImportButton = QPushButton('Import movie folder...')
-
-        self.connect(backButton, SIGNAL('clicked()'),
-                     self.back)
-        self.connect(homeButton, SIGNAL('clicked()'),
-                     self.speedDial)
-        self.connect(folderImportButton, SIGNAL('clicked()'),
-                     self.importSeriesFolder)
-        self.connect(movieFolderImportButton, SIGNAL('clicked()'),
-                     self.importMovieFolder)
-
         self.collection = Graph()
         self.connect(self.collection, SIGNAL('updated'),
                      self.refreshCollectionView)
@@ -63,25 +49,9 @@ class MainWidget(QWidget):
         self.connect(self.collectionView,  SIGNAL('linkClicked(const QUrl&)'),
                      self.linkClicked)
 
-        toolbar = QHBoxLayout()
-        toolbar.addWidget(backButton)
-        toolbar.addWidget(homeButton)
-        toolbar.addStretch(1)
-        toolbar.addWidget(folderImportButton)
-        toolbar.addWidget(movieFolderImportButton)
-
-        navigation = QHBoxLayout()
-
-        bookmarks = BookmarkListWidget()
-        bookmarks.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
-        self.connect(bookmarks,  SIGNAL('selected'),
-                     self.setSmewtUrl)
-        #navigation.addWidget(bookmarks)
-        navigation.addWidget(self.collectionView)
 
         layout = QVBoxLayout()
-        layout.addLayout(toolbar)
-        layout.addLayout(navigation)
+        layout.addWidget(self.collectionView)
 
         settings = QSettings()
         t = settings.value('collection_file').toString()
@@ -265,7 +235,9 @@ class MainWidget(QWidget):
 
                     for dir in reimport:
                         self.importSingleFolder(dir)
-
+            else:
+                # probably feed watcher
+                self.emit(SIGNAL('feedwatcher'))
 
         else:
             pass

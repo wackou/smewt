@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout, QTabWidget, QIcon, QSystemTrayIcon, QAction, QMenu
+from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu
 from PyQt4.QtCore import SIGNAL, QSize
 import sys
 from smewt.gui import MainWidget, FeedWatchWidget
@@ -50,6 +50,11 @@ class SmewtGui(QMainWindow):
         self.createWidgets()
         self.createActions()
 
+        # create menubar
+        importMenu = self.menuBar().addMenu('Import')
+        importMenu.addAction(self.importMovieAction)
+        importMenu.addAction(self.importSeriesAction)
+
         # create toolbar
         navigationToolBar = self.addToolBar('Navigation')
         navigationToolBar.addAction(self.backAction)
@@ -59,13 +64,24 @@ class SmewtGui(QMainWindow):
 
         self.createTrayIcon()
 
+        # tmp
+        self.connect(self.mainWidget, SIGNAL('feedwatcher'),
+                     self.showFeedWatcher)
+
+    def showFeedWatcher(self):
+        self.tabWidget.setCurrentIndex(1)
+
+    def showSpeedDial(self):
+        self.tabWidget.setCurrentIndex(0)
+        self.mainWidget.speedDial()
+
     def createWidgets(self):
         self.mainWidget = MainWidget()
         self.feedWatchWidget = FeedWatchWidget()
 
-        self.tabWidget = QTabWidget()
-        self.tabWidget.addTab(self.mainWidget, 'Media')
-        self.tabWidget.addTab(self.feedWatchWidget, 'Feed Watcher')
+        self.tabWidget = QStackedWidget()
+        self.tabWidget.addWidget(self.mainWidget)
+        self.tabWidget.addWidget(self.feedWatchWidget)
 
         self.setCentralWidget(self.tabWidget)
 
@@ -92,12 +108,22 @@ class SmewtGui(QMainWindow):
         self.backAction = QAction(QIcon('icons/go-previous.png'), 'Back', self)
         self.connect(self.backAction, SIGNAL('triggered()'),
                      self.mainWidget.back)
+
         self.fwdAction = QAction(QIcon('icons/go-next.png'), 'Forward', self)
+
         self.homeAction = QAction(QIcon('icons/go-home.png'), 'Home (Speed Dial)', self)
         self.homeAction.setStatusTip('Returns to the speed dial')
         self.connect(self.homeAction, SIGNAL('triggered()'),
-                     self.mainWidget.speedDial)
+                     self.showSpeedDial)
 
+        # import actions
+        self.importMovieAction = QAction('Import movie folder', self)
+        self.connect(self.importMovieAction,  SIGNAL('triggered()'),
+                     self.mainWidget.importMovieFolder)
+
+        self.importSeriesAction = QAction('Import series folder', self)
+        self.connect(self.importSeriesAction,  SIGNAL('triggered()'),
+                     self.mainWidget.importSeriesFolder)
 
 
     def createTrayIcon(self):
