@@ -48,7 +48,10 @@ class BookmarkListWidget(QWidget):
                                                               'smewt/icons/applications-multimedia.png'),
 
                            'Unwatched Movies\n     (Spreadsheet)': (SmewtUrl('media', 'movie/unwatched'),
-                                                                    'smewt/icons/applications-multimedia.png')
+                                                                    'smewt/icons/applications-multimedia.png'),
+
+                           'Speed Dial': (SmewtUrl('media', 'speeddial/'),
+                                          'smewt/icons/applications-multimedia.png')
                           }
 
         layout = QVBoxLayout()

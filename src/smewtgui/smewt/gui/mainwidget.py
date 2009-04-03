@@ -25,7 +25,7 @@ from smewt.importer import Importer
 from PyQt4.QtCore import SIGNAL, SLOT, QVariant, QProcess, QSettings, pyqtSignature
 from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QSizePolicy
 from PyQt4.QtWebKit import QWebView, QWebPage
-from smewt.media import series, movie
+from smewt.media import series, movie, speeddial
 from bookmarkwidget import BookmarkListWidget
 import logging
 from os.path import join, dirname, splitext
@@ -38,11 +38,14 @@ class MainWidget(QWidget):
         super(MainWidget, self).__init__()
 
         backButton = QPushButton('Back')
+        homeButton = QPushButton('Home')
         folderImportButton = QPushButton('Import series folder...')
         movieFolderImportButton = QPushButton('Import movie folder...')
 
         self.connect(backButton, SIGNAL('clicked()'),
                      self.back)
+        self.connect(homeButton, SIGNAL('clicked()'),
+                     self.speedDial)
         self.connect(folderImportButton, SIGNAL('clicked()'),
                      self.importSeriesFolder)
         self.connect(movieFolderImportButton, SIGNAL('clicked()'),
@@ -62,6 +65,7 @@ class MainWidget(QWidget):
 
         toolbar = QHBoxLayout()
         toolbar.addWidget(backButton)
+        toolbar.addWidget(homeButton)
         toolbar.addStretch(1)
         toolbar.addWidget(folderImportButton)
         toolbar.addWidget(movieFolderImportButton)
@@ -72,7 +76,7 @@ class MainWidget(QWidget):
         bookmarks.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
         self.connect(bookmarks,  SIGNAL('selected'),
                      self.setSmewtUrl)
-        navigation.addWidget(bookmarks)
+        #navigation.addWidget(bookmarks)
         navigation.addWidget(self.collectionView)
 
         layout = QVBoxLayout()
@@ -114,6 +118,9 @@ class MainWidget(QWidget):
             self.setSmewtUrl(self.history[-2])
         except IndexError:
             pass
+
+    def speedDial(self):
+        self.setSmewtUrl(SmewtUrl('media', 'speeddial/'))
 
     def setSmewtUrl(self, url):
         if not isinstance(url, SmewtUrl):
@@ -168,7 +175,11 @@ class MainWidget(QWidget):
     def refreshCollectionView(self):
         surl = self.smewtUrl
 
-        if surl.mediaType == 'series':
+        if surl.mediaType == 'speeddial':
+            html = speeddial.view.render(surl, self.collection)
+            self.collectionView.page().mainFrame().setHtml(html)
+
+        elif surl.mediaType == 'series':
             html = series.view.render(surl, self.collection)
             #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
             self.collectionView.page().mainFrame().setHtml(html)
