@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu
+from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox
 from PyQt4.QtCore import SIGNAL, QSize
 import sys
 from smewt.gui import MainWidget, FeedWatchWidget
@@ -51,9 +51,16 @@ class SmewtGui(QMainWindow):
         self.createActions()
 
         # create menubar
+        mainMenu = self.menuBar().addMenu('Main')
+        mainMenu.addAction(self.quitAction)
+
         importMenu = self.menuBar().addMenu('Import')
         importMenu.addAction(self.importMovieAction)
         importMenu.addAction(self.importSeriesAction)
+
+        helpMenu = self.menuBar().addMenu('Help')
+        helpMenu.addAction(self.aboutAction)
+        helpMenu.addAction(self.aboutQtAction)
 
         # create toolbar
         navigationToolBar = self.addToolBar('Navigation')
@@ -102,6 +109,14 @@ class SmewtGui(QMainWindow):
         self.restoreAction = QAction('Restore', self)
         self.connect(self.restoreAction, SIGNAL('triggered()'),
                      self.showNormal)
+
+        self.aboutAction = QAction('About', self)
+        self.connect(self.aboutAction, SIGNAL('triggered()'),
+                     self.about)
+
+        self.aboutQtAction = QAction('About Qt', self)
+        self.connect(self.aboutQtAction, SIGNAL('triggered()'),
+                     self.aboutQt)
 
 
         # navigation bar
@@ -163,6 +178,16 @@ class SmewtGui(QMainWindow):
         else:
             self.statusWidget.progressBar.setMaximum(total)
             self.statusWidget.progressBar.setValue(tagged)
+
+    def about(self):
+        QMessageBox.about(self, 'About Smewt',
+'''Smewt - a smart media manager
+
+(c) 2008, 2009 Nicolas Wack, Ricard Marxer
+GPLv3 licensed''')
+
+    def aboutQt(self):
+        QMessageBox.aboutQt(self)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv + [ '-geometry', '1024x720' ]) # FIXME: this is not portable (X11 only)
