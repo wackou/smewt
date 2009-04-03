@@ -149,7 +149,7 @@ class IMDBMetadataProvider(QObject):
             loresFilename = imageDir + '/%s_lores.jpg' % imdbID
             open(loresFilename, 'w').write(urlopen(poster['loresImg']).read())
         except Exception, e:
-            loresFilename = join(os.getcwd(), 'noposter.png')
+            loresFilename = join(os.getcwd(), 'smewt', 'media', 'common', 'images', 'noposter.png')
             log.warning('Could not find lores poster for imdb ID %s because: %s' % (imdbID, str(e)[:100]))
 
         try:
@@ -159,7 +159,7 @@ class IMDBMetadataProvider(QObject):
             hiresFilename = imageDir + '/%s_hires.jpg' % imdbID
             open(hiresFilename, 'w').write(urlopen(poster['hiresImg']).read())
         except Exception, e:
-            hiresFilename = join(os.getcwd(), 'noposter.png')
+            hiresFilename = join(os.getcwd(), 'smewt', 'media', 'common', 'images', 'noposter.png')
             log.warning('Could not find hires poster for imdb ID %s because: %s' % (imdbID, str(e)[:100]))
 
 
