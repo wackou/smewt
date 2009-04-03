@@ -125,6 +125,8 @@ class SmewtGui(QMainWindow):
                      self.mainWidget.back)
 
         self.fwdAction = QAction(QIcon('icons/go-next.png'), 'Forward', self)
+        self.connect(self.fwdAction, SIGNAL('triggered()'),
+                     self.mainWidget.forward)
 
         self.homeAction = QAction(QIcon('icons/go-home.png'), 'Home (Speed Dial)', self)
         self.homeAction.setStatusTip('Returns to the speed dial')

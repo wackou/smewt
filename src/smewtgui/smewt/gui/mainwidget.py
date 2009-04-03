@@ -68,6 +68,7 @@ class MainWidget(QWidget):
         self.setLayout(layout)
 
         self.history = []
+        self.index = 0
         baseUrl = QSettings().value('base_url').toString()
         if baseUrl == '':
             baseUrl = 'smewt://media/speeddial/'
@@ -84,27 +85,28 @@ class MainWidget(QWidget):
         self.importer.start()
 
     def back(self):
-        try:
-            self.setSmewtUrl(self.history[-2])
-        except IndexError:
-            pass
+        self.setSmewtUrl(None, self.index - 1)
+
+    def forward(self):
+        self.setSmewtUrl(None, self.index + 1)
 
     def speedDial(self):
         self.setSmewtUrl(SmewtUrl('media', 'speeddial/'))
 
-    def setSmewtUrl(self, url):
-        if not isinstance(url, SmewtUrl):
-            url = SmewtUrl(url = url)
+    def setSmewtUrl(self, url, index = None):
+        if index is not None:
+            self.index = min(max(index, 0), len(self.history)-1)
+            self.smewtUrl = self.history[self.index]
 
-        self.smewtUrl = url
+        else:
+            if not isinstance(url, SmewtUrl):
+                url = SmewtUrl(url = url)
 
-        try:
-            if self.history[-2] == url:
-                self.history = self.history[:-2]
-        except IndexError:
-            pass
+            self.smewtUrl = url
 
-        self.history.append(url)
+            self.history[self.index+1:] = []
+            self.history.append(url)
+            self.index = len(self.history) - 1
 
         QSettings().setValue('base_url',  QVariant(unicode(self.smewtUrl)))
         self.refreshCollectionView()
