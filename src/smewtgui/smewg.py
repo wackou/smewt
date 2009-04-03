@@ -19,7 +19,7 @@
 #
 
 from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout, QTabWidget, QIcon, QSystemTrayIcon, QAction, QMenu
-from PyQt4.QtCore import SIGNAL
+from PyQt4.QtCore import SIGNAL, QSize
 import sys
 from smewt.gui import MainWidget, FeedWatchWidget
 
@@ -49,6 +49,14 @@ class SmewtGui(QMainWindow):
 
         self.createWidgets()
         self.createActions()
+
+        # create toolbar
+        navigationToolBar = self.addToolBar('Navigation')
+        navigationToolBar.addAction(self.backAction)
+        navigationToolBar.addAction(self.fwdAction)
+        navigationToolBar.addAction(self.homeAction)
+        navigationToolBar.setIconSize(QSize(32,32))
+
         self.createTrayIcon()
 
     def createWidgets(self):
@@ -78,6 +86,18 @@ class SmewtGui(QMainWindow):
         self.restoreAction = QAction('Restore', self)
         self.connect(self.restoreAction, SIGNAL('triggered()'),
                      self.showNormal)
+
+
+        # navigation bar
+        self.backAction = QAction(QIcon('icons/go-previous.png'), 'Back', self)
+        self.connect(self.backAction, SIGNAL('triggered()'),
+                     self.mainWidget.back)
+        self.fwdAction = QAction(QIcon('icons/go-next.png'), 'Forward', self)
+        self.homeAction = QAction(QIcon('icons/go-home.png'), 'Home (Speed Dial)', self)
+        self.homeAction.setStatusTip('Returns to the speed dial')
+        self.connect(self.homeAction, SIGNAL('triggered()'),
+                     self.mainWidget.speedDial)
+
 
 
     def createTrayIcon(self):
