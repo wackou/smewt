@@ -173,7 +173,7 @@ class MainWidget(QWidget):
 
     @pyqtSignature("QString, bool")
     def updateWatched(self, title, watched):
-        self.collection.findOne(Movie, title = title).watched = watched
+        self.collection.findOne(Movie, title = unicode(title)).watched = watched
 
     def linkClicked(self,  url):
         log.info('clicked on link %s', url)
