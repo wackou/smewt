@@ -154,7 +154,7 @@ class MainWidget(QWidget):
         elif surl.mediaType == 'series':
             html = series.view.render(surl, self.collection)
             #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
-            print html[:4000]
+            #print html[:4000]
             self.collectionView.page().mainFrame().setHtml(html)
 
         elif surl.mediaType == 'movie':

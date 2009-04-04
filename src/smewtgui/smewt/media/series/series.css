@@ -50,6 +50,13 @@
  height: 1% /* Holly hack for Peekaboo Bug */
 }
 
+.episode img {
+ top: 0px;
+ left: 0px;
+ position: relative;
+ float: leftt;
+}
+
 .series {
  height: 90px;
  border: 1px solid #778;
@@ -57,6 +64,7 @@
  margin: 5px;
  margin-left: 0px;
 }
+
 
 .series img {
  position: relative;
