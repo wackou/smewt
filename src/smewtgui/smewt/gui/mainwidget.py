@@ -236,7 +236,7 @@ class MainWidget(QWidget):
                         reimport.add(dirname(video.filename))
 
                     for dir in reimport:
-                        self.importSingleFolder(dir)
+                        self.importSingleFolder(dir, EpisodeTagger)
             else:
                 # probably feed watcher
                 self.emit(SIGNAL('feedwatcher'))

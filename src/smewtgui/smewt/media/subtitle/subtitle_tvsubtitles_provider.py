@@ -20,7 +20,7 @@
 
 import re, logging
 from urllib import urlopen, urlencode
-from smewt import utils, SmewtException, cachedmethod
+from smewt import textutils, utils, SmewtException, cachedmethod
 
 def simpleMatch(string, regexp):
     return re.compile(regexp).search(string).groups()[0]
@@ -38,7 +38,7 @@ class TVSubtitlesProvider:
         searchHtml = urlopen(self.baseUrl + '/search.php', data).read()
         resultsHtml = between(searchHtml, 'Search results', '<div id="right">')
         rexp = '<a href="(?P<url>.*?)">(?P<title>.*?)</a>'
-        matches = utils.multipleMatchRegexp(resultsHtml, rexp)
+        matches = textutils.multipleMatchRegexp(resultsHtml, rexp)
 
         # add baseUrl and remove year information
         for match in matches:
@@ -83,7 +83,7 @@ class TVSubtitlesProvider:
         subtitlesHtml = between(episodeHtml, 'Subtitles for this episode:', '<br clear=all>')
 
         result = [ self.parseSubtitleInfo(s['sub'])
-                   for s in utils.multipleMatchRegexp(subtitlesHtml, '(?P<sub><a href=.*?</a>)') ]
+                   for s in textutils.multipleMatchRegexp(subtitlesHtml, '(?P<sub><a href=.*?</a>)') ]
 
         return result
 
@@ -99,7 +99,7 @@ class TVSubtitlesProvider:
         if len(subs) > 1:
             logging.warning('More than 1 possible subtitle found: %s', str(subs))
             if videoFilename:
-                dists = [ (utils.levenshtein(videoFilename, sub['title']), sub) for sub in subs ]
+                dists = [ (textutils.levenshtein(videoFilename, sub['title']), sub) for sub in subs ]
                 sub = sorted(dists)[0][1]
             logging.warning('Choosing %s' % sub)
 
