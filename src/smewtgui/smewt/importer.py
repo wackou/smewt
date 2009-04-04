@@ -98,7 +98,7 @@ class Worker(QObject):
             self.importer.progressChanged(self.tagCount - len(self.taggingQueue),  self.tagCount)
             self.importer.importFinished(self.results)
 
-    def tagged(self, taggedMedia):
+    def tagged(self, taggedMedia, send = False):
         log.info('Media tagged: %s' % taggedMedia)
         self.importer.foundData(taggedMedia)
         self.tagNext()

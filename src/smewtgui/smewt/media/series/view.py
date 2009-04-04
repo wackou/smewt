@@ -30,8 +30,8 @@ def render(url, collection):
 
     if url.viewType == 'single':
         # creates a new graph with all the media related to the given series
-        episodes = collection.findAll(Episode, series = Series(url.args))
         metadata = Graph()
+        episodes = collection.findAll(Episode, series = Series(url.args))
         for f in collection.findAll(Media):
             if f.metadata in episodes:
                 metadata += f

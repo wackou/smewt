@@ -20,3 +20,4 @@
 
 from episodetagger import EpisodeTagger
 from movietagger import MovieTagger
+from subtitletagger import SubtitleTagger

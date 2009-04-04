@@ -154,6 +154,7 @@ class MainWidget(QWidget):
         elif surl.mediaType == 'series':
             html = series.view.render(surl, self.collection)
             #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
+            print html[:4000]
             self.collectionView.page().mainFrame().setHtml(html)
 
         elif surl.mediaType == 'movie':
@@ -166,7 +167,6 @@ class MainWidget(QWidget):
 
         else:
             raise SmewtException('MainWidget: Invalid media type: %s' % surl.mediaType)
-
 
     def connectJavaScript(self):
         self.collectionView.page().mainFrame().addToJavaScriptWindowObject('mainWidget', self)
@@ -215,18 +215,18 @@ class MainWidget(QWidget):
                     episodes = self.collection.findAll(Metadata, series = Series({ 'title': series }))
                     files = [ media for media in self.collection.nodes
                               if isinstance(media, Media) and media.metadata in episodes ]
-
+                    
                     videos = [ f for f in files if f.type() == 'video' ]
                     subtitles = [ f for f in files if f.type() == 'subtitle' ]
 
                     reimport = set()
                     for video in videos:
                         basename = splitext(video.filename)[0]
-                        subsBasename = basename + '.' + languageMap[language]
+                        subsBasename = basename + '.' + language
                         foundSubs = [ s for s in subtitles if splitext(s.filename)[0] == subsBasename ]
-
+                        
                         if foundSubs: continue
-
+                        
                         episode = video.metadata
                         log.info('MainWidget: trying to download subs for %s' % episode)
                         tvsub.downloadSubtitle(subsBasename, episode['series']['title'],

@@ -19,3 +19,4 @@
 #
 
 from subtitle_tvsubtitles_provider import TVSubtitlesProvider
+from subtitleobject import Subtitle

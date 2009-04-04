@@ -80,7 +80,7 @@ class TVSubtitlesProvider:
     def getAvailableSubtitlesID(self, series, season, number):
         episodeID = self.getEpisodeID(series, season, number)
         episodeHtml = urlopen(self.baseUrl + '/episode-%s.html' % episodeID).read()
-        subtitlesHtml = between(episodeHtml, 'Subtitles for this episode:', '<br clear=all>')
+        subtitlesHtml = between(episodeHtml, 'Subtitles for this episode', 'Back to')
 
         result = [ self.parseSubtitleInfo(s['sub'])
                    for s in textutils.multipleMatchRegexp(subtitlesHtml, '(?P<sub><a href=.*?</a>)') ]
@@ -91,7 +91,7 @@ class TVSubtitlesProvider:
         """videoFilename is just used a hint when we find multiple subtitles"""
         import cStringIO, zipfile, os.path
         subs = [ sub for sub in self.getAvailableSubtitlesID(series, season, episode) if sub['code'] == language ]
-
+        
         if not subs:
             return
 

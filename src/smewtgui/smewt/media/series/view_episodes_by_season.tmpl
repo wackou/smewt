@@ -20,14 +20,18 @@ episodes = []
 for media in eps.findAll(Media):
     md = defaultdict(lambda:None)
     md.update(media.metadata.toDict())
+    md['subtitleUrls'] = []
 
     if media.type() == 'video':
         episodes += [ md ]
         md['filename'] = media.filename
         md['url'] = SmewtUrl('action', 'play', { 'filename1': media.filename })
+
     elif media.type() == 'subtitle':
-        md.setdefault('subtitles', []).append(media.filename)
-        md['numSubtitles'] = len(md['subtitles'])
+        langs = [lang.lower() for lang in media.filename.split('.') if len(lang) == 2]
+        md['subtitleUrls'].append( {'language': 'png/%s.png' % langs[-1] if langs else 'png/%s.png' % 'unknown',
+                                    'url': SmewtUrl('action', 'play', { 'filename1': media.filename, 'subtitle': media.filename })} )
+        md['numSubtitles'] = len(md['subtitleUrls'])
 
 for md in episodes:
     seasons[md['season']].append(md)
@@ -70,11 +74,11 @@ import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'series')
   #for ep in [ ep for ep in eps if 'title' in ep ]
     #if 'filename' in ep:
       #try
-        #if 'numSubtitles' in ep:
-            <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title </a> ($ep.numSubtitles subtitles)
-        #else
-            <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title </a>
-        #end if
+        <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title </a>
+        
+        #for s in ep['subtitleUrls']
+             <a href=$s.language><img src=$s.language /></a>
+        #end for
       #except
         <div class="episode"> ? - $ep.title
       #end try
@@ -84,7 +88,7 @@ import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'series')
       #end if
       </div>
     #else
-      <div class="episode"><em>$ep.episodeNumber - $ep.title</em></div>
+      <div class="episode"> <em>No filename associated</em> </div>
     #end if
   #end for
 

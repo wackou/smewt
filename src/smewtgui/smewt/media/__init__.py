@@ -20,3 +20,4 @@
 
 from series import *
 from movie import *
+from subtitle import *
