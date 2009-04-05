@@ -17,6 +17,7 @@ seriesName = series['title']
 poster = series['loresImage']
 englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'en' })
 frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'fr' })
+spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'es' })
 
 # First prepare the episodes
 episodes = {}
@@ -47,6 +48,7 @@ for media in eps.findAll(Media):
         md['numSubtitles'] = len(md['subtitleUrls'])
         
 for md in episodes.values():
+    md['subtitleUrls'].sort(key = lambda x: x['languageImage'])
     seasons[ md['season'] ].append( md )    
 
 for season, eps in seasons.items():
@@ -72,6 +74,7 @@ for season, eps in seasons.items():
 
   <a href="$englishSubsLink">Get missing English subtitles</a>
   <a href="$frenchSubsLink">Get missing French subtitles</a>
+  <a href="$spanishSubsLink">Get missing Spanish subtitles</a>
   <a href="javascript:toggleByName('synopsis')">Toggle synopsis</a>
 </div>
 

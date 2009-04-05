@@ -210,7 +210,7 @@ class MainWidget(QWidget):
                 if surl.actionType == 'getsubtitles':
                     from smewt.media.subtitle import TVSubtitlesProvider
                     tvsub = TVSubtitlesProvider()
-                    languageMap = { 'en': u'English', 'fr': u'Français' }
+                    languageMap = { 'en': u'English', 'fr': u'Français', 'sp': u'Spanish' }
 
                     # find episodes which don't have subtitles and get it directly
                     series = surl.args['title']
