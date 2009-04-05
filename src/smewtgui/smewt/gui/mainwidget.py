@@ -201,6 +201,9 @@ class MainWidget(QWidget):
                         args.append(surl.args['filename%d' % nfile])
                         nfile += 1
 
+                    if 'subtitle' in surl.args:
+                        args.append(surl.args['subtitle'])
+                        
                     log.debug('launching %s with args = %s' % (action, str(args)))
                     self.externalProcess.start(action, args)
 

@@ -37,9 +37,11 @@ for media in eps.findAll(Media):
     elif media.type() == 'subtitle':
         langs = [lang.lower() for lang in media.filename.split('.')]
         
+        lang = 'unknown'
         if len(langs) >= 3 and len(langs[-2]) == 2:
            lang = langs[-2]
-           md.setdefault('subtitleUrls', []).append( {'languageImage': import_dir + '/icons/png/%s.png' % (lang,),
+        
+        md.setdefault('subtitleUrls', []).append( {'languageImage': import_dir + '/icons/png/%s.png' % (lang,),
                          'url': SmewtUrl('action', 'play', { 'filename1': os.path.splitext(os.path.splitext(media.filename)[0])[0] + '.avi', 'subtitle': media.filename })} )
 
         md['numSubtitles'] = len(md['subtitleUrls'])
