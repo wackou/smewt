@@ -113,8 +113,12 @@ class TVSubtitlesProvider:
         filename = zf.infolist()[0].filename
         extension = os.path.splitext(filename)[1]
         subtext = zf.read(filename)
-        subf = open(basename + extension, 'w')
+        resultFilename = basename + extension
+        subf = open(resultFilename, 'w')
         subf.write(subtext)
+        subf.close()
+        return resultFilename
+        
 
 
 if __name__ == '__main__':

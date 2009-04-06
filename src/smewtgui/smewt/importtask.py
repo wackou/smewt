@@ -21,43 +21,64 @@
 
 from PyQt4.QtCore import SIGNAL, Qt, QObject, QThread
 from smewt import Media, Graph
+from smewt.taskmanager import Task
 from smewt.media.series import Episode
 from smewt.base.utils import GlobDirectoryWalker
 import logging
 
 log = logging.getLogger('smewt.importer')
 
-class Importer(QThread):
-    def __init__(self, filetypes):
+class Importer(QThread, Task):
+    def __init__(self, folder, tagger, filetypes):
         super(Importer, self).__init__()
         self.filetypes = filetypes
+        self.totalCount = 0
+        self.progressedCount = 0
+        self.folder = folder
+        self.tagger = tagger
+        
+    def total(self):
+        return self.totalCount
+
+    def progressed(self):
+        return self.progressedCount
+
 
     def run(self):
-        self.worker = Worker(self, self.filetypes)
-        self.connect(self, SIGNAL('importFolder'),
-                     self.worker.importFolder) #, Qt.QueuedConnection)
+        self.worker = Worker(self.folder, self.tagger, self.filetypes)
+
+        self.connect(self.worker, SIGNAL('progressChanged'),
+                     self.progressChanged)
+
+        self.connect(self.worker, SIGNAL('foundData'),
+                     self.foundData)
+
+        self.connect(self.worker, SIGNAL('importFinished'),
+                     self.importFinished)
+
+        self.worker.begin()
+
         self.exec_()
 
     def __del__(self):
         self.wait()
-
-    def importFolder(self, folder, tagger):
-        self.emit(SIGNAL('importFolder'), folder, tagger)
-
+    
     def importFinished(self, results):
-        self.emit(SIGNAL('importFinished'), results)
+        self.emit(SIGNAL('foundData'), results)
+        self.emit(SIGNAL('taskFinished'), self)
 
     def progressChanged(self, current, total):
-        self.emit(SIGNAL('progressChanged'), current, total)
+        self.progressedCount = current
+        self.totalCount = total
+        self.emit(SIGNAL('progressChanged'))
 
     def foundData(self, md):
         self.emit(SIGNAL('foundData'), md)
 
 
 class Worker(QObject):
-    def __init__(self, importer, filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]):
+    def __init__(self, folder, tagger, filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]):
         super(Worker, self).__init__()
-        self.importer = importer
         self.filetypes = filetypes
         self.taggingQueue = []
         self.taggers = {}
@@ -65,15 +86,11 @@ class Worker(QObject):
         self.tagCount = 0
         self.state = 'stopped'
 
-    def importFolder(self, folder, tagger):
         for filename in GlobDirectoryWalker(folder, self.filetypes):
             mediaObject = Media(filename)
             self.taggingQueue.append(( tagger, mediaObject ))
-
-        self.tagCount += len(self.taggingQueue)
-        self.importer.progressChanged(self.tagCount - len(self.taggingQueue),  self.tagCount)
-        self.begin()
-
+            self.tagCount += 1
+            
     def begin(self):
         if self.state != 'running':
             self.state = 'running'
@@ -83,22 +100,23 @@ class Worker(QObject):
     def tagNext(self):
         if self.taggingQueue:
             tagger, next = self.taggingQueue.pop()
-
+            self.emit(SIGNAL('progressChanged'), self.tagCount - len(self.taggingQueue),  self.tagCount)
+            
             if tagger not in self.taggers:
                 self.taggers[tagger] = tagger()
                 self.connect(self.taggers[tagger], SIGNAL('tagFinished'), self.tagged)
 
             self.taggers[tagger].tag(next)
-
-            self.importer.progressChanged(self.tagCount - len(self.taggingQueue),  self.tagCount)
-
+                  
         else:
             self.state = 'stopped'
             self.tagCount = 0
-            self.importer.progressChanged(self.tagCount - len(self.taggingQueue),  self.tagCount)
-            self.importer.importFinished(self.results)
+            self.emit(SIGNAL('progressChanged'), self.tagCount - len(self.taggingQueue),  self.tagCount)
+            self.emit(SIGNAL('foundData'), self.results)
+            self.emit(SIGNAL('importFinished'), self.results)
+            self.results = Graph()
 
     def tagged(self, taggedMedia, send = False):
         log.info('Media tagged: %s' % taggedMedia)
-        self.importer.foundData(taggedMedia)
+        self.results += taggedMedia            
         self.tagNext()
