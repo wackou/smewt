@@ -31,28 +31,32 @@ for media in eps.findAll(Media):
     md.update( meta )
     md.setdefault('subtitleUrls', [])
         
-    if media.type() == 'video':       
+    if media.type() == 'video':
         md['filename'] = media.filename
         md['url'] = SmewtUrl('action', 'play', { 'filename1': media.filename })
         
     elif media.type() == 'subtitle':
         langs = [lang.lower() for lang in media.filename.split('.')]
-        
+
         lang = 'unknown'
         if len(langs) >= 3 and len(langs[-2]) == 2:
            lang = langs[-2]
-        
+
+        mediaFilename = os.path.splitext(os.path.splitext(media.filename)[0])[0] + '.avi'
+        subtitleFilename = media.filename
+
         md.setdefault('subtitleUrls', []).append( {'languageImage': import_dir + '/icons/png/%s.png' % (lang,),
-                         'url': SmewtUrl('action', 'play', { 'filename1': os.path.splitext(os.path.splitext(media.filename)[0])[0] + '.avi', 'subtitle': media.filename })} )
+                      'url': SmewtUrl('action', 'play', { 'filename1': mediaFilename, 'subtitle': subtitleFilename })} )
 
         md['numSubtitles'] = len(md['subtitleUrls'])
-        
+                
 for md in episodes.values():
     md['subtitleUrls'].sort(key = lambda x: x['languageImage'])
     seasons[ md['season'] ].append( md )    
 
 for season, eps in seasons.items():
     seasons[ season ] = sorted(eps, key = lambda x: x['episodeNumber'])
+
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -106,7 +110,7 @@ for season, eps in seasons.items():
 
 <%
 import os.path
-extras = [ ep for ep in eps if 'title' not in ep ]
+extras = [ ep for ep in eps if 'title' not in ep and ep['filename'] is not None ]
 for ep in extras:
     ep['title'] = os.path.basename(ep['filename'])
 %>
