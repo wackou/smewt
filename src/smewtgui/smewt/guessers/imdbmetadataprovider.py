@@ -182,7 +182,7 @@ class IMDBMetadataProvider(QObject):
             self.emit(SIGNAL('finished'), episode, eps)
 
         except Exception, e:
-            log.warning(str(e) + ' -- ' + textutils.toUtf8(episode))
+            log.warning(str(e) + ' -- ' + str(textutils.toUtf8(episode)))
             self.emit(SIGNAL('finished'), episode, [])
 
     def startMovie(self, movieName):
