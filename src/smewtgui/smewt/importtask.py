@@ -26,11 +26,11 @@ from smewt.media.series import Episode
 from smewt.base.utils import GlobDirectoryWalker
 import logging
 
-log = logging.getLogger('smewt.importer')
+log = logging.getLogger('smewt.importtask')
 
-class Importer(QThread, Task):
+class ImportTask(QThread, Task):
     def __init__(self, folder, tagger, filetypes):
-        super(Importer, self).__init__()
+        super(ImportTask, self).__init__()
         self.filetypes = filetypes
         self.totalCount = 0
         self.progressedCount = 0

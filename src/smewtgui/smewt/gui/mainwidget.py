@@ -21,7 +21,9 @@
 
 from smewt import SmewtException, SmewtUrl, Graph, Media, Metadata
 from smewt.media import Series, Episode, Movie
-from smewt.importer import Importer
+from smewt.importtask import ImportTask
+from smewt.subtitletask import SubtitleTask
+from smewt.taskmanager import Task, TaskManager
 from PyQt4.QtCore import SIGNAL, SLOT, QVariant, QProcess, QSettings, pyqtSignature
 from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QSizePolicy
 from PyQt4.QtWebKit import QWebView, QWebPage
@@ -75,14 +77,12 @@ class MainWidget(QWidget):
         self.setSmewtUrl(baseUrl)
 
         self.externalProcess = QProcess()
-        filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]
 
-        self.importer = Importer(filetypes = filetypes)
-        self.connect(self.importer, SIGNAL('importFinished'), self.mergeCollection)
-        self.connect(self.importer, SIGNAL('progressChanged'), self.progressChanged)
-        self.connect(self.importer, SIGNAL('foundData'), self.mergeCollection)
-        self.connect(self, SIGNAL('importFolder'), self.importer.importFolder)
-        self.importer.start()
+        self.taskManager = TaskManager()
+        self.connect(self.taskManager, SIGNAL('importFinished'), self.mergeCollection)
+        self.connect(self.taskManager, SIGNAL('progressChanged'), self.progressChanged)
+        self.connect(self.taskManager, SIGNAL('foundData'), self.mergeCollection)
+        
 
     def back(self):
         self.setSmewtUrl(None, self.index - 1)
@@ -136,7 +136,12 @@ class MainWidget(QWidget):
 
 
     def importSingleFolder(self, path, taggerType):
-        self.emit(SIGNAL('importFolder'), path, taggerType)
+        filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]
+
+        importTask = ImportTask(path, taggerType, filetypes = filetypes)
+        self.connect(importTask, SIGNAL('foundData'), self.mergeCollection)
+        self.taskManager.add( importTask )
+        importTask.start()
 
     def progressChanged(self,  tagged,  total):
         self.emit(SIGNAL('progressChanged'),  tagged,  total)
@@ -208,38 +213,15 @@ class MainWidget(QWidget):
                     self.externalProcess.start(action, args)
 
                 if surl.actionType == 'getsubtitles':
-                    from smewt.media.subtitle import TVSubtitlesProvider
-                    tvsub = TVSubtitlesProvider()
-                    languageMap = { 'en': u'English', 'fr': u'Français', 'sp': u'Spanish' }
-
-                    # find episodes which don't have subtitles and get it directly
                     series = surl.args['title']
                     language = surl.args['language']
                     episodes = self.collection.findAll(Metadata, series = Series({ 'title': series }))
-                    files = [ media for media in self.collection.nodes
-                              if isinstance(media, Media) and media.metadata in episodes ]
-                    
-                    videos = [ f for f in files if f.type() == 'video' ]
-                    subtitles = [ f for f in files if f.type() == 'subtitle' ]
 
-                    reimport = set()
-                    for video in videos:
-                        basename = splitext(video.filename)[0]
-                        subsBasename = basename + '.' + language
-                        foundSubs = [ s for s in subtitles if splitext(s.filename)[0] == subsBasename ]
-                        
-                        if foundSubs: continue
-                        
-                        episode = video.metadata
-                        log.info('MainWidget: trying to download subs for %s' % episode)
-                        tvsub.downloadSubtitle(subsBasename, episode['series']['title'],
-                                               episode['season'], episode['episodeNumber'], language,
-                                               video.filename)
+                    subTask = SubtitleTask(self.collection, episodes, language)
+                    self.connect(subTask, SIGNAL('foundData'), self.mergeCollection)
+                    self.taskManager.add( subTask )
+                    subTask.start()
 
-                        reimport.add(dirname(video.filename))
-
-                    for dir in reimport:
-                        self.importSingleFolder(dir, EpisodeTagger)
             else:
                 # probably feed watcher
                 self.emit(SIGNAL('feedwatcher'))
