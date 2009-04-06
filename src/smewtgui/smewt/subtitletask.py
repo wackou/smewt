@@ -24,6 +24,8 @@ from smewt import Media, Graph
 from smewt.taskmanager import Task
 from smewt.media.series import Episode
 from os.path import *
+
+import itertools
 import logging
 
 log = logging.getLogger('smewt.subtitletask')
@@ -104,27 +106,35 @@ class Worker(QObject):
         subs = Graph()
 
         self.emit(SIGNAL('progressChanged'), 0, len(videos))
-        
-        for index, video in enumerate(videos):
-            basename = splitext(video.filename)[0]
-            subsBasename = basename + '.' + self.language
-            foundSubs = [ s for s in subtitles if splitext(s.filename)[0] == subsBasename ]
-            
-            if foundSubs: continue
-            
-            episode = video.metadata
-            log.info('MainWidget: trying to download subs for %s' % episode)
-            subsFilename = tvsub.downloadSubtitle(subsBasename, episode['series']['title'],
-                                                  episode['season'], episode['episodeNumber'], self.language,
-                                                  video.filename)
 
-            sub = Media( subsFilename )
-            sub.metadata = episode
-            
-            self.emit(SIGNAL('progressChanged'), index + 1, len(videos))
-            self.emit(SIGNAL('foundData'), sub)
+        # Group by season, so that we can send a foundData signal every season
+        videos.sort(key = lambda x: x.metadata['season'])
 
-            subs += sub
+        index = 0
+        for season, videogroup in itertools.groupby(videos, key = lambda x: x.metadata['season']):
+            for video in videogroup:
+                basename = splitext(video.filename)[0]
+                subsBasename = basename + '.' + self.language
+                foundSubs = [ s for s in subtitles if splitext(s.filename)[0] == subsBasename ]
+                
+                if foundSubs: continue
+                
+                episode = video.metadata
+                log.info('MainWidget: trying to download subs for %s' % episode)
+                subsFilename = tvsub.downloadSubtitle(subsBasename, episode['series']['title'],
+                                                      episode['season'], episode['episodeNumber'], self.language,
+                                                      video.filename)
+                
+                sub = Media( subsFilename )
+                sub.metadata = episode
+                subs += sub
+                
+                self.emit(SIGNAL('progressChanged'), index + 1, len(videos))
+                index += 1
+
+            self.emit(SIGNAL('foundData'), subs)
+            subs = Graph()
 
         self.emit(SIGNAL('progressChanged'), 0, 0)
+        
         self.emit(SIGNAL('importFinished'), subs)
