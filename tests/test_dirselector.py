@@ -20,11 +20,8 @@ class DirCheckForm(QWidget):
             for i in range(self.model.columnCount()-1):
                 self.tree.hideColumn(i+1)
             
-            if (self.rootDir == None) or (self.rootDir == ""):
-                self.tree.setRootIndex(self.model.index(QDir.currentPath()))
-            else:
-                self.tree.setRootIndex(self.model.index(self.rootDir))
-                
+            self.tree.setRootIndex(self.model.index("/"))
+            
             self.formLayout = QVBoxLayout()
             self.formLayout.addWidget(self.tree)
             self.setLayout(self.formLayout)
@@ -56,9 +53,21 @@ class DirModel(QDirModel):
             self.setAutoCheckStateChildren( index, Qt.Checked if state == Qt.Checked else Qt.Unchecked )
 
         def setAutoCheckStateParents(self, index, state):
-            if self.parent( index ).isValid():
-                self.autocheckstates[ self.parent( index ) ] = state
-                self.setAutoCheckStateParents( self.parent( index ), state )
+            parent = self.parent( index )
+            if parent.isValid():
+                if state == Qt.Unchecked:
+                    # If any of the children are checked or partially checked
+                    # we don't continue unchecking
+                    for childRow in range( self.rowCount( parent ) ):
+                        childIndex = self.index( childRow, 0, parent )
+                        if (self.autocheckstates[ self.key( childIndex ) ] == Qt.Checked) or (self.autocheckstates[ self.key( childIndex ) ] == Qt.PartiallyChecked):
+                            self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"), parent, parent)
+                            return
+                    
+                self.autocheckstates[ self.key( parent ) ] = state                        
+                self.setAutoCheckStateParents( parent, state )
+                self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"), parent, parent)
+
 
         def setAutoCheckStateChildren(self, index, state):
             for childRow in range(self.rowCount( index )):
@@ -66,13 +75,17 @@ class DirModel(QDirModel):
                 childIndex = self.index(childRow, 0, index)
 
                 self.editable[ self.key( childIndex ) ] = (state == Qt.Unchecked)
-
+                
                 subState = state
                 if state == Qt.Unchecked:
                     subState = self.checkstates[ self.key( childIndex ) ]
-
+                    if subState == Qt.Checked:
+                            self.setAutoCheckStateParents( childIndex, Qt.PartiallyChecked )
+                    
                 self.autocheckstates[ self.key( childIndex ) ] = subState
                 self.setAutoCheckStateChildren( childIndex, subState )
+
+            self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"), self.index(0, 0, index), self.index(self.rowCount(index)-1, 0, index))
             
         def autoCheckState(self, index):
             return self.autocheckstates[ self.key( index ) ]
