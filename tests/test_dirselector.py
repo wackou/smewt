@@ -1,0 +1,115 @@
+#!/usr/bin/env python
+
+import sys
+from collections import *
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+
+
+class DirCheckForm(QWidget):
+        def __init__(self, rootDir, parent=None):
+            QWidget.__init__(self)
+            
+            self.rootDir = rootDir
+            self.model = DirModel()
+            self.tree = QTreeView()
+            self.tree.setModel(self.model)
+
+            # Hide header and all columns but the dirname
+            self.tree.header().hide()
+            for i in range(self.model.columnCount()-1):
+                self.tree.hideColumn(i+1)
+            
+            if (self.rootDir == None) or (self.rootDir == ""):
+                self.tree.setRootIndex(self.model.index(QDir.currentPath()))
+            else:
+                self.tree.setRootIndex(self.model.index(self.rootDir))
+                
+            self.formLayout = QVBoxLayout()
+            self.formLayout.addWidget(self.tree)
+            self.setLayout(self.formLayout)
+
+
+class DirModel(QDirModel):
+
+        def __init__(self, parent=None):
+            QDirModel.__init__(self, parent)
+            self.setFilter( QDir.AllDirs | QDir.NoDotAndDotDot )
+            
+            self.checkstates = defaultdict( lambda : Qt.Unchecked )
+            self.autocheckstates = defaultdict( lambda : Qt.Unchecked )
+            self.editable = defaultdict( lambda : True )            
+
+        def data(self, index, role = Qt.DisplayRole):
+            if (role == Qt.CheckStateRole and index.column() == 0):
+                return QVariant( self.autoCheckState(index) )
+            
+            return QDirModel.data(self, index, role)
+
+        def key(self, index):
+            return self.fileInfo(index).absoluteFilePath()
+
+        def setCheckState(self, index, state):
+            self.checkstates[ self.key(index) ] = state
+            self.autocheckstates[ self.key(index) ] = state
+            self.setAutoCheckStateParents( index, Qt.PartiallyChecked if state == Qt.Checked else Qt.Unchecked )
+            self.setAutoCheckStateChildren( index, Qt.Checked if state == Qt.Checked else Qt.Unchecked )
+
+        def setAutoCheckStateParents(self, index, state):
+            if self.parent( index ).isValid():
+                self.autocheckstates[ self.parent( index ) ] = state
+                self.setAutoCheckStateParents( self.parent( index ), state )
+
+        def setAutoCheckStateChildren(self, index, state):
+            for childRow in range(self.rowCount( index )):
+                
+                childIndex = self.index(childRow, 0, index)
+
+                self.editable[ self.key( childIndex ) ] = (state == Qt.Unchecked)
+
+                subState = state
+                if state == Qt.Unchecked:
+                    subState = self.checkstates[ self.key( childIndex ) ]
+
+                self.autocheckstates[ self.key( childIndex ) ] = subState
+                self.setAutoCheckStateChildren( childIndex, subState )
+            
+        def autoCheckState(self, index):
+            return self.autocheckstates[ self.key( index ) ]
+
+        def checkState(self, index):
+            return self.checkstates[ self.key(index) ]
+
+        def setData(self, index, value, role = Qt.EditRole):
+            if (role == Qt.CheckStateRole and index.column() == 0):
+                state = self.checkState(index)
+                if state == Qt.Checked:
+                    self.setCheckState(index, Qt.Unchecked)
+                    
+                elif state == Qt.Unchecked:
+                    self.setCheckState(index, Qt.Checked)
+                    
+                self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"), index, index)
+                
+                return True
+
+            return QDirModel.setData(self, index, value, role)
+
+
+        def flags(self, index):
+            if self.editable[ self.key( index ) ]:
+                return Qt.ItemIsUserCheckable  | Qt.ItemIsEnabled
+            else:
+                return Qt.NoItemFlags
+
+
+
+if __name__ == "__main__":
+        app = QApplication(sys.argv)
+
+        rootDir = "."
+
+        form = DirCheckForm(rootDir)
+        form.setWindowTitle("Test")
+        form.show()
+        sys.exit(app.exec_())
