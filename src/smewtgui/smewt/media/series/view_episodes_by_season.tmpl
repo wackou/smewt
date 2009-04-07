@@ -15,9 +15,24 @@ seasons = defaultdict(lambda: [])
 series = eps.findAll(Series)[0]
 seriesName = series['title']
 poster = series['loresImage']
-englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'en' })
-frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'fr' })
-spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'es' })
+subsLinks = [ (import_dir + '/icons/png/%s.png' % ('en',), 
+               SmewtUrl('action', 
+                        'getsubtitles', 
+                        { 'title': seriesName, 
+                          'language': 'en' }),
+               'en'),
+              (import_dir + '/icons/png/%s.png' % ('fr',), 
+               SmewtUrl('action',
+                        'getsubtitles',
+                        { 'title': seriesName, 
+                          'language': 'fr' }),
+               'fr'),
+              (import_dir + '/icons/png/%s.png' % ('es',),
+               SmewtUrl('action',
+                        'getsubtitles', 
+                        { 'title': seriesName, 
+                          'language': 'es' }),
+               'es')]
 
 # First prepare the episodes
 episodes = {}
@@ -46,7 +61,8 @@ for media in eps.findAll(Media):
         subtitleFilename = media.filename
 
         md.setdefault('subtitleUrls', []).append( {'languageImage': import_dir + '/icons/png/%s.png' % (lang,),
-                      'url': SmewtUrl('action', 'play', { 'filename1': mediaFilename, 'subtitle': subtitleFilename })} )
+                      'url': SmewtUrl('action', 'play', { 'filename1': mediaFilename, 'subtitle': subtitleFilename }),
+                      'language': '[%s]' % lang} )
 
         md['numSubtitles'] = len(md['subtitleUrls'])
                 
@@ -57,6 +73,11 @@ for md in episodes.values():
 for season, eps in seasons.items():
     seasons[ season ] = sorted(eps, key = lambda x: x['episodeNumber'])
 
+
+style = {}
+style['smallFontSize'] = 'bold 24px Verdana, sans-serif'
+style['mediumFontSize'] = 'bold 34px Verdana, sans-serif'
+style['largeFontSize'] = 'bold 44px Verdana, sans-serif'
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -67,6 +88,40 @@ for season, eps in seasons.items():
 <script type="text/javascript" src="file://$(import_dir)/tabber.js"></script>
 <script type="text/javascript" src="file://$(import_dir)/styler.js"></script>
 <link rel="stylesheet" href="file://$(import_dir)/series.css" type="text/css">
+
+<style>
+#header {
+  font: $style.mediumFontSize;
+}
+
+.series a {
+ font: $style.largeFontSize;
+}
+
+h1 {
+ font: $style.mediumFontSize;
+}
+
+.rightshifted a {
+ font: $style.smallFontSize;
+}
+
+.tabberlive .tabbertab .episode {
+ font: $style.smallFontSize;
+}
+
+.tabberlive .tabbertab .extras {
+ font: $style.smallFontSize;
+}
+
+ul.tabbernav
+{
+ font: $style.mediumFontSize;
+}
+
+
+</style>
+
 </head>
 
 <body>
@@ -76,10 +131,18 @@ for season, eps in seasons.items():
 <div class="rightshifted">
   <h1>$seriesName</h1>
 
-  <a href="$englishSubsLink">Get missing English subtitles</a>
-  <a href="$frenchSubsLink">Get missing French subtitles</a>
-  <a href="$spanishSubsLink">Get missing Spanish subtitles</a>
-  <a href="javascript:toggleByName('synopsis')">Toggle synopsis</a>
+  <div id="actions">
+    <div class="action">
+    Get missing subtitles:
+      #for subsLink in $subsLinks
+         <a href="$subsLink[1]"><img src="$subsLink[0]" alt="$subsLink[2]" /></a>
+      #end for
+    </div>
+
+    <div class="action">
+    <a href="javascript:toggleByName('synopsis')">Toggle synopsis</a>
+    </div>
+  </div>
 </div>
 
 <div class="tabber">
@@ -97,7 +160,7 @@ for season, eps in seasons.items():
 
       #if 'subtitleUrls' in ep
           #for s in ep['subtitleUrls']
-               <a href="$s.url"><img src="file://$s.languageImage" /></a>
+               <a href="$s.url"><img src="file://$s.languageImage"/></a>
           #end for
       #end if
           

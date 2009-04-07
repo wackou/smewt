@@ -38,6 +38,7 @@
  color: #333333;
 }
 
+
 #left-side {
  float: left;
  width: 50%;
@@ -81,6 +82,30 @@
  margin-left: 30px;
  position: relative;
  top: 30px;
+}
+
+.action img {
+ top: 0px;
+ left: 0px;
+ position: relative;
+ float: right;
+}
+
+.action a {
+ text-decoration: none;
+ border: 1px solid #778;
+ padding-left: 5px;
+ padding-right: 5px;
+ padding-top: 2px;
+ padding-bottom: 2px;
+ background: #DDE;
+ color: #448;
+}
+
+.action a:hover {
+ color: #000;
+ background: #AAE;
+ border-color: #227;
 }
 
 /**** end of smewt style rules **********************************/
