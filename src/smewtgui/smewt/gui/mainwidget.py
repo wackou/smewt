@@ -202,9 +202,10 @@ class MainWidget(QWidget):
                         nfile += 1
 
                     if 'subtitle' in surl.args:
-                        args.append(surl.args['subtitle'])
+                        args += ['-sub', surl.args['subtitle']]
                         
                     log.debug('launching %s with args = %s' % (action, str(args)))
+                    print args
                     self.externalProcess.start(action, args)
 
                 if surl.actionType == 'getsubtitles':
