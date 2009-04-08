@@ -60,7 +60,7 @@ class MainWidget(QWidget):
         if t == '':
             t = join(dirname(unicode(settings.fileName())),  'Smewg.collection')
             settings.setValue('collection_file',  QVariant(t))
-
+        
         try:
             self.collection.load(t)
         except:
