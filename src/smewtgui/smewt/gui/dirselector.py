@@ -29,7 +29,10 @@ class DirCheckForm(QWidget):
             self.setLayout(self.formLayout)
             
         def selectionChanged(self):
-            print self.model.selectedFolders()
+            self.emit(SIGNAL('selectionChanged'))
+                
+        def selectedFolders(self):
+            return self.model.selectedFolders()
             
 
 class DirModel(QDirModel):
@@ -72,8 +75,10 @@ class DirModel(QDirModel):
                         if (self.autocheckstates[ self.key( childIndex ) ] == Qt.Checked) or (self.autocheckstates[ self.key( childIndex ) ] == Qt.PartiallyChecked):
                             self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"), parent, parent)
                             return
-                    
+
+                # Set the state of the parent
                 self.autocheckstates[ self.key( parent ) ] = state                        
+                # Continue propagating check states towards the root tree
                 self.setAutoCheckStateParents( parent, state )
                 self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"), parent, parent)
 
@@ -82,7 +87,7 @@ class DirModel(QDirModel):
             for childRow in range(self.rowCount( index )):
                 
                 childIndex = self.index(childRow, 0, index)
-
+                
                 self.editable[ self.key( childIndex ) ] = (state == Qt.Unchecked)
                 
                 subState = state
