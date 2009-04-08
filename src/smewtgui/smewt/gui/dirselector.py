@@ -5,7 +5,7 @@ from collections import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-class DirCheckForm(QWidget):
+class DirSelector(QWidget):
         def __init__(self, focusDir, parent=None):
             QWidget.__init__(self)
             
@@ -24,7 +24,7 @@ class DirCheckForm(QWidget):
             
 
             #self.tree.setRootIndex(self.model.index("/"))
-            currentIndex = self.model.index("/home/rmarxer")
+            currentIndex = self.model.index(self.focusDir)
             self.tree.scrollTo( currentIndex,
                                 QAbstractItemView.PositionAtTop )
             self.tree.setSelectionMode( QAbstractItemView.NoSelection )
@@ -144,7 +144,7 @@ if __name__ == "__main__":
 
         rootDir = "."
         
-        form = DirCheckForm(rootDir)
+        form = DirSelector(rootDir)
         form.setWindowTitle("Test")
         form.show()
         sys.exit(app.exec_())
