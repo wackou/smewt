@@ -6,10 +6,10 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 class DirCheckForm(QWidget):
-        def __init__(self, rootDir, parent=None):
+        def __init__(self, focusDir, parent=None):
             QWidget.__init__(self)
             
-            self.rootDir = rootDir
+            self.focusDir = focusDir
             self.model = DirModel()
             self.tree = QTreeView()
             self.tree.setModel(self.model)
@@ -22,7 +22,14 @@ class DirCheckForm(QWidget):
             for i in range(self.model.columnCount()-1):
                 self.tree.hideColumn(i+1)
             
-            self.tree.setRootIndex(self.model.index("/"))
+
+            #self.tree.setRootIndex(self.model.index("/"))
+            currentIndex = self.model.index("/home/rmarxer")
+            self.tree.scrollTo( currentIndex,
+                                QAbstractItemView.PositionAtTop )
+            self.tree.setSelectionMode( QAbstractItemView.NoSelection )
+            self.tree.setCurrentIndex( currentIndex )
+            self.tree.expand( currentIndex )
             
             self.formLayout = QVBoxLayout()
             self.formLayout.addWidget(self.tree)
