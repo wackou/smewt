@@ -1,4 +1,23 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Smewt - A smart collection manager
+# Copyright (c) 2008 Ricard Marxer <email@ricardmarxer.com>
+# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
+#
+# Smewt is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Smewt is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
 
 import sys
 from collections import *
@@ -6,14 +25,14 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 class DirSelector(QWidget):
-        def __init__(self, focusDir, parent=None):
+        def __init__(self, focusDir = QDir.currentPath(), parent=None):
             QWidget.__init__(self)
             
             self.focusDir = focusDir
             self.model = DirModel()
             self.tree = QTreeView()
             self.tree.setModel(self.model)
-
+            
             self.connect(self.model, SIGNAL('selectionChanged'),
                          self.selectionChanged)
 
@@ -21,15 +40,16 @@ class DirSelector(QWidget):
             self.tree.header().hide()
             for i in range(self.model.columnCount()-1):
                 self.tree.hideColumn(i+1)
-            
 
-            #self.tree.setRootIndex(self.model.index("/"))
+            # Set the focus directory
             currentIndex = self.model.index(self.focusDir)
             self.tree.scrollTo( currentIndex,
                                 QAbstractItemView.PositionAtTop )
-            self.tree.setSelectionMode( QAbstractItemView.NoSelection )
             self.tree.setCurrentIndex( currentIndex )
             self.tree.expand( currentIndex )
+
+            # Don't allow selection
+            self.tree.setSelectionMode( QAbstractItemView.NoSelection )
             
             self.formLayout = QVBoxLayout()
             self.formLayout.addWidget(self.tree)
@@ -141,10 +161,8 @@ class DirModel(QDirModel):
 
 if __name__ == "__main__":
         app = QApplication(sys.argv)
-
-        rootDir = "."
         
-        form = DirSelector(rootDir)
+        form = DirSelector()
         form.setWindowTitle("Test")
         form.show()
         sys.exit(app.exec_())
