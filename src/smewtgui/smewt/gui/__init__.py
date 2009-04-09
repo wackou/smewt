@@ -21,3 +21,4 @@
 from mainwidget import MainWidget
 from bookmarkwidget import BookmarkListWidget
 from feedwatchwidget import FeedWatchWidget
+from collectionfolderspage import CollectionFoldersPage

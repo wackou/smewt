@@ -20,6 +20,7 @@
 #
 
 from smewt import SmewtException, SmewtUrl, Graph, Media, Metadata
+from smewt.gui.collectionfolderspage import CollectionFoldersPage
 from smewt.media import Series, Episode, Movie
 from smewt.importtask import ImportTask
 from smewt.subtitletask import SubtitleTask
@@ -66,7 +67,7 @@ class MainWidget(QWidget):
         except:
             log.warning('Could not load collection %s', t)
             raise
-
+        
         self.setLayout(layout)
 
         self.history = []
@@ -126,6 +127,13 @@ class MainWidget(QWidget):
 
         if filename:
             self.importSingleFolder(filename, EpisodeTagger)
+
+    def selectCollectionFolders(self):
+        d = CollectionFoldersPage(self,
+                                  settings = QSettings(),
+                                  settingKeyFolders = 'collection_folders',
+                                  settingKeyRecursive = 'collection_folders_recursive')
+        d.exec_()
 
     def importMovieFolder(self):
         filename = unicode(QFileDialog.getExistingDirectory(self, 'Select directory to import', '/data/Movies/',

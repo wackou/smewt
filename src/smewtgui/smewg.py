@@ -55,6 +55,7 @@ class SmewtGui(QMainWindow):
         mainMenu.addAction(self.quitAction)
 
         importMenu = self.menuBar().addMenu('Import')
+        importMenu.addAction(self.selectCollectionFoldersAction)
         importMenu.addAction(self.importMovieAction)
         importMenu.addAction(self.importSeriesAction)
 
@@ -134,6 +135,10 @@ class SmewtGui(QMainWindow):
                      self.showSpeedDial)
 
         # import actions
+        self.selectCollectionFoldersAction = QAction('Select collection folders', self)
+        self.connect(self.selectCollectionFoldersAction,  SIGNAL('triggered()'),
+                     self.mainWidget.selectCollectionFolders)
+
         self.importMovieAction = QAction('Import movie folder', self)
         self.connect(self.importMovieAction,  SIGNAL('triggered()'),
                      self.mainWidget.importMovieFolder)

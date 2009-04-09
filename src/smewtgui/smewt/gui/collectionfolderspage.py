@@ -25,24 +25,32 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import os
 
-class CollectionFolderPage(QDialog):
-    def __init__(self, folders = [], recursiveSelection = True):
-        QDialog.__init__(self)
-        self.settings = QSettings()
+class CollectionFoldersPage(QDialog):
+    def __init__(self,
+                 parent = 0,
+                 folders = [],
+                 recursiveSelection = True,
+                 settings = None,
+                 settingKeyFolders = 'collection_folders',
+                 settingKeyRecursive = 'collection_folders_recursive'):
+                 
+        QDialog.__init__(self, parent)
+        
+        self.settings = settings
+        self.settingKeyFolders = settingKeyFolders
+        self.settingKeyRecursive = settingKeyRecursive
+
+        if self.settings is not None:
+            self.getSettings()
+        else:
+            self.folders = folders
+            self.recursiveSelection = recursiveSelection
 
         self.layout = QVBoxLayout()
 
-        self.folders = folders
-        self.recursiveSelection = recursiveSelection
-
-        try:
-            self.getSettings()
-        except:
-            pass
         
         self.instructions_label = QLabel("Select the folders where your series are.")
         self.layout.addWidget(self.instructions_label)
-
         self.dirselector = DirSelector( folders = self.folders, recursiveSelection = self.recursiveSelection )
         self.connect(self.dirselector, SIGNAL('selectionChanged'), self.selectionChanged)
         self.layout.addWidget(self.dirselector)
@@ -68,11 +76,12 @@ class CollectionFolderPage(QDialog):
         self.connect(self.cancel_button, SIGNAL('clicked()'), self.cancel)
 
     def ok(self):
-        self.setSettings()
+        self.apply()
         self.done(1)
 
     def apply(self):
         self.setSettings()
+        self.apply_button.setEnabled(False)
 
     def cancel(self):
         self.done(1)
@@ -90,22 +99,23 @@ class CollectionFolderPage(QDialog):
             self.apply_button.setEnabled(False)
 
     def getSettings(self):
-        self.selectedFolders = settings.value('collection_folders').split(';')
-        self.recursiveSelection = settings.value('collection_folders_recursive').toBoolean()
-            
+        self.folders = str(self.settings.value(self.settingKeyFolders).toString()).split(';')
+        self.recursiveSelection = self.settings.value(self.settingKeyRecursive).toBool()
+
     def setSettings(self):
         selectedFolders = [str(f) for f in self.dirselector.selectedFolders()]
 
-        self.settings.setValue('collection_folders',
-                               QVariant( ';'.join( selectedFolders ) ) )
-        
-        self.settings.setValue('collection_folders_recursive',
-                               QVariant( self.dirselector.recursiveSelection() ) )
+        if self.settings is not None:
+            self.settings.setValue(self.settingKeyFolders,
+                                   QVariant( ';'.join( selectedFolders ) ) )
+            
+            self.settings.setValue(self.settingKeyRecursive,
+                                   QVariant( self.dirselector.recursiveSelection() ) )
 
 if __name__ == "__main__":
         app = QApplication(sys.argv)
         
-        form = CollectionFolderPage(folders = ['/home/rmarxer/dev/eigen2'])
+        form = CollectionFoldersPage(folders = ['/home/rmarxer/dev/eigen2'])
         form.setWindowTitle("Test")
         form.show()
         sys.exit(app.exec_())
