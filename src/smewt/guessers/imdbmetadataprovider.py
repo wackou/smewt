@@ -22,6 +22,7 @@ from smewt import cachedmethod, utils, SmewtException, Graph, Media
 from smewt.guessers.guesser import Guesser
 from smewt.media import Episode, Series, Movie
 from smewt.base import textutils
+from smewt.base.utils import smewtDirectory, smewtUserDirectory
 
 from PyQt4.QtCore import SIGNAL, QObject, QUrl
 from PyQt4.QtWebKit import QWebView
@@ -133,11 +134,8 @@ class IMDBMetadataProvider(QObject):
 
     @cachedmethod
     def getPoster(self, imdbID):
-        # FIXME: big hack!
-        import os
-        from os.path import join
-        imageDir = join(os.getcwd(), 'smewt', 'media', 'common', 'images')
-        os.system('mkdir -p "%s"' % imageDir)
+        imageDir = smewtUserDirectory('images')
+        noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
 
         loresFilename, hiresFilename = None, None
 
@@ -149,7 +147,7 @@ class IMDBMetadataProvider(QObject):
             loresFilename = imageDir + '/%s_lores.jpg' % imdbID
             open(loresFilename, 'w').write(urlopen(poster['loresImg']).read())
         except Exception, e:
-            loresFilename = join(os.getcwd(), 'smewt', 'media', 'common', 'images', 'noposter.png')
+            loresFilename = noposter
             log.warning('Could not find lores poster for imdb ID %s because: %s' % (imdbID, str(e)[:100]))
 
         try:
@@ -159,7 +157,7 @@ class IMDBMetadataProvider(QObject):
             hiresFilename = imageDir + '/%s_hires.jpg' % imdbID
             open(hiresFilename, 'w').write(urlopen(poster['hiresImg']).read())
         except Exception, e:
-            hiresFilename = join(os.getcwd(), 'smewt', 'media', 'common', 'images', 'noposter.png')
+            hiresFilename = noposter
             log.warning('Could not find hires poster for imdb ID %s because: %s' % (imdbID, str(e)[:100]))
 
 

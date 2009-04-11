@@ -50,14 +50,23 @@ class EpisodeTagger(Tagger):
         log.debug('Finished tagging: %s', media)
         if not media.metadata:
             log.warning('Could not find any tag for: %s' % media)
+
             # we didn't find any info outside of what the filename told us
             media.metadata = self.filenameMetadata
-            # try anyway to get the correct series name
-            from smewt.guessers.episodeimdb import IMDBMetadataProvider
-            seriesName = IMDBMetadataProvider().getSeries(media.metadata['series']['title'])
+
+            # try anyway to get the correct series name and poster
+            from smewt.guessers.imdbmetadataprovider import IMDBMetadataProvider
+            mdprovider = IMDBMetadataProvider()
+
+            series = mdprovider.getSeries(media.metadata['series']['title'])
             result += media.metadata
-            result.update(media.metadata, 'series', Series({ 'title': seriesName }))
+            result.update(media.metadata, 'series', Series({ 'title': series }))
             result.update(media.metadata, 'episodeNumber', -1)
+
+            lores, hires = mdprovider.getPoster(series.movieID)
+            media.metadata['series']['loresImage'] = lores
+            media.metadata['series']['hiresImage'] = hires
+
 
         self.emit(SIGNAL('tagFinished'), media)
 

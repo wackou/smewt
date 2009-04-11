@@ -19,7 +19,7 @@
 #
 
 from smewt import SmewtException, SmewtUrl, EventServer
-from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings, QThread, QTimer, QString
+from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QThread, QTimer, QString
 from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QListWidget, QListView, QInputDialog, QLineEdit, QAbstractItemView, QLabel, QMessageBox, QDialog, QListWidget
 from smewt.plugins.amulefeedwatcher import AmuleFeedWatcher
 
