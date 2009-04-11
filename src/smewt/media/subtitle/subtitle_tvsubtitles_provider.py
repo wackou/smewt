@@ -116,32 +116,3 @@ class TVSubtitlesProvider:
         subf = open(basename + extension, 'w')
         subf.write(subtext)
 
-
-if __name__ == '__main__':
-    series, season, episode, language = 'heroes', 3, 5, 'fr'
-
-    tvsub = TVSubtitlesProvider()
-    subs = tvsub.getAvailableSubtitlesID(series, season, episode)
-
-    for sub in subs:
-        if sub['code'] == language:
-            tmpfile = '/tmp/sub.zip'
-
-            # urllib is not able to correctly follow the URL with spaces in it, use urllib2
-            import urllib2
-            f = open(tmpfile, 'wb')
-            f.write(urllib2.urlopen('http://www.tvsubtitles.net/download-%s.html' % sub['id']).read())
-            f.close()
-
-            import zipfile
-            zf = zipfile.ZipFile(tmpfile)
-            filename = zf.infolist()[0].filename
-            subtext = zf.read(filename)
-            subf = open('/tmp/' + filename, 'w')
-            subf.write(subtext)
-            unicodeSub = subtext.decode('iso-8859-1')
-
-            import locale
-            print 'Found subtitle:', filename
-            print
-            print unicodeSub.encode(locale.getdefaultlocale()[1])

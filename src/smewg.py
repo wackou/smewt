@@ -20,8 +20,10 @@
 
 from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox
 from PyQt4.QtCore import SIGNAL, QSize
-import sys
+import sys, logging
 from smewt.gui import MainWidget, FeedWatchWidget
+
+log = logging.getLogger('smewg')
 
 
 class StatusWidget(QWidget):
@@ -206,7 +208,7 @@ if __name__ == '__main__':
     sgui.show()
     app.exec_()
 
-    print 'writing cache to disk...'
+    log.info('Writing cache to disk...')
     cache.save('/tmp/smewt.cache')
-    print 'exiting'
+    log.info('Exiting')
     sys.exit() # why is this necessary when running from eric?

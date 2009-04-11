@@ -33,16 +33,9 @@ class NaiveSolver(Solver):
         results = sorted(query.metadata, cmp = lambda x, y: x.confidence > y.confidence)
         result = copy.copy(results[0])
 
-        #resultMediaObject = copy.copy(mediaObjects[0])
-
         for md in results[1:]:
             merge = True
             for k, v in md.properties.items():
-                #print 'Solver: Checking property ''%s'' ::: ''%s'' (%r) -- ''%s'' (%r)' % (k, v, mediaObject.confidence[k], resultMediaObject[k], resultMediaObject.confidence[k])
-                #if mediaObject.confidence.get(k, 0.0) > resultMediaObject.confidence.get(k, 0.0):
-                #if md.confidence[k] > resultMediaObject.confidence[k]:
-                #    resultMediaObject[k] = v
-                #    resultMediaObject.confidence[k] = mediaObject.confidence[k]
                 if result[k] and v and result[k] != v:
                     merge = False
             # FIXME: big hack
