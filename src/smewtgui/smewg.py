@@ -44,7 +44,7 @@ class SmewtGui(QMainWindow):
         super(SmewtGui, self).__init__()
         self.setWindowTitle('Smewg - An Ordinary Smewt Gui')
 
-        self.icon = QIcon('smewt/icons/nepomuk.png')
+        self.icon = QIcon('icons/smewt.svg')
         self.setWindowIcon(self.icon)
 
         self.createWidgets()
