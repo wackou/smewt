@@ -172,15 +172,15 @@ class IMDBMetadataProvider(QObject):
         try:
             series = self.getSeries(name)
             eps = self.getEpisodes(series)
+
             lores, hires = self.getPoster(series.movieID)
-            if eps:
-                eps[0]['series']['loresImage'] = lores
-                eps[0]['series']['hiresImage'] = hires
+            episode['series']['loresImage'] = lores
+            episode['series']['hiresImage'] = hires
 
             self.emit(SIGNAL('finished'), episode, eps)
 
         except Exception, e:
-            log.warning(str(e) + ' -- ' + textutils.toUtf8(episode))
+            log.warning(str(e) + ' -- ' + str(textutils.toUtf8(episode)))
             self.emit(SIGNAL('finished'), episode, [])
 
     def startMovie(self, movieName):

@@ -24,7 +24,7 @@ from smewt.guessers import *
 from smewt.solvers import *
 from PyQt4.QtCore import SIGNAL
 
-from smewt import Graph, SolvingChain, Media, Metadata
+from smewt import SmewtException, Graph, SolvingChain, Media, Metadata
 from smewt.media import Episode, Series
 import logging
 
@@ -58,14 +58,18 @@ class EpisodeTagger(Tagger):
             from smewt.guessers.imdbmetadataprovider import IMDBMetadataProvider
             mdprovider = IMDBMetadataProvider()
 
-            series = mdprovider.getSeries(media.metadata['series']['title'])
-            result += media.metadata
-            result.update(media.metadata, 'series', Series({ 'title': series }))
-            result.update(media.metadata, 'episodeNumber', -1)
+            try:
+                series = mdprovider.getSeries(media.metadata['series']['title'])
+                result += media.metadata
+                result.update(media.metadata, 'series', Series({ 'title': series }))
+                result.update(media.metadata, 'episodeNumber', -1)
 
-            lores, hires = mdprovider.getPoster(series.movieID)
-            media.metadata['series']['loresImage'] = lores
-            media.metadata['series']['hiresImage'] = hires
+                lores, hires = mdprovider.getPoster(series.movieID)
+                media.metadata['series']['loresImage'] = lores
+                media.metadata['series']['hiresImage'] = hires
+
+            except SmewtException:
+                log.warning('Could not even find a probable series name for: %s' % media)
 
 
         self.emit(SIGNAL('tagFinished'), media)
