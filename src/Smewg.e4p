@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Project SYSTEM "Project-4.6.dtd">
+<!-- eric4 project file for project Smewg -->
+<!-- Saved: 2009-04-11, 03:49:23 -->
+<!-- Copyright (C) 2009 Nicolas Wack, wackou@gmail.com -->
+<Project version="4.6">
+  <Language>en</Language>
+  <ProgLanguage mixed="0">Python</ProgLanguage>
+  <ProjectType>Qt4</ProjectType>
+  <Description>The Eric project for Smewt GUI</Description>
+  <Version>0.1</Version>
+  <Author>Nicolas Wack</Author>
+  <Email>wackou@gmail.com</Email>
+  <Sources>
+    <Source>smewg.py</Source>
+    <Source>smewt/__init__.py</Source>
+    <Source>smewt/solvers/simplesolver.py</Source>
+    <Source>smewt/solvers/naivesolver.py</Source>
+    <Source>smewt/solvers/__init__.py</Source>
+    <Source>smewt/solvers/solver.py</Source>
+    <Source>smewt/solvers/mergesolver.py</Source>
+    <Source>smewt/base/mediaobject.py</Source>
+    <Source>smewt/base/importer.py</Source>
+    <Source>smewt/base/solvingchain.py</Source>
+    <Source>smewt/base/smewtexception.py</Source>
+    <Source>smewt/base/cache.py</Source>
+    <Source>smewt/base/graph.py</Source>
+    <Source>smewt/base/eventserver.py</Source>
+    <Source>smewt/base/__init__.py</Source>
+    <Source>smewt/base/smewturl.py</Source>
+    <Source>smewt/base/textutils.py</Source>
+    <Source>smewt/base/utils.py</Source>
+    <Source>smewt/base/smewtdict.py</Source>
+    <Source>smewt/guessers/episodeimdb.py</Source>
+    <Source>smewt/guessers/episodefilename.py</Source>
+    <Source>smewt/guessers/guesser.py</Source>
+    <Source>smewt/guessers/movieimdb.py</Source>
+    <Source>smewt/guessers/__init__.py</Source>
+    <Source>smewt/guessers/moviefilename.py</Source>
+    <Source>smewt/guessers/imdbmetadataprovider.py</Source>
+    <Source>smewt/gui/feedwatchwidget.py</Source>
+    <Source>smewt/gui/__init__.py</Source>
+    <Source>smewt/gui/mainwidget.py</Source>
+    <Source>smewt/plugins/amulecommand.py</Source>
+    <Source>smewt/plugins/__init__.py</Source>
+    <Source>smewt/plugins/amulefeedwatcher.py</Source>
+    <Source>smewt/media/__init__.py</Source>
+    <Source>smewt/media/movie/view.py</Source>
+    <Source>smewt/media/movie/movieobject.py</Source>
+    <Source>smewt/media/movie/__init__.py</Source>
+    <Source>smewt/media/series/view.py</Source>
+    <Source>smewt/media/series/__init__.py</Source>
+    <Source>smewt/media/series/serieobject.py</Source>
+    <Source>smewt/media/subtitle/__init__.py</Source>
+    <Source>smewt/media/subtitle/subtitle_tvsubtitles_provider.py</Source>
+    <Source>smewt/media/speeddial/view.py</Source>
+    <Source>smewt/media/speeddial/__init__.py</Source>
+    <Source>smewt/taggers/__init__.py</Source>
+    <Source>smewt/taggers/movietagger.py</Source>
+    <Source>smewt/taggers/episodetagger.py</Source>
+    <Source>smewt/taggers/tagger.py</Source>
+    <Source>utils/regenerate_headers.py</Source>
+  </Sources>
+  <Forms>
+  </Forms>
+  <Translations>
+  </Translations>
+  <Resources>
+  </Resources>
+  <Interfaces>
+  </Interfaces>
+  <Others>
+  </Others>
+  <MainScript>smewg.py</MainScript>
+  <Vcs>
+    <VcsType>None</VcsType>
+  </Vcs>
+  <FiletypeAssociations>
+    <FiletypeAssociation pattern="*.ui" type="FORMS" />
+    <FiletypeAssociation pattern="*.idl" type="INTERFACES" />
+    <FiletypeAssociation pattern="*.qm" type="TRANSLATIONS" />
+    <FiletypeAssociation pattern="*.ptl" type="SOURCES" />
+    <FiletypeAssociation pattern="*.pyw" type="SOURCES" />
+    <FiletypeAssociation pattern="*.ui.h" type="FORMS" />
+    <FiletypeAssociation pattern="*.ts" type="TRANSLATIONS" />
+    <FiletypeAssociation pattern="*.py" type="SOURCES" />
+    <FiletypeAssociation pattern="*.qrc" type="RESOURCES" />
+  </FiletypeAssociations>
+</Project>
