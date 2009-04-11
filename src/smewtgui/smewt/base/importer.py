@@ -20,9 +20,9 @@
 #
 
 from PyQt4.QtCore import SIGNAL, Qt, QObject, QThread
-from smewt import Media, Graph
-from smewt.media.series import Episode
-from smewt.base.utils import GlobDirectoryWalker
+from mediaobject import Media
+from graph import Graph
+from utils import GlobDirectoryWalker
 import logging
 
 log = logging.getLogger('smewt.importer')

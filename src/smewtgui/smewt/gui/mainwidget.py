@@ -21,7 +21,7 @@
 
 from smewt import SmewtException, SmewtUrl, Graph, Media, Metadata
 from smewt.media import Series, Episode, Movie
-from smewt.importer import Importer
+from smewt.base.importer import Importer
 from PyQt4.QtCore import SIGNAL, SLOT, QVariant, QProcess, QSettings, pyqtSignature
 from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QSizePolicy
 from PyQt4.QtWebKit import QWebView, QWebPage

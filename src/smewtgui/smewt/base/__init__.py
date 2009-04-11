@@ -25,3 +25,4 @@ from solvingchain import SolvingChain, BlockingChain
 from cache import cachedmethod
 from eventserver import EventServer
 from graph import Graph
+from importer import Importer
