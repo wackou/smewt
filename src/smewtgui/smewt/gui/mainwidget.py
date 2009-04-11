@@ -26,7 +26,6 @@ from PyQt4.QtCore import SIGNAL, SLOT, QVariant, QProcess, QSettings, pyqtSignat
 from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QSizePolicy
 from PyQt4.QtWebKit import QWebView, QWebPage
 from smewt.media import series, movie, speeddial
-from bookmarkwidget import BookmarkListWidget
 import logging
 from os.path import join, dirname, splitext
 from smewt.taggers import EpisodeTagger, MovieTagger

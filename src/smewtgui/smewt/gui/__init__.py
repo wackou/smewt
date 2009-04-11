@@ -19,5 +19,4 @@
 #
 
 from mainwidget import MainWidget
-from bookmarkwidget import BookmarkListWidget
 from feedwatchwidget import FeedWatchWidget
