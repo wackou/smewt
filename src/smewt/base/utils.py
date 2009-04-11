@@ -21,8 +21,11 @@
 
 
 # filename- and network-related functions
-import os.path,  fnmatch
+import os, os.path, fnmatch
 import pycurl
+
+def smewtDirectory(*args):
+    return os.path.join(os.getcwd(), *args)
 
 def splitFilename(filename):
     root, path = os.path.split(filename)

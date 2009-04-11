@@ -12,23 +12,22 @@ movies = sorted([ { 'title': m['title'],
                     'url': SmewtUrl('media', 'movie/single', { 'title': m['title'] }),
                     'poster': m['loresImage'] } for m in allmovies ], key = lambda x: x['title'])
 
-import os, os.path
-# FIXME: this is not the correct way to do it...
-import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'common')
+from smewt.base.utils import smewtDirectory
+import_dir = smewtDirectory('smewt', 'media')
 
 %>
 
 <html>
 <head>
   <title>All movies view</title>
-  <link rel="stylesheet" href="file://$(import_dir)/../movie/movies.css">
+  <link rel="stylesheet" href="file://$(import_dir)/movie/movies.css">
 
 		<style type="text/css" title="currentStyle">
-			@import "file://$(import_dir)/dataTables-1.4/media/css/demos.css";
+			@import "file://$(import_dir)/3rdparty/dataTables-1.4/media/css/demos.css";
 		</style>
 
-    <script type="text/javascript" language="javascript" src="file://$(import_dir)/dataTables-1.4/media/js/jquery.js"></script>
-    <script type="text/javascript" language="javascript" src="file://$(import_dir)/dataTables-1.4/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" src="file://$(import_dir)/3rdparty/dataTables-1.4/media/js/jquery.js"></script>
+    <script type="text/javascript" language="javascript" src="file://$(import_dir)/3rdparty/dataTables-1.4/media/js/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf-8">
     #raw
 

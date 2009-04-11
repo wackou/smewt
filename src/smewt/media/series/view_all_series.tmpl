@@ -7,9 +7,8 @@ series = sorted([ { 'title': s['title'],
                     'url': SmewtUrl('media', 'series/single', { 'title': s['title'] }),
                     'poster': s['loresImage'] } for s in allseries ], key = lambda x: x['title'])
 
-import os, os.path
-# FIXME: this is not the correct way to do it...
-import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'series')
+from smewt.base.utils import smewtDirectory
+import_dir = smewtDirectory('smewt', 'media', 'series')
 
 %>
 

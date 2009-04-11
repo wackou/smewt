@@ -35,9 +35,8 @@ for md in episodes:
 for season, eps in seasons.items():
     seasons[season] = sorted(eps, key = lambda x: x['episodeNumber'])
 
-import os, os.path
-# FIXME: this is not the correct way to do it...
-import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'series')
+from smewt.base.utils import smewtDirectory
+import_dir = smewtDirectory('smewt', 'media')
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -45,9 +44,9 @@ import_dir = os.path.join(os.getcwd(), 'smewt', 'media', 'series')
 
 <head>
 <title>single serie display</title>
-<script type="text/javascript" src="file://$(import_dir)/tabber.js"></script>
-<script type="text/javascript" src="file://$(import_dir)/styler.js"></script>
-<link rel="stylesheet" href="file://$(import_dir)/series.css" type="text/css">
+<script type="text/javascript" src="file://$(import_dir)/3rdparty/tabber.js"></script>
+<script type="text/javascript" src="file://$(import_dir)/3rdparty/styler.js"></script>
+<link rel="stylesheet" href="file://$(import_dir)/series/series.css" type="text/css">
 </head>
 
 <body>
