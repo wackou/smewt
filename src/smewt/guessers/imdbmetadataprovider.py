@@ -146,9 +146,9 @@ class IMDBMetadataProvider(QObject):
             poster = textutils.matchRegexp(html, rexp)
             loresFilename = imageDir + '/%s_lores.jpg' % imdbID
             open(loresFilename, 'w').write(urlopen(poster['loresImg']).read())
-        except Exception, e:
-            loresFilename = noposter
-            log.warning('Could not find lores poster for imdb ID %s because: %s' % (imdbID, str(e)[:100]))
+        except SmewtException:
+            log.warning('Could not find poster for imdb ID %s' % imdbID)
+            return (noposter, noposter)
 
         try:
             html = urlopen('http://www.imdb.com' + poster['hiresUrl']).read()
@@ -156,9 +156,9 @@ class IMDBMetadataProvider(QObject):
             poster = textutils.matchRegexp(html, rexp)
             hiresFilename = imageDir + '/%s_hires.jpg' % imdbID
             open(hiresFilename, 'w').write(urlopen(poster['hiresImg']).read())
-        except Exception, e:
+        except SmewtException:
+            log.warning('Could not find hires poster for imdb ID %s' % imdbID)
             hiresFilename = noposter
-            log.warning('Could not find hires poster for imdb ID %s because: %s' % (imdbID, str(e)[:100]))
 
 
         return (loresFilename, hiresFilename)
