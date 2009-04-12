@@ -76,7 +76,7 @@ def guessXCT(filename):
         md['title'] = title
 
     finally:
-        return title, md
+        return filename, md
 
 def cleanMovieFilename(filename):
     import os.path
