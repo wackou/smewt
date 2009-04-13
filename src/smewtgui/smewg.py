@@ -122,10 +122,12 @@ class SmewtGui(QMainWindow):
 
         # navigation bar
         self.backAction = QAction(QIcon('icons/go-previous.png'), 'Back', self)
+        self.backAction.setStatusTip('Go back')
         self.connect(self.backAction, SIGNAL('triggered()'),
                      self.mainWidget.back)
 
         self.fwdAction = QAction(QIcon('icons/go-next.png'), 'Forward', self)
+        self.fwdAction.setStatusTip('Go forward')
         self.connect(self.fwdAction, SIGNAL('triggered()'),
                      self.mainWidget.forward)
 
@@ -136,14 +138,17 @@ class SmewtGui(QMainWindow):
 
         # import actions
         self.selectCollectionFoldersAction = QAction('Select collection folders', self)
+        self.selectCollectionFoldersAction.setStatusTip('Select the collection folders')
         self.connect(self.selectCollectionFoldersAction,  SIGNAL('triggered()'),
                      self.mainWidget.selectCollectionFolders)
 
         self.importMovieAction = QAction('Import movie folder', self)
+        self.importMovieAction.setStatusTip('Import a folder containing movies')
         self.connect(self.importMovieAction,  SIGNAL('triggered()'),
                      self.mainWidget.importMovieFolder)
 
         self.importSeriesAction = QAction('Import series folder', self)
+        self.importSeriesAction.setStatusTip('Import a folder containing series')
         self.connect(self.importSeriesAction,  SIGNAL('triggered()'),
                      self.mainWidget.importSeriesFolder)
 
