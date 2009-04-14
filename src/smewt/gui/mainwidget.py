@@ -83,6 +83,14 @@ class MainWidget(QWidget):
         self.connect(self.taskManager, SIGNAL('foundData'), self.mergeCollection)
         
 
+    def zoomIn(self):
+        self.collectionView.page().mainFrame().setTextSizeMultiplier( self.collectionView.page().mainFrame().textSizeMultiplier() + 1 )
+        self.refreshCollectionView()
+
+    def zoomOut(self):
+        self.collectionView.page().mainFrame().setTextSizeMultiplier( self.collectionView.page().mainFrame().textSizeMultiplier() - 1 )
+        self.refreshCollectionView()
+
     def back(self):
         self.setSmewtUrl(None, self.index - 1)
 

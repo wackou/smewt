@@ -69,6 +69,8 @@ class SmewtGui(QMainWindow):
         navigationToolBar.addAction(self.backAction)
         navigationToolBar.addAction(self.fwdAction)
         navigationToolBar.addAction(self.homeAction)
+        navigationToolBar.addAction(self.zoomInAction)
+        navigationToolBar.addAction(self.zoomOutAction)
         navigationToolBar.setIconSize(QSize(32,32))
 
         self.createTrayIcon()
@@ -134,6 +136,17 @@ class SmewtGui(QMainWindow):
         self.homeAction.setStatusTip('Returns to the speed dial')
         self.connect(self.homeAction, SIGNAL('triggered()'),
                      self.showSpeedDial)
+
+
+        self.zoomInAction = QAction(QIcon('icons/zoom-in.png'), 'Zoom in', self)
+        self.zoomInAction.setStatusTip('Make the text larger')
+        self.connect(self.zoomInAction, SIGNAL('triggered()'),
+                     self.mainWidget.zoomIn)
+
+        self.zoomOutAction = QAction(QIcon('icons/zoom-out.png'), 'Zoom out', self)
+        self.zoomOutAction.setStatusTip('Make the text larger')
+        self.connect(self.zoomOutAction, SIGNAL('triggered()'),
+                     self.mainWidget.zoomOut)
 
         # import actions
         self.importMovieAction = QAction('Import movie folder', self)
