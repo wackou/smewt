@@ -38,9 +38,16 @@ for media in eps.findAll(Media):
     elif media.type() == 'subtitle':
         langs = [lang.lower() for lang in media.filename.split('.')]
 
+        languages = {'en': 'en',
+                     'english': 'en',
+                     'french': 'fr',
+                     'fr': 'fr',
+                     'spanish': 'es',
+                     'es': 'es'}
+
         lang = 'unknown'
-        if len(langs) >= 3 and len(langs[-2]) == 2:
-           lang = langs[-2]
+        if len(langs) >= 3:
+           lang = languages.get(langs[-2].lower(), 'unknown')
 
         mediaFilename = os.path.splitext(os.path.splitext(media.filename)[0])[0] + '.avi'
         subtitleFilename = media.filename
