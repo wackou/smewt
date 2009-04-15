@@ -34,6 +34,10 @@ from smewt.taggers import EpisodeTagger, MovieTagger
 
 log = logging.getLogger('smewt.gui.mainwidget')
 
+minZoomFactor = 0.5
+maxZoomFactor = 3.0
+stepZoomFactor = 0.1
+
 class MainWidget(QWidget):
     def __init__(self):
         super(MainWidget, self).__init__()
@@ -46,6 +50,7 @@ class MainWidget(QWidget):
 
         self.collectionView = QWebView()
         self.collectionView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
+        self.setZoomFactor( QSettings().value('zoom_factor', QVariant(1.0)).toDouble()[0] )
         #self.collectionView.page().setLinkDelegationPolicy(QWebPage.DelegateExternalLinks)
         self.connect(self.collectionView,  SIGNAL('linkClicked(const QUrl&)'),
                      self.linkClicked)
@@ -83,13 +88,20 @@ class MainWidget(QWidget):
         self.connect(self.taskManager, SIGNAL('foundData'), self.mergeCollection)
         
 
+    def setZoomFactor(self, factor):
+        self.collectionView.page().mainFrame().setTextSizeMultiplier( factor )
+
     def zoomIn(self):
-        self.collectionView.page().mainFrame().setTextSizeMultiplier( self.collectionView.page().mainFrame().textSizeMultiplier() + 1 )
-        self.refreshCollectionView()
+        zoomFactor = min(QSettings().value('zoom_factor', QVariant(1.0)).toDouble()[0] + stepZoomFactor, maxZoomFactor )
+        QSettings().setValue('zoom_factor', QVariant( zoomFactor ) )
+
+        self.setZoomFactor( zoomFactor )
 
     def zoomOut(self):
-        self.collectionView.page().mainFrame().setTextSizeMultiplier( self.collectionView.page().mainFrame().textSizeMultiplier() - 1 )
-        self.refreshCollectionView()
+        zoomFactor = max(QSettings().value('zoom_factor', QVariant(1.0)).toDouble()[0] - stepZoomFactor, minZoomFactor)
+        QSettings().setValue('zoom_factor', QVariant( zoomFactor ) )
+
+        self.setZoomFactor( zoomFactor )
 
     def back(self):
         self.setSmewtUrl(None, self.index - 1)
