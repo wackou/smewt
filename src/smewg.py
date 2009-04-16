@@ -69,8 +69,8 @@ class SmewtGui(QMainWindow):
         navigationToolBar.addAction(self.backAction)
         navigationToolBar.addAction(self.fwdAction)
         navigationToolBar.addAction(self.homeAction)
-        navigationToolBar.addAction(self.zoomInAction)
         navigationToolBar.addAction(self.zoomOutAction)
+        navigationToolBar.addAction(self.zoomInAction)
         navigationToolBar.setIconSize(QSize(32,32))
 
         self.createTrayIcon()
