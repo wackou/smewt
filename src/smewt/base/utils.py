@@ -50,9 +50,11 @@ def splitFilename(filename):
     return result
 
 def guessCountryCode(filename):
-    '''Given a subtitle filename, tries to guess which is the language it contains.
+    '''Given a subtitle filename, tries to guess which languages it contains.
+    As a subtitle file can contain multiple subtitles, this function returns a list
+    of found languages.'''
 
-    TODO: implement detection inside .idx vobsub files'''
+    # try to guess language from filename
     langs = [ lang.lower() for lang in filename.split('.') ]
 
     languages = { 'english': 'en',
@@ -68,9 +70,21 @@ def guessCountryCode(filename):
         l = langs[-2].lower()
         for lang, code in languages.items():
             if l[-2:] == lang[:2] or l[-3:] == lang[:3] or l[-len(lang):] == lang:
-                return code
+                return [ code ]
 
-    return 'unknown'
+    # try to look inside the .idx, if it exists
+    langs = set()
+    if os.path.exists(filename[:-3] + 'idx'):
+        print filename
+        lines = open(filename[:-3] + 'idx').readlines()
+        for l in lines:
+            if l[:3] == 'id:':
+                langs.add(l[4:6])
+
+    if langs:
+        return list(langs)
+
+    return [ 'unknown' ]
 
 class GlobDirectoryWalker:
     # a forward iterator that traverses a directory tree
