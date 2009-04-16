@@ -23,7 +23,7 @@ from smewt.base import Metadata
 
 class Subtitle(Metadata):
 
-    typename = 'Subititle'
+    typename = 'Subtitle'
 
     schema = { 'metadata': Metadata,
                'language': int }
