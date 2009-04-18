@@ -100,7 +100,7 @@ class CollectionFoldersPage(QDialog):
             self.apply_button.setEnabled(False)
 
     def getSettings(self):
-        self.folders = [f for f in str(self.settings.value(self.settingKeyFolders).toString()).split(';')
+        self.folders = [f for f in unicode(self.settings.value(self.settingKeyFolders).toString()).split(';')
                         if os.path.isdir(f)]
         self.recursiveSelection = self.settings.value(self.settingKeyRecursive).toBool()
 

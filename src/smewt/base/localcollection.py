@@ -61,8 +61,9 @@ class LocalCollection(Graph):
         self.moviesFolders, self.moviesRecursive = self.loadSettingsByType(typeName = 'movies')
         
     def loadSettingsByType(self, typeName = 'series'):
-        folders = [f for f in str(self.settings.value('local_collection_%s_folders' % typeName).toString()).split(';')
+        folders = [os.path.abspath(f) for f in unicode(self.settings.value('local_collection_%s_folders' % typeName).toString()).split(';')
                    if os.path.isdir(f)]
+        print folders
         times = [float(t) if t != 'None' else None for t in str(self.settings.value('local_collection_%s_folders_times' % typeName).toString()).split(';') if t != '']
 
         if len(folders) != len(times):
