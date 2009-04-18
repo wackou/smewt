@@ -116,7 +116,7 @@ class LocalCollection(Graph):
         
         mediasNotInMovies = self.findAll(Media,
                                          method = lambda x: mediasOfUnselectedFolders(x, self.moviesFolders.keys(), self.moviesRecursive))
-
+        
         self.nodes -= (set(mediasNotInSeries) & set(mediasNotInMovies))
 
     def reimportFolders(self, rescan = False):

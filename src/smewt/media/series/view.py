@@ -32,9 +32,7 @@ def render(url, collection):
         # creates a new graph with all the media related to the given series
         episodes = collection.findAll(Episode, series = Series(url.args))
         medias = Graph()
-        for f in collection.findAll(Media):
-            if f.metadata in episodes:
-                medias += f
+        medias += collection.findAll(Media, method = lambda x: x.metadata in episodes)
 
         t = Template(file = 'smewt/media/series/view_episodes_by_season.tmpl',
                      searchList = { 'episodes': medias })

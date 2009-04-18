@@ -103,7 +103,7 @@ class CollectionFoldersPage(QDialog):
 
     def getSettings(self):
         self.folders = [f for f in unicode(self.settings.value(self.settingKeyFolders).toString()).split(';')
-                        if os.path.isdir(f)]
+                        if f != '']
         self.recursiveSelection = self.settings.value(self.settingKeyRecursive).toBool()
 
     def setSettings(self):

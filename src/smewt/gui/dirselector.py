@@ -90,7 +90,6 @@ class DirModel(QDirModel):
         QDirModel.__init__(self, parent)
         self.setFilter( QDir.AllDirs | QDir.NoDotAndDotDot )
         self.recursiveSelection = recursiveSelection
-        
         self.clearSelectedFolders()
         
     def recursiveSelection(self):
@@ -99,22 +98,26 @@ class DirModel(QDirModel):
     def setRecursiveSelection(self, recursiveSelection):
         self.recursiveSelection = recursiveSelection
         for folder in self.selectedFolders():
-            self.childrenDataChanged( self.index( folder ) )
+            index = self.index(folder)
+            if index.isValid():
+                self.childrenDataChanged(index)
 
             self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"),
                 self.index(folder),
                 self.index(folder))
 
     def clearSelectedFolders(self):
-        
         self.checkstates = defaultdict( lambda : Qt.Unchecked )
-        
         
     def setSelectedFolders(self, folders):
         self.clearSelectedFolders()
         
         for folder in folders:
-            self.setCheckState( self.index(folder), Qt.Checked )
+            index = self.index(folder)
+            if index.isValid():
+                self.setCheckState( index, Qt.Checked )
+            else:
+                self.checkstates[folder] = Qt.Checked
         
     def selectedFolders(self):
         return [ k for k, v in self.checkstates.items() if v == Qt.Checked ]
