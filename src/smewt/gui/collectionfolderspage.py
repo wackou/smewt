@@ -35,6 +35,8 @@ class CollectionFoldersPage(QDialog):
                  settingKeyRecursive = 'collection_folders_recursive'):
                  
         QDialog.__init__(self, parent)
+
+        self.settingsChanged = 0
         
         self.settings = settings
         self.settingKeyFolders = settingKeyFolders
@@ -78,14 +80,14 @@ class CollectionFoldersPage(QDialog):
 
     def ok(self):
         self.apply()
-        self.done(1)
+        self.done(self.settingsChanged)
 
     def apply(self):
         self.setSettings()
         self.apply_button.setEnabled(False)
 
     def cancel(self):
-        self.done(1)
+        self.done(self.settingsChanged)
         
     def recursiveSelection(self):
         return self.dirselector.recursiveSelection()
@@ -105,6 +107,8 @@ class CollectionFoldersPage(QDialog):
         self.recursiveSelection = self.settings.value(self.settingKeyRecursive).toBool()
 
     def setSettings(self):
+        self.settingsChanged = 1
+        
         selectedFolders = [str(f) for f in self.dirselector.selectedFolders()]
 
         if self.settings is not None:

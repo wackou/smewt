@@ -140,6 +140,10 @@ class MainWidget(QWidget):
         filename = unicode(QSettings().value('collection_file').toString())
         self.collection.save(filename)
 
+    def updateCollectionSettings(self, result):
+        if result == 1:
+            self.updateCollection()
+
     def updateCollection(self):
         self.collection.update()
 
@@ -151,6 +155,7 @@ class MainWidget(QWidget):
                                   settings = QSettings(),
                                   settingKeyFolders = 'local_collection_series_folders',
                                   settingKeyRecursive = 'local_collection_series_folders_recursive')
+        self.connect(d, SIGNAL('finished(int)'), self.updateCollectionSettings)
         d.exec_()
 
     def selectMoviesFolders(self):
@@ -158,6 +163,7 @@ class MainWidget(QWidget):
                                   settings = QSettings(),
                                   settingKeyFolders = 'local_collection_movies_folders',
                                   settingKeyRecursive = 'local_collection_movies_folders_recursive')
+        self.connect(d, SIGNAL('finished(int)'), self.updateCollectionSettings)
         d.exec_()
 
 

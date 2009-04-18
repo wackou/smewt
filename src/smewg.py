@@ -62,9 +62,7 @@ class SmewtGui(QMainWindow):
         importMenu.addSeparator()
         importMenu.addAction(self.updateCollectionAction)
         importMenu.addAction(self.rescanCollectionAction)
-        #importMenu.addAction(self.importMovieAction)
-        #importMenu.addAction(self.importSeriesAction)
-
+        
         helpMenu = self.menuBar().addMenu('Help')
         helpMenu.addAction(self.aboutAction)
         helpMenu.addAction(self.aboutQtAction)
@@ -176,18 +174,6 @@ class SmewtGui(QMainWindow):
         self.rescanCollectionAction.setStatusTip('Rescan the collection')
         self.connect(self.rescanCollectionAction,  SIGNAL('triggered()'),
                      self.mainWidget.rescanCollection)
-
-        """
-        self.importMovieAction = QAction('Import movie folder', self)
-        self.importMovieAction.setStatusTip('Import a folder containing movies')
-        self.connect(self.importMovieAction,  SIGNAL('triggered()'),
-                     self.mainWidget.importMovieFolder)
-
-        self.importSeriesAction = QAction('Import series folder', self)
-        self.importSeriesAction.setStatusTip('Import a folder containing series')
-        self.connect(self.importSeriesAction,  SIGNAL('triggered()'),
-                     self.mainWidget.importSeriesFolder)
-        """
 
     def createTrayIcon(self):
         trayMenu = QMenu(self)

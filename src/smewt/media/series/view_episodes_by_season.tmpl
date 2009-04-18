@@ -12,7 +12,11 @@ import os, os.path
 flags_dir = smewtDirectory('smewt', 'media', 'common', 'images', 'flags')
 seasons = defaultdict(lambda: [])
 
-series = eps.findAll(Series)[0]
+allseries = eps.findAll(Series)
+if len(allseries) == 0:
+    return '<html><body><h1>No media could be found for this media.  Check that the folder where these medias live is accesible.</h1></body></html>'
+
+series = allseries[0]
 seriesName = series['title']
 poster = series['loresImage']
 englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'en' })

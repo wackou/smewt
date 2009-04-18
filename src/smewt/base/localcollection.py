@@ -3,6 +3,7 @@
 #
 # Smewt - A smart collection manager
 # Copyright (c) 2009 Ricard Marxer <email@ricardmarxer.com>
+# Copyright (c) 2009 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
