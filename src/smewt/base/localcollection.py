@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
+# Copyright (c) 2009 Ricard Marxer <email@ricardmarxer.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import logging, cPickle
+import logging
 import time, os
 
 from PyQt4.QtCore import QObject, SIGNAL, QVariant
