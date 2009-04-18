@@ -62,7 +62,7 @@ class LocalCollection(Graph):
         
     def loadSettingsByType(self, typeName = 'series'):
         folders = [os.path.abspath(f) for f in unicode(self.settings.value('local_collection_%s_folders' % typeName).toString()).split(';')
-                   if os.path.isdir(f)]
+                   if f != '']
         
         times = [float(t) if t != 'None' else None for t in str(self.settings.value('local_collection_%s_folders_times' % typeName).toString()).split(';') if t != '']
 
@@ -98,11 +98,25 @@ class LocalCollection(Graph):
 
     def removeNotPresent(self):
         # Remove the nodes that are not in one of the folders anymore
-        toBeRemoved = self.findAll(Media,
-                                   method = lambda x: not any([os.path.abspath(x.filename).startswith(folder)
-                                                               for folder in set(self.seriesFolders.keys() + self.moviesFolders.keys())]))
+        def mediasOfUnselectedFolders( media, folders, recursive ):
+            for folder in folders:
+                if recursive:
+                    if os.path.abspath(media.filename).startswith(folder):
+                        return False
+                else:
+                    if os.path.basename(os.path.abspath(media.filename)) == os.path.basename(folder):
+                        return False
 
-        self.nodes -= set(toBeRemoved)
+            return True
+        
+
+        mediasNotInSeries = self.findAll(Media,
+                                         method = lambda x: mediasOfUnselectedFolders(x, self.seriesFolders.keys(), self.seriesRecursive))
+        
+        mediasNotInMovies = self.findAll(Media,
+                                         method = lambda x: mediasOfUnselectedFolders(x, self.moviesFolders.keys(), self.moviesRecursive))
+
+        self.nodes -= (set(mediasNotInSeries) & set(mediasNotInMovies))
 
     def reimportFolders(self, rescan = False):
         # Import those folders whose modified time
