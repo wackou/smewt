@@ -70,7 +70,7 @@ class MainWidget(QWidget):
                      self.refreshCollectionView)
         self.connect(self.collection, SIGNAL('updated'),
                      self.saveCollection)
-
+        
         try:
             self.collection.load(t)
         except:

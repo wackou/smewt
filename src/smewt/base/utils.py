@@ -89,11 +89,12 @@ def guessCountryCode(filename):
 class GlobDirectoryWalker:
     # a forward iterator that traverses a directory tree
 
-    def __init__(self, directory, patterns = ['*']):
+    def __init__(self, directory, patterns = ['*'], recursive = True):
         self.stack = [directory]
         self.patterns = patterns
         self.files = []
         self.index = 0
+        self.recursive = recursive
 
     def __getitem__(self, index):
         while True:
@@ -108,7 +109,7 @@ class GlobDirectoryWalker:
             else:
                 # got a filename
                 fullname = os.path.join(self.directory, file)
-                if os.path.isdir(fullname):
+                if os.path.isdir(fullname) and self.recursive:
                     self.stack.append(fullname)
                 for pattern in self.patterns:
                     if fnmatch.fnmatch(file, pattern):

@@ -125,9 +125,10 @@ class LocalCollection(Graph):
         
         filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]
 
-        importTask = ImportTask(folder, EpisodeTagger, filetypes = filetypes)
+        importTask = ImportTask(folder, EpisodeTagger, filetypes = filetypes,
+                                recursive = self.seriesRecursive)
         self.connect(importTask, SIGNAL('foundData'), self.mergeCollection)
-        self.connect(importTask, SIGNAL('finished'), self.seriesTaskFinished)
+        self.connect(importTask, SIGNAL('taskFinished'), self.seriesTaskFinished)
         
         if self.taskManager is not None:
             self.taskManager.add( importTask )
@@ -135,14 +136,17 @@ class LocalCollection(Graph):
         importTask.start()
 
     def importMoviesFolder(self, folder):
-        # Set the last time the folder was scanned
+        # Set now as the last time the folder was scanned
+        # we set it in a different dictionary in case the task
+        # does not finish
         self.moviesFolderTimes[folder] = time.mktime(time.localtime())
         
         filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]
 
-        importTask = ImportTask(folder, EpisodeTagger, filetypes = filetypes)
+        importTask = ImportTask(folder, MovieTagger, filetypes = filetypes,
+                                recursive = self.moviesRecursive)
         self.connect(importTask, SIGNAL('foundData'), self.mergeCollection)
-        self.connect(importTask, SIGNAL('finished'), self.moviesTaskFinished)
+        self.connect(importTask, SIGNAL('taskFinished'), self.moviesTaskFinished)
         
         if self.taskManager is not None:
             self.taskManager.add( importTask )

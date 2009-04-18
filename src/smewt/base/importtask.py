@@ -28,13 +28,14 @@ import logging
 log = logging.getLogger('smewt.importtask')
 
 class ImportTask(QThread, Task):
-    def __init__(self, folder, tagger, filetypes):
+    def __init__(self, folder, tagger, filetypes, recursive = True):
         super(ImportTask, self).__init__()
         self.filetypes = filetypes
         self.totalCount = 0
         self.progressedCount = 0
         self.folder = folder
         self.tagger = tagger
+        self.recursive = recursive
         
     def total(self):
         return self.totalCount
@@ -44,7 +45,7 @@ class ImportTask(QThread, Task):
 
 
     def run(self):
-        self.worker = Worker(self.folder, self.tagger, self.filetypes)
+        self.worker = Worker(self.folder, self.tagger, self.filetypes, recursive = self.recursive)
 
         self.connect(self.worker, SIGNAL('progressChanged'),
                      self.progressChanged)
@@ -76,7 +77,7 @@ class ImportTask(QThread, Task):
 
 
 class Worker(QObject):
-    def __init__(self, folder, tagger, filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]):
+    def __init__(self, folder, tagger, filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ], recursive = True):
         super(Worker, self).__init__()
         self.filetypes = filetypes
         self.taggingQueue = []
@@ -84,8 +85,9 @@ class Worker(QObject):
         self.results = Graph()
         self.tagCount = 0
         self.state = 'stopped'
+        self.recursive = recursive
 
-        for filename in GlobDirectoryWalker(folder, self.filetypes):
+        for filename in GlobDirectoryWalker(folder, self.filetypes, recursive = self.recursive):
             mediaObject = Media(filename)
             self.taggingQueue.append(( tagger, mediaObject ))
             self.tagCount += 1
