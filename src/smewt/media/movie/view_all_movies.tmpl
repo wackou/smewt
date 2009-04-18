@@ -1,7 +1,9 @@
 #set allmovies = $movies
-
+#set allmedias = $medias
 <%
-from smewt import SmewtUrl
+from smewt import SmewtUrl, Media
+
+allmovies = [movie for movie in allmovies if len(allmedias.findAll(Media, method = lambda x: x.metadata == movie)) != 0]
 
 movies = sorted([ { 'title': m['title'],
                     'url': SmewtUrl('media', 'movie/single', { 'title': m['title'] }),

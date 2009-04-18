@@ -40,8 +40,14 @@ def render(url, collection):
                      searchList = { 'movie': metadata })
 
     elif url.viewType == 'all':
+        movieMD = collection.findAll(Movie)
+        medias = Graph()
+        for f in collection.findAll(Media):
+            if f.metadata in movieMD:
+                medias += f
+
         t = Template(file = 'smewt/media/movie/view_all_movies.tmpl',
-                     searchList = { 'movies': collection.findAll(Movie) })
+                     searchList = { 'medias': medias, 'movies': collection.findAll(Movie) })
 
     elif url.viewType == 'spreadsheet':
         t = Template(file = 'smewt/media/movie/view_movies_spreadsheet.tmpl',
