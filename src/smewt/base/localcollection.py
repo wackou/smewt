@@ -96,10 +96,7 @@ class LocalCollection(Graph):
 
         return
 
-    def update(self):
-        # Reload settings in case they have changed
-        self.loadSettings()
-
+    def removeNotPresent(self):
         # Remove the nodes that are not in one of the folders anymore
         toBeRemoved = self.findAll(Media,
                                    method = lambda x: not any([os.path.abspath(x.filename).startswith(folder)
@@ -107,16 +104,56 @@ class LocalCollection(Graph):
 
         self.nodes -= set(toBeRemoved)
 
-        # Import those folders whose modified time is larger than the current time
+    def reimportFolders(self, rescan = False):
+        # Import those folders whose modified time
+        # is larger than the last scan time
         for folder, lastScanned in self.seriesFolders.items():
-            if lastScanned is None or lastScanned < os.path.getmtime(folder):
+            # It's very possible that
+            # it is a removeable drive
+            if not os.path.isdir(folder):
+                continue
+
+            if lastScanned is None \
+                   or lastScanned < os.path.getmtime(folder) \
+                   or rescan:
                 self.importSeriesFolder(folder)
 
-        # Import those folders whose modified time is larger than the current time
+        # Import those folders whose modified time
+        # is larger than the last scan time
         for folder, lastScanned in self.moviesFolders.items():
-            if lastScanned is None or lastScanned < os.path.getmtime(folder):
+            # It's very possible that
+            # it is a removeable drive
+            if not os.path.isdir(folder):
+                continue
+            
+            if lastScanned is None \
+                   or lastScanned < os.path.getmtime(folder) \
+                   or rescan:
                 self.importMoviesFolder(folder)
 
+    def rescan(self):
+        # Reload settings in case they have changed
+        self.loadSettings()
+
+        # Remove those media that are not in one of the selected folders
+        self.removeNotPresent()
+
+        # Reimport all the folders
+        self.reimportFolders( rescan = True )
+        
+        # We save the settings of the folders we have imported
+        self.saveSettings()
+        
+    def update(self):
+        # Reload settings in case they have changed
+        self.loadSettings()
+
+        # Remove those media that are not in one of the selected folders
+        self.removeNotPresent()
+
+        # Reimport only the folders that have changed
+        self.reimportFolders( rescan = False )
+        
         # We save the settings of the folders we have imported
         self.saveSettings()
 

@@ -59,7 +59,9 @@ class SmewtGui(QMainWindow):
         importMenu = self.menuBar().addMenu('Collection')
         importMenu.addAction(self.selectMoviesFoldersAction)
         importMenu.addAction(self.selectSeriesFoldersAction)
+        importMenu.addSeparator()
         importMenu.addAction(self.updateCollectionAction)
+        importMenu.addAction(self.rescanCollectionAction)
         #importMenu.addAction(self.importMovieAction)
         #importMenu.addAction(self.importSeriesAction)
 
@@ -169,6 +171,11 @@ class SmewtGui(QMainWindow):
         self.updateCollectionAction.setStatusTip('Update the collection')
         self.connect(self.updateCollectionAction,  SIGNAL('triggered()'),
                      self.mainWidget.updateCollection)
+
+        self.rescanCollectionAction = QAction('Rescan collection', self)
+        self.rescanCollectionAction.setStatusTip('Rescan the collection')
+        self.connect(self.rescanCollectionAction,  SIGNAL('triggered()'),
+                     self.mainWidget.rescanCollection)
 
         """
         self.importMovieAction = QAction('Import movie folder', self)

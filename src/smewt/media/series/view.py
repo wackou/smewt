@@ -30,14 +30,14 @@ def render(url, collection):
 
     if url.viewType == 'single':
         # creates a new graph with all the media related to the given series
-        metadata = Graph()
         episodes = collection.findAll(Episode, series = Series(url.args))
+        medias = Graph()
         for f in collection.findAll(Media):
             if f.metadata in episodes:
-                metadata += f
+                medias += f
 
         t = Template(file = 'smewt/media/series/view_episodes_by_season.tmpl',
-                     searchList = { 'episodes': metadata })
+                     searchList = { 'episodes': medias })
 
     elif url.viewType == 'all':
         t = Template(file = 'smewt/media/series/view_all_series.tmpl',

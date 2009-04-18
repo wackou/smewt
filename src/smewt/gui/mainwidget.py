@@ -140,15 +140,11 @@ class MainWidget(QWidget):
         filename = unicode(QSettings().value('collection_file').toString())
         self.collection.save(filename)
 
-    def importSeriesFolder(self):
-        filename = unicode(QFileDialog.getExistingDirectory(self, 'Select directory to import', '/data/Series/',
-                                                            QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
-
-        if filename:
-            self.importSingleFolder(filename, EpisodeTagger)
-
     def updateCollection(self):
         self.collection.update()
+
+    def rescanCollection(self):
+        self.collection.rescan()
 
     def selectSeriesFolders(self):
         d = CollectionFoldersPage(self,
@@ -164,21 +160,6 @@ class MainWidget(QWidget):
                                   settingKeyRecursive = 'local_collection_movies_folders_recursive')
         d.exec_()
 
-    def importMovieFolder(self):
-        filename = unicode(QFileDialog.getExistingDirectory(self, 'Select directory to import', '/data/Movies/',
-                                                            QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
-
-        if filename:
-            self.importSingleFolder(filename, MovieTagger)
-
-
-    def importSingleFolder(self, path, taggerType):
-        filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]
-
-        importTask = ImportTask(path, taggerType, filetypes = filetypes)
-        self.connect(importTask, SIGNAL('foundData'), self.mergeCollection)
-        self.taskManager.add( importTask )
-        importTask.start()
 
     def progressChanged(self,  tagged,  total):
         self.emit(SIGNAL('progressChanged'),  tagged,  total)
