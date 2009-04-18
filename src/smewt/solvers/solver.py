@@ -20,7 +20,7 @@
 #
 
 from PyQt4.QtCore import SIGNAL, QObject
-from smewt import Graph, Media, Metadata
+from smewt.base import Graph, Media, Metadata
 import logging
 
 log = logging.getLogger('smewt.solvers.solver')

@@ -67,10 +67,15 @@ class Graph(QObject):
         If no match is found, it returns an empty list.
 
         example: g.findAll(Episode)'''
+
+        method = lambda x: True
+        if 'method' in kwargs:
+            method = kwargs.pop('method')
+        
         result = []
         for node in self.nodes:
             if isinstance(node, type):
-                valid = True
+                valid = method(node)
                 for prop, value in kwargs.items():
                     if node[prop] != value:
                         valid = False

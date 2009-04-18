@@ -20,7 +20,8 @@
 #
 
 from PyQt4.QtCore import SIGNAL, QObject
-from smewt import SmewtException, Media
+from smewt.base import SmewtException
+from smewt.base.mediaobject import Media
 
 class Guesser(QObject):
     """Abstract class from which all guessers must inherit.  Guessers are objects

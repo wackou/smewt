@@ -22,7 +22,7 @@
 from smewt import SmewtException, SmewtUrl, Graph, Media, Metadata
 from smewt.gui.collectionfolderspage import CollectionFoldersPage
 from smewt.media import Series, Episode, Movie
-from smewt.base import ImportTask, SubtitleTask
+from smewt.base import ImportTask, SubtitleTask, LocalCollection
 from smewt.base.taskmanager import Task, TaskManager
 from smewt.base.importer import Importer
 from PyQt4.QtCore import SIGNAL, SLOT, QVariant, QProcess, QSettings, pyqtSignature
@@ -43,11 +43,10 @@ class MainWidget(QWidget):
     def __init__(self):
         super(MainWidget, self).__init__()
 
-        self.collection = Graph()
-        self.connect(self.collection, SIGNAL('updated'),
-                     self.refreshCollectionView)
-        self.connect(self.collection, SIGNAL('updated'),
-                     self.saveCollection)
+        self.taskManager = TaskManager()
+        self.connect(self.taskManager, SIGNAL('importFinished'), self.mergeCollection)
+        self.connect(self.taskManager, SIGNAL('progressChanged'), self.progressChanged)
+        self.connect(self.taskManager, SIGNAL('foundData'), self.mergeCollection)
 
         self.collectionView = QWebView()
         self.collectionView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
@@ -55,7 +54,6 @@ class MainWidget(QWidget):
         #self.collectionView.page().setLinkDelegationPolicy(QWebPage.DelegateExternalLinks)
         self.connect(self.collectionView,  SIGNAL('linkClicked(const QUrl&)'),
                      self.linkClicked)
-
 
         layout = QVBoxLayout()
         layout.addWidget(self.collectionView)
@@ -65,7 +63,14 @@ class MainWidget(QWidget):
         if t == '':
             t = join(dirname(unicode(settings.fileName())),  'Smewg.collection')
             settings.setValue('collection_file',  QVariant(t))
-        
+
+
+        self.collection = LocalCollection( taskManager = self.taskManager, settings = QSettings() )
+        self.connect(self.collection, SIGNAL('updated'),
+                     self.refreshCollectionView)
+        self.connect(self.collection, SIGNAL('updated'),
+                     self.saveCollection)
+
         try:
             self.collection.load(t)
         except:
@@ -82,11 +87,6 @@ class MainWidget(QWidget):
         self.setSmewtUrl(baseUrl)
 
         self.externalProcess = QProcess()
-
-        self.taskManager = TaskManager()
-        self.connect(self.taskManager, SIGNAL('importFinished'), self.mergeCollection)
-        self.connect(self.taskManager, SIGNAL('progressChanged'), self.progressChanged)
-        self.connect(self.taskManager, SIGNAL('foundData'), self.mergeCollection)
         
 
     def setZoomFactor(self, factor):
@@ -147,11 +147,21 @@ class MainWidget(QWidget):
         if filename:
             self.importSingleFolder(filename, EpisodeTagger)
 
-    def selectCollectionFolders(self):
+    def updateCollection(self):
+        self.collection.update()
+
+    def selectSeriesFolders(self):
         d = CollectionFoldersPage(self,
                                   settings = QSettings(),
-                                  settingKeyFolders = 'collection_folders',
-                                  settingKeyRecursive = 'collection_folders_recursive')
+                                  settingKeyFolders = 'local_collection_series_folders',
+                                  settingKeyRecursive = 'local_collection_series_folders_recursive')
+        d.exec_()
+
+    def selectMoviesFolders(self):
+        d = CollectionFoldersPage(self,
+                                  settings = QSettings(),
+                                  settingKeyFolders = 'local_collection_movies_folders',
+                                  settingKeyRecursive = 'local_collection_movies_folders_recursive')
         d.exec_()
 
     def importMovieFolder(self):

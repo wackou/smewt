@@ -56,10 +56,12 @@ class SmewtGui(QMainWindow):
         mainMenu = self.menuBar().addMenu('Main')
         mainMenu.addAction(self.quitAction)
 
-        importMenu = self.menuBar().addMenu('Import')
-        importMenu.addAction(self.selectCollectionFoldersAction)
-        importMenu.addAction(self.importMovieAction)
-        importMenu.addAction(self.importSeriesAction)
+        importMenu = self.menuBar().addMenu('Collection')
+        importMenu.addAction(self.selectMoviesFoldersAction)
+        importMenu.addAction(self.selectSeriesFoldersAction)
+        importMenu.addAction(self.updateCollectionAction)
+        #importMenu.addAction(self.importMovieAction)
+        #importMenu.addAction(self.importSeriesAction)
 
         helpMenu = self.menuBar().addMenu('Help')
         helpMenu.addAction(self.aboutAction)
@@ -152,11 +154,23 @@ class SmewtGui(QMainWindow):
                      self.mainWidget.zoomOut)
 
         # import actions
-        self.selectCollectionFoldersAction = QAction('Select collection folders', self)
-        self.selectCollectionFoldersAction.setStatusTip('Select the collection folders')
-        self.connect(self.selectCollectionFoldersAction,  SIGNAL('triggered()'),
-                     self.mainWidget.selectCollectionFolders)
 
+        self.selectMoviesFoldersAction = QAction('Select movies folders', self)
+        self.selectMoviesFoldersAction.setStatusTip('Select the folders containing movies')
+        self.connect(self.selectMoviesFoldersAction,  SIGNAL('triggered()'),
+                     self.mainWidget.selectMoviesFolders)
+
+        self.selectSeriesFoldersAction = QAction('Select series folders', self)
+        self.selectSeriesFoldersAction.setStatusTip('Select the folders containing series')
+        self.connect(self.selectSeriesFoldersAction,  SIGNAL('triggered()'),
+                     self.mainWidget.selectSeriesFolders)
+
+        self.updateCollectionAction = QAction('Update collection', self)
+        self.updateCollectionAction.setStatusTip('Update the collection')
+        self.connect(self.updateCollectionAction,  SIGNAL('triggered()'),
+                     self.mainWidget.updateCollection)
+
+        """
         self.importMovieAction = QAction('Import movie folder', self)
         self.importMovieAction.setStatusTip('Import a folder containing movies')
         self.connect(self.importMovieAction,  SIGNAL('triggered()'),
@@ -166,7 +180,7 @@ class SmewtGui(QMainWindow):
         self.importSeriesAction.setStatusTip('Import a folder containing series')
         self.connect(self.importSeriesAction,  SIGNAL('triggered()'),
                      self.mainWidget.importSeriesFolder)
-
+        """
 
     def createTrayIcon(self):
         trayMenu = QMenu(self)

@@ -24,7 +24,7 @@ from smewt.guessers import *
 from smewt.solvers import *
 from PyQt4.QtCore import SIGNAL
 
-from smewt import SmewtException, Graph, SolvingChain, Media, Metadata
+from smewt.base import SmewtException, Graph, SolvingChain, Media, Metadata
 from smewt.media import Episode, Series
 import logging
 

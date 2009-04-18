@@ -23,7 +23,7 @@ from smewt.guessers import *
 from smewt.solvers import *
 from PyQt4.QtCore import SIGNAL
 
-from smewt import Graph, SolvingChain, Media, Metadata
+from smewt.base import Graph, SolvingChain, Media, Metadata
 from smewt.media import Movie
 import logging
 

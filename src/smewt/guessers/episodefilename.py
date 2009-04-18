@@ -20,7 +20,7 @@
 #
 
 from smewt.guessers.guesser import Guesser
-from smewt import utils, textutils
+from smewt.base import utils, textutils
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import sys
@@ -28,7 +28,7 @@ import logging
 
 log = logging.getLogger('smewt.guessers.episodefilename')
 
-from smewt import Media, Metadata
+from smewt.base import Media, Metadata
 from smewt.media import Episode, Series
 
 class EpisodeFilename(Guesser):
