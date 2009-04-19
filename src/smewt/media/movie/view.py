@@ -40,14 +40,13 @@ def render(url, collection):
                      searchList = { 'movie': metadata })
 
     elif url.viewType == 'all':
-        movieMD = collection.findAll(Movie)
-        medias = Graph()
-        for f in collection.findAll(Media):
-            if f.metadata in movieMD:
-                medias += f
+        movies = set([])
+        for media in collection.findAll(Media,
+                                        method = lambda x: x.type() == 'video' and isinstance(x.metadata, Movie)):
+            movies |= set([media.metadata])
 
         t = Template(file = 'smewt/media/movie/view_all_movies.tmpl',
-                     searchList = { 'medias': medias, 'movies': collection.findAll(Movie) })
+                     searchList = { 'movies': movies })
 
     elif url.viewType == 'spreadsheet':
         t = Template(file = 'smewt/media/movie/view_movies_spreadsheet.tmpl',

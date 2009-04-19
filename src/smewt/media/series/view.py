@@ -38,8 +38,14 @@ def render(url, collection):
                      searchList = { 'episodes': medias })
 
     elif url.viewType == 'all':
+        # Select only the series with that have a video media
+        series = set([])
+        for media in collection.findAll(Media,
+                                        method = lambda x: x.type() == 'video' and isinstance(x.metadata, Episode)):
+            series |= set([media.metadata['series']])
+
         t = Template(file = 'smewt/media/series/view_all_series.tmpl',
-                     searchList = { 'series': collection.findAll(Series) })
+                     searchList = { 'series': series })
 
     else:
         raise SmewtException('Invalid view type: %s' % url.viewType)
