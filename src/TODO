@@ -1,2 +1,3 @@
 * Faster algorithm for retrieving metadatas and medias.  (e.g. view all series for which we have medias) (Virtuoso should do the job)
 * Make the dirselector show those folders that are checked but not in the current directory model (e.g. removable devices)
+* Views should only input as argument the collection
