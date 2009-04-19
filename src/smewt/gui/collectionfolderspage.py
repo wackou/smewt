@@ -32,7 +32,8 @@ class CollectionFoldersPage(QDialog):
                  recursiveSelection = True,
                  settings = None,
                  settingKeyFolders = 'collection_folders',
-                 settingKeyRecursive = 'collection_folders_recursive'):
+                 settingKeyRecursive = 'collection_folders_recursive',
+                 description = 'Select the folders where your series are.'):
                  
         QDialog.__init__(self, parent)
 
@@ -52,7 +53,7 @@ class CollectionFoldersPage(QDialog):
         self.layout = QVBoxLayout()
 
         
-        self.instructions_label = QLabel("Select the folders where your series are.")
+        self.instructions_label = QLabel(description)
         self.layout.addWidget(self.instructions_label)
         self.dirselector = DirSelector( folders = self.folders, recursiveSelection = self.recursiveSelection )
         self.connect(self.dirselector, SIGNAL('selectionChanged'), self.selectionChanged)

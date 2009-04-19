@@ -154,16 +154,22 @@ class MainWidget(QWidget):
         d = CollectionFoldersPage(self,
                                   settings = QSettings(),
                                   settingKeyFolders = 'local_collection_series_folders',
-                                  settingKeyRecursive = 'local_collection_series_folders_recursive')
+                                  settingKeyRecursive = 'local_collection_series_folders_recursive',
+                                  description = 'Select the folders where your series are.')
+
         self.connect(d, SIGNAL('finished(int)'), self.updateCollectionSettings)
+
         d.exec_()
 
     def selectMoviesFolders(self):
         d = CollectionFoldersPage(self,
                                   settings = QSettings(),
                                   settingKeyFolders = 'local_collection_movies_folders',
-                                  settingKeyRecursive = 'local_collection_movies_folders_recursive')
+                                  settingKeyRecursive = 'local_collection_movies_folders_recursive',
+                                  description = 'Select the folders where your movies are.')
+        
         self.connect(d, SIGNAL('finished(int)'), self.updateCollectionSettings)
+
         d.exec_()
 
 
