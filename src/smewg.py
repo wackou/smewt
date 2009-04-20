@@ -18,8 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox
-from PyQt4.QtCore import SIGNAL, QSize, Qt
+from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox, QToolBar
+from PyQt4.QtCore import SIGNAL, QSize, Qt, QSettings, QVariant, QPoint, QSize
 import sys, logging
 from smewt.gui import MainWidget, FeedWatchWidget
 
@@ -46,6 +46,8 @@ class SmewtGui(QMainWindow):
         super(SmewtGui, self).__init__()
         self.setWindowTitle('Smewg - An Ordinary Smewt Gui')
 
+        self.readWindowSettings()
+        
         self.icon = QIcon('icons/smewt.svg')
         self.setWindowIcon(self.icon)
 
@@ -68,14 +70,15 @@ class SmewtGui(QMainWindow):
         helpMenu.addAction(self.aboutQtAction)
 
         # create toolbar
-        navigationToolBar = self.addToolBar('Navigation')
+        navigationToolBar = QToolBar('Navigation')
         navigationToolBar.addAction(self.backAction)
         navigationToolBar.addAction(self.fwdAction)
         navigationToolBar.addAction(self.homeAction)
         navigationToolBar.addAction(self.zoomOutAction)
         navigationToolBar.addAction(self.zoomInAction)
         navigationToolBar.setIconSize(QSize(32,32))
-
+        navigationToolBar.setObjectName('navigationToolBar')
+        self.addToolBar(navigationToolBar)
         self.createTrayIcon()
 
         # tmp
@@ -101,13 +104,14 @@ class SmewtGui(QMainWindow):
 
         self.statusWidget = StatusWidget()
         self.statusBar().addPermanentWidget(self.statusWidget)
+        
 
         self.connect(self.mainWidget, SIGNAL('progressChanged'), self.progressChanged)
 
     def createActions(self):
         self.quitAction = QAction('Quit', self)
         self.connect(self.quitAction, SIGNAL('triggered()'),
-                     QApplication.instance().quit)
+                     self.quit)
 
         self.minimizeAction = QAction('Minimize', self)
         self.connect(self.minimizeAction, SIGNAL('triggered()'),
@@ -149,9 +153,14 @@ class SmewtGui(QMainWindow):
                      self.mainWidget.zoomIn)
 
         self.zoomOutAction = QAction(QIcon('icons/zoom-out.png'), 'Zoom out', self)
-        self.zoomOutAction.setStatusTip('Make the text larger')
+        self.zoomOutAction.setStatusTip('Make the text smaller')
         self.connect(self.zoomOutAction, SIGNAL('triggered()'),
                      self.mainWidget.zoomOut)
+
+        self.fullScreenAction = QAction(QIcon('icons/fullscreen.png'), 'Full Screen', self)
+        self.fullScreenAction.setStatusTip('Toggle fullscreen mode')
+        self.connect(self.fullScreenAction, SIGNAL('triggered()'),
+                     self.toggleFullScreen)
 
         # import actions
 
@@ -175,6 +184,30 @@ class SmewtGui(QMainWindow):
         self.connect(self.rescanCollectionAction,  SIGNAL('triggered()'),
                      self.mainWidget.rescanCollection)
 
+    def toggleFullScreen(self):
+        self.setWindowState(self.windowState() ^ Qt.FullScreen )
+
+    def quit(self):
+        self.writeWindowSettings()
+        QApplication.instance().quit()        
+        
+    def readWindowSettings(self):
+        settings = QSettings()
+        pos = settings.value("MainWindow/pos", QVariant(QPoint(200, 200))).toPoint()
+        size = settings.value("MainWindow/size", QVariant(QSize(400, 400))).toSize()
+        self.resize(size)
+        self.move(pos)
+        
+        self.restoreState(settings.value("MainWindow/windowstate").toByteArray())
+        
+    def writeWindowSettings(self):
+        settings = QSettings()
+        settings.setValue("MainWindow/pos", QVariant(self.pos()))
+        settings.setValue("MainWindow/size", QVariant(self.size()))
+
+        settings.setValue("MainWindow/windowstate", QVariant(self.saveState()))
+
+     
     def createTrayIcon(self):
         trayMenu = QMenu(self)
         trayMenu.addAction(self.minimizeAction)
@@ -203,6 +236,7 @@ class SmewtGui(QMainWindow):
                 self.setVisible(True)
 
     def closeEvent(self, event):
+        self.writeWindowSettings()
         self.hide()
         event.ignore()
 
@@ -235,7 +269,6 @@ if __name__ == '__main__':
     c = cache.globalCache
 
     sgui = SmewtGui()
-    sgui.setWindowState(sgui.windowState() | Qt.WindowMaximized)
     sgui.show()
     app.exec_()
 
