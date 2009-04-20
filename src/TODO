@@ -1,3 +1,21 @@
 * Faster algorithm for retrieving metadatas and medias.  (e.g. view all series for which we have medias) (Virtuoso should do the job)
 * Make the dirselector show those folders that are checked but not in the current directory model (e.g. removable devices)
 * Views should only input as argument the collection
+* subtitle display / fetching should be up to par for movies as well, not only series
+
+
+* blocker bug: control+c and exit from menu when importing gives the following exception. Collection is then corrupted and cannot be loaded:
+^CTraceback (most recent call last):
+  File "/home/download/dev/smewt/src/smewt/base/importtask.py", line 70, in progressChanged
+    def progressChanged(self, current, total):
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "smewg.py", line 243, in <module>
+    cache.save('/tmp/smewt.cache')
+  File "/home/download/dev/smewt/src/smewt/base/cache.py", line 36, in save
+    cPickle.dump(globalCache, open(filename, 'wb'))
+RuntimeError: dictionary changed size during iteration
+Error in sys.excepthook:
+
+Original exception was:
+
