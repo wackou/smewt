@@ -19,7 +19,7 @@
 #
 
 from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox
-from PyQt4.QtCore import SIGNAL, QSize
+from PyQt4.QtCore import SIGNAL, QSize, Qt
 import sys, logging
 from smewt.gui import MainWidget, FeedWatchWidget
 
@@ -235,6 +235,7 @@ if __name__ == '__main__':
     c = cache.globalCache
 
     sgui = SmewtGui()
+    sgui.setWindowState(sgui.windowState() | Qt.WindowMaximized)
     sgui.show()
     app.exec_()
 
