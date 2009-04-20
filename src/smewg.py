@@ -224,7 +224,7 @@ GPLv3 licensed''')
         QMessageBox.aboutQt(self)
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv + [ '-geometry', '1024x720' ]) # FIXME: this is not portable (X11 only)
+    app = QApplication(sys.argv)
     app.setOrganizationName("DigitalGaia")
     app.setOrganizationDomain("smewt.com")
     app.setApplicationName("Smewg")
