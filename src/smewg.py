@@ -74,8 +74,11 @@ class SmewtGui(QMainWindow):
         navigationToolBar.addAction(self.backAction)
         navigationToolBar.addAction(self.fwdAction)
         navigationToolBar.addAction(self.homeAction)
+        navigationToolBar.addSeparator()
         navigationToolBar.addAction(self.zoomOutAction)
         navigationToolBar.addAction(self.zoomInAction)
+        navigationToolBar.addSeparator()
+        navigationToolBar.addAction(self.fullScreenAction)
         navigationToolBar.setIconSize(QSize(32,32))
         navigationToolBar.setObjectName('navigationToolBar')
         self.addToolBar(navigationToolBar)
@@ -157,8 +160,9 @@ class SmewtGui(QMainWindow):
         self.connect(self.zoomOutAction, SIGNAL('triggered()'),
                      self.mainWidget.zoomOut)
 
-        self.fullScreenAction = QAction(QIcon('icons/fullscreen.png'), 'Full Screen', self)
+        self.fullScreenAction = QAction(QIcon('icons/view-fullscreen.png'), 'Full Screen', self)
         self.fullScreenAction.setStatusTip('Toggle fullscreen mode')
+        self.fullScreenAction.setCheckable(True)
         self.connect(self.fullScreenAction, SIGNAL('triggered()'),
                      self.toggleFullScreen)
 
@@ -185,7 +189,8 @@ class SmewtGui(QMainWindow):
                      self.mainWidget.rescanCollection)
 
     def toggleFullScreen(self):
-        self.setWindowState(self.windowState() ^ Qt.FullScreen )
+        flag = Qt.WindowFullScreen if self.fullScreenAction.isChecked() else ~Qt.WindowFullScreen 
+        self.setWindowState(self.windowState() ^ Qt.WindowFullScreen  )
 
     def quit(self):
         self.writeWindowSettings()
