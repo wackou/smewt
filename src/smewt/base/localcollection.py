@@ -27,6 +27,7 @@ from PyQt4.QtCore import QObject, SIGNAL, QVariant
 from smewt.base import Media, Metadata
 from smewt.base import ImportTask, SubtitleTask
 from smewt.base import Graph
+from smewt.base.utils import GlobDirectoryWalker
 from smewt.taggers import EpisodeTagger, MovieTagger
 
 log = logging.getLogger('smewt.base.localcollection')
@@ -119,19 +120,38 @@ class LocalCollection(Graph):
         
         self.nodes -= (set(mediasNotInSeries) & set(mediasNotInMovies))
 
+    def modifiedFolders(self, folder, lastScanned, recursive):
+        """Return the folders that have been modified since lastScanned.
+        """
+        result = []
+
+        if lastScanned is None or lastScanned < os.path.getmtime(folder):
+            result.append(folder)
+
+        elif recursive:
+            for f in GlobDirectoryWalker(folder, recursive = recursive):
+                if os.path.isdir(f) and lastScanned < os.path.getmtime(f):
+                    print lastScanned
+                    print os.path.getmtime(f)
+                    print '---'
+                    result.append(f)
+
+        return result
+        
+
     def reimportFolders(self, rescan = False):
         # Import those folders whose modified time
         # is larger than the last scan time
         for folder, lastScanned in self.seriesFolders.items():
-            # It's very possible that
+            # It's possible that
             # it is a removeable drive
             if not os.path.isdir(folder):
                 continue
 
-            if lastScanned is None \
-                   or lastScanned < os.path.getmtime(folder) \
-                   or rescan:
-                self.importSeriesFolder(folder)
+            modifiedFolders = self.modifiedFolders(folder, lastScanned, self.seriesRecursive)
+
+            for modifiedFolder in modifiedFolders:
+                self.importSeriesFolder(modifiedFolder)
 
         # Import those folders whose modified time
         # is larger than the last scan time
@@ -140,11 +160,11 @@ class LocalCollection(Graph):
             # it is a removeable drive
             if not os.path.isdir(folder):
                 continue
-            
-            if lastScanned is None \
-                   or lastScanned < os.path.getmtime(folder) \
-                   or rescan:
-                self.importMoviesFolder(folder)
+
+            modifiedFolders = self.modifiedFolders(folder, lastScanned, self.moviesRecursive)
+
+            for modifiedFolder in modifiedFolders:
+                self.importMoviesFolder(modifiedFolder)
 
     def rescan(self):
         # Reload settings in case they have changed
@@ -207,15 +227,25 @@ class LocalCollection(Graph):
         importTask.start()
 
     def seriesTaskFinished(self, task):
+        # Since the task may have been of a subfolder we must find
+        # the selected folder to which it belonged
+        selectedFolder = [folder for folder in self.seriesFolders if task.folder.startswith(folder)]
+        selectedFolder.sort(key = lambda x: len(x))
+        
         # Set the last time the folder was scanned
-        self.seriesFolders[task.folder] = self.seriesFolderTimes[task.folder]
+        self.seriesFolders[selectedFolder[0]] = self.seriesFolderTimes[task.folder]
 
         # We save the settings of the folders we have imported
         self.saveSettings()
 
     def moviesTaskFinished(self, task):
+        # Since the task may have been of a subfolder we must find
+        # the selected folder to which it belonged
+        selectedFolder = [folder for folder in self.moviesFolders if task.folder.startswith(folder)]
+        selectedFolder.sort(key = lambda x: len(x))
+        
         # Set the last time the folder was scanned
-        self.moviesFolders[task.folder] = self.moviesFolderTimes[task.folder]
+        self.moviesFolders[selectedFolder[0]] = self.moviesFolderTimes[task.folder]
 
         # We save the settings of the folders we have imported
         self.saveSettings()
