@@ -24,7 +24,8 @@ import sys, logging
 from smewt.gui import MainWidget, FeedWatchWidget
 
 log = logging.getLogger('smewg')
-
+DEFAULT_WIDTH = 874
+DEFAULT_HEIGHT = 500
 
 class StatusWidget(QWidget):
     def __init__(self):
@@ -198,8 +199,8 @@ class SmewtGui(QMainWindow):
         
     def readWindowSettings(self):
         settings = QSettings()
-        pos = settings.value("MainWindow/pos", QVariant(QPoint(200, 200))).toPoint()
-        size = settings.value("MainWindow/size", QVariant(QSize(400, 400))).toSize()
+        pos = settings.value("MainWindow/pos", QVariant(QPoint((QApplication.desktop().width()-DEFAULT_WIDTH)/2, (QApplication.desktop().width()-DEFAULT_HEIGHT)/2))).toPoint()
+        size = settings.value("MainWindow/size", QVariant(QSize(DEFAULT_WIDTH, DEFAULT_HEIGHT))).toSize()
         self.resize(size)
         self.move(pos)
         
