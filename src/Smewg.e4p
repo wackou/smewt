@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2009-04-11, 06:04:18 -->
+<!-- Saved: 2009-04-22, 22:12:59 -->
 <!-- Copyright (C) 2009 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -67,6 +67,9 @@
     <Source>smewt/media/series/view_episodes_by_season.tmpl</Source>
     <Source>smewt/media/speeddial/speeddial.html</Source>
     <Source>smewt/media/movie/movies.css</Source>
+    <Source>smewt/media/subtitle/subtitleobject.py</Source>
+    <Source>smewt/gui/dirselector.py</Source>
+    <Source>smewt/gui/collectionfolderspage.py</Source>
   </Sources>
   <Forms>
   </Forms>
