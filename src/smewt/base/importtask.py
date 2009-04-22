@@ -43,6 +43,9 @@ class ImportTask(QThread, Task):
     def progressed(self):
         return self.progressedCount
 
+    def abort(self):
+        self.terminate()
+        self.wait()
 
     def run(self):
         self.worker = Worker(self.folder, self.tagger, self.filetypes, recursive = self.recursive)

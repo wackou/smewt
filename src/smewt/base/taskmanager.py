@@ -34,6 +34,9 @@ class Task:
     def progressed(self):
         return self.progressedCount
 
+    def abort(self):
+        pass
+    
     def update(self):
         pass
 
@@ -74,6 +77,10 @@ class TaskManager(QObject, Task):
     def progressChanged(self):
         self.update()
         self.emit(SIGNAL('progressChanged'), self.progressed(), self.total())
+
+    def abortAll(self):
+        for task in self.tasks:
+            task.abort()
 
     def total(self):
         return self.totalCount

@@ -195,6 +195,7 @@ class SmewtGui(QMainWindow):
 
     def quit(self):
         self.writeWindowSettings()
+        self.mainWidget.quit()
         QApplication.instance().quit()        
         
     def readWindowSettings(self):

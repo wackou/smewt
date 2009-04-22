@@ -131,6 +131,8 @@ class MainWidget(QWidget):
         QSettings().setValue('base_url',  QVariant(unicode(self.smewtUrl)))
         self.refreshCollectionView()
 
+    def quit(self):
+        self.taskManager.abortAll()
 
     def loadCollection(self):
         filename = str(QFileDialog.getOpenFileName(self, 'Select file to load the collection'))
