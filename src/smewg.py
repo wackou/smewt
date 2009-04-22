@@ -273,10 +273,8 @@ if __name__ == '__main__':
     app.setOrganizationDomain("smewt.com")
     app.setApplicationName("Smewg")
 
-    from smewt.base import cache
-    cache.load('/tmp/smewt.cache')
-
-    c = cache.globalCache
+    #from smewt.base import cache
+    #cache.load('/tmp/smewt.cache')
 
     sgui = SmewtGui()
 
@@ -286,7 +284,7 @@ if __name__ == '__main__':
     sgui.show()
     app.exec_()
 
-    log.info('Writing cache to disk...')
-    cache.save('/tmp/smewt.cache')
+    #log.info('Writing cache to disk...')
+    #cache.save('/tmp/smewt.cache')
     log.info('Exiting')
     sys.exit() # why is this necessary when running from eric?
