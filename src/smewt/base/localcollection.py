@@ -148,10 +148,13 @@ class LocalCollection(Graph):
             if not os.path.isdir(folder):
                 continue
 
-            modifiedFolders = self.modifiedFolders(folder, lastScanned, self.seriesRecursive)
+            if rescan:
+                self.importSeriesFolder(folder)
+            else:
+                modifiedFolders = self.modifiedFolders(folder, lastScanned, self.seriesRecursive)
 
-            for modifiedFolder in modifiedFolders:
-                self.importSeriesFolder(modifiedFolder)
+                for modifiedFolder in modifiedFolders:
+                    self.importSeriesFolder(modifiedFolder)
 
         # Import those folders whose modified time
         # is larger than the last scan time
@@ -161,10 +164,13 @@ class LocalCollection(Graph):
             if not os.path.isdir(folder):
                 continue
 
-            modifiedFolders = self.modifiedFolders(folder, lastScanned, self.moviesRecursive)
+            if rescan:
+                self.importMoviesFolder(folder)
+            else:
+                modifiedFolders = self.modifiedFolders(folder, lastScanned, self.moviesRecursive)
 
-            for modifiedFolder in modifiedFolders:
-                self.importMoviesFolder(modifiedFolder)
+                for modifiedFolder in modifiedFolders:
+                    self.importMoviesFolder(modifiedFolder)
 
     def rescan(self):
         # Reload settings in case they have changed
