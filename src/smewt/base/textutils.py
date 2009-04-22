@@ -31,6 +31,7 @@ def stripBrackets(s):
 # regexps-related functions
 import re
 from smewtexception import SmewtException
+from PyQt4.QtCore import QString
 
 def matchRegexp(string, regexp):
     """Tries to match the given string against the regexp (using named match groups)
@@ -81,6 +82,9 @@ def multipleMatchRegexp(string, regexp):
 #string-related functions
 def toUtf8(o):
     '''converts all unicode strings found in the given object to utf-8 strings'''
+    if isinstance(o, QString):
+        o = unicode(o)
+
     if isinstance(o, unicode):
         return o.encode('utf-8')
     elif isinstance(o, list):
