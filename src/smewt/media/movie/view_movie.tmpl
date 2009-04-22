@@ -4,8 +4,9 @@
 from collections import defaultdict
 from smewt import SmewtUrl, Media
 from smewt.media import Movie
+from smewt.base.utils import smewtDirectory, guessCountryCode
 
-seasons = defaultdict(lambda: [])
+flags_dir = smewtDirectory('smewt', 'media', 'common', 'images', 'flags')
 
 movie = movieData.findAll(Movie)[0]
 movieName = movie['title']
@@ -22,9 +23,35 @@ frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': movieName, 'langu
 
 playLink = None
 files = []
+subtitles = []
+
+languageFiles = defaultdict(lambda: [])
+
 for media in movieData.findAll(Media):
     if media.type() == 'video':
         files.append(media.filename)
+
+    elif media.type() == 'subtitle':
+        langs = guessCountryCode(media.filename)
+
+        mediaFilename = movieData.findOne(Media, method = lambda x: x.type()=='video' and media.filename.startswith(os.path.splitext(x.filename)[0])).filename
+        subtitleFilename = media.filename
+
+        for lang in langs:
+            languageFiles[lang] += [ (mediaFilename, subtitleFilename) ]
+
+for lang, files in languageFiles.items():
+    nfile = 1
+    args = {}
+
+    for (mediaFilename, subtitleFilename) in sorted(files):
+        args['filename%d' % nfile] = mediaFilename
+        args['subtitle%d' % nfile] = subtitleFilename
+        nfile += 1
+
+    subtitles.append( {'languageImage': flags_dir + '/%s.png' % (lang,),
+                        'url': SmewtUrl('action', 'play', args)} )
+
 
 nfile = 1
 args = {}
@@ -34,6 +61,8 @@ for f in sorted(files):
 
 if args:
     playLink = SmewtUrl('action', 'play', args)
+
+subtitles.sort(key = lambda x: x['languageImage'])
 
 from smewt.base.utils import smewtDirectory
 import_dir = smewtDirectory('smewt', 'media')
@@ -60,6 +89,9 @@ import_dir = smewtDirectory('smewt', 'media')
   <a href="$frenchSubsLink">Get missing French subtitles</a>
 #if playLink:
   <a href="$playLink">Play Movie</a>
+  #for s in subtitles
+     <a href="$s.url"><img src="file://$s.languageImage" /></a>
+  #end for
 #end if
 </div>
 

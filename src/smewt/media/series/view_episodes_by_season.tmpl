@@ -8,7 +8,6 @@ from smewt.media import Episode, Series
 from smewt.base.utils import smewtDirectory, guessCountryCode
 
 import os, os.path
-# FIXME: this is not the correct way to do it...
 flags_dir = smewtDirectory('smewt', 'media', 'common', 'images', 'flags')
 seasons = defaultdict(lambda: [])
 
@@ -42,12 +41,12 @@ for media in eps.findAll(Media):
     elif media.type() == 'subtitle':
         langs = guessCountryCode(media.filename)
 
-        mediaFilename = eps.findOne(Media, method = lambda x: x.metadata['title'] == media.metadata['title']).filename
+        mediaFilename = eps.findOne(Media, method = lambda x: x.type()=='video' and media.filename.startswith(os.path.splitext(x.filename)[0])).filename
         subtitleFilename = media.filename
 
         for lang in langs:
             md.setdefault('subtitleUrls', []).append( {'languageImage': flags_dir + '/%s.png' % (lang,),
-                          'url': SmewtUrl('action', 'play', { 'filename1': mediaFilename, 'subtitle': subtitleFilename })} )
+                          'url': SmewtUrl('action', 'play', { 'filename1': mediaFilename, 'subtitle1': subtitleFilename })} )
 
         md['numSubtitles'] = len(md['subtitleUrls'])
 

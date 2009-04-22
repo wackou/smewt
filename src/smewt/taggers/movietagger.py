@@ -55,7 +55,7 @@ class MovieTagger(Tagger):
 
 
     def tag(self, media):
-        if media.type() in [ 'video' ]: #, 'subtitle'] :
+        if media.type() in [ 'video', 'subtitle' ]:
             if media.filename:
                 query = Graph()
                 query += media

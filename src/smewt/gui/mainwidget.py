@@ -70,13 +70,13 @@ class MainWidget(QWidget):
                      self.refreshCollectionView)
         self.connect(self.collection, SIGNAL('updated'),
                      self.saveCollection)
-        
+
         try:
             self.collection.load(t)
         except:
             log.warning('Could not load collection %s', t)
             raise
-        
+
         self.setLayout(layout)
 
         self.history = []
@@ -87,7 +87,7 @@ class MainWidget(QWidget):
         self.setSmewtUrl(baseUrl)
 
         self.externalProcess = QProcess()
-        
+
 
     def setZoomFactor(self, factor):
         self.collectionView.page().mainFrame().setTextSizeMultiplier( factor )
@@ -169,7 +169,7 @@ class MainWidget(QWidget):
                                   settingKeyFolders = 'local_collection_movies_folders',
                                   settingKeyRecursive = 'local_collection_movies_folders_recursive',
                                   description = 'Select the folders where your movies are.')
-        
+
         self.connect(d, SIGNAL('finished(int)'), self.updateCollectionSettings)
 
         d.exec_()
@@ -236,11 +236,12 @@ class MainWidget(QWidget):
                     nfile = 1
                     while 'filename%d' % nfile in surl.args:
                         args.append(surl.args['filename%d' % nfile])
+
+                        if 'subtitle%d' % nfile in surl.args:
+                            args += ['-sub', surl.args['subtitle%d' % nfile]]
+
                         nfile += 1
 
-                    if 'subtitle' in surl.args:
-                        args += ['-sub', surl.args['subtitle']]
-                        
                     log.debug('launching %s with args = %s' % (action, str(args)))
                     print args
                     self.externalProcess.start(action, args)

@@ -111,6 +111,12 @@ h1 {
  color: #448;
 }
 
+.rightshifted img {
+  position: relative;
+  left: 0px;
+  top: 0px;
+}
+
 .rightshifted a:hover {
  color: #000;
  background: #AAE;
