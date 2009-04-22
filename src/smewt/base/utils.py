@@ -75,7 +75,6 @@ def guessCountryCode(filename):
     # try to look inside the .idx, if it exists
     langs = set()
     if os.path.exists(filename[:-3] + 'idx'):
-        print filename
         lines = open(filename[:-3] + 'idx').readlines()
         for l in lines:
             if l[:3] == 'id:':

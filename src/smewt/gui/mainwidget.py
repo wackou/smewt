@@ -245,7 +245,6 @@ class MainWidget(QWidget):
                         nfile += 1
 
                     log.debug('launching %s with args = %s' % (action, str(args)))
-                    print args
                     self.externalProcess.start(action, args)
 
                 if surl.actionType == 'getsubtitles':

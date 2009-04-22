@@ -40,18 +40,18 @@ class LocalCollection(Graph):
 
     def __init__(self, seriesFolders = [], moviesFolders = [], taskManager = None, settings = None):
         super(LocalCollection, self).__init__()
-        
+
         self.taskManager = taskManager
 
         self.seriesFolders = dict([(folder, None) for folder in seriesFolders])
         self.seriesRecursive = True
-        
+
         self.moviesFolders = dict([(folder, None) for folder in moviesFolders])
         self.moviesRecursive = True
 
         self.seriesFolderTimes = {}
         self.moviesFolderTimes = {}
-        
+
         self.settings = settings
         self.loadSettings()
 
@@ -61,11 +61,11 @@ class LocalCollection(Graph):
 
         self.seriesFolders, self.seriesRecursive = self.loadSettingsByType(typeName = 'series')
         self.moviesFolders, self.moviesRecursive = self.loadSettingsByType(typeName = 'movies')
-        
+
     def loadSettingsByType(self, typeName = 'series'):
         folders = [os.path.abspath(f) for f in unicode(self.settings.value('local_collection_%s_folders' % typeName).toString()).split(';')
                    if f != '']
-        
+
         times = [float(t) if t != 'None' else None for t in str(self.settings.value('local_collection_%s_folders_times' % typeName).toString()).split(';') if t != '']
 
         if len(folders) != len(times):
@@ -74,7 +74,7 @@ class LocalCollection(Graph):
 
         folders = dict([(folder, time) for folder, time in zip(folders, times)])
         recursive = self.settings.value('local_collection_%s_folders_recursive' % typeName, QVariant(True)).toBool()
-        
+
         return folders, recursive
 
     def saveSettings(self):
@@ -83,14 +83,14 @@ class LocalCollection(Graph):
 
         self.saveSettingsByType(self.seriesFolders, self.seriesRecursive, typeName = 'series')
         self.saveSettingsByType(self.moviesFolders, self.moviesRecursive, typeName = 'movies')
-        
-        
+
+
     def saveSettingsByType(self, foldersDict, recursive, typeName = 'series'):
         if len(foldersDict) == 0:
             return
-            
+
         folders, times = zip(*(foldersDict.items()))
-        
+
         self.settings.setValue('local_collection_%s_folders' % typeName, QVariant(';'.join(folders)))
         self.settings.setValue('local_collection_%s_folders_times' % typeName, QVariant(';'.join([str(t)
                                                                                                   for t in times])))
@@ -110,14 +110,14 @@ class LocalCollection(Graph):
                         return False
 
             return True
-        
+
 
         mediasNotInSeries = self.findAll(Media,
                                          method = lambda x: mediasOfUnselectedFolders(x, self.seriesFolders.keys(), self.seriesRecursive))
-        
+
         mediasNotInMovies = self.findAll(Media,
                                          method = lambda x: mediasOfUnselectedFolders(x, self.moviesFolders.keys(), self.moviesRecursive))
-        
+
         self.nodes -= (set(mediasNotInSeries) & set(mediasNotInMovies))
 
     def modifiedFolders(self, folder, lastScanned, recursive):
@@ -131,13 +131,10 @@ class LocalCollection(Graph):
         elif recursive:
             for f in GlobDirectoryWalker(folder, recursive = recursive):
                 if os.path.isdir(f) and lastScanned < os.path.getmtime(f):
-                    print lastScanned
-                    print os.path.getmtime(f)
-                    print '---'
                     result.append(f)
 
         return result
-        
+
 
     def reimportFolders(self, rescan = False):
         # Import those folders whose modified time
@@ -181,10 +178,10 @@ class LocalCollection(Graph):
 
         # Reimport all the folders
         self.reimportFolders( rescan = True )
-        
+
         # We save the settings of the folders we have imported
         self.saveSettings()
-        
+
     def update(self):
         # Reload settings in case they have changed
         self.loadSettings()
@@ -194,21 +191,21 @@ class LocalCollection(Graph):
 
         # Reimport only the folders that have changed
         self.reimportFolders( rescan = False )
-        
+
         # We save the settings of the folders we have imported
         self.saveSettings()
 
     def importSeriesFolder(self, folder):
         # Set the last time the folder was scanned
         self.seriesFolderTimes[folder] = time.mktime(time.localtime())
-        
+
         filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]
 
         importTask = ImportTask(folder, EpisodeTagger, filetypes = filetypes,
                                 recursive = self.seriesRecursive)
         self.connect(importTask, SIGNAL('foundData'), self.mergeCollection)
         self.connect(importTask, SIGNAL('taskFinished'), self.seriesTaskFinished)
-        
+
         if self.taskManager is not None:
             self.taskManager.add( importTask )
 
@@ -219,14 +216,14 @@ class LocalCollection(Graph):
         # we set it in a different dictionary in case the task
         # does not finish
         self.moviesFolderTimes[folder] = time.mktime(time.localtime())
-        
+
         filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]
 
         importTask = ImportTask(folder, MovieTagger, filetypes = filetypes,
                                 recursive = self.moviesRecursive)
         self.connect(importTask, SIGNAL('foundData'), self.mergeCollection)
         self.connect(importTask, SIGNAL('taskFinished'), self.moviesTaskFinished)
-        
+
         if self.taskManager is not None:
             self.taskManager.add( importTask )
 
@@ -237,7 +234,7 @@ class LocalCollection(Graph):
         # the selected folder to which it belonged
         selectedFolder = [folder for folder in self.seriesFolders if task.folder.startswith(folder)]
         selectedFolder.sort(key = lambda x: len(x))
-        
+
         # Set the last time the folder was scanned
         self.seriesFolders[selectedFolder[0]] = self.seriesFolderTimes[task.folder]
 
@@ -249,7 +246,7 @@ class LocalCollection(Graph):
         # the selected folder to which it belonged
         selectedFolder = [folder for folder in self.moviesFolders if task.folder.startswith(folder)]
         selectedFolder.sort(key = lambda x: len(x))
-        
+
         # Set the last time the folder was scanned
         self.moviesFolders[selectedFolder[0]] = self.moviesFolderTimes[task.folder]
 
