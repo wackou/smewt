@@ -23,20 +23,21 @@ import sys
 from collections import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from smewt.base.textutils import toUtf8
 
 class DirSelector(QWidget):
     def __init__(self, focusDir = QDir.currentPath(), parent = None, folders = [], recursiveSelection = True):
         QWidget.__init__(self)
-        
+
         self.focusDir = focusDir
         self.model = DirModel()
         self.setSelectedFolders( folders )
         self.tree = QTreeView()
         self.tree.setModel(self.model)
-        
+
         self.connect(self.model, SIGNAL('selectionChanged'),
                      self.selectionChanged)
-        
+
         # Hide header and all columns but the dirname
         self.tree.header().hide()
         for i in range(self.model.columnCount()-1):
@@ -48,32 +49,32 @@ class DirSelector(QWidget):
                             QAbstractItemView.PositionAtTop )
         self.tree.setCurrentIndex( currentIndex )
         self.tree.expand( currentIndex )
-        
+
         # Don't allow selection
         self.tree.setSelectionMode( QAbstractItemView.NoSelection )
 
         self.recursive_checkbox = QCheckBox('Select the folders recursively')
         self.connect(self.recursive_checkbox, SIGNAL('stateChanged(int)'), self.setRecursiveSelection)
-        
+
         self.recursive_checkbox.setCheckState( Qt.Checked if recursiveSelection else Qt.Unchecked )
-        
+
         self.formLayout = QVBoxLayout()
         self.formLayout.addWidget(self.tree)
         self.formLayout.addWidget(self.recursive_checkbox)
         self.setLayout(self.formLayout)
-        
+
     def recursiveSelection(self):
         return self.model.recursiveSelection
 
     def setRecursiveSelection(self, state):
         if state == Qt.Checked:
             self.model.setRecursiveSelection( True )
-            
+
         elif state == Qt.Unchecked:
             self.model.setRecursiveSelection( False )
-            
+
         self.emit(SIGNAL('selectionChanged'))
-            
+
     def selectionChanged(self):
         self.emit(SIGNAL('selectionChanged'))
 
@@ -82,7 +83,7 @@ class DirSelector(QWidget):
 
     def selectedFolders(self):
         return self.model.selectedFolders()
-            
+
 
 class DirModel(QDirModel):
 
@@ -91,7 +92,7 @@ class DirModel(QDirModel):
         self.setFilter( QDir.AllDirs | QDir.NoDotAndDotDot )
         self.recursiveSelection = recursiveSelection
         self.clearSelectedFolders()
-        
+
     def recursiveSelection(self):
         return self.recursiveSelection
 
@@ -108,17 +109,17 @@ class DirModel(QDirModel):
 
     def clearSelectedFolders(self):
         self.checkstates = defaultdict( lambda : Qt.Unchecked )
-        
+
     def setSelectedFolders(self, folders):
         self.clearSelectedFolders()
-        
+
         for folder in folders:
             index = self.index(folder)
             if index.isValid():
                 self.setCheckState( index, Qt.Checked )
             else:
                 self.checkstates[folder] = Qt.Checked
-        
+
     def selectedFolders(self):
         return [ k for k, v in self.checkstates.items() if v == Qt.Checked ]
 
@@ -126,7 +127,7 @@ class DirModel(QDirModel):
         if (role == Qt.CheckStateRole and index.column() == 0):
             if self.checkState(index) == Qt.Checked:
                 return QVariant( self.checkState(index) )
-        
+
             else:
                 if self.recursiveSelection:
                     if self.parentChecked( index ):
@@ -136,12 +137,12 @@ class DirModel(QDirModel):
                     return QVariant( Qt.PartiallyChecked )
                 else:
                     return QVariant( Qt.Unchecked )
-                
+
         return QDirModel.data(self, index, role)
 
     def childChecked(self, index):
        for checkedKey in self.selectedFolders():
-           if str(checkedKey).startswith( str(self.key( index )) + '/' ):
+           if toUtf8(checkedKey).startswith( toUtf8(self.key( index )) + '/' ):
                return True
 
        return False
@@ -149,7 +150,7 @@ class DirModel(QDirModel):
     def parentChecked(self, index):
        key = self.key( index )
        for checkedKey in [folder for folder in self.selectedFolders() if folder != key ]:
-           if str( key ).startswith( str( checkedKey ) + '/' ):
+           if toUtf8(key).startswith(toUtf8(checkedKey) + '/'):
                return True
 
        return False
@@ -165,31 +166,31 @@ class DirModel(QDirModel):
         self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"),
                   self.index(0, 0, index),
                   self.index(self.rowCount(index)-1, 0, index))
-        
+
     def parentDataChanged(self, index, recursive = False):
         if recursive and self.parent( index ).isValid():
                 self.parentDataChanged( self.parent( index ), recursive = recursive)
         self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"),
                   self.parent(index), self.parent(index))
-    
+
     def checkState(self, index):
         return self.checkstates[ self.key(index) ]
 
     def setData(self, index, value, role = Qt.EditRole):
         if (role == Qt.CheckStateRole and index.column() == 0):
             state = self.checkState(index)
-            
+
             if state == Qt.Checked:
                 self.setCheckState(index, Qt.Unchecked)
-                    
+
             elif state == Qt.Unchecked:
                 self.setCheckState(index, Qt.Checked)
-                    
+
             self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"), index, index)
             self.parentDataChanged(index, recursive = True)
             if self.recursiveSelection:
                 self.childrenDataChanged(index, recursive = True)
-                    
+
             self.emit(SIGNAL("selectionChanged"))
             return True
 
@@ -199,7 +200,7 @@ class DirModel(QDirModel):
 
     def flags(self, index):
         if self.recursiveSelection:
-            if self.parentChecked( index ): 
+            if self.parentChecked( index ):
                 return Qt.NoItemFlags
 
         return Qt.ItemIsUserCheckable  | Qt.ItemIsEnabled
@@ -208,7 +209,7 @@ class DirModel(QDirModel):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-       
+
     form = DirSelector()
     form.setWindowTitle("Test")
     form.show()
