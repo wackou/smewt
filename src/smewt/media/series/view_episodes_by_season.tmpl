@@ -42,7 +42,7 @@ for media in eps.findAll(Media):
     elif media.type() == 'subtitle':
         langs = guessCountryCode(media.filename)
 
-        mediaFilename = os.path.splitext(os.path.splitext(media.filename)[0])[0] + '.avi'
+        mediaFilename = eps.findOne(Media, method = lambda x: x.metadata['title'] == media.metadata['title']).filename
         subtitleFilename = media.filename
 
         for lang in langs:
