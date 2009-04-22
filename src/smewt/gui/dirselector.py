@@ -43,12 +43,14 @@ class DirSelector(QWidget):
         for i in range(self.model.columnCount()-1):
             self.tree.hideColumn(i+1)
 
-        # Set the focus directory
-        currentIndex = self.model.index(self.focusDir)
-        self.tree.scrollTo( currentIndex,
-                            QAbstractItemView.PositionAtTop )
-        self.tree.setCurrentIndex( currentIndex )
-        self.tree.expand( currentIndex )
+        # Expand the first level if there is only one directory
+        # Useful for Linux where / is always the first and only directory
+        if self.model.rowCount() == 1:
+            currentIndex = self.model.index(0,0)
+            self.tree.scrollTo( currentIndex,
+                                QAbstractItemView.PositionAtTop )
+            self.tree.setCurrentIndex( currentIndex )
+            self.tree.expand( currentIndex )
 
         # Don't allow selection
         self.tree.setSelectionMode( QAbstractItemView.NoSelection )

@@ -25,6 +25,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import os
 
+DEFAULT_WIDTH, DEFAULT_HEIGHT = 500, 600
+
 class CollectionFoldersPage(QDialog):
     def __init__(self,
                  parent = 0,
@@ -79,6 +81,9 @@ class CollectionFoldersPage(QDialog):
         self.connect(self.apply_button, SIGNAL('clicked()'), self.apply)
         self.connect(self.cancel_button, SIGNAL('clicked()'), self.cancel)
 
+        size = QSize(DEFAULT_WIDTH, DEFAULT_HEIGHT)
+        self.resize(size)
+        
     def ok(self):
         self.apply()
         self.done(self.settingsChanged)
