@@ -34,16 +34,16 @@ class CollectionFoldersPage(QDialog):
                  settingKeyFolders = 'collection_folders',
                  settingKeyRecursive = 'collection_folders_recursive',
                  description = 'Select the folders where your series are.'):
-                 
+
         QDialog.__init__(self, parent)
 
         self.settingsChanged = 0
-        
+
         self.settings = settings
         self.settingKeyFolders = settingKeyFolders
         self.settingKeyRecursive = settingKeyRecursive
 
-        
+
         if self.settings is not None:
             self.getSettings()
         else:
@@ -52,7 +52,7 @@ class CollectionFoldersPage(QDialog):
 
         self.layout = QVBoxLayout()
 
-        
+
         self.instructions_label = QLabel(description)
         self.layout.addWidget(self.instructions_label)
         self.dirselector = DirSelector( folders = self.folders, recursiveSelection = self.recursiveSelection )
@@ -89,7 +89,7 @@ class CollectionFoldersPage(QDialog):
 
     def cancel(self):
         self.done(self.settingsChanged)
-        
+
     def recursiveSelection(self):
         return self.dirselector.recursiveSelection()
 
@@ -98,30 +98,30 @@ class CollectionFoldersPage(QDialog):
         newFolders = set([os.path.abspath(str(f)) for f in self.dirselector.selectedFolders()])
         if originalFolders != newFolders or self.recursiveSelection != self.dirselector.recursiveSelection():
             self.apply_button.setEnabled(True)
-            
+
         else:
             self.apply_button.setEnabled(False)
 
     def getSettings(self):
         self.folders = [f for f in unicode(self.settings.value(self.settingKeyFolders).toString()).split(';')
                         if f != '']
-        self.recursiveSelection = self.settings.value(self.settingKeyRecursive).toBool()
+        self.recursiveSelection = self.settings.value(self.settingKeyRecursive, QVariant(True)).toBool()
 
     def setSettings(self):
         self.settingsChanged = 1
-        
+
         selectedFolders = [str(f) for f in self.dirselector.selectedFolders()]
 
         if self.settings is not None:
             self.settings.setValue(self.settingKeyFolders,
                                    QVariant( ';'.join( selectedFolders ) ) )
-            
+
             self.settings.setValue(self.settingKeyRecursive,
                                    QVariant( self.dirselector.recursiveSelection() ) )
 
 if __name__ == "__main__":
         app = QApplication(sys.argv)
-        
+
         form = CollectionFoldersPage(folders = ['/home/rmarxer/dev/eigen2'])
         form.setWindowTitle("Test")
         form.show()
