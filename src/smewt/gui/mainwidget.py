@@ -88,6 +88,8 @@ class MainWidget(QWidget):
 
         self.externalProcess = QProcess()
 
+    def shutdown(self):
+        self.saveCollection()
 
     def setZoomFactor(self, factor):
         self.collectionView.page().mainFrame().setTextSizeMultiplier( factor )

@@ -19,7 +19,7 @@
 #
 
 from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox, QToolBar
-from PyQt4.QtCore import SIGNAL, QSize, Qt, QSettings, QVariant, QPoint, QSize
+from PyQt4.QtCore import SIGNAL, QSize, Qt, QSettings, QVariant, QPoint, QSize, QObject
 import sys, logging
 from smewt.gui import MainWidget, FeedWatchWidget
 
@@ -48,7 +48,7 @@ class SmewtGui(QMainWindow):
         self.setWindowTitle('Smewg - An Ordinary Smewt Gui')
 
         self.readWindowSettings()
-        
+
         self.icon = QIcon('icons/smewt.svg')
         self.setWindowIcon(self.icon)
 
@@ -65,7 +65,7 @@ class SmewtGui(QMainWindow):
         importMenu.addSeparator()
         importMenu.addAction(self.updateCollectionAction)
         importMenu.addAction(self.rescanCollectionAction)
-        
+
         helpMenu = self.menuBar().addMenu('Help')
         helpMenu.addAction(self.aboutAction)
         helpMenu.addAction(self.aboutQtAction)
@@ -89,6 +89,9 @@ class SmewtGui(QMainWindow):
         self.connect(self.mainWidget, SIGNAL('feedwatcher'),
                      self.showFeedWatcher)
 
+    def shutdown(self):
+        self.mainWidget.shutdown()
+
     def showFeedWatcher(self):
         self.tabWidget.setCurrentIndex(1)
 
@@ -108,7 +111,7 @@ class SmewtGui(QMainWindow):
 
         self.statusWidget = StatusWidget()
         self.statusBar().addPermanentWidget(self.statusWidget)
-        
+
 
         self.connect(self.mainWidget, SIGNAL('progressChanged'), self.progressChanged)
 
@@ -190,23 +193,23 @@ class SmewtGui(QMainWindow):
                      self.mainWidget.rescanCollection)
 
     def toggleFullScreen(self):
-        flag = Qt.WindowFullScreen if self.fullScreenAction.isChecked() else ~Qt.WindowFullScreen 
+        flag = Qt.WindowFullScreen if self.fullScreenAction.isChecked() else ~Qt.WindowFullScreen
         self.setWindowState(self.windowState() ^ Qt.WindowFullScreen  )
 
     def quit(self):
         self.writeWindowSettings()
         self.mainWidget.quit()
-        QApplication.instance().quit()        
-        
+        QApplication.instance().quit()
+
     def readWindowSettings(self):
         settings = QSettings()
         pos = settings.value("MainWindow/pos", QVariant(QPoint((QApplication.desktop().width()-DEFAULT_WIDTH)/2, (QApplication.desktop().width()-DEFAULT_HEIGHT)/2))).toPoint()
         size = settings.value("MainWindow/size", QVariant(QSize(DEFAULT_WIDTH, DEFAULT_HEIGHT))).toSize()
         self.resize(size)
         self.move(pos)
-        
+
         self.restoreState(settings.value("MainWindow/windowstate").toByteArray())
-        
+
     def writeWindowSettings(self):
         settings = QSettings()
         settings.setValue("MainWindow/pos", QVariant(self.pos()))
@@ -214,7 +217,7 @@ class SmewtGui(QMainWindow):
 
         settings.setValue("MainWindow/windowstate", QVariant(self.saveState()))
 
-     
+
     def createTrayIcon(self):
         trayMenu = QMenu(self)
         trayMenu.addAction(self.minimizeAction)
@@ -276,6 +279,10 @@ if __name__ == '__main__':
     c = cache.globalCache
 
     sgui = SmewtGui()
+
+    QObject.connect(app, SIGNAL('aboutToQuit()'),
+                    sgui.shutdown)
+
     sgui.show()
     app.exec_()
 
