@@ -52,6 +52,9 @@ class CollectionFoldersPage(QDialog):
             self.folders = folders
             self.recursiveSelection = recursiveSelection
 
+        # remove directories which don't exist to avoid a segfault later
+        self.folders = [ folder for folder in self.folders if os.path.isdir(folder) ]
+
         self.layout = QVBoxLayout()
 
 
@@ -83,7 +86,7 @@ class CollectionFoldersPage(QDialog):
 
         size = QSize(DEFAULT_WIDTH, DEFAULT_HEIGHT)
         self.resize(size)
-        
+
     def ok(self):
         self.apply()
         self.done(self.settingsChanged)
