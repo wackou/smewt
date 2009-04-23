@@ -59,7 +59,6 @@ def render(url, collection):
                                     'title': 'UNWATCHED' })
 
     elif url.viewType == 'recent':
-        print 'recent view'
         t = Template(file = 'smewt/media/movie/view_recent_movies.tmpl',
                      searchList = { 'movies': [ m for m in collection.findAll(Movie) if 'lastViewed' in m.properties ],
                                     'title': 'RECENT' })

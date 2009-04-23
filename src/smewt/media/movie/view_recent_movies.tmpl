@@ -5,18 +5,17 @@ from smewt import SmewtUrl
 from smewt.base.textutils import toUtf8
 import datetime
 
-print 'a'
-
-f = open('/tmp/log.txt', 'w')
-f.write('a\n')
-f.flush()
-for m in allmovies:
-    f.write(toUtf8(unicode(m))+'\n\n')
-    f.flush()
-
 def getComments(md):
-    comments = [ p for p in md.properties if p.startswith('comment/') ]
-    return [ (author[8:], md[author]) for author in comments ]
+    results = []
+
+    for comment in [ p for p in md.properties if p.startswith('comment/') ]:
+        comment = comment[8:]
+        idx = comment.index('/')
+        results += [ (comment[idx+1:],
+                      datetime.datetime.fromtimestamp(int(comment[:idx])).ctime(),
+                      md['comment/'+comment]) ]
+
+    return sorted(results, key = lambda x: x[1])
 
 def lastViewedString(m):
     lastViewed = datetime.datetime.fromtimestamp(m['lastViewed']).date()
@@ -44,6 +43,9 @@ movies = sorted([ { 'title': m['title'],
                     'url': SmewtUrl('media', 'movie/single', { 'title': m['title'] }),
                     'poster': m['loresImage'] } for m in allmovies ], key = lambda x: -x['lastViewed'])
 
+# keep only the 4 most recent movies
+movies = movies[:4]
+
 from smewt.base.utils import smewtDirectory
 import_dir = smewtDirectory('smewt', 'media')
 
@@ -53,6 +55,19 @@ import_dir = smewtDirectory('smewt', 'media')
 <head>
   <title>Recent movies view</title>
   <link rel="stylesheet" href="file://$(import_dir)/movie/movies.css">
+
+  <script type="text/javascript" language="javascript" src="file://$(import_dir)/3rdparty/dataTables-1.4/media/js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8">
+  #raw
+
+    function addComment(form, id, url) {
+        mainWidget.addComment(url, 'wackou', form[id].value);
+    }
+
+  #end raw
+  </script>
+
 </head>
 
 <body>
@@ -61,35 +76,59 @@ import_dir = smewtDirectory('smewt', 'media')
 	<div id="header">
 		RECENTLY WATCHED MOVIES
 	</div>
-	<div id="container">
+	<div id="container"><form>
 
 		<div id="left-side">
-      #for m in movies
-        <div class="movie">
+      #for i, m in enumerate(movies)
+      #if i % 2 == 0
+        <div class="commentbox">
           <img src="file://$m.poster" />
           <a href='$m.url'>$m.title</a>
-        </div>
-      #end for
-    </div>
-
-    <div id="right-side">
-      #for m in movies
-        <div class="movie">
+          <div class="comments">
           <p>Last viewed $m.lastViewedString</p>
           #if $m.comments
-            #for author, comment in $m.comments
-              <p>Comment by <b>$author</b>:<br/>
-              $comment </p>
+            #for author, time, comment in $m.comments
+              <p>Comment by <b>$author</b> at $time:<br/>
+              <div class="comment"><pre>$comment</pre></div> </p>
             #end for
           #else
             <p><em>No Comments yet</em></p>
           #end if
 
+          <textarea rows="4" columns="80" name="text$(i)"></textarea>
+          <button type="button" onClick="addComment(this.form, 'text$(i)', '$m.qtitle')">Post new comment</button>
+          </div>
         </div>
+      #end if
       #end for
     </div>
 
-  </div>
+    <div id="right-side">
+      #for i, m in enumerate(movies)
+      #if i % 2 == 1
+        <div class="commentbox">
+          <img src="file://$m.poster" />
+          <a href='$m.url'>$m.title</a>
+          <div class="comments">
+          <p>Last viewed $m.lastViewedString</p>
+          #if $m.comments
+            #for author, time, comment in $m.comments
+              <p>Comment by <b>$author</b> at $time:<br/>
+              <div class="comment"><pre>$comment</pre></div> </p>
+            #end for
+          #else
+            <p><em>No Comments yet</em></p>
+          #end if
+
+          <textarea rows="4" columns="80" name="text$(i)"></textarea>
+          <button type="button" onClick="addComment(this.form, 'text$(i)', '$m.qtitle')">Post new comment</button>
+          </div>
+        </div>
+      #end if
+      #end for
+    </div>
+
+  </form></div>
 </div>
 
 </body>
