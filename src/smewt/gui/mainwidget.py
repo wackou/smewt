@@ -30,6 +30,7 @@ from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDia
 from PyQt4.QtWebKit import QWebView, QWebPage
 from smewt.media import series, movie, speeddial
 import logging
+import time
 from os.path import join, dirname, splitext
 from smewt.taggers import EpisodeTagger, MovieTagger
 
@@ -237,7 +238,13 @@ class MainWidget(QWidget):
                     args = []
                     nfile = 1
                     while 'filename%d' % nfile in surl.args:
-                        args.append(surl.args['filename%d' % nfile])
+                        filename = surl.args['filename%d' % nfile]
+                        args.append(filename)
+                        # update last viewed info
+                        self.collection.findOne(Media, method = lambda x: x.filename == filename).metadata['lastViewed'] = time.time()
+                        a = self.collection.findOne(Media, method = lambda x: x.filename == filename).metadata
+                        import datetime
+                        print '---', a['title'], 'last viewed at', datetime.datetime.fromtimestamp(time.time()).ctime()
 
                         if 'subtitle%d' % nfile in surl.args:
                             args += ['-sub', surl.args['subtitle%d' % nfile]]

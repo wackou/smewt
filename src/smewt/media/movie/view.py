@@ -58,6 +58,12 @@ def render(url, collection):
                      searchList = { 'movies': [ m for m in collection.findAll(Movie) if not m.watched ],
                                     'title': 'UNWATCHED' })
 
+    elif url.viewType == 'recent':
+        print 'recent view'
+        t = Template(file = 'smewt/media/movie/view_recent_movies.tmpl',
+                     searchList = { 'movies': [ m for m in collection.findAll(Movie) if 'lastViewed' in m.properties ],
+                                    'title': 'RECENT' })
+
     else:
         raise SmewtException('Invalid view type: %s' % url.viewType)
 
