@@ -6,6 +6,7 @@ from collections import defaultdict
 from smewt import SmewtUrl, Media, Graph
 from smewt.media import Episode, Series
 from smewt.base.utils import smewtDirectory, guessCountryCode
+from smewt.base import SmewtException
 
 import os, os.path
 flags_dir = smewtDirectory('smewt', 'media', 'common', 'images', 'flags')
@@ -40,15 +41,17 @@ for media in eps.findAll(Media):
 
     elif media.type() == 'subtitle':
         langs = guessCountryCode(media.filename)
+        try:
+            mediaFilename = eps.findOne(Media, method = lambda x: x.type()=='video' and media.filename.startswith(os.path.splitext(x.filename)[0])).filename
+            subtitleFilename = media.filename
 
-        mediaFilename = eps.findOne(Media, method = lambda x: x.type()=='video' and media.filename.startswith(os.path.splitext(x.filename)[0])).filename
-        subtitleFilename = media.filename
+            for lang in langs:
+                md.setdefault('subtitleUrls', []).append( {'languageImage': flags_dir + '/%s.png' % (lang,),
+                              'url': SmewtUrl('action', 'play', { 'filename1': mediaFilename, 'subtitle1': subtitleFilename })} )
 
-        for lang in langs:
-            md.setdefault('subtitleUrls', []).append( {'languageImage': flags_dir + '/%s.png' % (lang,),
-                          'url': SmewtUrl('action', 'play', { 'filename1': mediaFilename, 'subtitle1': subtitleFilename })} )
-
-        md['numSubtitles'] = len(md['subtitleUrls'])
+            md['numSubtitles'] = len(md['subtitleUrls'])
+        except SmewtException:
+            pass
 
 for md in episodes.values():
     md['subtitleUrls'].sort(key = lambda x: x['languageImage'])
