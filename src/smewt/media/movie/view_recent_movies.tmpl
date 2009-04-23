@@ -1,0 +1,96 @@
+#set allmovies = $movies
+
+<%
+from smewt import SmewtUrl
+from smewt.base.textutils import toUtf8
+import datetime
+
+print 'a'
+
+f = open('/tmp/log.txt', 'w')
+f.write('a\n')
+f.flush()
+for m in allmovies:
+    f.write(toUtf8(unicode(m))+'\n\n')
+    f.flush()
+
+def getComments(md):
+    comments = [ p for p in md.properties if p.startswith('comment/') ]
+    return [ (author[8:], md[author]) for author in comments ]
+
+def lastViewedString(m):
+    lastViewed = datetime.datetime.fromtimestamp(m['lastViewed']).date()
+    daysago = (datetime.date.today() - lastViewed).days
+    datestr = lastViewed.isoformat()
+
+    if daysago == 0:
+        return '<b>Today</b> (%s)' % datestr
+    elif daysago == 1:
+        return '<b>Yesterday</b> (%s)' % datestr
+    elif daysago > 1 and daysago < 8:
+        return '<b>%d days ago</b> (%s)' % (daysago, datestr)
+
+    return 'on ' + datestr
+
+movies = sorted([ { 'title': m['title'],
+                    'qtitle': m['title'].replace('\'', '\\\''),
+                    'year': m['year'],
+                    'rating': m['rating'] or '-',
+                    'genres': ', '.join(m['genres'] or []) or '-',
+                    'lastViewed': m['lastViewed'],
+                    'lastViewedString': lastViewedString(m),
+                    'watched': 'checked' if m.watched else '',
+                    'comments': getComments(m),
+                    'url': SmewtUrl('media', 'movie/single', { 'title': m['title'] }),
+                    'poster': m['loresImage'] } for m in allmovies ], key = lambda x: -x['lastViewed'])
+
+from smewt.base.utils import smewtDirectory
+import_dir = smewtDirectory('smewt', 'media')
+
+%>
+
+<html>
+<head>
+  <title>Recent movies view</title>
+  <link rel="stylesheet" href="file://$(import_dir)/movie/movies.css">
+</head>
+
+<body>
+
+<div id="wrapper">
+	<div id="header">
+		RECENTLY WATCHED MOVIES
+	</div>
+	<div id="container">
+
+		<div id="left-side">
+      #for m in movies
+        <div class="movie">
+          <img src="file://$m.poster" />
+          <a href='$m.url'>$m.title</a>
+        </div>
+      #end for
+    </div>
+
+    <div id="right-side">
+      #for m in movies
+        <div class="movie">
+          <p>Last viewed $m.lastViewedString</p>
+          #if $m.comments
+            #for author, comment in $m.comments
+              <p>Comment by <b>$author</b>:<br/>
+              $comment </p>
+            #end for
+          #else
+            <p><em>No Comments yet</em></p>
+          #end if
+
+        </div>
+      #end for
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
