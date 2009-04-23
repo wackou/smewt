@@ -215,6 +215,12 @@ class MainWidget(QWidget):
     def updateWatched(self, title, watched):
         self.collection.findOne(Movie, title = unicode(title)).watched = watched
 
+    @pyqtSignature("QString, QString, QString")
+    def addComment(self, title, author, comment):
+        self.collection.findOne(Movie, title = unicode(title))['comment/%d/%s' % (int(time.time()), unicode(author))] = unicode(comment)
+
+        self.refreshCollectionView()
+
     def linkClicked(self,  url):
         log.info('clicked on link %s', url)
         url = url.toEncoded()
@@ -242,10 +248,6 @@ class MainWidget(QWidget):
                         args.append(filename)
                         # update last viewed info
                         self.collection.findOne(Media, method = lambda x: x.filename == filename).metadata['lastViewed'] = time.time()
-                        a = self.collection.findOne(Media, method = lambda x: x.filename == filename).metadata
-                        import datetime
-                        print '---', a['title'], 'last viewed at', datetime.datetime.fromtimestamp(time.time()).ctime()
-
                         if 'subtitle%d' % nfile in surl.args:
                             args += ['-sub', surl.args['subtitle%d' % nfile]]
 

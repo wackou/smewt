@@ -159,6 +159,53 @@ h1 {
 
 /**** end of smewt style rules **********************************/
 
+/**** smewt style rules *****************************************/
+/**** for recent movies view                                   **/
+.commentbox {
+    border: 1px solid #778;
+    background-color: #F0F0F0;
+    margin: 5px;
+    margin-left: 0px;
+}
+
+.commentbox img {
+ position: relative;
+ top: 5px;
+ left: 5px;
+ height: 80px;
+ float: left;
+}
+
+.commentbox a {
+ text-decoration: none;
+ font: bold 24px Verdana, sans-serif;
+ color: #448;
+ margin-left: 30px;
+ margin-bottom: 30px;
+ position: relative;
+ top: 30px;
+}
+
+.comments {
+    margin-top: 70px;
+    margin-left: 20px;
+}
+
+.comment {
+    margin-left: 20px;
+}
+
+.comment pre {
+    font: 14px Verdana, sans-serif;
+    color: #000000;
+}
+
+textarea {
+    width: 90%;
+}
+
+/**** end of smewt style rules **********************************/
+
 /*--------------------------------------------------
   ul.tabbernav = the tab navigation list
   li.tabberactive = the active tab
