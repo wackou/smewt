@@ -5,6 +5,7 @@ from collections import defaultdict
 from smewt import SmewtUrl, Media
 from smewt.media import Movie
 from smewt.base.utils import smewtDirectory, guessCountryCode
+from smewt.base import SmewtException
 import datetime
 
 flags_dir = smewtDirectory('smewt', 'media', 'common', 'images', 'flags')
@@ -34,12 +35,16 @@ for media in movieData.findAll(Media):
 
     elif media.type() == 'subtitle':
         langs = guessCountryCode(media.filename)
+        
+        try:
+            mediaFilename = movieData.findOne(Media, method = lambda x: x.type()=='video' and media.filename.startswith(os.path.splitext(x.filename)[0])).filename
+            subtitleFilename = media.filename
 
-        mediaFilename = movieData.findOne(Media, method = lambda x: x.type()=='video' and media.filename.startswith(os.path.splitext(x.filename)[0])).filename
-        subtitleFilename = media.filename
-
-        for lang in langs:
-            languageFiles[lang] += [ (mediaFilename, subtitleFilename) ]
+            for lang in langs:
+                languageFiles[lang] += [ (mediaFilename, subtitleFilename) ]
+        
+        except SmewtException:
+            pass
 
 for lang, files in languageFiles.items():
     nfile = 1
