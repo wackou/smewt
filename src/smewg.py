@@ -20,7 +20,7 @@
 
 from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox, QToolBar
 from PyQt4.QtCore import SIGNAL, QSize, Qt, QSettings, QVariant, QPoint, QSize, QObject
-import sys, logging
+import sys, logging, os, os.path
 from smewt.gui import MainWidget, FeedWatchWidget
 
 log = logging.getLogger('smewg')
@@ -267,11 +267,17 @@ GPLv3 licensed''')
     def aboutQt(self):
         QMessageBox.aboutQt(self)
 
+def currentPath():
+    '''Returns the path in which the calling file is located.'''
+    return os.path.dirname(os.path.join(os.getcwd(), sys._getframe(1).f_globals['__file__']))
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setOrganizationName("DigitalGaia")
     app.setOrganizationDomain("smewt.com")
     app.setApplicationName("Smewg")
+
+    os.chdir(currentPath())
 
     #from smewt.base import cache
     #cache.load('/tmp/smewt.cache')
