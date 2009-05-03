@@ -101,7 +101,8 @@ import subprocess
 class install(_install):
     def run(self):
         _install.run(self)
-        subprocess.call(['update-menus', '-v'])
+        print 'Processing triggers for menu ...'
+        subprocess.call(['update-menus'])
 
 setup(name = 'Smewt',
       cmdclass = {'install': install},

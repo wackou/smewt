@@ -1,11 +1,7 @@
 prune utils
 include Smewg.e4p
-include Smewg.e4q
-include Smewg.e4t
 include reset_config.sh
 include ez_setup.py
-include smewt/media/series/*.tmpl
-include smewt/media/series/*.js
-recursive-include smewt/icons *.png
-recursive-include icons *.png
+recursive-include smewt/media *.tmpl *.css *.html *.js
+recursive-include smewt/icons *.png *.svg
 include smewt.desktop
