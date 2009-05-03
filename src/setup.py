@@ -25,7 +25,7 @@ description   = """ Smewt is the revolution.
 """
 
 import ez_setup
-from setuptools import setup
+from setuptools import setup, find_packages
 ez_setup.use_setuptools()
 
 #from distutils.core import setup
@@ -37,20 +37,32 @@ import glob
 unused_extensions = ['.dll', '.so', '.jnilib']
 options = {}
 
-packages = ['smewt',
-            'smewt.base',
-            'smewt.media',
-            'smewt.media.series',
-            'smewt.gui',
-            'smewt.solvers',
-            'smewt.taggers',
-            'smewt.guessers',
-            'smewt.icons',
-            'smewt.plugins'
-            ]
+packages = find_packages()
+
+"""
+['smewt',
+ 'smewt.base',
+ 'smewt.guessers',
+ 'smewt.gui',
+ 'smewt.media',
+ 'smewt.media.movie',
+ 'smewt.media.series',
+ 'smewt.plugins',
+ 'smewt.solvers',
+ 'smewt.taggers'
+]
+
+('icons', ['smewt/icons/go-home.png',
+                         'smewt/icons/go-next.png',
+                         'smewt/icons/go-previous.png',
+                         'smewt/icons/view-fullscreen.png',
+                         'smewt/icons/zoom-in.png',
+                         'smewt/icons/zoom-out.png',
+                         'smewt/icons/smewt.svg']),
+"""
 
 data_files = [('share/applications' , ['smewt.desktop']),
-              ('share/icons' ,        ['icons/smewt.png'])]
+              ('share/icons' ,        ['../artwork/smewt_icon.png'])]
 
 opts = {}
 
@@ -85,13 +97,17 @@ elif sys.platform == 'darwin':
 
 provides = packages
 
-requires = ['IMDbPY(>=3.7)',
-            'Cheetah(>=1.0)',
+requires = [#'IMDbPY(>=3.7)',
+            #'Cheetah(>=1.0)',
+            #'pycurl',
+            #'IMDbPY(>=4.0)',
             #'PyQt(>=4.4.0)'
             ]
 
-install_requires = ['IMDbPY',
-                    'Cheetah',
+install_requires = [#'IMDbPY',
+                    #'Cheetah',
+                    #0'pycurl',
+                    #'IMDbPY',
                     #'PyQt'
                     ]
 
@@ -113,16 +129,15 @@ setup(name = 'Smewt',
       provides = provides,
       packages = packages,
       scripts = scripts,
-      package_data = {'smewt.gui.icon': ['nepomuk.png'],
-                      'smewt.media.series': ['view_episodes_by_season.tmpl',
-                                             'view_all_series.tmpl',
-                                             'jquery-1.2.2.pack.js',
-                                             'animatedcollapse.js']},
+      package_data = {'smewt.icons': ['*.png', '*.svg'],
+                      'smewt.media.movie': ['*.tmpl', '*.css', '*.js'],
+                      'smewt.media.series': ['*.tmpl', '*.css', '*.js'],
+                      'smewt.media.speeddial': ['*.html', '*.png']},
       data_files = data_files,
       classifiers =
             [ 'Development Status :: 1 - Beta',
               'Intended Audience :: Entertainment',
               'License :: OSI Approved :: GPL License',
               'Topic :: Multimedia :: Sound/Audio'],
-      zip_safe=True # the package can run out of an .egg file
+      zip_safe=False # the package can run out of an .egg file
       )

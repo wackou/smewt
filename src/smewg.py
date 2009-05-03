@@ -22,6 +22,7 @@ from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProg
 from PyQt4.QtCore import SIGNAL, QSize, Qt, QSettings, QVariant, QPoint, QSize, QObject
 import sys, logging, os, os.path
 from smewt.gui import MainWidget, FeedWatchWidget
+from smewt.base.utils import smewtDirectory
 
 log = logging.getLogger('smewg')
 DEFAULT_WIDTH = 874
@@ -49,7 +50,7 @@ class SmewtGui(QMainWindow):
 
         self.readWindowSettings()
 
-        self.icon = QIcon('icons/smewt.svg')
+        self.icon = QIcon(smewtDirectory('smewt', 'icons', 'smewt.svg'))
         self.setWindowIcon(self.icon)
 
         self.createWidgets()
@@ -138,33 +139,33 @@ class SmewtGui(QMainWindow):
 
 
         # navigation bar
-        self.backAction = QAction(QIcon('icons/go-previous.png'), 'Back', self)
+        self.backAction = QAction(QIcon(smewtDirectory('smewt', 'icons', 'go-previous.png')), 'Back', self)
         self.backAction.setStatusTip('Go back')
         self.connect(self.backAction, SIGNAL('triggered()'),
                      self.mainWidget.back)
 
-        self.fwdAction = QAction(QIcon('icons/go-next.png'), 'Forward', self)
+        self.fwdAction = QAction(QIcon(smewtDirectory('smewt', 'icons', 'go-next.png')), 'Forward', self)
         self.fwdAction.setStatusTip('Go forward')
         self.connect(self.fwdAction, SIGNAL('triggered()'),
                      self.mainWidget.forward)
 
-        self.homeAction = QAction(QIcon('icons/go-home.png'), 'Home (Speed Dial)', self)
+        self.homeAction = QAction(QIcon(smewtDirectory('smewt', 'icons', 'go-home.png')), 'Home (Speed Dial)', self)
         self.homeAction.setStatusTip('Returns to the speed dial')
         self.connect(self.homeAction, SIGNAL('triggered()'),
                      self.showSpeedDial)
 
 
-        self.zoomInAction = QAction(QIcon('icons/zoom-in.png'), 'Zoom in', self)
+        self.zoomInAction = QAction(QIcon(smewtDirectory('smewt', 'icons', 'zoom-in.png')), 'Zoom in', self)
         self.zoomInAction.setStatusTip('Make the text larger')
         self.connect(self.zoomInAction, SIGNAL('triggered()'),
                      self.mainWidget.zoomIn)
 
-        self.zoomOutAction = QAction(QIcon('icons/zoom-out.png'), 'Zoom out', self)
+        self.zoomOutAction = QAction(QIcon(smewtDirectory('smewt', 'icons', 'zoom-out.png')), 'Zoom out', self)
         self.zoomOutAction.setStatusTip('Make the text smaller')
         self.connect(self.zoomOutAction, SIGNAL('triggered()'),
                      self.mainWidget.zoomOut)
 
-        self.fullScreenAction = QAction(QIcon('icons/view-fullscreen.png'), 'Full Screen', self)
+        self.fullScreenAction = QAction(QIcon(smewtDirectory('smewt', 'icons', 'view-fullscreen.png')), 'Full Screen', self)
         self.fullScreenAction.setStatusTip('Toggle fullscreen mode')
         self.fullScreenAction.setCheckable(True)
         self.connect(self.fullScreenAction, SIGNAL('triggered()'),
