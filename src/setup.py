@@ -39,30 +39,8 @@ options = {}
 
 packages = find_packages()
 
-"""
-['smewt',
- 'smewt.base',
- 'smewt.guessers',
- 'smewt.gui',
- 'smewt.media',
- 'smewt.media.movie',
- 'smewt.media.series',
- 'smewt.plugins',
- 'smewt.solvers',
- 'smewt.taggers'
-]
-
-('icons', ['smewt/icons/go-home.png',
-                         'smewt/icons/go-next.png',
-                         'smewt/icons/go-previous.png',
-                         'smewt/icons/view-fullscreen.png',
-                         'smewt/icons/zoom-in.png',
-                         'smewt/icons/zoom-out.png',
-                         'smewt/icons/smewt.svg']),
-"""
-
-data_files = [('share/applications' , ['smewt.desktop']),
-              ('share/icons' ,        ['../artwork/smewt_icon.png'])]
+data_files = [('/usr/share/applications' , ['smewt.desktop']),
+              ('/usr/share/icons/hicolor/scalable/apps' , ['smewt/icons/smewt.svg'])]
 
 opts = {}
 
@@ -116,7 +94,17 @@ dependency_links = []
 
 scripts = ['smewg.py']
 
+# HACK: allow to update the menus
+from setuptools.command.install import install as _install
+import subprocess
+
+class install(_install):
+    def run(self):
+        _install.run(self)
+        subprocess.call(['update-menus', '-v'])
+
 setup(name = 'Smewt',
+      cmdclass = {'install': install},
       version = '1.0',
       description = description,
       author = 'Nicolas Wack, Ricard Marxer Piñón, Roberto Toscano',
@@ -139,5 +127,5 @@ setup(name = 'Smewt',
               'Intended Audience :: Entertainment',
               'License :: OSI Approved :: GPL License',
               'Topic :: Multimedia :: Sound/Audio'],
-      zip_safe=False # the package can run out of an .egg file
+      zip_safe = False # the package can run out of an .egg file
       )
