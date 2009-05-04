@@ -102,8 +102,10 @@ class install(_install):
     def run(self):
         _install.run(self)
         print 'Processing triggers for menu ...'
+        subprocess.call(['xdg-desktop-menu', 'install', '--novendor', '/usr/share/applications/smewt.desktop'])
         subprocess.call(['update-menus'])
-
+        
+        
 setup(name = 'Smewt',
       cmdclass = {'install': install},
       version = '1.0',
@@ -119,6 +121,12 @@ setup(name = 'Smewt',
       packages = packages,
       scripts = scripts,
       package_data = {'smewt.icons': ['*.png', '*.svg'],
+                      'smewt.media.common': ['*.png'],
+                      'smewt.media.common.flags': ['*.png'],
+                      'smewt.media.thirdparty': ['*.js'],
+                      'smewt.media.thirdparty.dataTables.media.css': ['*.css'],
+                      'smewt.media.thirdparty.dataTables.media.js': ['*.js'],
+                      'smewt.media.thirdparty.dataTables.media.images': ['*.jpg'],
                       'smewt.media.movie': ['*.tmpl', '*.css', '*.js'],
                       'smewt.media.series': ['*.tmpl', '*.css', '*.js'],
                       'smewt.media.speeddial': ['*.html', '*.png']},
