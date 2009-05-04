@@ -39,7 +39,7 @@ options = {}
 
 packages = find_packages()
 
-data_files = [('/usr/share/applications' , ['smewt.desktop']),
+data_files = [('/usr/share/applications' , ['digitalgaia-smewt.desktop']),
               ('/usr/share/icons/hicolor/scalable/apps' , ['smewt/icons/smewt.svg'])]
 
 opts = {}
@@ -102,7 +102,7 @@ class install(_install):
     def run(self):
         _install.run(self)
         print 'Processing triggers for menu ...'
-        subprocess.call(['xdg-desktop-menu', 'install', '--novendor', '/usr/share/applications/smewt.desktop'])
+        subprocess.call(['xdg-desktop-menu', 'install', '/usr/share/applications/digitalgaia-smewt.desktop'])
         subprocess.call(['update-menus'])
         
         
