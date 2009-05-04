@@ -4,3 +4,7 @@ Smewg.e4t
 
 .waf-*
 .ropeproject
+
+src/build
+src/dist
+src/Smewt.egg-info
