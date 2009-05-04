@@ -24,9 +24,11 @@
 import os, os.path, fnmatch
 import pycurl
 from PyQt4.QtCore import QSettings, QVariant
+import smewt
 
 def smewtDirectory(*args):
-    return os.path.join(os.getcwd(), *args)
+    # HACK: or not...  I don't know any other way
+    return os.path.join(os.path.dirname(smewt.__file__), '..', *args)
 
 def smewtUserDirectory(*args):
     settings = QSettings()

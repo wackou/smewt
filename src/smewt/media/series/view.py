@@ -21,7 +21,7 @@
 from Cheetah.Template import Template
 from smewt.base import SmewtException, Graph, Media
 from serieobject import Series, Episode
-
+from smewt.base.utils import smewtDirectory
 
 def render(url, collection):
     '''This function always receive an URL and a full graph of all the collection as metadata input.
@@ -34,7 +34,7 @@ def render(url, collection):
         medias = Graph()
         medias += collection.findAll(Media, method = lambda x: x.metadata in episodes)
 
-        t = Template(file = 'smewt/media/series/view_episodes_by_season.tmpl',
+        t = Template(file = smewtDirectory('smewt', 'media', 'series', 'view_episodes_by_season.tmpl'),
                      searchList = { 'episodes': medias })
 
     elif url.viewType == 'all':
@@ -44,7 +44,7 @@ def render(url, collection):
                                         method = lambda x: x.type() == 'video' and isinstance(x.metadata, Episode)):
             series |= set([media.metadata['series']])
 
-        t = Template(file = 'smewt/media/series/view_all_series.tmpl',
+        t = Template(file = smewtDirectory('smewt', 'media', 'series', 'view_all_series.tmpl'),
                      searchList = { 'series': series })
 
     else:

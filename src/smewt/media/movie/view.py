@@ -21,7 +21,7 @@
 from Cheetah.Template import Template
 from smewt.base import SmewtException, Graph, Media
 from movieobject import Movie
-
+from smewt.base.utils import smewtDirectory
 
 def render(url, collection):
     '''This function always receive an URL and a full graph of all the collection as metadata input.
@@ -36,7 +36,7 @@ def render(url, collection):
             if f.metadata == movieMD:
                 metadata += f
 
-        t = Template(file = 'smewt/media/movie/view_movie.tmpl',
+        t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_movie.tmpl'),
                      searchList = { 'movie': metadata })
 
     elif url.viewType == 'all':
@@ -45,21 +45,21 @@ def render(url, collection):
                                         method = lambda x: x.type() == 'video' and isinstance(x.metadata, Movie)):
             movies |= set([media.metadata])
 
-        t = Template(file = 'smewt/media/movie/view_all_movies.tmpl',
+        t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_all_movies.tmpl'),
                      searchList = { 'movies': movies })
 
     elif url.viewType == 'spreadsheet':
-        t = Template(file = 'smewt/media/movie/view_movies_spreadsheet.tmpl',
+        t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_movies_spreadsheet.tmpl'),
                      searchList = { 'movies': collection.findAll(Movie),
                                     'title': 'ALL' })
 
     elif url.viewType == 'unwatched':
-        t = Template(file = 'smewt/media/movie/view_movies_spreadsheet.tmpl',
+        t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_movies_spreadsheet.tmpl'),
                      searchList = { 'movies': [ m for m in collection.findAll(Movie) if not m.watched ],
                                     'title': 'UNWATCHED' })
 
     elif url.viewType == 'recent':
-        t = Template(file = 'smewt/media/movie/view_recent_movies.tmpl',
+        t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_recent_movies.tmpl'),
                      searchList = { 'movies': [ m for m in collection.findAll(Movie) if 'lastViewed' in m.properties ],
                                     'title': 'RECENT' })
 
