@@ -8,12 +8,12 @@
 # the terms of the GNU General Public License as published by the Free
 # Software Foundation; either version 3.0 of the License, or (at your option) any
 # later version.
-# 
+#
 # This library is distributed in the hope that it will be useful, but WITHOUT ANY
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.  See the GNU General Public License for more
 # details.
-# 
+#
 # You should have received a copy of the GNU General Public License along
 # with this library; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -58,14 +58,14 @@ elif sys.platform == 'win32':
 
     ## Necessary to find MSVCP71.dll
     origIsSystemDLL = py2exe.build_exe.isSystemDLL
-    
+
     def isSystemDLL(pathname):
             if os.path.basename(pathname).lower() in ("msvcp71.dll", "dwmapi.dll"):
                     return 0
             return origIsSystemDLL(pathname)
-        
+
     py2exe.build_exe.isSystemDLL = isSystemDLL
-        
+
 elif sys.platform == 'darwin':
     import py2app
     buildstyle = 'app'
@@ -104,8 +104,8 @@ class install(_install):
         print 'Processing triggers for menu ...'
         subprocess.call(['xdg-desktop-menu', 'install', '/usr/share/applications/digitalgaia-smewt.desktop'])
         subprocess.call(['update-menus'])
-        
-        
+
+
 setup(name = 'Smewt',
       cmdclass = {'install': install},
       version = '1.0',
@@ -122,6 +122,7 @@ setup(name = 'Smewt',
       scripts = scripts,
       package_data = {'smewt.icons': ['*.png', '*.svg'],
                       'smewt.media.common': ['*.png'],
+                      'smewt.media.common.images': ['*.png'],
                       'smewt.media.common.images.flags': ['*.png'],
                       'smewt.media.thirdparty': ['*.js'],
                       'smewt.media.thirdparty.dataTables.media.css': ['*.css'],

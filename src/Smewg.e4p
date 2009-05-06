@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2009-04-27, 00:27:15 -->
+<!-- Saved: 2009-04-29, 03:13:32 -->
 <!-- Copyright (C) 2009 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -74,6 +74,7 @@
     <Source>smewt/media/movie/view_recent_movies.tmpl</Source>
     <Source>smewt/base/subtitletask.py</Source>
     <Source>smewt/base/taskmanager.py</Source>
+    <Source>setup.py</Source>
   </Sources>
   <Forms>
   </Forms>
