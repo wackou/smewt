@@ -18,7 +18,7 @@
    width="771.06329"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.0"
-   inkscape:export-filename="C:\joanna\Gfx\drawings_vector\admin\thumbs\ezechiele\sole_ezechiele_01_ok.png"
+   inkscape:export-filename="/home/rmarxer/data/smewt.png"
    inkscape:export-xdpi="30.461538"
    inkscape:export-ydpi="30.461538">
   <metadata
@@ -96,12 +96,12 @@
        id="linearGradient2230">
       <stop
          id="stop2232"
-         offset="0.0000000"
-         style="stop-color:#000000;stop-opacity:0.45238096;" />
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0.73595506;" />
       <stop
          id="stop2234"
-         offset="1.0000000"
-         style="stop-color:#000000;stop-opacity:0.10714286;" />
+         offset="1"
+         style="stop-color:#000000;stop-opacity:0.43820226;" />
     </linearGradient>
     <linearGradient
        id="linearGradient2204">
@@ -562,7 +562,7 @@
         <path
            d="M 402.92923,506.29216 C 344.77668,511.09642 297.35238,534.45537 284.08648,562.10609 C 276.12244,558.68388 267.53971,557.13167 258.72378,557.85999 C 245.70046,558.93592 234.00371,564.84405 224.62693,574.06738 C 220.64546,573.3997 216.54345,573.15663 212.33303,573.50447 C 185.29822,575.73796 165.1439,599.25139 167.35309,625.99234 C 169.23296,648.74701 186.7158,666.46862 208.53854,669.89201 C 217.52248,692.12243 234.34645,708.51718 253.99481,713.76544 C 254.00791,714.10177 253.96847,714.43501 253.99633,714.77232 C 255.53482,733.39471 279.25326,746.70325 308.15164,746.33288 C 325.48359,774.83143 359.91498,792.84238 397.95607,789.69961 C 437.66309,786.41925 469.70463,761.06435 480.93818,728.08459 C 506.9454,739.29769 540.3,744.70865 576.20818,741.74211 C 654.0802,735.30875 714.1557,692.17304 710.29566,645.44984 C 707.20021,607.98116 663.89945,579.57467 606.71969,573.09223 C 606.70956,572.90109 606.74267,572.71148 606.72686,572.52009 C 605.10031,552.83171 573.96066,539.32857 537.22858,542.36317 C 534.83105,542.56126 532.5798,542.99461 530.25856,543.32002 C 513.60006,517.35815 462.19719,501.39576 402.92923,506.29216 z"
            id="path2186"
-           style="fill:url(#linearGradient2577);fill-opacity:1;fill-rule:nonzero;stroke:url(#radialGradient2579);stroke-width:6.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+           style="fill:url(#linearGradient2577);fill-opacity:1;fill-rule:nonzero;stroke:url(#radialGradient2579);stroke-width:9.17967882;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
         <path
            transform="matrix(1,0,0,1.169268,251.36491,-133.36066)"
            style="fill:url(#linearGradient2581);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:6.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
