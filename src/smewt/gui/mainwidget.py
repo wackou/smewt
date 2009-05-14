@@ -241,7 +241,7 @@ class MainWidget(QWidget):
                 # by tvsubtitles, opensubtitles, etc...
                 if surl.actionType == 'play':
                     action = 'smplayer'
-                    args = []
+                    args = ['-fullscreen', '-close-at-end']
                     nfile = 1
                     while 'filename%d' % nfile in surl.args:
                         filename = surl.args['filename%d' % nfile]
