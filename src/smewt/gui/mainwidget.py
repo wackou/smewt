@@ -229,7 +229,7 @@ class MainWidget(QWidget):
             action = 'smplayer'
             args = [ str(url)[7:] ]
             log.debug('launching %s with args = %s', (action, args))
-            self.externalProcess.start(action, args)
+            self.externalProcess.startDetached(action, args)
 
         elif url.startsWith('smewt://'):
             surl = SmewtUrl(url = url)
@@ -254,7 +254,7 @@ class MainWidget(QWidget):
                         nfile += 1
 
                     log.debug('launching %s with args = %s' % (action, str(args)))
-                    self.externalProcess.start(action, args)
+                    self.externalProcess.startDetached(action, args)
 
                 if surl.actionType == 'getsubtitles':
                     series = surl.args['title']
