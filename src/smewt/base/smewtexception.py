@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-class SmewtException(RuntimeError):
+class SmewtException(Exception):
     def __init__(self,  msg):
         if isinstance(msg, unicode):
             msg = msg.encode('utf-8')
