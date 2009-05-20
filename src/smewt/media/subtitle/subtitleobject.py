@@ -22,11 +22,16 @@ from smewt.base import Metadata
 
 
 class Subtitle(Metadata):
+    '''Metadata object used for representing subtitles.
+
+    Note: the language property should be the 2-letter code as defined in:
+    http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+    '''
 
     typename = 'Subtitle'
 
     schema = { 'metadata': Metadata,
-               'language': int }
+               'language': str }
 
     order = [ 'metadata', 'language' ]
 
