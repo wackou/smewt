@@ -22,7 +22,7 @@
 from smewt import SmewtException, SmewtUrl, Graph, Media, Metadata
 from smewt.gui.collectionfolderspage import CollectionFoldersPage
 from smewt.media import Series, Episode, Movie
-from smewt.base import ImportTask, SubtitleTask, LocalCollection
+from smewt.base import ImportTask, SubtitleTask, LocalCollection, ActionFactory
 from smewt.base.taskmanager import Task, TaskManager
 from smewt.base.importer import Importer
 from PyQt4.QtCore import SIGNAL, SLOT, QVariant, QProcess, QSettings, pyqtSignature
@@ -235,36 +235,9 @@ class MainWidget(QWidget):
             surl = SmewtUrl(url = url)
             if surl.mediaType:
                 self.setSmewtUrl(surl)
+
             elif surl.actionType:
-                # TODO: use an ActionFactory to dispatch action to a registered plugin that
-                # can provide this type of service, ie: getsubtitles action may be fulfilled
-                # by tvsubtitles, opensubtitles, etc...
-                if surl.actionType == 'play':
-                    action = 'smplayer'
-                    args = ['-fullscreen', '-close-at-end']
-                    nfile = 1
-                    while 'filename%d' % nfile in surl.args:
-                        filename = surl.args['filename%d' % nfile]
-                        args.append(filename)
-                        # update last viewed info
-                        self.collection.findOne(Media, method = lambda x: x.filename == filename).metadata['lastViewed'] = time.time()
-                        if 'subtitle%d' % nfile in surl.args:
-                            args += ['-sub', surl.args['subtitle%d' % nfile]]
-
-                        nfile += 1
-
-                    log.debug('launching %s with args = %s' % (action, str(args)))
-                    self.externalProcess.startDetached(action, args)
-
-                if surl.actionType == 'getsubtitles':
-                    series = surl.args['title']
-                    language = surl.args['language']
-                    episodes = self.collection.findAll(Metadata, series = Series({ 'title': series }))
-
-                    subTask = SubtitleTask(self.collection, episodes, language)
-                    self.connect(subTask, SIGNAL('foundData'), self.mergeCollection)
-                    self.taskManager.add( subTask )
-                    subTask.start()
+                ActionFactory().dispatch(self, surl)
 
             else:
                 # probably feed watcher

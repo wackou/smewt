@@ -31,3 +31,4 @@ from importer import Importer
 from importtask import ImportTask
 from subtitletask import SubtitleTask
 from localcollection import LocalCollection
+from actionfactory import ActionFactory
