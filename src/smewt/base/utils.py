@@ -21,14 +21,17 @@
 
 
 # filename- and network-related functions
-import os, os.path, fnmatch
+import sys, os, os.path, fnmatch
 import pycurl
 from PyQt4.QtCore import QSettings, QVariant
 import smewt
 
+def currentPath():
+    '''Returns the path in which the calling file is located.'''
+    return os.path.dirname(os.path.join(os.getcwd(), sys._getframe(1).f_globals['__file__']))
+
 def smewtDirectory(*args):
-    # HACK: or not...  I don't know any other way
-    return os.path.join(os.path.dirname(smewt.__file__), '..', *args)
+    return os.path.join(currentPath(), '..', '..', *args)
 
 def smewtUserDirectory(*args):
     settings = QSettings()
