@@ -60,50 +60,73 @@ class Graph(QObject):
         self += node
         return node
 
-    def findAll(self, type, **kwargs):
-        '''This method returns all the objects in this graph which have the specified type and
-        properties which match the given keyword args dictionary. If no keyword args are specified,
-        it matches all the object of the given type.
+    def findAll(self, select = lambda x: True, type = None, **kwargs):
+        '''This method returns a list of the objects in this graph which pass the select filter and are
+        instances of the specified type. It will also only keep those objects that have properties
+        which match the given keyword args dictionary.
+
+        When using both the select function and the type argument, it is useful to know that the
+        type is checked first, so that the select function can safely assume that only objects of
+        the correct type are given to it.
+
         If no match is found, it returns an empty list.
 
-        example: g.findAll(Episode)'''
-
-        method = lambda x: True
-        if 'method' in kwargs:
-            method = kwargs.pop('method')
+        example:
+          g.findAll(type = Movie)
+          g.findAll(lambda x: x['season'] = 2, type = Episode)
+          '''
+        if type:
+            select = lambda x: isinstance(x, type) and select(x)
 
         result = []
         for node in self.nodes:
-            if isinstance(node, type):
-                valid = method(node)
-                for prop, value in kwargs.items():
-                    if node[prop] != value:
-                        valid = False
-                        break
-                if valid:
-                    result.append(node)
+            if not select(node):
+                continue
+
+            valid = True
+            for prop, value in kwargs.items():
+                if node[prop] != value:
+                    valid = False
+                    break
+
+            if not valid:
+                continue
+
+            result.append(node)
+
         return result
 
-    def findOne(self, type, **kwargs):
-        '''This method returns the first object in this graph which has the specified type and
-        properties which match the given keyword args dictionary. If no keyword args are specified,
-        it matches the first object of the given type.
+    def findOne(self, select = lambda x: True, type = None, **kwargs):
+        '''This method returns the first object in this graph which passes the select filter and is
+        an instance of the specified type. It will also discard those objects that have properties
+        which don't match the given keyword args dictionary.
+
+        When using both the select function and the type argument, it is useful to know that the
+        type is checked first, so that the select function can safely assume that only objects of
+        the correct type are given to it.
+
         If no match is found, it raises a SmewtException.
 
-        example: g.findOne(Series)'''
-        method = lambda x: True
-        if 'method' in kwargs:
-            method = kwargs.pop('method')
+        example: g.findOne(type = Movie, title = 'Fear and Loathing in Las Vegas')'''
+        if type:
+            select = lambda x: isinstance(x, type) and select(x)
 
+        result = []
         for node in self.nodes:
-            if isinstance(node, type):
-                valid = method(node)
-                for prop, value in kwargs.items():
-                    if node[prop] != value:
-                        valid = False
-                        break
-                if valid:
-                    return node
+            if not select(node):
+                continue
+
+            valid = True
+            for prop, value in kwargs.items():
+                if node[prop] != value:
+                    valid = False
+                    break
+
+            if not valid:
+                continue
+
+            return node
+
         raise SmewtException('Graph: could not find %s matching the following criteria: %s' % (type.typename, str(kwargs)))
 
     def findExact(self, md):
