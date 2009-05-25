@@ -213,11 +213,11 @@ class MainWidget(QWidget):
 
     @pyqtSignature("QString, bool")
     def updateWatched(self, title, watched):
-        self.collection.findOne(Movie, title = unicode(title)).watched = watched
+        self.collection.findOne(type = Movie, title = unicode(title)).watched = watched
 
     @pyqtSignature("QString, QString, QString")
     def addComment(self, title, author, comment):
-        self.collection.findOne(Movie, title = unicode(title))['comment/%d/%s' % (int(time.time()), unicode(author))] = unicode(comment)
+        self.collection.findOne(type = Movie, title = unicode(title))['comment/%d/%s' % (int(time.time()), unicode(author))] = unicode(comment)
 
         self.refreshCollectionView()
 

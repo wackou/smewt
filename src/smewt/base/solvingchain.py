@@ -54,7 +54,7 @@ class SolvingChain(QObject):
 
     def finished(self, result):
         self.result = result
-        media = result.findOne(Media)
+        media = result.findOne(type = Media)
         if media.metadata:
             log.info('Solving chain for file %s found metadata: %s', toUtf8(media), toUtf8(media.metadata))
         else:

@@ -41,7 +41,7 @@ class MovieIMDB(Guesser):
         self.checkValid(query)
         self.query = query
 
-        log.debug('MovieImdb: finding more info on %s' % query.findAll(Media))
+        log.debug('MovieImdb: finding more info on %s' % query.findAll(type = Media))
         movie = query.findOne(Movie)
         # if valid movie
 

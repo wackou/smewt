@@ -224,7 +224,7 @@ class MovieFilename(Guesser):
 
     def start(self, query):
         self.checkValid(query)
-        media = query.findAll(Media)[0]
+        media = query.findOne(type = Media)
 
         movie = cleanMovieFilename(media.filename)
 

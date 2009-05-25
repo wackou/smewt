@@ -45,7 +45,7 @@ class Guesser(QObject):
     def checkValid(self, query):
         '''Checks that we have only one object in Collection.media list and that
         its type is supported by our guesser'''
-        media = query.findAll(Media)
+        media = query.findAll(type = Media)
         if len(media) != 1:
             raise SmewtException('Guesser: your query should contain exactly 1 element in the Collection.media list')
 

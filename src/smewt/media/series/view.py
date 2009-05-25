@@ -30,9 +30,9 @@ def render(url, collection):
 
     if url.viewType == 'single':
         # creates a new graph with all the media related to the given series
-        episodes = collection.findAll(Episode, series = Series(url.args))
+        episodes = collection.findAll(type = Episode, series = Series(url.args))
         medias = Graph()
-        medias += collection.findAll(Media, method = lambda x: x.metadata in episodes)
+        medias += collection.findAll(type = Media, select = lambda x: x.metadata in episodes)
 
         t = Template(file = smewtDirectory('smewt', 'media', 'series', 'view_episodes_by_season.tmpl'),
                      searchList = { 'episodes': medias })
@@ -40,8 +40,8 @@ def render(url, collection):
     elif url.viewType == 'all':
         # Select only the series with that have a video media
         series = set([])
-        for media in collection.findAll(Media,
-                                        method = lambda x: x.type() == 'video' and isinstance(x.metadata, Episode)):
+        for media in collection.findAll(type = Media,
+                                        select = lambda x: x.type() == 'video' and isinstance(x.metadata, Episode)):
             series |= set([media.metadata['series']])
 
         t = Template(file = smewtDirectory('smewt', 'media', 'series', 'view_all_series.tmpl'),

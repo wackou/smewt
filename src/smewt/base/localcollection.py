@@ -112,11 +112,11 @@ class LocalCollection(Graph):
             return True
 
 
-        mediasNotInSeries = self.findAll(Media,
-                                         method = lambda x: mediasOfUnselectedFolders(x, self.seriesFolders.keys(), self.seriesRecursive))
+        mediasNotInSeries = self.findAll(type = Media,
+                                         select = lambda x: mediasOfUnselectedFolders(x, self.seriesFolders.keys(), self.seriesRecursive))
 
-        mediasNotInMovies = self.findAll(Media,
-                                         method = lambda x: mediasOfUnselectedFolders(x, self.moviesFolders.keys(), self.moviesRecursive))
+        mediasNotInMovies = self.findAll(type = Media,
+                                         select = lambda x: mediasOfUnselectedFolders(x, self.moviesFolders.keys(), self.moviesRecursive))
 
         self.nodes -= (set(mediasNotInSeries) & set(mediasNotInMovies))
 

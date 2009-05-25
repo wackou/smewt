@@ -68,7 +68,7 @@ class SimpleSolver(Solver):
         self.checkValid(query)
 
         baseGuess = None
-        metadata = query.findAll(self.type)
+        metadata = query.findAll(type = self.type)
 
         for md in metadata:
             if md.isUnique() and md.confidence >= 0.9:

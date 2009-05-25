@@ -32,7 +32,7 @@ class MergeSolver(Solver):
     def start(self, query):
         self.checkValid(query)
 
-        results = sorted(query.findAll(self.type), key = lambda x: -x.confidence)
+        results = sorted(query.findAll(type = self.type), key = lambda x: -x.confidence)
         result = copy.copy(results[0])
 
         for md in results[1:]:

@@ -41,11 +41,11 @@ class MovieTagger(Tagger):
         self.connect(self.chain2, SIGNAL('finished'), self.solved)
 
     def gotFilenameMetadata(self, result):
-        self.filenameMetadata = result.findOne(Movie)
+        self.filenameMetadata = result.findOne(type = Movie)
         self.chain2.start(result)
 
     def solved(self, result):
-        media = result.findOne(Media)
+        media = result.findOne(type = Media)
         log.debug('Finished tagging: %s', media)
         if not media.metadata:
             log.warning('Could not find any tag for: %s' % media)

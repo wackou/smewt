@@ -12,7 +12,7 @@ import os, os.path
 flags_dir = smewtDirectory('smewt', 'media', 'common', 'images', 'flags')
 seasons = defaultdict(lambda: [])
 
-allseries = eps.findAll(Series)
+allseries = eps.findAll(type = Series)
 if len(allseries) == 0:
     return '<html><body><h1>No media could be found for this media.  Check that the folder where these medias live is accesible.</h1></body></html>'
 
@@ -29,7 +29,7 @@ episodes = {}
 # HACK: we should really have a good schema so that I could do
 # episode.media.filename becuase currently I sort the medias by
 # type so that we first process the videos and then the subtitles
-for media in eps.findAll(Media):
+for media in eps.findAll(type = Media):
     meta = media.metadata.toDict()
     md = episodes.setdefault( (meta['season'], meta['episodeNumber']), defaultdict(lambda:None)  )
     md.update( meta )
@@ -42,7 +42,8 @@ for media in eps.findAll(Media):
     elif media.type() == 'subtitle':
         langs = guessCountryCode(media.filename)
         try:
-            mediaFilename = eps.findOne(Media, method = lambda x: x.type()=='video' and media.filename.startswith(os.path.splitext(x.filename)[0])).filename
+            mediaFilename = eps.findOne(type = Media,
+                                        select = lambda x: x.type()=='video' and media.filename.startswith(os.path.splitext(x.filename)[0])).filename
             subtitleFilename = media.filename
 
             for lang in langs:

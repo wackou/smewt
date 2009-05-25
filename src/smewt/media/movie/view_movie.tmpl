@@ -10,7 +10,7 @@ import datetime
 
 flags_dir = smewtDirectory('smewt', 'media', 'common', 'images', 'flags')
 
-movie = movieData.findAll(Movie)[0]
+movie = movieData.findOne(type = Movie)
 movieName = movie['title']
 poster = movie['loresImage']
 
@@ -29,20 +29,21 @@ subtitles = []
 
 languageFiles = defaultdict(lambda: [])
 
-for media in movieData.findAll(Media):
+for media in movieData.findAll(type = Media):
     if media.type() == 'video':
         files.append(media.filename)
 
     elif media.type() == 'subtitle':
         langs = guessCountryCode(media.filename)
-        
+
         try:
-            mediaFilename = movieData.findOne(Media, method = lambda x: x.type()=='video' and media.filename.startswith(os.path.splitext(x.filename)[0])).filename
+            mediaFilename = movieData.findOne(type = Media,
+                                              select = lambda x: x.type()=='video' and media.filename.startswith(os.path.splitext(x.filename)[0])).filename
             subtitleFilename = media.filename
 
             for lang in langs:
                 languageFiles[lang] += [ (mediaFilename, subtitleFilename) ]
-        
+
         except SmewtException:
             pass
 

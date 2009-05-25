@@ -30,19 +30,19 @@ def render(url, collection):
 
     if url.viewType == 'single':
         # creates a new graph with all the media related to the given movie
-        movieMD = collection.findAll(Movie, title = url.args['title'])[0]
+        movieMD = collection.findOne(type = Movie, title = url.args['title'])
         metadata = Graph()
-        for f in collection.findAll(Media):
-            if f.metadata == movieMD:
-                metadata += f
+        for f in collection.findAll(type = Media,
+                                    select = lambda x: x.metadata == movieMD):
+            metadata += f
 
         t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_movie.tmpl'),
                      searchList = { 'movie': metadata })
 
     elif url.viewType == 'all':
         movies = set([])
-        for media in collection.findAll(Media,
-                                        method = lambda x: x.type() == 'video' and isinstance(x.metadata, Movie)):
+        for media in collection.findAll(type = Media,
+                                        select = lambda x: x.type() == 'video' and isinstance(x.metadata, Movie)):
             movies |= set([media.metadata])
 
         t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_all_movies.tmpl'),
@@ -50,17 +50,17 @@ def render(url, collection):
 
     elif url.viewType == 'spreadsheet':
         t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_movies_spreadsheet.tmpl'),
-                     searchList = { 'movies': collection.findAll(Movie),
+                     searchList = { 'movies': collection.findAll(type = Movie),
                                     'title': 'ALL' })
 
     elif url.viewType == 'unwatched':
         t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_movies_spreadsheet.tmpl'),
-                     searchList = { 'movies': [ m for m in collection.findAll(Movie) if not m.watched ],
+                     searchList = { 'movies': [ m for m in collection.findAll(type = Movie) if not m.watched ],
                                     'title': 'UNWATCHED' })
 
     elif url.viewType == 'recent':
         t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_recent_movies.tmpl'),
-                     searchList = { 'movies': [ m for m in collection.findAll(Movie) if 'lastViewed' in m.properties ],
+                     searchList = { 'movies': [ m for m in collection.findAll(type = Movie) if 'lastViewed' in m.properties ],
                                     'title': 'RECENT' })
 
     else:

@@ -41,7 +41,7 @@ class EpisodeFilename(Guesser):
     def start(self, query):
         self.checkValid(query)
 
-        media = query.findAll(Media)[0]
+        media = query.findOne(type = Media)
 
         name = utils.splitFilename(media.filename)
 
@@ -65,7 +65,7 @@ class EpisodeFilename(Guesser):
         # cleanup a bit by removing unlikely eps numbers which are probably numbers in the title
         # or even dates in the filename, etc...
         niceGuess = None
-        for md in query.findAll(Episode):
+        for md in query.findAll(type = Episode):
             if 'episodeNumber' in md.properties and 'season' in md.properties:
                 niceGuess = md
             if 'episodeNumber' in md.properties and 'season' not in md.properties and md['episodeNumber'] > 1000:
@@ -73,7 +73,7 @@ class EpisodeFilename(Guesser):
                 query.nodes.remove(md)
         # if we have season+epnumber, remove single epnumber guesses
         if niceGuess:
-            for md in query.findAll(Episode):
+            for md in query.findAll(type = Episode):
                 if 'episodeNumber' in md.properties and 'season' not in md.properties:
                     log.debug('Removing %s because %s looks better' % (md, niceGuess))
                     query.nodes.remove(md)
@@ -99,21 +99,12 @@ class EpisodeFilename(Guesser):
         # such as 72 if some other valid episode number has been found, etc...
 
         # if the episode number is higher than 100, we assume it is season*100+epnumber
-        for md in query.findAll(Episode):
+        for md in query.findAll(type = Episode, select = lambda x: x['episodeNumber'] > 100):
             num = md['episodeNumber']
-            if num > 100:
-                # it's the only guess we have, make it look like it's an episode
-                # maybe we should check if we have an estimate for the season number?
-                query.update(md, 'season', num // 100)
-                query.update(md, 'episodeNumber', num % 100)
-
-            # FIXME: ugly fix for imdbpy not recognizing anymore the "house" series...
-            try:
-                if md['series']['title'].lower() == 'house':
-                    query.update(md, 'series', Series({ 'title': 'house md' }))
-            except:
-                pass
-
+            # it's the only guess we have, make it look like it's an episode
+            # maybe we should check if we have an estimate for the season number?
+            query.update(md, 'season', num // 100)
+            query.update(md, 'episodeNumber', num % 100)
 
 
         self.emit(SIGNAL('finished'), query)

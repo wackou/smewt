@@ -48,8 +48,12 @@ class ActionFactory(Singleton):
             while 'filename%d' % nfile in surl.args:
                 filename = surl.args['filename%d' % nfile]
                 args.append(filename)
+
                 # update last viewed info
-                mainWidget.collection.findOne(Media, method = lambda x: x.filename == filename).metadata['lastViewed'] = time.time()
+                media = mainWidget.collection.findOne(type = Media,
+                                                      select = lambda x: x.filename == filename)
+                media.metadata['lastViewed'] = time.time()
+
                 if 'subtitle%d' % nfile in surl.args:
                     args += [ '-sub', surl.args['subtitle%d' % nfile] ]
 
@@ -61,7 +65,10 @@ class ActionFactory(Singleton):
         elif surl.actionType == 'getsubtitles':
             series = surl.args['title']
             language = surl.args['language']
-            episodes = mainWidget.collection.findAll(Metadata, series = Series({ 'title': series }))
+            episodes = mainWidget.collection.findAll(type = Metadata,
+                                                     series = Series({ 'title': series }))
+
+            # for provider in self.subtitleProviders:
 
             subTask = SubtitleTask(mainWidget.collection, episodes, language)
             self.connect(subTask, SIGNAL('foundData'), mainWidget.mergeCollection)

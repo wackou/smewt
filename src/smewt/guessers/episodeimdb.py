@@ -42,8 +42,8 @@ class EpisodeIMDB(Guesser):
         self.checkValid(query)
         self.query = query
 
-        log.debug('EpisodeImdb: finding more info on %s' % query.findAll(Episode))
-        ep = query.findOne(Episode)
+        log.debug('EpisodeImdb: finding more info on %s' % query.findAll(type = Episode))
+        ep = query.findOne(type = Episode)
         if ep['series']:
             # little hack: if we have no season number, add 1 as default season number
             # (helps for series which have only 1 season)
