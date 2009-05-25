@@ -38,7 +38,7 @@ class Solver(QObject):
     def checkValid(self, query):
         '''Checks that we have only one object in Collection.media list and that
         its type is supported by our guesser'''
-        if len(query.findOne(type = Media)) != 1:
+        if len(query.findAll(type = Media)) != 1:
             raise SmewtException('Solver: your query should contain exactly 1 Media object')
 
         try:

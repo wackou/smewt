@@ -42,7 +42,7 @@ class MovieIMDB(Guesser):
         self.query = query
 
         log.debug('MovieImdb: finding more info on %s' % query.findAll(type = Media))
-        movie = query.findOne(Movie)
+        movie = query.findOne(type = Movie)
         # if valid movie
 
         self.mdprovider = IMDBMetadataProvider()
@@ -54,7 +54,7 @@ class MovieIMDB(Guesser):
     def queryFinished(self, guess):
         del self.mdprovider # why is that useful again?
 
-        media = self.query.findOne(Media)
+        media = self.query.findOne(type = Media)
         media.metadata = guess
         result = Graph()
         result += media

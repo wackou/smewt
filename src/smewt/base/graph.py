@@ -76,7 +76,8 @@ class Graph(QObject):
           g.findAll(lambda x: x['season'] = 2, type = Episode)
           '''
         if type:
-            select = lambda x: isinstance(x, type) and select(x)
+            validNode = select
+            select = lambda x: isinstance(x, type) and validNode(x)
 
         result = []
         for node in self.nodes:
@@ -109,7 +110,8 @@ class Graph(QObject):
 
         example: g.findOne(type = Movie, title = 'Fear and Loathing in Las Vegas')'''
         if type:
-            select = lambda x: isinstance(x, type) and select(x)
+            validNode = select
+            select = lambda x: isinstance(x, type) and validNode(x)
 
         result = []
         for node in self.nodes:
