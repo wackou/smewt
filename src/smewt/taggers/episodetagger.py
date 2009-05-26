@@ -52,21 +52,21 @@ class EpisodeTagger(Tagger):
             log.warning('Could not find any tag for: %s' % media)
 
             # we didn't find any info outside of what the filename told us
-            media.metadata = self.filenameMetadata
+            media.metadata = [ self.filenameMetadata ]
 
             # try anyway to get the correct series name and poster
             from smewt.guessers.imdbmetadataprovider import IMDBMetadataProvider
             mdprovider = IMDBMetadataProvider()
 
             try:
-                series = mdprovider.getSeries(media.metadata['series']['title'])
-                result += media.metadata
-                result.update(media.metadata, 'series', Series({ 'title': series }))
-                result.update(media.metadata, 'episodeNumber', -1)
+                series = mdprovider.getSeries(media.metadata[0]['series']['title'])
+                result += media.metadata[0]
+                result.update(media.metadata[0], 'series', Series({ 'title': series }))
+                result.update(media.metadata[0], 'episodeNumber', -1)
 
                 lores, hires = mdprovider.getPoster(series.movieID)
-                media.metadata['series']['loresImage'] = lores
-                media.metadata['series']['hiresImage'] = hires
+                media.metadata[0]['series']['loresImage'] = lores
+                media.metadata[0]['series']['hiresImage'] = hires
 
             except SmewtException:
                 log.warning('Could not even find a probable series name for: %s' % media)
@@ -75,10 +75,12 @@ class EpisodeTagger(Tagger):
         if media.type() == 'subtitle':
             # FIXME: problem for vobsubs: as a media points to a single metadata object, we cannot
             # represent a .sub for 3 different languages...
-            submd = Subtitle({ 'metadata': media.metadata,
-                               'language': utils.guessCountryCode(media.filename)[0]
-                               })
-            media.metadata = submd
+            subs = []
+            for language in utils.guessCountryCode(media.filename):
+                subs += [ Subtitle({ 'metadata': media.metadata[0],
+                                     'language': language
+                                     }) ]
+            media.metadata = subs
 
 
         self.emit(SIGNAL('tagFinished'), media)

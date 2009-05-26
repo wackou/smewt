@@ -19,5 +19,4 @@
 #
 
 from mergesolver import MergeSolver
-from naivesolver import NaiveSolver
 from simplesolver import SimpleSolver

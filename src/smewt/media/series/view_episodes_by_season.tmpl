@@ -4,7 +4,7 @@
 from itertools import groupby
 from collections import defaultdict
 from smewt import SmewtUrl, Media, Graph
-from smewt.media import Episode, Series
+from smewt.media import Episode, Series, Subtitle
 from smewt.base.utils import smewtDirectory, guessCountryCode
 from smewt.base import SmewtException
 
@@ -31,9 +31,9 @@ episodes = {}
 # type so that we first process the videos and then the subtitles
 for media in eps.findAll(type = Media):
     if media.type() == 'video':
-        meta = media.metadata.toDict()
+        meta = media.metadata[0].toDict()
     elif media.type() == 'subtitle':
-        meta = media.metadata['metadata'].toDict()
+        meta = media.metadata[0]['metadata'].toDict()
 
     md = episodes.setdefault( (meta['season'], meta['episodeNumber']), defaultdict(lambda:None)  )
     md.update( meta )
@@ -44,14 +44,16 @@ for media in eps.findAll(type = Media):
         md['url'] = SmewtUrl('action', 'play', { 'filename1': media.filename })
 
     elif media.type() == 'subtitle':
-        langs = guessCountryCode(media.filename)
+        #langs = [ s['language'] for s in eps.findAll(type = Subtitle,
+        #                                             metadata = media.metadata[0]['metadata']) ]
+        #langs = guessCountryCode(media.filename)
         try:
             mediaFilename = eps.findOne(type = Media,
-                                        select = lambda x: x.metadata == media.metadata['metadata']).filename
+                                        select = lambda x: x.metadata[0] == media.metadata[0]['metadata']).filename
             subtitleFilename = media.filename
 
-            for lang in langs:
-                md.setdefault('subtitleUrls', []).append( {'languageImage': flags_dir + '/%s.png' % (lang,),
+            for sub in media.metadata:
+                md.setdefault('subtitleUrls', []).append( {'languageImage': flags_dir + '/%s.png' % (sub['language'],),
                               'url': SmewtUrl('action', 'play', { 'filename1': mediaFilename, 'subtitle1': subtitleFilename })} )
 
             md['numSubtitles'] = len(md['subtitleUrls'])

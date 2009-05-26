@@ -192,7 +192,7 @@ class Graph(QObject):
 
         # first, follow links if any...
         if isinstance(obj, Media):
-            self.addNode(obj.metadata)
+            self += obj.metadata
 
         elif isinstance(obj, Metadata):
             for prop, type in obj.schema.items():

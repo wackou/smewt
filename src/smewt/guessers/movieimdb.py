@@ -55,7 +55,7 @@ class MovieIMDB(Guesser):
         del self.mdprovider # why is that useful again?
 
         media = self.query.findOne(type = Media)
-        media.metadata = guess
+        media.metadata = [ guess ]
         result = Graph()
         result += media
 

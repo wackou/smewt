@@ -46,7 +46,7 @@ class Media(object):
     def __init__(self, filename = ''):
         self.filename = unicode(filename)
         self.sha1 = ''
-        self.metadata = None # ref to a Metadata object
+        self.metadata = [] # refs to Metadata objects
         self.watched = False
 
     def __str__(self):

@@ -52,7 +52,7 @@ class Solver(QObject):
         # TODO: check that result is valid
         solved = Graph()
         media = query.findOne(type = Media)
-        media.metadata = result
+        media.metadata = [ result ]
         solved += media # no need to add metadata explicitly because media links to it
 
         log.debug('Solver: found for %s: %s', media, result)

@@ -33,7 +33,7 @@ def render(url, collection):
         movieMD = collection.findOne(type = Movie, title = url.args['title'])
         metadata = Graph()
         for f in collection.findAll(type = Media,
-                                    select = lambda x: x.metadata == movieMD):
+                                    select = lambda x: x.metadata[0] == movieMD):
             metadata += f
 
         t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_movie.tmpl'),
@@ -42,8 +42,8 @@ def render(url, collection):
     elif url.viewType == 'all':
         movies = set([])
         for media in collection.findAll(type = Media,
-                                        select = lambda x: x.type() == 'video' and isinstance(x.metadata, Movie)):
-            movies |= set([media.metadata])
+                                        select = lambda x: x.type() == 'video' and isinstance(x.metadata[0], Movie)):
+            movies |= set(media.metadata)
 
         t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_all_movies.tmpl'),
                      searchList = { 'movies': movies })

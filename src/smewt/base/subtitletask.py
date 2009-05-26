@@ -109,7 +109,7 @@ class Worker(QObject):
         for video in videos:
             try:
                 videoFilename = self.collection.findOne(type = Media,
-                                                        select = lambda x: x.metadata == video).filename
+                                                        select = lambda x: x.metadata[0] == video).filename
 
                 subFilename = os.path.splitext(videoFilename)[0] + '.%s.srt' % languageMap[self.language]
 
@@ -143,7 +143,7 @@ class Worker(QObject):
                 # update the found subs with this one
                 sub = Subtitle({ 'metadata': video, 'language': self.language })
                 subfile = Media(subFilename)
-                subfile.metadata = sub
+                subfile.metadata = [ sub ]
 
                 subs += subfile
 

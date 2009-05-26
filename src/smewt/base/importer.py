@@ -99,6 +99,10 @@ class Worker(QObject):
             self.importer.importFinished(self.results)
 
     def tagged(self, taggedMedia):
-        log.info('Media tagged: %s' % taggedMedia)
-        self.importer.foundData(taggedMedia)
+        if not isinstance(taggedMedia, list):
+            taggedMedia = [ taggedMedia ]
+
+        for media in taggedMedia:
+            log.info('Media tagged: %s' % media)
+            self.importer.foundData(media)
         self.tagNext()
