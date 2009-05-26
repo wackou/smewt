@@ -33,6 +33,8 @@ NOTES:
 TODO: what about the encoding? utf-8 sounds better, but IIRC mplayer prefers iso-8859-1...
 '''
 
+from smewt.base import SmewtException
+
 class SubtitleNotFoundError(SmewtException):
     pass
 
@@ -42,14 +44,28 @@ class SubtitleProvider:
     '''This class represents the interface that needs to be implemented by a plugin which downloads
     subtitles for movies or series.'''
 
+    def canHandle(self, metadata):
+        '''This method returns whether this subtitle provider is able to handle the given object.
 
-    def getAvailableSubtitles(metadata):
+        Only objects which fulfill this condition should be given to the getAvailableSubtitles
+        method.'''
+
+        raise NotImplementedError
+
+    def titleFilter(self, title):
+        '''This returns a lambda function that filters the object by title.
+        For movies, as we want to filter by movie['title'], we can use the default implementation.
+        For series, we might rather want to filter by episode['series'] == Series({ 'title': title })
+        '''
+        return lambda x: x['title'] == title
+
+    def getAvailableSubtitles(self, metadata):
         '''This method should return a graph of all available Subtitle metadata objects for
         the given Metadata (Movie, Episode) object.
 
         If no subtitle could be found, this method should return an empty graph.
 
-        It is recommended to check the type of the given Metadata object upon entering this method.
+        It is assumed that the given Metadata object complies with the canHandle method.
 
         NB: This graph can contain multiple versions of the subtitle (different languages,
         different rips, ...) for the same object.
@@ -58,7 +74,7 @@ class SubtitleProvider:
         raise NotImplementedError
 
 
-    def getSubtitle(subtitle):
+    def getSubtitle(self, subtitle):
         '''This method should return the contents of the given subtitle as a string.
         The Subtitle object should be picked among the ones returned by the getAvailableSubtitles
         method.

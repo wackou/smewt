@@ -21,6 +21,8 @@
 import re, logging
 from urllib import urlopen, urlencode
 from smewt.base import textutils, utils, SmewtException, cachedmethod
+from smewt.media import Episode, Series
+from subtitleobject import Subtitle
 
 def simpleMatch(string, regexp):
     return re.compile(regexp).search(string).groups()[0]
@@ -55,8 +57,11 @@ class TVSubtitlesProvider:
 
     @cachedmethod
     def getSeriesID(self, name):
-        # TODO: get most likely one if more than one found
-        url = self.getLikelySeriesUrl(name)[0]['url']
+        # get most likely one if more than one found
+        # FIXME: this hides another potential bug which is that tvsubtitles returns a lot of
+        # false positives that it doesn't return when using from a "normal" webbrowser...
+        urls = [ (textutils.levenshtein(s['title'], name), s) for s in self.getLikelySeriesUrl(name) ]
+        url = sorted(urls)[0][1]['url']
         return simpleMatch(url, 'tvshow-(.*?).html')
 
     @cachedmethod
@@ -70,9 +75,9 @@ class TVSubtitlesProvider:
         return simpleMatch(episodeRowHtml, 'episode-(.*?).html')
 
     def parseSubtitleInfo(self, string):
-        result = {}
-        result['id'] = simpleMatch(string, 'subtitle-(.*?).html')
-        result['code'] = simpleMatch(string, 'flags/(.*?).gif')
+        result = Subtitle()
+        result['tvsubid'] = simpleMatch(string, 'subtitle-(.*?).html')
+        result['language'] = simpleMatch(string, 'flags/(.*?).gif')
         result['title'] = simpleMatch(string, 'hspace=4>(.*?)</h5>')
         return result
 
@@ -90,8 +95,8 @@ class TVSubtitlesProvider:
     def downloadSubtitle(self, basename, series, season, episode, language, videoFilename = None):
         """videoFilename is just used a hint when we find multiple subtitles"""
         import cStringIO, zipfile, os.path
-        subs = [ sub for sub in self.getAvailableSubtitlesID(series, season, episode) if sub['code'] == language ]
-        
+        subs = [ sub for sub in self.getAvailableSubtitlesID(series, season, episode) if sub['language'] == language ]
+
         if not subs:
             return
 
@@ -118,5 +123,46 @@ class TVSubtitlesProvider:
         subf.write(subtext)
         subf.close()
         return resultFilename
-        
 
+    # everything down from here is the implementation of the SubtitleProvider interface
+    def canHandle(self, metadata):
+        return isinstance(metadata, Episode)
+
+    def titleFilter(self, title):
+        return lambda x: x['series'] == Series({ 'title': title })
+
+    def getAvailableSubtitles(self, metadata):
+        try:
+            if not metadata['season']:
+                raise SmewtException('\'season\' attribute not in object')
+            if not metadata['episodeNumber']:
+                raise SmewtException('\'episodeNumber\' attribute not in object')
+        except SmewtException, e:
+            log.warning('TVSubtitlesProvider: %s' % str(e))
+            return []
+
+        return self.getAvailableSubtitlesID(metadata['series']['title'],
+                                            metadata['season'],
+                                            metadata['episodeNumber'])
+
+
+    def getSubtitle(self, subtitle):
+        '''This method should return the contents of the given subtitle as a string.
+        The Subtitle object should be picked among the ones returned by the getAvailableSubtitles
+        method.
+
+        If the subtitle could not be found, a SubtitleNotFoundError exception should be raised.'''
+        import cStringIO, zipfile, os.path
+
+        cd = utils.CurlDownloader()
+        # first get this page to get session cookies...
+        cd.get(self.baseUrl + '/subtitle-%s.html' % subtitle['tvsubid'])
+        # ...then grab the sub file
+        cd.get(self.baseUrl + '/download-%s.html' % subtitle['tvsubid'])
+
+        zf = zipfile.ZipFile(cStringIO.StringIO(cd.contents))
+        filename = zf.infolist()[0].filename
+        #extension = os.path.splitext(filename)[1]
+        subtext = zf.read(filename)
+
+        return subtext

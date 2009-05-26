@@ -37,6 +37,7 @@ def save(filename):
 
 
 def cachedmethod(function):
+    '''Makes a method use the cache. WARNING: this can NOT be used with static functions'''
 
     def cached(*args):
         # removed the first element of args for the key, which is the instance pointer

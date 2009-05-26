@@ -24,8 +24,8 @@ from smewt.guessers import *
 from smewt.solvers import *
 from PyQt4.QtCore import SIGNAL
 
-from smewt.base import SmewtException, Graph, SolvingChain, Media, Metadata
-from smewt.media import Episode, Series
+from smewt.base import SmewtException, Graph, SolvingChain, Media, Metadata, utils
+from smewt.media import Episode, Series, Subtitle
 import logging
 
 log = logging.getLogger('smewt.taggers.episodetagger')
@@ -70,6 +70,15 @@ class EpisodeTagger(Tagger):
 
             except SmewtException:
                 log.warning('Could not even find a probable series name for: %s' % media)
+
+        # import subtitles correctly
+        if media.type() == 'subtitle':
+            # FIXME: problem for vobsubs: as a media points to a single metadata object, we cannot
+            # represent a .sub for 3 different languages...
+            submd = Subtitle({ 'metadata': media.metadata,
+                               'language': utils.guessCountryCode(media.filename)[0]
+                               })
+            media.metadata = submd
 
 
         self.emit(SIGNAL('tagFinished'), media)

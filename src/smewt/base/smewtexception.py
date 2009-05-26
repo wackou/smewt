@@ -19,7 +19,7 @@
 #
 
 class SmewtException(Exception):
-    def __init__(self,  msg):
+    def __init__(self,  msg = ''):
         if isinstance(msg, unicode):
             msg = msg.encode('utf-8')
         super(SmewtException, self).__init__(msg)

@@ -18,11 +18,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from PyQt4.QtCore import SIGNAL, QObject
 from smewtexception import SmewtException
 from mediaobject import Media, Metadata
 from subtitletask import SubtitleTask
 from smewt.media import Series
 import time, logging
+
 
 log = logging.getLogger('smewt.base.actionfactory')
 
@@ -38,6 +40,14 @@ class Singleton(object):
 # can provide certain types of service, ie: getsubtitles action may be filled
 # by tvsubtitles, opensubtitles, etc...
 class ActionFactory(Singleton):
+    def __init__(self):
+        self.subtitleProviders = []
+        self.registerPlugins()
+
+    def registerPlugins(self):
+        # subs += opensubtitles
+        from smewt.media.subtitle import TVSubtitlesProvider
+        self.subtitleProviders.append(TVSubtitlesProvider())
 
     def dispatch(self, mainWidget, surl):
         if surl.actionType == 'play':
@@ -63,17 +73,14 @@ class ActionFactory(Singleton):
             mainWidget.externalProcess.startDetached(action, args)
 
         elif surl.actionType == 'getsubtitles':
-            series = surl.args['title']
+            title = surl.args['title']
             language = surl.args['language']
-            episodes = mainWidget.collection.findAll(type = Metadata,
-                                                     series = Series({ 'title': series }))
 
-            # for provider in self.subtitleProviders:
-
-            subTask = SubtitleTask(mainWidget.collection, episodes, language)
-            self.connect(subTask, SIGNAL('foundData'), mainWidget.mergeCollection)
-            mainWidget.taskManager.add( subTask )
-            subTask.start()
+            for provider in self.subtitleProviders:
+                subTask = SubtitleTask(mainWidget.collection, provider, title, language)
+                QObject.connect(subTask, SIGNAL('foundData'), mainWidget.mergeCollection)
+                mainWidget.taskManager.add( subTask )
+                subTask.start()
 
         else:
             raise SmewtException('Unknown action type: %s' % surl.actionType)

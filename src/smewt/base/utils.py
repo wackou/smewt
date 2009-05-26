@@ -54,6 +54,7 @@ def splitFilename(filename):
         result.append(unicode(path))
     return result
 
+
 def guessCountryCode(filename):
     '''Given a subtitle filename, tries to guess which languages it contains.
     As a subtitle file can contain multiple subtitles, this function returns a list

@@ -20,3 +20,4 @@
 
 from subtitle_tvsubtitles_provider import TVSubtitlesProvider
 from subtitleobject import Subtitle
+from subtitleprovider import SubtitleNotFoundError
