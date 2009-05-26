@@ -21,6 +21,7 @@
 from Cheetah.Template import Template
 from smewt.base import SmewtException, Graph, Media
 from serieobject import Series, Episode
+from smewt.media.subtitle.subtitleobject import Subtitle
 from smewt.base.utils import smewtDirectory
 
 def render(url, collection):
@@ -30,7 +31,8 @@ def render(url, collection):
 
     if url.viewType == 'single':
         # creates a new graph with all the media related to the given series
-        episodes = collection.findAll(type = Episode, series = Series(url.args))
+        episodes = set(collection.findAll(type = Episode, series = Series(url.args)))
+        episodes |= set(collection.findAll(type = Subtitle, select = lambda x: x['metadata'] in episodes))
         medias = Graph()
         medias += collection.findAll(type = Media, select = lambda x: x.metadata in episodes)
 

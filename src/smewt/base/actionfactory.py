@@ -46,7 +46,7 @@ class ActionFactory(Singleton):
 
     def registerPlugins(self):
         # subs += opensubtitles
-        from smewt.media.subtitle import TVSubtitlesProvider
+        from smewt.media.subtitle.subtitle_tvsubtitles_provider import TVSubtitlesProvider
         self.subtitleProviders.append(TVSubtitlesProvider())
 
     def dispatch(self, mainWidget, surl):
