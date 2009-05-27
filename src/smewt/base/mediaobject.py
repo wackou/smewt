@@ -175,17 +175,21 @@ class Metadata(object):
         return str(self)
 
     def __str__(self):
-        result = ('valid ' if self.isValid() else 'invalid ') + self.typename + ' (confidence: ' + str(self.confidence) + ') :\n{ '
+        return self.toString()
+
+    def toString(self, tabs = 0):
+        tabstr = 4 * tabs * ' '
+        tabstr1 = 4 * (tabs+1) * ' '
+        result = ('valid ' if self.isValid() else 'invalid ') + self.typename + ' (confidence: ' + str(self.confidence) + ') : {\n'
 
         for propname in self.orderedProperties():
             if propname in self.schema and issubclass(self.schema[propname], Metadata):
-                s = str(self.properties[propname])
+                s = self.properties[propname].toString(tabs = tabs+1)
             else:
                 s = toUtf8(self.properties[propname])
-            result += '%-10s : %s\n  ' % (propname, s)
+            result += tabstr1 + '%-20s : %s\n' % (propname, s)
 
-        return result + '}'
-
+        return result + tabstr + '}'
 
     def orderedProperties(self):
         '''Returns the list of properties ordered using the defined order in the subclass'''
