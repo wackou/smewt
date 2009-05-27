@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2009-04-29, 03:13:32 -->
+<!-- Saved: 2009-05-26, 07:06:20 -->
 <!-- Copyright (C) 2009 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -15,7 +15,6 @@
     <Source>smewg.py</Source>
     <Source>smewt/__init__.py</Source>
     <Source>smewt/solvers/simplesolver.py</Source>
-    <Source>smewt/solvers/naivesolver.py</Source>
     <Source>smewt/solvers/__init__.py</Source>
     <Source>smewt/solvers/solver.py</Source>
     <Source>smewt/solvers/mergesolver.py</Source>
@@ -75,6 +74,8 @@
     <Source>smewt/base/subtitletask.py</Source>
     <Source>smewt/base/taskmanager.py</Source>
     <Source>setup.py</Source>
+    <Source>smewt/base/actionfactory.py</Source>
+    <Source>smewt/media/subtitle/subtitleprovider.py</Source>
   </Sources>
   <Forms>
   </Forms>
