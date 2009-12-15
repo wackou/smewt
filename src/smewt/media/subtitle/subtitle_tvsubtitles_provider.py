@@ -20,15 +20,14 @@
 
 import re, logging
 from urllib import urlopen, urlencode
-from smewt.base import textutils, utils, SmewtException, cachedmethod
+from smewt.base import utils, SmewtException, cachedmethod
+from smewt.base.textutils import simpleMatch, between, levenshtein
 from smewt.media import Episode, Series
 from subtitleobject import Subtitle
+from lxml import etree
 
-def simpleMatch(string, regexp):
-    return re.compile(regexp).search(string).groups()[0]
+log = logging.getLogger('TVSubtitlesProvider')
 
-def between(string, left, right):
-    return string.split(left)[1].split(right)[0]
 
 class TVSubtitlesProvider:
 
@@ -37,58 +36,58 @@ class TVSubtitlesProvider:
     @cachedmethod
     def getLikelySeriesUrl(self, name):
         data = urlencode({ 'q': name })
-        searchHtml = urlopen(self.baseUrl + '/search.php', data).read()
-        resultsHtml = between(searchHtml, 'Search results', '<div id="right">')
-        rexp = '<a href="(?P<url>.*?)">(?P<title>.*?)</a>'
-        matches = textutils.multipleMatchRegexp(resultsHtml, rexp)
+        html = etree.HTML(urlopen(self.baseUrl + '/search.php', data).read())
+        matches = [ s.find('a') for s in html.findall(".//div[@style='']") ]
 
         # add baseUrl and remove year information
+        result = []
         for match in matches:
+            seriesID = int(match.get('href').split('-')[1].split('.')[0]) # remove potential season number
+            seriesUrl = self.baseUrl + '/tvshow-%d.html' % seriesID
+            title = match.text
             try:
-                idx = match['title'].find('(') - 1
-                match['title'] = match['title'][:idx]
+                idx = title.find('(') - 1
+                title = title[:idx]
             except: pass
-            match['url'] = self.baseUrl + match['url']
+            result.append({ 'title': title, 'url': seriesUrl })
 
         if not matches:
             raise SmewtException("Couldn't find any matching series for '%s'" % name)
 
-        return matches
+        return result
 
     @cachedmethod
     def getSeriesID(self, name):
         # get most likely one if more than one found
         # FIXME: this hides another potential bug which is that tvsubtitles returns a lot of
         # false positives that it doesn't return when using from a "normal" webbrowser...
-        urls = [ (textutils.levenshtein(s['title'], name), s) for s in self.getLikelySeriesUrl(name) ]
+        urls = [ (levenshtein(s['title'], name), s) for s in self.getLikelySeriesUrl(name) ]
         url = sorted(urls)[0][1]['url']
-        return simpleMatch(url, 'tvshow-(.*?).html')
+        return int(simpleMatch(url, 'tvshow-(.*?).html'))
 
     @cachedmethod
     def getEpisodeID(self, series, season, number):
         seriesID = self.getSeriesID(series)
-        seasonHtml = urlopen(self.baseUrl + '/tvshow-%s-%d.html' % (seriesID, season)).read()
+        seasonHtml = urlopen(self.baseUrl + '/tvshow-%d-%d.html' % (seriesID, season)).read()
         try:
             episodeRowHtml = between(seasonHtml, '%dx%02d' % (season, number), '</tr>')
         except IndexError:
             raise SmewtException("Season %d Episode %d unavailable for series '%s'" % (season, number, series))
-        return simpleMatch(episodeRowHtml, 'episode-(.*?).html')
-
-    def parseSubtitleInfo(self, string):
-        result = Subtitle()
-        result['tvsubid'] = simpleMatch(string, 'subtitle-(.*?).html')
-        result['language'] = simpleMatch(string, 'flags/(.*?).gif')
-        result['title'] = simpleMatch(string, 'hspace=4>(.*?)</h5>')
-        return result
+        return int(simpleMatch(episodeRowHtml, 'episode-(.*?).html'))
 
     @cachedmethod
     def getAvailableSubtitlesID(self, series, season, number):
         episodeID = self.getEpisodeID(series, season, number)
-        episodeHtml = urlopen(self.baseUrl + '/episode-%s.html' % episodeID).read()
+        episodeHtml = urlopen(self.baseUrl + '/episode-%d.html' % episodeID).read()
         subtitlesHtml = between(episodeHtml, 'Subtitles for this episode', 'Back to')
 
-        result = [ self.parseSubtitleInfo(s['sub'])
-                   for s in textutils.multipleMatchRegexp(subtitlesHtml, '(?P<sub><a href=.*?</a>)') ]
+        result = [ { 'tvsubid': int(between(sub.get('href'), '-', '.')),
+                     'language': simpleMatch(sub.find('.//img').get('src'), 'flags/(.*?).gif'),
+                     'title': (sub.find('.//h5').find('img').tail or '').strip(),
+                     'source': (sub.find(".//p[@title='rip']").find('img').tail or '').strip(),
+                     'release': (sub.find(".//p[@title='release']").find('img').tail or '').strip(), }
+                   for sub in etree.HTML(episodeHtml).findall(".//div[@class='subtitlen']")
+                   ]
 
         return result
 
@@ -102,11 +101,11 @@ class TVSubtitlesProvider:
 
         sub = subs[0]
         if len(subs) > 1:
-            logging.warning('More than 1 possible subtitle found: %s', str(subs))
+            log.warning('More than 1 possible subtitle found: %s', str(subs))
             if videoFilename:
-                dists = [ (textutils.levenshtein(videoFilename, sub['title']), sub) for sub in subs ]
+                dists = [ (levenshtein(videoFilename, sub['title']), sub) for sub in subs ]
                 sub = sorted(dists)[0][1]
-            logging.warning('Choosing %s' % sub)
+            log.warning('Choosing %s' % sub)
 
         cd = utils.CurlDownloader()
         # first get this page to get session cookies...
@@ -156,9 +155,9 @@ class TVSubtitlesProvider:
 
         cd = utils.CurlDownloader()
         # first get this page to get session cookies...
-        cd.get(self.baseUrl + '/subtitle-%s.html' % subtitle['tvsubid'])
+        cd.get(self.baseUrl + '/subtitle-%d.html' % subtitle['tvsubid'])
         # ...then grab the sub file
-        cd.get(self.baseUrl + '/download-%s.html' % subtitle['tvsubid'])
+        cd.get(self.baseUrl + '/download-%d.html' % subtitle['tvsubid'])
 
         zf = zipfile.ZipFile(cStringIO.StringIO(cd.contents))
         filename = zf.infolist()[0].filename
