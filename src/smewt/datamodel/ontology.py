@@ -23,22 +23,69 @@ import logging
 
 log = logging.getLogger('smewt.datamodel.Ontology')
 
-class BaseClass:
+class BaseClass(object):
     """Derive from this class to define an ontology domain.
 
     Instantiating an object through derived classes should return an ObjectNode and
     not DerivedClass instance.
 
-    you should define the following in derived classes:
+    You should define the following in derived classes:
+
+    1- 'typename' which is a string representing the type name
+       ## Not anymore, should be registered and taken as the basename of the subclass
+
+    2- 'schema' which is a dictionary from property name to type
+    ex: schema = { 'epNumber': int,
+                   'title': str
+                   }
+      ## probably could define them as class attributes, the way django does it
+
+    3- 'converters', which is a dictionary from property name to
+       a pair of functions that are able to serialize/deserialize this property to/from a unicode string.
+
+    4- 'unique' which is the list of properties that form a primary key
+
+    this class only has static methods, because as instantiated object are ObjectNodes, we
+    could not even call member functions from this subclass.
     """
+
+    @staticmethod
+    def className(cls):
+        return cls.__name__
+
+    @staticmethod
+    def parentClass(cls):
+        return cls.__mro__[1]
+
+    @staticmethod
+    def issubclass(cls, base):
+        # WARNING: this is not correct with multiple inheritance
+        while cls != base and cls != BaseClass:
+            cls = BaseClass.parentClass(cls)
+        return cls == base
+
 
 class OntologyManager:
 
+    _classes = { 'BaseClass': BaseClass }
+
     @staticmethod
     def register(*args):
+        # can only register classes which are subclasses of our BaseClass class.
         for cls in args:
             if not issubclass(cls, BaseClass):
-                raise ValueError, 'need to derive from ontology.BaseClass'
-        # TODO: register the name in a map
+                raise ValueError, '%s needs to derive from ontology.BaseClass' %
+
+            # TODO: validate our subclass (does it have a correct schema defined, etc...)
+
+            _classes[cls.__name__] = cls
+
+
+    @staticmethod
+    def getClass(className):
+        """Returns the ObjectNode class object given its name."""
         pass
 
+    @staticmethod
+    def issubclass(cls, base):
+        pass

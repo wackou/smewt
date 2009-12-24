@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2009-05-26, 07:06:20 -->
+<!-- Saved: 2009-12-24, 08:45:27 -->
 <!-- Copyright (C) 2009 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -76,6 +76,12 @@
     <Source>setup.py</Source>
     <Source>smewt/base/actionfactory.py</Source>
     <Source>smewt/media/subtitle/subtitleprovider.py</Source>
+    <Source>smewt/datamodel/objectnode.py</Source>
+    <Source>smewt/datamodel/objectgraph.py</Source>
+    <Source>smewt/datamodel/persistentobjectgraph.py</Source>
+    <Source>smewt/datamodel/persistentobjectnode.py</Source>
+    <Source>smewt/datamodel/ontology.py</Source>
+    <Source>smewt/datamodel/persistentontology.py</Source>
   </Sources>
   <Forms>
   </Forms>
