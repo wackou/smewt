@@ -1,0 +1,111 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Smewt - A smart collection manager
+# Copyright (c) 2009 Nicolas Wack <wackou@gmail.com>
+#
+# Smewt is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Smewt is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+from objectnode import ObjectNode
+import logging
+
+log = logging.getLogger('smewt.datamodel.ObjectGraph')
+
+
+class ObjectGraph:
+    """An ObjectGraph is an directed graph of nodes in which each node is actually an object,
+    with a class type and any number of properties/attributes, which can be either literal
+    values or other objects in the graph.
+
+    The links in the graph are actually the properties of objects which are actually other objects
+    in the ObjectGraph instead of being literal values.
+
+    Those objects class shall be the python one, even though they need to define a instance_of()
+    method, and their properties should be available using the dotted notation, ie:
+    movie.director.first_name = 'kubrick'.
+
+    The ObjectGraph class provides ways of querying objects in it using type information,
+    properties matching filters, or just plain lambda functions that returns whether a node
+    is acceptable or not.
+
+    An ObjectGraph can be thought of as a context in which objects live.
+
+    Even though the dotted attribute access makes this less visible, the links between ObjectNodes
+    are first-class citizens also, and can themselves have attributes, such as confidence, etc...
+    """
+
+    def clear(self):
+        """Delete all objects in this graph."""
+        pass
+
+    def contains(self, node):
+        """Returns whether this graph contains the given node.
+
+        multiple strategies can be used here for determing object equality, such as
+        all properties equal, the primary subset of properties equal, etc... (those are defined
+        by the ObjectNode)"""
+        pass
+
+    def addNode(self, node):
+        """Add a single node and its links recursively into the graph.
+
+        If some dependencies of the node are already in the graph, we should not add
+        new instances of them but use the ones already there (ie: merge links). This strategy
+        should be configurable."""
+
+    def removeNode(self, node):
+        """Remove a given node.
+
+        strategies for what to do with linked nodes should be configurable, ie:
+        remove incoming/outgoing linked nodes as well, only remove link but do not
+        touch linked nodes, etc..."""
+
+
+    def findAll(self, type = None, cond = lambda x: True, **kwargs):
+        """This method returns a list of the objects of the given type in this graph for which
+        the cond function returns True (or sth that evaluates to True).
+        It will also only keep those objects that have properties which match the given keyword
+        args dictionary.
+
+        When using both the cond function and the type argument, it is useful to know that the
+        type is checked first, so that the cond function can safely assume that only objects of
+        the correct type are given to it.
+
+        When using keyword args for filtering, you can chain properties using '__' between them.
+        it should be configurable whether this is case-insensitive or not, or using regexps.
+
+        If no match is found, it returns an empty list.
+
+        examples:
+          g.findAll(type = Movie)
+          g.findAll(Episode, lambda x: x.season = 2)
+          g.findall(Movie, lambda m: m.release_year > 2000)
+          g.findAll(Person, role__movie__title = 'The Dark Knight')
+          g.findAll(Character, is_character_of__movie__title = 'Fear and loathing.*', regexp = True)
+        """
+        pass
+
+    def findOne(self, type = None, cond = lambda x: True, **kwargs):
+        """Returns 1 result. see findAll for description."""
+        pass
+
+    def findOrCreate(self, type, **kwargs):
+        '''This method returns the first object in this graph which has the specified type and
+        properties which match the given keyword args dictionary.
+        If no match is found, it creates a new object with the keyword args, inserts it in the
+        graph, and returns it.
+
+        example: g.findOrCreate(Series, title = 'Arrested Development')'''
+        pass
