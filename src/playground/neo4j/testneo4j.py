@@ -2,6 +2,7 @@
 
 from __future__ import with_statement
 from smewtobjectmapper import *
+import smewtdb, ontology
 
 # we should define a separate object-model library, which would allow to define
 # a loose ontology (a-la django, but only semi-structured) and which would have
@@ -9,8 +10,9 @@ from smewtobjectmapper import *
 # memory, or stored inside neo4j.
 
 
-cleanDB()
-    
+smewtdb.deleteAllData()
+smewtdb.init()
+
 
 class Series(Delegator):
     def __unicode__(self):
@@ -21,7 +23,7 @@ class Episode(Delegator):
     pass
 
 
-Ontology.register(Series, Episode)
+ontology.register(Series, Episode)
 
 s = Series(title = 'Scrubs')
 e = Episode(season = 3, number = 2)
@@ -36,6 +38,6 @@ print 's ok'
 print '*'*100
 printAllNodes()
 
-shutdown()
+smewtdb.shutdown()
 #ep1 = Episode(season = 2, number = 3, series = s)
 
