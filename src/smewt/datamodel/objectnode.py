@@ -100,9 +100,9 @@ class ObjectNode(object):
 
     def __setattr__(self, name, value):
         if name in [ '_class', '_props']:
-            self.__dict__[name] = value
+            object.__setattr__(self, name, value)
         else:
-            self.__dict__['_props'][name] = value
+            self._props[name] = value
 
     ### Container methods
 
