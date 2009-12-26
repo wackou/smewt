@@ -19,6 +19,7 @@
 #
 
 from objectnode import ObjectNode
+from objectgraph import ObjectGraph
 from ontology import BaseObject, OntologyManager
 import unittest
 
@@ -80,7 +81,6 @@ class TestObjectNode(unittest.TestCase):
         # test instance creation
         a = A(title = 'Scrubs', epnum = 5)
 
-        print type(a), a
         self.assertEquals(type(a), ObjectNode)
         self.assertEquals(a._class, A)
         self.assertEquals(a._class.className(), 'A')
@@ -105,6 +105,30 @@ class TestObjectNode(unittest.TestCase):
 
         self.assertEquals(ep.isUnique(), True)
         self.assertEquals(Episode(series='abc').isUnique(), False)
+
+    def testBasicGraphBehavior(self):
+        n1 = BaseObject(x = 1)
+        n2 = BaseObject(x = 1)
+
+        # graph belonging should be tested with identity
+        g = ObjectGraph()
+        g += n1
+        self.assert_(n1 in g)
+        self.assert_(n2 not in g)
+
+
+    def testReverseAttributeLookup(self):
+        n1 = BaseObject(x = 1)
+        n2 = BaseObject(x = 2, friend = n1)
+
+        self.assertEquals(n2.friend, n1)
+        self.assertRaises(AttributeError, getattr, n1, 'is_friend_of')
+
+        g = ObjectGraph()
+        g.addNode(n2) # this should also add n1 recursively
+        self.assert_(n2 in g)
+        self.assert_(n1 in g)
+        self.assertEquals(n1.is_friend_of, n2)
 
     def testChainedAttributes(self):
         #a = findAll(Episode, series__title = 'Scrubs')

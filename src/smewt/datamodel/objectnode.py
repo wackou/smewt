@@ -32,9 +32,10 @@ class ObjectNode(object):
      - it still has a class which "declares" a schema of standard properties and their types, like a normal object in OOP
      - it can be validated against that schema (ie: do the actual properties have the same type as those declared in the class definition)
      - setting attributes can be validated for type in real-time
-     - it has primary properties, which are used as primary key for identifying ObjectNodes or for indexing
+     - it has primary properties, which are used as primary key for identifying ObjectNodes or for indexing purposes
 
     ObjectNodes should implement different types of equalities:
+      - identity: both refs point to the same node in the ObjectGraph
       - all their properties are equal (same type and values)
       - all their standard properties are equal
       - only their primary properties are equal
@@ -53,6 +54,7 @@ class ObjectNode(object):
     """
 
     def __init__(self, cls, **kwargs):
+        self._graph = None
         self._class = cls
         self._props = kwargs
 
@@ -60,6 +62,7 @@ class ObjectNode(object):
         return issubclass(self._class, cls)
 
     def __eq__(self, other):
+        if not isinstance(other, ObjectNode): return False
         return self._props == other._props
 
     def __ne__(self, other):
@@ -67,7 +70,8 @@ class ObjectNode(object):
 
     def __hash__(self):
         # TODO: verify me
-        return hash((self._class, self.uniqueKey()))
+        #return hash((self._class, self.uniqueKey()))
+        return id(self)
 
     def __str__(self):
         return self.toShortString()
@@ -82,6 +86,12 @@ class ObjectNode(object):
         try:
             return self._props[name]
         except:
+            # if attribute was not found, look whether it might be a reverse attribute
+            if name.startswith('is_') and name.endswith('_of'):
+                if self._graph is None:
+                    raise AttributeError, 'Cannot get reverse attribute of node for which no Graph has been set'
+                return self._graph.reverseLookup(self, name[3:-3])
+
             raise AttributeError, name
 
     def get(self, name):
@@ -99,7 +109,7 @@ class ObjectNode(object):
             #return result
 
     def __setattr__(self, name, value):
-        if name in [ '_class', '_props']:
+        if name in [ '_graph', '_class', '_props' ]:
             object.__setattr__(self, name, value)
         else:
             self._props[name] = value

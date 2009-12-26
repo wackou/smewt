@@ -23,18 +23,39 @@ import logging
 
 log = logging.getLogger('smewt.datamodel.ObjectGraph')
 
+# TODO: make these functionas available everywhere
+def tolist(obj):
+    if    obj is None: return []
+    elif  isinstance(obj, list): return obj
+    else: return [ obj ]
 
-class ObjectGraph:
+
+def toresult(lst):
+    """Take a list and return a value depending on the number of elements in that list:
+     - 0 elements -> return None
+     - 1 element  -> return the single element
+     - 2 or more elements -> returns the original list."""
+    if    not lst: return None
+    elif  len(lst) == 1: return lst[0]
+    else: return lst
+
+class ObjectGraph(object):
     """An ObjectGraph is an directed graph of nodes in which each node is actually an object,
     with a class type and any number of properties/attributes, which can be either literal
     values or other objects in the graph.
 
-    The links in the graph are actually the properties of objects which are actually other objects
+    The links in the graph are actually the properties of objects which are other objects
     in the ObjectGraph instead of being literal values.
 
     Those objects class shall be the python one, even though they need to define a instance_of()
     method, and their properties should be available using the dotted notation, ie:
     movie.director.first_name = 'kubrick'.
+
+    Reverse attributes should be made automatically available using the "is_*_of" pattern.
+    For instance, if we have movie.director == personX, we should also have
+    personX.is_director_or == movie (or at least "movie in personX.is_director_or").
+    This reverse-attribute lookup can only work when the Node has first been inserted into
+    a graph.
 
     The ObjectGraph class provides ways of querying objects in it using type information,
     properties matching filters, or just plain lambda functions that returns whether a node
@@ -46,17 +67,24 @@ class ObjectGraph:
     are first-class citizens also, and can themselves have attributes, such as confidence, etc...
     """
 
+    def __init__(self):
+        self._nodes = set()
+
     def clear(self):
         """Delete all objects in this graph."""
         pass
 
     def contains(self, node):
-        """Returns whether this graph contains the given node.
+        """Return whether this graph contains the given node.
 
         multiple strategies can be used here for determing object equality, such as
         all properties equal, the primary subset of properties equal, etc... (those are defined
         by the ObjectNode)"""
         pass
+
+    def __contains__(self, node):
+        """Return whether this graph contains the given node (identity)."""
+        return node in self._nodes
 
     def addNode(self, node):
         """Add a single node and its links recursively into the graph.
@@ -65,12 +93,40 @@ class ObjectGraph:
         new instances of them but use the ones already there (ie: merge links). This strategy
         should be configurable."""
 
+        if not isinstance(node, ObjectNode):
+            raise TypeError, 'Can only add objects of type ObjectNode to this graph'
+
+        # FIXME: if node is already in there, merge the info we don't have yet
+        if node in self._nodes:
+            return
+
+        # first add any node this node might depend on
+        for name, value in node._props.items():
+            if isinstance(value, ObjectNode):
+                self.addNode(value)
+
+        # now add node
+        node._graph = self
+        self._nodes.add(node)
+
+    def __iadd__(self, node):
+        """Should allow node, but also list of nodes, ..."""
+        self.addNode(node)
+        return self
+
     def removeNode(self, node):
         """Remove a given node.
 
         strategies for what to do with linked nodes should be configurable, ie:
         remove incoming/outgoing linked nodes as well, only remove link but do not
         touch linked nodes, etc..."""
+
+    ### Search methods
+
+    def reverseLookup(self, node, propname):
+        # FIXME: this is completely not optimized...
+        # FIXME: make sure this is == we want here, and not some other equality type
+        return toresult([ n for n in self._nodes if n.get(propname) == node ])
 
 
     def findAll(self, type = None, cond = lambda x: True, **kwargs):

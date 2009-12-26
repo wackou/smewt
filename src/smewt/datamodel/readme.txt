@@ -9,7 +9,8 @@ the type lookup should also look for derived class
 the cond might be optimized by first calling it on a proxy object which would detect which attributes (hence links in the graph) should be traversed
 kwargs might be chained such as movie__director__lastName = 'Kubrick'
 
-
+Example queries:
+----------------
 
 findAll(type = Movie)
 findAll(cond = lambda x: x.season == 2, type = Episode)
@@ -24,5 +25,14 @@ bestMovies = [ movie for movie in find(Director, last_name = 'Kubrick').is_direc
 findOne(Actor,
         role__character = 'Indiana',
 	cond = lambda person: simpleSearch(person.role.movie.title, '.*Indiana Jones.*')
+
+# the following query is not correct, as the role could be different in the role__character and
+# the role__movie__title unless we make it that when having multiple properties starting with the same node
+# it should be the same (more natural, but implementation is harder)
+# a workaround solution would be to do findOne(Role, character = 'Indiana', ...).actor
+findOne(Actor,
+        role__character = 'Indiana',
+	role__movie__title, '.*Indiana Jones.*',
+        regexp = True)
 
 
