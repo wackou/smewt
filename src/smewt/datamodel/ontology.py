@@ -18,7 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from objectnode import ObjectNode
 import logging
 
 log = logging.getLogger('smewt.datamodel.Ontology')
@@ -94,6 +93,14 @@ class BaseObject(object):
             object.__setattr__(self, name, value)
         else:
             setattr(self._node, name, value)
+
+    def __eq__(self, other):
+        # TODO: should allow comparing a BaseObject with an ObjectNode
+        if not isinstance(other, BaseObject): return False
+
+        if self._node == other._node: return True
+        # FIXME: this could lead to cycles or very long chained __eq__ calling on properties
+        return self.items() == other.items()
 
     @classmethod
     def className(cls):

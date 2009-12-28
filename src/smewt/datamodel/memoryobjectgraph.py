@@ -19,6 +19,7 @@
 #
 
 from objectnode import ObjectNode
+from memoryobjectnode import MemoryObjectNode
 from ontology import BaseObject, OntologyManager
 from objectgraph import ObjectGraph
 import logging
@@ -37,6 +38,7 @@ class MemoryObjectGraph(ObjectGraph):
 
     def __init__(self):
         self._nodes = set()
+        self._objectNodeImpl = MemoryObjectNode
 
     def clear(self):
         """Delete all objects in this graph."""
@@ -46,6 +48,10 @@ class MemoryObjectGraph(ObjectGraph):
 
     def __contains__(self, node):
         """Return whether this graph contains the given node (identity)."""
+        # if given arg is an instance of a BaseObject, take its underlying node
+        if isinstance(node, BaseObject):
+            node = node._node
+
         return node in self._nodes
 
     # TODO: implement iterator / generator interface (ie: for node in graph: do...)

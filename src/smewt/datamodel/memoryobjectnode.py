@@ -19,11 +19,12 @@
 #
 
 from smewt.base.textutils import toUtf8
+from objectnode import ObjectNode
 import logging
 
 log = logging.getLogger('smewt.datamodel.ObjectNode')
 
-class ObjectNode(object):
+class MemoryObjectNode(ObjectNode):
     """An ObjectNode is a nice and useful mix between an OOP object and a node in a graph.
 
     An ObjectNode behaves in the following way:
@@ -53,10 +54,8 @@ class ObjectNode(object):
     given as a string (ie: node.isinstance('Movie'))
     """
 
-    def __init__(self, cls, **kwargs):
-        self._graph = None
-        # TODO: find all classes in the graph ontology that are valid for this node
-        self._classes = [ cls ]
+    def __init__(self, graph, **kwargs):
+        super(MemoryObjectNode, self).__init__(graph)
         self._props = kwargs
 
     def isinstance(self, cls):
@@ -120,7 +119,8 @@ class ObjectNode(object):
         else:
             #setting attribute should validate that the attribute stayed of the same type
             # as what is defined in its schema
-            for c in self._classes:
+            for c in self._classes.values():
+                print '--', c
                 if name in c.schema:
                     if type(value) != c.schema[name]:
                         raise ValueError, "The '%s' attribute is of type '%s' but you tried to assign it a '%s'" % (name, c.schema[name], type(value))

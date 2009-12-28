@@ -19,6 +19,7 @@
 #
 
 from smewt.base.textutils import toUtf8
+from ontology import OntologyManager
 import logging
 
 log = logging.getLogger('smewt.datamodel.ObjectNode')
@@ -53,10 +54,10 @@ class ObjectNode(object):
     given as a string (ie: node.isinstance('Movie'))
     """
 
-    def __init__(self, graph, **kwargs):
+    def __init__(self, graph):
         self._graph = None
         # TODO: find all classes in the graph ontology that are valid for this node
-        self._classes = [ cls ]
+        self._classes = OntologyManager._classes # for now, assume they're all valid
 
     def isValidInstance(self, cls):
         return any(issubclass(c, cls) for c in self._classes)

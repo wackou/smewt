@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2009-12-26, 06:46:38 -->
+<!-- Saved: 2009-12-28, 03:03:46 -->
 <!-- Copyright (C) 2009 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -81,8 +81,9 @@
     <Source>smewt/datamodel/persistentobjectgraph.py</Source>
     <Source>smewt/datamodel/persistentobjectnode.py</Source>
     <Source>smewt/datamodel/ontology.py</Source>
-    <Source>smewt/datamodel/persistentontology.py</Source>
     <Source>smewt/datamodel/test_datamodel.py</Source>
+    <Source>smewt/datamodel/memoryobjectnode.py</Source>
+    <Source>smewt/datamodel/memoryobjectgraph.py</Source>
   </Sources>
   <Forms>
   </Forms>
