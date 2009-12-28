@@ -53,18 +53,18 @@ class ObjectNode(object):
     given as a string (ie: node.isinstance('Movie'))
     """
 
-    def __init__(self, graph, **kwargs):
+    def __init__(self, cls, **kwargs):
         self._graph = None
         # TODO: find all classes in the graph ontology that are valid for this node
         self._classes = [ cls ]
+        self._props = kwargs
 
-    def isValidInstance(self, cls):
+    def isinstance(self, cls):
         return any(issubclass(c, cls) for c in self._classes)
 
     def __eq__(self, other):
         if not isinstance(other, ObjectNode): return False
-        # TODO: do we want equality of properties of identity of nodes?
-        return self.todict() == other.todict()
+        return self._props == other._props
 
     def __ne__(self, other):
         return not (self == other)
@@ -80,51 +80,127 @@ class ObjectNode(object):
     ### Acessing properties methods
 
     def __getattr__(self, name):
-        raise NotImplementedError
+        # TODO: this should go into the PersistentObjectNode
+        #if name == '_node':
+        #    return self.__dict__[name]
+
+        print 'getattr'
+        try:
+            return self._props[name]
+        except:
+            # if attribute was not found, look whether it might be a reverse attribute
+            if name.startswith('is_') and name.endswith('_of'):
+                if self._graph is None:
+                    raise AttributeError, 'Cannot get reverse attribute of node for which no Graph has been set'
+                return self._graph.reverseLookup(self, name[3:-3])
+
+            # TODO: find valid classes which have a method with a corresponding name
+            classes = [ c for c in self._classes if name in c.__dict__ ]
+
+
+            raise AttributeError, name
 
     def get(self, name):
         """Returns the given property or None if not found."""
         try:
+            # First look for literal value properties
             return getattr(self, name)
         except AttributeError:
             return None
+            # TODO: PersistentObjectNode impl:
+            # if no literal was found, try to find another ObjectNode
+            #result = list(self._node.relationships(name))
+            #if not result: return None # raise AttributeError
+            #if len(result) == 1: return wrapNode(result[0].end)
+            #return result
 
     def __setattr__(self, name, value):
-        if name in [ '_graph', '_classes' ]:
+        if name in [ '_graph', '_classes', '_props' ]:
             object.__setattr__(self, name, value)
         else:
-            raise NotImplementedError
+            #setting attribute should validate that the attribute stayed of the same type
+            # as what is defined in its schema
+            for c in self._classes:
+                if name in c.schema:
+                    if type(value) != c.schema[name]:
+                        raise ValueError, "The '%s' attribute is of type '%s' but you tried to assign it a '%s'" % (name, c.schema[name], type(value))
+                    else:
+                        break # exit earlier from loop, type is validated
+
+            self._props[name] = value
 
     ### Container methods
 
     def keys(self):
         # TODO: should return a generator
-        raise NotImplementedError
+        return self._props.keys()
 
     def values(self):
         # TODO: should return a generator
-        raise NotImplementedError
+        return self._props.values()
 
     def items(self):
         # TODO: should return a generator
-        raise NotImplementedError
+        return self._props.items()
+
+    ### Validation against a class schema
+
+    def isValid(self):
+        """Return whether all the ObjectNode properties which exist in the class schema have the same
+        type as what is defined."""
+        try:
+            for prop in self._class.schema.keys():
+                if prop in self._props and type(self._props[prop]) != self._class.schema[prop]:
+                    return False
+        except KeyError:
+            return False
+
+        return True
+
+    def isUnique(self):
+        """Return whether all unique properties (as defined by the class) of the ObjectNode
+        are non-null."""
+        for prop in self._class.unique:
+            if prop not in self._props or self._props[prop] is None:
+                return False
+        return True
+
+    def uniqueKey(self):
+        """Return a tuple containing an unique identifier (inside its class) for this instance.
+        If some unique fields are not specified, None will be put instead."""
+        return tuple(self.get(k) for k in self._class.unique)
 
 
     ### manipulation methods
 
     def update(self, other):
-        """Update this ObjectNode properties with the given ones."""
-        raise NotImplementedError
+        """Update this ObjectNode properties with all the other ones."""
+        self._props.update(other._props)
 
     def updateNew(self, other):
         """Update this ObjectNode properties with the only other ones it doesn't have yet."""
-        raise NotImplementedError
+        for name, value in other._props.items():
+            if name not in self._props:
+                self._props[name] = value
+
+    def orderedProperties(self):
+        """Returns the list of properties ordered using the defined order in the subclass.
+
+        NB: this should be replaced by using an OrderedDict."""
+        result = []
+        propertyNames = self._props.keys()
+
+        for p in self._class.order:
+            if p in propertyNames:
+                result.append(p)
+                propertyNames.remove(p)
+
+        return result + propertyNames
 
     def toShortString(self):
         return '%s(%s)' % (self._class.__name__,
-                           ', '.join([ '%s=%s' % (k, v) for k, v in self.items() ]))
+                           ', '.join([ '%s=%s' % (k, v) for k, v in self._props.items() ]))
 
-    '''
     def toFullString(self, tabs = 0):
         tabstr = 4 * tabs * ' '
         tabstr1 = 4 * (tabs+1) * ' '
@@ -139,4 +215,4 @@ class ObjectNode(object):
             result += tabstr1 + '%-20s : %s\n' % (propname, s)
 
         return result + tabstr + '}'
-    '''
+

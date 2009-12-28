@@ -36,20 +36,64 @@ class BaseObject(object):
                    'title': str
                    }
 
-    2- 'unique' which is the list of properties that form a primary key
+    2- 'reverseLookup' are used to indicated the name to be used for
+            # the property name when following a relationship between objects in the other direction
+            # ie: if Episode(...).series == Series('Scrubs'), then we define automatically
+            # a way to access the Episode() from the pointed to Series() object.
+            # with 'series' -> 'episodes', we then have:
+            # Series('Scrubs').episodes = [ Episode(...), Episode(...) ]
+            # reverseLookup needs to be defined for each property which is a Node object
 
-    3- 'order' (optional) which is a list of properties you always want to see in front for debug msgs
+    3- 'valid' which is the list of properties a node needs to have to be able to be considered
+               as a valid instance of this class
 
-    4- 'converters' (optional), which is a dictionary from property name to
+    4- 'unique' which is the list of properties that form a primary key
+
+    5- 'order' (optional) which is a list of properties you always want to see in front for debug msgs
+
+    6- 'converters' (optional), which is a dictionary from property name to
        a pair of functions that are able to serialize/deserialize this property to/from a unicode string.
 
 
     NB: this class only has class methods, because as instantiated objects are ObjectNodes instances,
     we could not even call member functions from this subclass.
     """
+    # this should be set to the used ObjectNode class (ie: ObjectNode or PersistentObjectNode)
+    _objectNodeClass = type(None)
 
+    schema = {}
+    reverseLookup = []
     order = []
     converters = {}
+
+    def __init__(self, graph, basenode = None, **kwargs):
+        if basenode is None:
+            # MemoryObjectGraph._objectNodeImpl == MemoryObjectNode
+            self._node = graph._objectNodeImpl(graph, **kwargs)
+        else:
+            # if basenode is already in this graph, no need to make a copy of it
+            if basenode._graph is graph:
+                self._node = basenode
+            else:
+                self._node = graph._objectNodeImpl(graph, **basenode.todict())
+            self._node.update(kwargs)
+        #if not isinstance(basenode, BaseObject) and not isinstance(basenode, BaseObject._objectNodeClass):
+        #    raise TypeError("basenode should be an instance of BaseObject or %s" % _objectNodeClass.__name__)
+        #self._node = basenode or ObjectNode(self.__class__, **kwargs)
+
+    def isinstance(self, cls):
+        if cls is BaseObject._objectNodeClass:
+            return True
+        return isinstance(self, cls)
+
+    def __getattr__(self, name):
+        return getattr(self._node, name)
+
+    def __setattr__(self, name, value):
+        if name == '_node':
+            object.__setattr__(self, name, value)
+        else:
+            setattr(self._node, name, value)
 
     @classmethod
     def className(cls):
@@ -59,8 +103,70 @@ class BaseObject(object):
     def parentClass(cls):
         return cls.__mro__[1]
 
-    def __new__(cls, **kwargs):
-        return ObjectNode(cls, **kwargs)
+    '''
+    def oops__new__(cls, **kwargs):
+        print 'creating node'
+        result = ObjectNode(cls, **kwargs)
+        print 'node created'
+        # we also need to call the intended constructor for the object, the one defined
+        # in the class definition. It will not receive any other arguments than the fully
+        # constructed ObjectNode
+        cls.__init__(result)
+        print 'node initialized'
+
+        # BaseObject shouldn't need to be in the valid classes as it doesn't define
+        # anything, and removing it here allows to avoid import dependency problems
+        print 'RC', result._classes
+        try: result._classes.remove(BaseObject)
+        except ValueError: pass
+        print 'RC', result._classes
+
+        return result
+    '''
+
+
+def validateClassDefinition(cls):
+    if not issubclass(cls, BaseObject):
+        raise TypeError, "'%s' needs to derive from ontology.BaseObject" % cls.__name__
+
+    # Note: voluntarily omit to put str as allowed types, unicode is much better
+    #       and it will save us a *lot* of trouble
+    # Note: list should only be list of literal values
+    # TODO: add datetime
+    validTypes = [ unicode, int, long, float, list, BaseObject ]
+
+    def checkPresent(cls, var, ctype):
+        try:
+            value = getattr(cls, var)
+        except AttributeError:
+            raise TypeError("Your subclass '%s' should define the '%s' class variable as a '%s'" % (cls.__name__, var, ctype.__name__))
+        if type(value) != ctype:
+            raise TypeError("Your subclass '%s' defines the '%s' class variable as a '%s', but it should be of type '%s'" % (cls.__name__, var, type(value).__name__, ctype.__name__))
+
+    def checkSchemaSubset(cls, var):
+        checkPresent(cls, var, list)
+        for prop in getattr(cls, var):
+            if not prop in cls.schema:
+                raise TypeError("In '%s': when defining '%s', you used the '%s' variable, which is not defined in the schema" % (cls.__name__, var, prop))
+
+    # validate the schema is correctly defined
+    checkPresent(cls, 'schema', dict)
+    for name, ctype in cls.schema.items():
+        if not isinstance(name, str) or not any(issubclass(ctype, dtype) for dtype in validTypes):
+            raise TypeError("In '%s': the schema should be a dict of 'str' to either one of those accepted types (or a subclass of them): %s'" % (cls.__name__, ', '.join("'%s'" % c.__name__ for c in validTypes)))
+
+    # all the properties defined as subclasses of BaseObject need to have an
+    # associated reverseLookup entry
+    checkPresent(cls, 'reverseLookup', list)
+    objectProps = [ name for name, ctype in cls.schema.items() if issubclass(ctype, BaseObject) ]
+    diff = set(cls.reverseLookup).symmetric_difference(set(objectProps))
+    if diff:
+        raise "In '%s': you should define exactly one reverseLookup name for each property in your schema that is a subclass of BaseObject, different ones: %s" % (cls.__name__, ', '.join("'%s'" % c for c in diff))
+
+    checkSchemaSubset(cls, 'valid')
+    checkSchemaSubset(cls, 'unique')
+    checkSchemaSubset(cls, 'order')
+    # TODO: validate converters
 
 
 class OntologyManager:
@@ -71,16 +177,7 @@ class OntologyManager:
     def register(*args):
         # can only register classes which are subclasses of our BaseObject class.
         for cls in args:
-            if not issubclass(cls, BaseObject):
-                raise TypeError, '%s needs to derive from ontology.BaseObject' % cls.__name__
-
-            # TODO: validate our subclass (does it have a correct schema defined, etc...)
-            try:
-                if not isinstance(cls.schema, dict) or not isinstance(cls.unique, list):
-                    raise TypeError
-            except:
-                raise TypeError, "Your subclass '%s' should define at least the 'schema' class variable as a dict and the 'unique' one as a list" % cls.__name__
-
+            validateClassDefinition(cls)
             OntologyManager._classes[cls.__name__] = cls
 
 

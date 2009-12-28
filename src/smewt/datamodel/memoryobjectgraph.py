@@ -19,26 +19,11 @@
 #
 
 from objectnode import ObjectNode
-from ontology import BaseObject
+from ontology import BaseObject, OntologyManager
+from objectgraph import ObjectGraph
 import logging
 
-log = logging.getLogger('smewt.datamodel.ObjectGraph')
-
-# TODO: make these functionas available everywhere
-def tolist(obj):
-    if    obj is None: return []
-    elif  isinstance(obj, list): return obj
-    else: return [ obj ]
-
-
-def toresult(lst):
-    """Take a list and return a value depending on the number of elements in that list:
-     - 0 elements -> return None
-     - 1 element  -> return the single element
-     - 2 or more elements -> returns the original list."""
-    if    not lst: return None
-    elif  len(lst) == 1: return lst[0]
-    else: return lst
+log = logging.getLogger('smewt.datamodel.MemoryObjectGraph')
 
 def getnode(node):
     if isinstance(node, ObjectNode):
@@ -48,33 +33,7 @@ def getnode(node):
     else:
         raise TypeError("Given object is not an ObjectNode instance")
 
-class ObjectGraph(object):
-    """An ObjectGraph is an directed graph of nodes in which each node is actually an object,
-    with a class type and any number of properties/attributes, which can be either literal
-    values or other objects in the graph.
-
-    The links in the graph are actually the properties of objects which are other objects
-    in the ObjectGraph instead of being literal values.
-
-    Those objects class shall be the python one, even though they need to define a instance_of()
-    method, and their properties should be available using the dotted notation, ie:
-    movie.director.first_name = 'kubrick'.
-
-    Reverse attributes should be made automatically available using the "is_*_of" pattern.
-    For instance, if we have movie.director == personX, we should also have
-    personX.is_director_or == movie (or at least "movie in personX.is_director_or").
-    This reverse-attribute lookup can only work when the Node has first been inserted into
-    a graph.
-
-    The ObjectGraph class provides ways of querying objects in it using type information,
-    properties matching filters, or just plain lambda functions that returns whether a node
-    is acceptable or not.
-
-    An ObjectGraph can be thought of as a context in which objects live.
-
-    Even though the dotted attribute access makes this less visible, the links between ObjectNodes
-    are first-class citizens also, and can themselves have attributes, such as confidence, etc...
-    """
+class MemoryObjectGraph(ObjectGraph):
 
     def __init__(self):
         self._nodes = set()
@@ -82,22 +41,28 @@ class ObjectGraph(object):
     def clear(self):
         """Delete all objects in this graph."""
         for n in self._nodes:
-            n._graph = None
+            n._graph = None # TODO: really necessary?
         self._nodes.clear()
-
-    def contains(self, node):
-        """Return whether this graph contains the given node.
-
-        multiple strategies can be used here for determing object equality, such as
-        all properties equal, the primary subset of properties equal, etc... (those are defined
-        by the ObjectNode)"""
-        raise NotImplementedError
 
     def __contains__(self, node):
         """Return whether this graph contains the given node (identity)."""
         return node in self._nodes
 
     # TODO: implement iterator / generator interface (ie: for node in graph: do...)
+
+    def __getattr__(self, name):
+        # if attr is not found and starts with an upper case letter, it might be the name
+        # of one of the registered classes. In that case, return a function that would instantiate
+        # such an object in this graph
+        print '**', OntologyManager._classes
+        if name[0].isupper() and name in OntologyManager._classes:
+            def inst(basenode = None, **kwargs):
+                return OntologyManager._classes[name](self, basenode, **kwargs)
+
+            return inst
+
+        raise AttributeError
+
 
     def addNode(self, node):
         """Add a single node and its links recursively into the graph.
@@ -121,6 +86,8 @@ class ObjectGraph(object):
         # now add node
         node._graph = self
         self._nodes.add(node)
+
+        # find all valid classes for this node with the classes registered in this graph's ontology
 
     def __iadd__(self, node):
         """Should allow node, but also list of nodes, ..."""
@@ -146,22 +113,7 @@ class ObjectGraph(object):
 
 
     def findAll(self, type = None, cond = lambda x: True, **kwargs):
-        """This method returns a list of the objects of the given type in this graph for which
-        the cond function returns True (or sth that evaluates to True).
-        It will also only keep those objects that have properties which match the given keyword
-        args dictionary.
-
-        When using both the cond function and the type argument, it is useful to know that the
-        type is checked first, so that the cond function can safely assume that only objects of
-        the correct type are given to it.
-
-        When using keyword args for filtering, you can chain properties using '_' between them.
-        it should be configurable whether property value matching should be case-insensitive or
-        use regexps in the case of strings.
-
-        If no match is found, it returns an empty list.
-
-        examples:
+        """examples:
           g.findAll(type = Movie)
           g.findAll(Episode, lambda x: x.season = 2)
           g.findall(Movie, lambda m: m.release_year > 2000)
