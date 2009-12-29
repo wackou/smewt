@@ -61,9 +61,9 @@ def validateClassDefinition(cls):
 
     # all the properties defined as subclasses of BaseObject need to have an
     # associated reverseLookup entry
-    checkPresent(cls, 'reverseLookup', list)
+    checkPresent(cls, 'reverseLookup', dict)
     objectProps = [ name for name, ctype in cls.schema.items() if issubclass(ctype, BaseObject) ]
-    diff = set(cls.reverseLookup).symmetric_difference(set(objectProps))
+    diff = set(cls.reverseLookup.keys()).symmetric_difference(set(objectProps))
     if diff:
         raise "In '%s': you should define exactly one reverseLookup name for each property in your schema that is a subclass of BaseObject, different ones: %s" % (cls.__name__, ', '.join("'%s'" % c for c in diff))
 
@@ -76,12 +76,12 @@ def validateClassDefinition(cls):
 def register(*args):
     # can only register classes which are subclasses of our BaseObject class.
     for cls in args:
-        if cls in _classes:
-            if cls != _classes[cls.__name__]:
-                raise TypeError("Class '%s' already registered with a different definition" % cls.__name__)
-            else:
-                print 'class %s already registered' % cls.__name__
+        if cls.__name__ in _classes:
+            if cls == _classes[cls.__name__]:
+                print 'INFO: class %s already registered' % cls.__name__
                 return
+
+            print 'WARNING: overriding previous definition of class %s' % cls.__name__
 
         validateClassDefinition(cls)
         _classes[cls.__name__] = cls

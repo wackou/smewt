@@ -86,7 +86,6 @@ class MemoryObjectNode(ObjectNode):
         #if name == '_node':
         #    return self.__dict__[name]
 
-        print 'getattr', name
         try:
             return self._props[name]
         except:
@@ -123,7 +122,6 @@ class MemoryObjectNode(ObjectNode):
             #setting attribute should validate that the attribute stayed of the same type
             # as what is defined in its schema
             for c in self._classes:
-                print '--', c
                 if name in c.schema:
                     if type(value) != c.schema[name]:
                         raise TypeError, "The '%s' attribute is of type '%s' but you tried to assign it a '%s'" % (name, c.schema[name], type(value))

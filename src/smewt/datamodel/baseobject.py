@@ -60,9 +60,11 @@ class BaseObject(object):
     # this should be set to the used ObjectNode class (ie: ObjectNode or PersistentObjectNode)
     _objectNodeClass = type(None)
 
+    # TODO: remove those variables which definition should be mandatory
     schema = {}
+    reverseLookup = {}
     valid = []
-    reverseLookup = []
+    unique = []
     order = []
     converters = {}
 
