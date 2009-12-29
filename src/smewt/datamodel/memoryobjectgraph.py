@@ -57,17 +57,6 @@ class MemoryObjectGraph(ObjectGraph):
 
     # TODO: implement iterator / generator interface (ie: for node in graph: do...)
 
-    def __getattr__(self, name):
-        # if attr is not found and starts with an upper case letter, it might be the name
-        # of one of the registered classes. In that case, return a function that would instantiate
-        # such an object in this graph
-        if name[0].isupper() and name in ontology.classNames():
-            def inst(basenode = None, **kwargs):
-                return ontology.getClass(name)(self, basenode, **kwargs)
-
-            return inst
-
-        raise AttributeError
 
 
     def addNode(self, node):

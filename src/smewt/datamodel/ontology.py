@@ -18,18 +18,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from baseobject import BaseObject
 import weakref
 import logging
 
 log = logging.getLogger('smewt.datamodel.Ontology')
 
 # use dict here for fast text based access (when instantiating objects through a graph, for instance)
-_classes = { 'BaseObject': BaseObject }
+_classes = {}
 _graphs = weakref.WeakValueDictionary()
 
 
 def validateClassDefinition(cls):
+    BaseObject = _classes['BaseObject']
+
     if not issubclass(cls, BaseObject):
         raise TypeError, "'%s' needs to derive from ontology.BaseObject" % cls.__name__
 

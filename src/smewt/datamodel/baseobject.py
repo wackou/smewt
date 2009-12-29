@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from objectnode import ObjectNode
 import logging
 
 log = logging.getLogger('smewt.datamodel.Ontology')
@@ -30,18 +31,18 @@ class BaseObject(object):
 
     You should define the following class variables in derived classes:
 
-    1- 'schema' which is a map of property names to their respective types
-    ex: schema = { 'epNumber': int,
-                   'title': str
-                   }
+    1- 'schema' which is a dict of property names to their respective types
+        ex: schema = { 'epNumber': int,
+                       'title': str
+                       }
 
-    2- 'reverseLookup' are used to indicated the name to be used for
-            # the property name when following a relationship between objects in the other direction
-            # ie: if Episode(...).series == Series('Scrubs'), then we define automatically
-            # a way to access the Episode() from the pointed to Series() object.
-            # with 'series' -> 'episodes', we then have:
-            # Series('Scrubs').episodes = [ Episode(...), Episode(...) ]
-            # reverseLookup needs to be defined for each property which is a Node object
+    2- 'reverseLookup' which is a dict used to indicate the name to be used for the property name
+                       when following a relationship between objects in the other direction.
+                       ie: if Episode(...).series == Series('Scrubs'), then we define automatically
+                       a way to access the Episode() from the pointed to Series() object.
+                       with { 'series': 'episodes' }, we then have:
+                       Series('Scrubs').episodes = [ Episode(...), Episode(...) ]
+                       reverseLookup must be defined for each property which is a Node object
 
     3- 'valid' which is the list of properties a node needs to have to be able to be considered
                as a valid instance of this class
@@ -49,16 +50,16 @@ class BaseObject(object):
     4- 'unique' which is the list of properties that form a primary key
 
     5- 'order' (optional) which is a list of properties you always want to see in front for debug msgs
+               by default, this will be set to the 'valid' variable
 
-    6- 'converters' (optional), which is a dictionary from property name to
-       a pair of functions that are able to serialize/deserialize this property to/from a unicode string.
+    6- 'converters' (optional), which is a dictionary from property name to a pair of functions
+                    that are able to serialize/deserialize this property to/from a unicode string.
 
 
     NB: this class only has class methods, because as instantiated objects are ObjectNodes instances,
     we could not even call member functions from this subclass.
+    (WRONG: methods of subclasses should be accessible throught the smart getattr mechanism)
     """
-    # this should be set to the used ObjectNode class (ie: ObjectNode or PersistentObjectNode)
-    _objectNodeClass = type(None)
 
     # TODO: remove those variables which definition should be mandatory
     schema = {}
@@ -70,11 +71,15 @@ class BaseObject(object):
 
     def __init__(self, graph, basenode = None, **kwargs):
         if basenode is None:
-            # MemoryObjectGraph._objectNodeImpl == MemoryObjectNode
             self._node = graph._objectNodeImpl(graph, **kwargs)
         else:
             if isinstance(basenode, BaseObject):
                 basenode = basenode._node
+
+            # python is dynamic, should we test for this? (actually it gives a better error
+            # message if it fails, is the cost of checking each time worth it?)
+            if not isinstance(basenode, ObjectNode):
+                raise TypeError("Given basenode should be an instance of either ObjectNode or BaseObject")
 
             # if basenode is already in this graph, no need to make a copy of it
             if basenode._graph is graph:
@@ -82,9 +87,11 @@ class BaseObject(object):
             else:
                 self._node = graph._objectNodeImpl(graph, **basenode.todict())
             self._node.update(kwargs)
-        #if not isinstance(basenode, BaseObject) and not isinstance(basenode, BaseObject._objectNodeClass):
-        #    raise TypeError("basenode should be an instance of BaseObject or %s" % _objectNodeClass.__name__)
-        #self._node = basenode or ObjectNode(self.__class__, **kwargs)
+
+        if not self._node.isValidInstance(self.__class__):
+            raise TypeError("Cannot instantiate a valid instance of %s because:\n%s" %
+                            (self.__class__, self._node.invalidProperties(self.__class__)))
+
 
     def isinstance(self, cls):
         if cls is BaseObject._objectNodeClass:
@@ -152,3 +159,7 @@ class BaseObject(object):
         return result
     '''
 
+# force-register BaseObject in the ontology classes (ie: do not use the ontology
+# validation stuff, because it needs the ObjectNode to be already registered)
+import ontology
+ontology._classes['BaseObject'] = BaseObject

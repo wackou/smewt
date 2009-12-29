@@ -27,7 +27,6 @@ import unittest
 class TestObjectNode(unittest.TestCase):
 
     def testBasicObjectNode(self):
-        print 'a'
         g = MemoryObjectGraph()
         n1 = g.BaseObject()
         self.assertEqual(n1.keys(), [])
@@ -47,9 +46,8 @@ class TestObjectNode(unittest.TestCase):
         self.assertEqual(n1.sameas.plot, 'empty')
 
     def testBasicOntology(self):
-        print 'b'
         class A(BaseObject):
-            schema = { 'a': int  }
+            schema = { 'title': unicode  }
             valid = schema.keys()
             unique = valid
 
@@ -86,7 +84,7 @@ class TestObjectNode(unittest.TestCase):
 
         # test instance creation
         g = MemoryObjectGraph()
-        a = g.A(title = 'Scrubs', epnum = 5)
+        a = g.A(title = u'Scrubs', epnum = 5)
 
         self.assertEqual(type(a), A)
         self.assertEqual(a.__class__, A)
@@ -99,7 +97,8 @@ class TestObjectNode(unittest.TestCase):
                        'rating': float
                        }
 
-            unique = [ 'title' ]
+            valid = [ 'title' ]
+            unique = valid
 
         class Episode(BaseObject):
             schema = { 'series': Series,
@@ -151,40 +150,17 @@ class TestObjectNode(unittest.TestCase):
                               'actor': 'actingRoles',
                               'character': 'roles'
                               }
-            '''
-            schema = [ ('movie', Movie, 'roles'),
-                       ('actor', Person, 'actingRoles'),
-                       ('character', Character, 'roles')
-                       ]
-            '''
 
-            # reverseLookup are used to indicated the name to be used for
-            # the property name when following a relationship between objects in the other direction
-            # ie: if Episode(...).series == Series('Scrubs'), then we define automatically
-            # a way to access the Episode() from the pointed to Series() object.
-            # with 'series' -> 'episodes', we then have:
-            # Series('Scrubs').episodes = [ Episode(...), Episode(...) ]
-
+        # register all these classes onto the global ontology
         ontology.register(Series, Episode, Person, Movie, Character, Role)
 
+
     def testValidUniqueMethods(self):
-        '''
-        class Episode(BaseObject):
-            schema = { 'series': unicode,
-                       'season': int,
-                       'epnum': int,
-                       'title': unicode
-                       }
-
-            valid = [ 'series', 'season', 'epnum' ]
-            unique = valid
-
-        ontology.register(Episode)
-        '''
         self.registerMediaOntology()
 
         g = MemoryObjectGraph()
-        ep = g.Episode(series = u'House M.D.', season = 3, episodeNumber = 2)
+        ep = g.Episode(series = g.Series(title = u'House M.D.'), season = 3, episodeNumber = 2)
+        self.assertRaises(TypeError, g.Episode, series = u'House M.D.', episodeNumber = 2)
         #self.assertEqual(ep.isValid(), True) # construction of object should fail if not
         ep.title = u'gloub'
         ep.gulp = u'gloubiboulga'
@@ -193,7 +169,7 @@ class TestObjectNode(unittest.TestCase):
         #self.assertEqual(ep.isValid(), False)
 
         self.assertEqual(ep.isUnique(), True)
-        self.assertEqual(g.Episode(series=u'abc').isUnique(), False)
+        #self.assertEqual(g.Episode(series=u'abc').isUnique(), False)
 
     def testBasicGraphBehavior(self):
         g = MemoryObjectGraph()

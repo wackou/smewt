@@ -20,6 +20,7 @@
 
 from objectnode import ObjectNode
 from baseobject import BaseObject
+import ontology
 import logging
 
 log = logging.getLogger('smewt.datamodel.ObjectGraph')
@@ -76,6 +77,9 @@ class ObjectGraph(object):
     are first-class citizens also, and can themselves have attributes, such as confidence, etc...
     """
 
+    # this should be set to the used ObjectNode class (ie: ObjectNode or PersistentObjectNode)
+    _objectNodeClass = type(None)
+
     def __init__(self):
         self._nodes = set()
         OntologyManager.registerGraph(self)
@@ -89,6 +93,19 @@ class ObjectGraph(object):
     def revalidateObjects(self):
         for node in self._nodes:
             node.updateValidClasses()
+
+    def __getattr__(self, name):
+        # if attr is not found and starts with an upper case letter, it might be the name
+        # of one of the registered classes. In that case, return a function that would instantiate
+        # such an object in this graph
+        if name[0].isupper() and name in ontology.classNames():
+            def inst(basenode = None, **kwargs):
+                return ontology.getClass(name)(self, basenode, **kwargs)
+
+            return inst
+
+        raise AttributeError
+
 
     def contains(self, node):
         """Return whether this graph contains the given node.

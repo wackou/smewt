@@ -69,11 +69,23 @@ class ObjectNode(object):
 
         return True
 
+    def invalidProperties(self, cls):
+        invalid = []
+        for prop in cls.valid:
+            if prop not in self:
+                invalid.append("property '%s' is missing" % prop)
+                continue
+
+            if type(getattr(self, prop)) != cls.schema[prop]:
+                invalid.append("property '%s' is of type '%s', but should be of type '%s'" %
+                               (prop, type(getattr(self, prop)).__name__, cls.schema[prop].__name__))
+
+        return '\n'.join(invalid)
+
     def updateValidClasses(self):
         self._classes = [ cls for cls in ontology._classes.values() if self.isValidInstance(cls) ]
 
-        print 'validity for:', self.toShortString()
-        print 'classes:', self._classes
+        log.debug('valid classes for %s:\n  %s' % (self.toString(), self._classes))
 
     def isinstance(self, cls):
         # this should deal with inheritance correctly, as if this node is a correct instance
@@ -92,10 +104,11 @@ class ObjectNode(object):
         return cls in self._classes
 
     def __eq__(self, other):
-        # TODO: we should also allow comparison with instances of BaseObject
-        if not isinstance(other, ObjectNode): return False
-        # TODO: do we want equality of properties of identity of nodes?
-        return self.items() == other.items()
+        # This should implement identity of nodes, not properties equality (this should be done
+        # in the BaseObject instance)
+        # TODO: we should also allow comparison with instances of BaseObject directly
+        raise NotImplementedError
+        # TODO: maybe like that? return hash(self) == hash(other)
 
     def __ne__(self, other):
         return not (self == other)
@@ -103,10 +116,15 @@ class ObjectNode(object):
     def __hash__(self):
         # TODO: verify me
         #return hash((self._class, self.uniqueKey()))
-        return id(self)
+        #return id(self)
+        # TODO: look at comment in __eq__ method.
+        raise NotImplementedError
 
     def __str__(self):
-        return self.toShortString()
+        return self.toString().encode('utf-8')
+
+    def __unicode__(self):
+        return self.toString()
 
     ### Acessing properties methods
 
@@ -147,17 +165,18 @@ class ObjectNode(object):
 
     ### manipulation methods
 
-    def update(self, other):
-        """Update this ObjectNode properties with the given ones."""
+    def update(self, props):
+        """Update this ObjectNode properties with the ones contained in the given dict.
+        Should also allow instances of other ObjectNode, or even BaseObject. (or should we
+        have an API like n.update(dict(other.items())? )"""
         raise NotImplementedError
 
     def updateNew(self, other):
         """Update this ObjectNode properties with the only other ones it doesn't have yet."""
         raise NotImplementedError
 
-    def toShortString(self):
-        return '%s(%s)' % (self._class.__name__,
-                           ', '.join([ '%s=%s' % (k, v) for k, v in self.items() ]))
+    def toString(self):
+        return u'ObjectNode(%s)' % (', '.join([ u'%s=%s' % (k, v) for k, v in self.items() ]))
 
     '''
     def toFullString(self, tabs = 0):
