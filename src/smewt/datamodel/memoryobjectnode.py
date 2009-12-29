@@ -55,15 +55,18 @@ class MemoryObjectNode(ObjectNode):
     """
 
     def __init__(self, graph, **kwargs):
-        super(MemoryObjectNode, self).__init__(graph)
+        # NB: this should go before super().__init__() because the latter checks for all
+        #     the valid classes, and it needs to know the properties to do that
         self._props = kwargs
+        super(MemoryObjectNode, self).__init__(graph)
 
     def isinstance(self, cls):
         return any(issubclass(c, cls) for c in self._classes)
 
     def __eq__(self, other):
         if not isinstance(other, ObjectNode): return False
-        return self._props == other._props
+        #return self._props == other._props
+        return self is other
 
     def __ne__(self, other):
         return not (self == other)
@@ -83,7 +86,7 @@ class MemoryObjectNode(ObjectNode):
         #if name == '_node':
         #    return self.__dict__[name]
 
-        print 'getattr'
+        print 'getattr', name
         try:
             return self._props[name]
         except:
@@ -119,11 +122,11 @@ class MemoryObjectNode(ObjectNode):
         else:
             #setting attribute should validate that the attribute stayed of the same type
             # as what is defined in its schema
-            for c in self._classes.values():
+            for c in self._classes:
                 print '--', c
                 if name in c.schema:
                     if type(value) != c.schema[name]:
-                        raise ValueError, "The '%s' attribute is of type '%s' but you tried to assign it a '%s'" % (name, c.schema[name], type(value))
+                        raise TypeError, "The '%s' attribute is of type '%s' but you tried to assign it a '%s'" % (name, c.schema[name], type(value))
                     else:
                         break # exit earlier from loop, type is validated
 
@@ -157,25 +160,12 @@ class MemoryObjectNode(ObjectNode):
 
         return True
 
-    def isUnique(self):
-        """Return whether all unique properties (as defined by the class) of the ObjectNode
-        are non-null."""
-        for prop in self._class.unique:
-            if prop not in self._props or self._props[prop] is None:
-                return False
-        return True
-
-    def uniqueKey(self):
-        """Return a tuple containing an unique identifier (inside its class) for this instance.
-        If some unique fields are not specified, None will be put instead."""
-        return tuple(self.get(k) for k in self._class.unique)
-
 
     ### manipulation methods
 
     def update(self, other):
-        """Update this ObjectNode properties with all the other ones."""
-        self._props.update(other._props)
+        """Update this ObjectNode properties with the ones contained in the given dict."""
+        self._props.update(other)
 
     def updateNew(self, other):
         """Update this ObjectNode properties with the only other ones it doesn't have yet."""
@@ -198,7 +188,7 @@ class MemoryObjectNode(ObjectNode):
         return result + propertyNames
 
     def toShortString(self):
-        return '%s(%s)' % (self._class.__name__,
+        return '%s(%s)' % (self.__class__.__name__,
                            ', '.join([ '%s=%s' % (k, v) for k, v in self._props.items() ]))
 
     def toFullString(self, tabs = 0):

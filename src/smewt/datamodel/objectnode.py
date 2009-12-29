@@ -19,7 +19,7 @@
 #
 
 from smewt.base.textutils import toUtf8
-from ontology import OntologyManager
+import ontology
 import logging
 
 log = logging.getLogger('smewt.datamodel.ObjectNode')
@@ -55,17 +55,47 @@ class ObjectNode(object):
     """
 
     def __init__(self, graph):
-        self._graph = None
-        # TODO: find all classes in the graph ontology that are valid for this node
-        self._classes = OntologyManager._classes # for now, assume they're all valid
+        self._graph = graph
+        self.updateValidClasses()
 
     def isValidInstance(self, cls):
-        return any(issubclass(c, cls) for c in self._classes)
+        for prop in cls.valid:
+            if prop not in self:
+                return False
+
+            if True: # graphType == 'STATIC'
+                if type(getattr(self, prop)) != cls.schema[prop]:
+                    return False
+
+        return True
+
+    def updateValidClasses(self):
+        self._classes = [ cls for cls in ontology._classes.values() if self.isValidInstance(cls) ]
+
+        print 'validity for:', self.toShortString()
+        print 'classes:', self._classes
+
+    def isinstance(self, cls):
+        # this should deal with inheritance correctly, as if this node is a correct instance
+        # of a derived class, it should also necessarily be a correct instance of a parent class
+        # TODO: for this to be true, we must make sure that derived classes in the ontology
+        #       do not override properties defined in a parent class
+        if cls in self._classes:
+            return True
+
+        # maybe we changed some value that now made this into a valid class, just revalidate
+        # to make sure
+        # TODO: this should probably go into setattr to revalidate in realtime (only for
+        #       arguments which are not part of the schema, for optimization)
+        self.updateValidClasses()
+
+        return cls in self._classes
 
     def __eq__(self, other):
+        # TODO: we should also allow comparison with instances of BaseObject
         if not isinstance(other, ObjectNode): return False
         # TODO: do we want equality of properties of identity of nodes?
-        return self.todict() == other.todict()
+        return self.items() == other.items()
 
     def __ne__(self, other):
         return not (self == other)
@@ -109,6 +139,10 @@ class ObjectNode(object):
     def items(self):
         # TODO: should return a generator
         raise NotImplementedError
+
+    def __iter__(self):
+        for prop in self.keys():
+            yield prop
 
 
     ### manipulation methods

@@ -19,7 +19,7 @@
 #
 
 from objectnode import ObjectNode
-from ontology import BaseObject
+from baseobject import BaseObject
 import logging
 
 log = logging.getLogger('smewt.datamodel.ObjectGraph')
@@ -78,12 +78,17 @@ class ObjectGraph(object):
 
     def __init__(self):
         self._nodes = set()
+        OntologyManager.registerGraph(self)
 
     def clear(self):
         """Delete all objects in this graph."""
         for n in self._nodes:
             n._graph = None
         self._nodes.clear()
+
+    def revalidateObjects(self):
+        for node in self._nodes:
+            node.updateValidClasses()
 
     def contains(self, node):
         """Return whether this graph contains the given node.

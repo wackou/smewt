@@ -20,7 +20,8 @@
 
 from objectnode import ObjectNode
 from memoryobjectnode import MemoryObjectNode
-from ontology import BaseObject, OntologyManager
+from baseobject import BaseObject
+import ontology
 from objectgraph import ObjectGraph
 import logging
 
@@ -60,10 +61,9 @@ class MemoryObjectGraph(ObjectGraph):
         # if attr is not found and starts with an upper case letter, it might be the name
         # of one of the registered classes. In that case, return a function that would instantiate
         # such an object in this graph
-        print '**', OntologyManager._classes
-        if name[0].isupper() and name in OntologyManager._classes:
+        if name[0].isupper() and name in ontology.classNames():
             def inst(basenode = None, **kwargs):
-                return OntologyManager._classes[name](self, basenode, **kwargs)
+                return ontology.getClass(name)(self, basenode, **kwargs)
 
             return inst
 
