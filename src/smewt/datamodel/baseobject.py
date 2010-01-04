@@ -92,6 +92,8 @@ class BaseObject(object):
             raise TypeError("Cannot instantiate a valid instance of %s because:\n%s" %
                             (self.__class__, self._node.invalidProperties(self.__class__)))
 
+        graph.addNode(self)
+
 
     def isinstance(self, cls):
         if cls is BaseObject._objectNodeClass:

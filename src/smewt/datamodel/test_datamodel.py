@@ -208,8 +208,11 @@ class TestObjectNode(unittest.TestCase):
         self.assert_(n1 in g)
         self.assertEqual(n1.is_friend_of, n2)
 
+    def createData(self, g):
+        g.Movie(title = 'Fear and Loathing in Las Vegas')
+        g.Movie(title = 'The Dark Knight')
 
-    def atestFindObjectsInGraph(self):
+    def testFindObjectsInGraph(self):
         self.registerMediaOntology()
 
         Movie = ontology.getClass('Movie')
@@ -218,7 +221,10 @@ class TestObjectNode(unittest.TestCase):
         Character = ontology.getClass('Character')
 
         g = MemoryObjectGraph()
-        g.findAll(type = Movie)
+        self.createData(g)
+
+        print g.findAll(type = Movie)
+        '''
         g.findAll(Episode, lambda x: x.season == 2)
         g.findAll(Episode, season = 2)
         g.findall(Movie, lambda m: m.release_year > 2000)
@@ -227,6 +233,7 @@ class TestObjectNode(unittest.TestCase):
         g.findAll(Character, roles_movie_title = 'Fear and loathing.*', regexp = True)
         print c.isCharacterOf.movie.title
         print c.is_character_of.movie.title
+        '''
 
     def testChainedAttributes(self):
         #a = findAll(Episode, series__title = 'Scrubs')
