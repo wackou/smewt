@@ -23,6 +23,16 @@ import logging
 
 log = logging.getLogger('smewt.datamodel.Ontology')
 
+
+def getNode(node):
+    if isinstance(node, ObjectNode):
+        return node
+    elif isinstance(node, BaseObject):
+        return node._node
+    else:
+        raise TypeError("Given object is not an ObjectNode or BaseObject instance")
+
+
 class BaseObject(object):
     """Derive from this class to define an ontology domain.
 
@@ -71,21 +81,17 @@ class BaseObject(object):
 
     def __init__(self, graph, basenode = None, **kwargs):
         if basenode is None:
+            # if no basenode is given, we need to create a new node
             self._node = graph._objectNodeImpl(graph, **kwargs)
         else:
-            if isinstance(basenode, BaseObject):
-                basenode = basenode._node
-
-            # python is dynamic, should we test for this? (actually it gives a better error
-            # message if it fails, is the cost of checking each time worth it?)
-            if not isinstance(basenode, ObjectNode):
-                raise TypeError("Given basenode should be an instance of either ObjectNode or BaseObject")
+            basenode = getNode(basenode)
 
             # if basenode is already in this graph, no need to make a copy of it
             if basenode._graph is graph:
                 self._node = basenode
             else:
-                self._node = graph._objectNodeImpl(graph, **basenode.todict())
+                # FIXME: this should use Graph.addNode to make sure it is correctly added (with its linkes nodes and all)
+                self._node = graph._objectNodeImpl(graph, **dict(basenode.items()))
             self._node.update(kwargs)
 
         if not self._node.isValidInstance(self.__class__):
@@ -140,26 +146,6 @@ class BaseObject(object):
 
 
 
-    '''
-    def oops__new__(cls, **kwargs):
-        print 'creating node'
-        result = ObjectNode(cls, **kwargs)
-        print 'node created'
-        # we also need to call the intended constructor for the object, the one defined
-        # in the class definition. It will not receive any other arguments than the fully
-        # constructed ObjectNode
-        cls.__init__(result)
-        print 'node initialized'
-
-        # BaseObject shouldn't need to be in the valid classes as it doesn't define
-        # anything, and removing it here allows to avoid import dependency problems
-        print 'RC', result._classes
-        try: result._classes.remove(BaseObject)
-        except ValueError: pass
-        print 'RC', result._classes
-
-        return result
-    '''
 
 # force-register BaseObject in the ontology classes (ie: do not use the ontology
 # validation stuff, because it needs the ObjectNode to be already registered)

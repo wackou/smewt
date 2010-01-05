@@ -51,7 +51,7 @@ class ObjectNode(object):
     instead of the usual isinstance(obj, class) function.
 
     Classes which have been registered in the global ontology can also be tested with their basename
-    given as a string (ie: node.isinstance('Movie'))
+    given as a string (ie: node.isinstance('Movie')) to avoid too many importing headaches.
     """
 
     def __init__(self, graph):

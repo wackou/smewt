@@ -19,7 +19,7 @@
 #
 
 from objectnode import ObjectNode
-from baseobject import BaseObject
+from baseobject import BaseObject, getNode
 import ontology
 import logging
 
@@ -41,13 +41,6 @@ def toresult(lst):
     elif  len(lst) == 1: return lst[0]
     else: return lst
 
-def getnode(node):
-    if isinstance(node, ObjectNode):
-        return node
-    elif isinstance(node, BaseObject):
-        return node._node
-    else:
-        raise TypeError("Given object is not an ObjectNode instance")
 
 class ObjectGraph(object):
     """An ObjectGraph is an directed graph of nodes in which each node is actually an object,
@@ -117,7 +110,7 @@ class ObjectGraph(object):
 
     def __contains__(self, node):
         """Return whether this graph contains the given node (identity)."""
-        return node in self._nodes
+        raise NotImplementedError
 
     # TODO: implement iterator / generator interface (ie: for node in graph: do...)
 
@@ -125,24 +118,37 @@ class ObjectGraph(object):
         """Add a single node and its links recursively into the graph.
 
         If some dependencies of the node are already in the graph, we should not add
-        new instances of them but use the ones already there (ie: merge links). This strategy
-        should be configurable."""
+        new instances of them but use the ones already there (ie: merge links).
+
+        This strategy should be configurable, and offer at least the following choices:
+          - recurse = OnIdentity   : do not add the dependency only if the exact same node is already there
+          - recurse = OnValue      : do not add the dependency only if there is already a node with the exact same properties
+          - recurse = OnValidValue : do not add the dependency only if there is already a node with the same valid properties
+          - recurse = OnUnique     : do not add the dependency only if there is already a node with the same unique properties
+        """
         # FIXME: Do we want to add *this* node to the graph, or do we want to make a copy?
 
-        node = getnode(node)
+        node = getNode(node)
 
-        # FIXME: if node is already in there, merge the info we don't have yet
-        if node in self._nodes:
+        if node in self:
             return
+
+        # FIXME: we should be making a copy here
 
         # first add any node this node might depend on
         for name, value in node._props.items():
             if isinstance(value, ObjectNode):
                 self.addNode(value)
+                # FIXME: update dependencies in node we want to add
 
         # now add node
         node._graph = self
-        self._nodes.add(node)
+        self._addNode(node)
+
+        # find all valid classes for this node with the classes registered in this graph's ontology
+
+        # TODO: return the node we just added
+        return node
 
     def __iadd__(self, node):
         """Should allow node, but also list of nodes, ..."""

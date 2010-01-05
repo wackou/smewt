@@ -173,25 +173,55 @@ class TestObjectNode(unittest.TestCase):
 
     def testBasicGraphBehavior(self):
         g = MemoryObjectGraph()
+        g2 = MemoryObjectGraph()
 
         n1 = g.BaseObject(x = 1)
         n2 = g.BaseObject(x = 1)
         n3 = g.BaseObject(n1)
+        n4 = g2.BaseObject(n1)
 
         # equality of objects should be based on value
         self.assertEqual(n1, n2)
         self.assertEqual(n1, n3)
+        self.assertEqual(n1, n4)
 
         # equality of nodes should be based on identity
         self.assertEqual(n1._node, n3._node)
         self.assertNotEqual(n1._node, n2._node)
+        self.assertNotEqual(n1._node, n4._node) # not equal as they live in different graphs
 
         # graph belonging should be tested with identity (related to node)
-        g += n1
         self.assert_(n1 in g)
         self.assert_(n3 in g)
-        self.assert_(n2 not in g)
+        self.assert_(n4 not in g)
 
+    def testGraphTransfer(self):
+        g1 = MemoryObjectGraph()
+        g2 = MemoryObjectGraph()
+
+        n1 = g1.BaseObject(a = 23)
+        n2 = g1.BaseObject(friend = n1)
+
+        # by default we use recurse = OnIdentity
+        # we could also have g2.addNode(n2, recurse = OnValue) or recurse = OnUnique
+        r2 = g2.addNode(n2)
+        self.assert_(r2 in g2)
+        # verify it also brought its friend
+        self.assert_(r2.friend in g2)
+        self.assertEqual(r2.friend.a, 23)
+
+        # if we keep on adding by identity, we will end up with lots of friends with a=23
+        n3 = g1.BaseObject(name = 'other node', friend = n1)
+        r3 = g2.addNode(n3)
+        self.assertEquals(len(g2.findAll(a = 23)), 2)
+
+        # if we add and recurse on value, we shouldn't be adding the same node again and again
+        n4 = g1.BaseObject(name = '3rd of its kind', friend = n1)
+        r4 = g2.addNode(n4, recurse = ObjectGraph.OnValue)
+
+        self.assertEquals(len(g2.findAll(a = 23)), 2) # no new node added with a = 23
+        # reference should have been updated though, no trying to keep old friends
+        self.assert_(r4.friend._node == r2.friend._node or r4.friend._node == r3.friend._node)
 
     def atestReverseAttributeLookup(self):
         g = MemoryObjectGraph()

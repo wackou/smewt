@@ -20,20 +20,13 @@
 
 from objectnode import ObjectNode
 from memoryobjectnode import MemoryObjectNode
-from baseobject import BaseObject
+from baseobject import BaseObject, getNode
 import ontology
 from objectgraph import ObjectGraph
 import logging
 
 log = logging.getLogger('smewt.datamodel.MemoryObjectGraph')
 
-def getnode(node):
-    if isinstance(node, ObjectNode):
-        return node
-    elif isinstance(node, BaseObject):
-        return node._node
-    else:
-        raise TypeError("Given object is not an ObjectNode instance")
 
 class MemoryObjectGraph(ObjectGraph):
 
@@ -49,40 +42,13 @@ class MemoryObjectGraph(ObjectGraph):
 
     def __contains__(self, node):
         """Return whether this graph contains the given node (identity)."""
-        # if given arg is an instance of a BaseObject, take its underlying node
-        if isinstance(node, BaseObject):
-            node = node._node
-
-        return node in self._nodes
+        return getNode(node) in self._nodes
 
     # TODO: implement iterator / generator interface (ie: for node in graph: do...)
 
 
-
-    def addNode(self, node):
-        """Add a single node and its links recursively into the graph.
-
-        If some dependencies of the node are already in the graph, we should not add
-        new instances of them but use the ones already there (ie: merge links). This strategy
-        should be configurable."""
-        # FIXME: Do we want to add *this* node to the graph, or do we want to make a copy?
-
-        node = getnode(node)
-
-        # FIXME: if node is already in there, merge the info we don't have yet
-        if node in self._nodes:
-            return
-
-        # first add any node this node might depend on
-        for name, value in node._props.items():
-            if isinstance(value, ObjectNode):
-                self.addNode(value)
-
-        # now add node
-        node._graph = self
+    def _addNode(self, node):
         self._nodes.add(node)
-
-        # find all valid classes for this node with the classes registered in this graph's ontology
 
     def __iadd__(self, node):
         """Should allow node, but also list of nodes, ..."""
