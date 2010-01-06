@@ -42,7 +42,7 @@ def toresult(lst):
     else: return lst
 
 
-class Recurse:
+class Equal:
     # some constants
     OnIdentity = 1
     OnValue = 2
@@ -85,18 +85,16 @@ class ObjectGraph(object):
     are first-class citizens also, and can themselves have attributes, such as confidence, etc...
     """
 
-    # this should be set to the used ObjectNode class (ie: ObjectNode or PersistentObjectNode)
+    # this should be set to the used ObjectNode class (ie: MemoryObjectNode or PersistentObjectNode)
+    # in the corresponding derived ObjectGraph class
     _objectNodeClass = type(None)
 
     def __init__(self):
-        self._nodes = set()
-        OntologyManager.registerGraph(self)
+        ontology.registerGraph(self)
 
     def clear(self):
         """Delete all objects in this graph."""
-        for n in self._nodes:
-            n._graph = None
-        self._nodes.clear()
+        raise NotImplementedError
 
     def revalidateObjects(self):
         for node in self._nodes:
@@ -123,14 +121,21 @@ class ObjectGraph(object):
         by the ObjectNode)"""
         raise NotImplementedError
 
+
     def __contains__(self, node):
         """Return whether this graph contains the given node (identity)."""
         raise NotImplementedError
 
-    # TODO: implement iterator / generator interface (ie: for node in graph: do...)
+
+    def nodes(self):
+        """Return an iterator that goes over all the nodes in the graph."""
+        raise NotImplementedError
+
 
     def createNode(self, **kwargs):
-        return self.__class__._objectNodeClass(self, **kwargs)
+        result = self.__class__._objectNodeClass(self, **kwargs)
+        self._addNode(result)
+        return result
 
 
     def wrapNode(self, node, nodeClass = None):
@@ -148,7 +153,7 @@ class ObjectGraph(object):
                 setattr(node, name, self.addNode(value, recurse))
 
 
-    def addNode(self, node, recurse = Recurse.OnIdentity):
+    def addNode(self, node, recurse = Equal.OnIdentity):
         """Add a single node and its links recursively into the graph.
 
         If some dependencies of the node are already in the graph, we should not add
@@ -164,12 +169,12 @@ class ObjectGraph(object):
         node, nodeClass = unwrapNode(node)
 
         # first make sure the node's not already in the graph, using the requested equality comparison
-        if recurse == Recurse.OnIdentity:
+        if recurse == Equal.OnIdentity:
             if node in self:
                 print 'already in graph (id)...'
                 return self.wrapNode(node, nodeClass)
 
-        elif recurse == Recurse.OnValue:
+        elif recurse == Equal.OnValue:
             for n in self._nodes:
                 if node.sameProperties(n):
                     print 'already in graph (value)...'
@@ -214,9 +219,7 @@ class ObjectGraph(object):
     def reverseLookup(self, node, propname):
         """Return all the nodes in the graph which have a property which name is propname
         and which value is the given node."""
-        # FIXME: this is completely not optimized...
-        # FIXME: make sure this is == we want here, and not some other equality type
-        return toresult([ n for n in self._nodes if n.get(propname) == node ])
+        raise NotImplementedError
 
 
     def findAll(self, type = None, cond = lambda x: True, **kwargs):
@@ -249,7 +252,7 @@ class ObjectGraph(object):
             validNode = cond
             cond = lambda x: x.isinstance(type) and validNode(x)
 
-        for node in self._nodes:
+        for node in self.nodes():
             if not cond(node):
                 continue
 

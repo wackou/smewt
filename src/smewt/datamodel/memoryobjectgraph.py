@@ -32,6 +32,7 @@ class MemoryObjectGraph(ObjectGraph):
     _objectNodeClass = MemoryObjectNode
 
     def __init__(self):
+        ObjectGraph.__init__(self)
         self._nodes = set()
 
     def clear(self):
@@ -44,20 +45,14 @@ class MemoryObjectGraph(ObjectGraph):
         """Return whether this graph contains the given node (identity)."""
         return getNode(node) in self._nodes
 
-    # TODO: implement iterator / generator interface (ie: for node in graph: do...)
 
+    def nodes(self):
+        for node in self._nodes:
+            yield node
 
     def _addNode(self, node):
         self._nodes.add(node)
 
-
-    def removeNode(self, node):
-        """Remove a given node.
-
-        strategies for what to do with linked nodes should be configurable, ie:
-        remove incoming/outgoing linked nodes as well, only remove link but do not
-        touch linked nodes, etc..."""
-        raise NotImplementedError
 
     ### Search methods
 
@@ -68,49 +63,3 @@ class MemoryObjectGraph(ObjectGraph):
         # FIXME: make sure this is == we want here, and not some other equality type
         return toresult([ n for n in self._nodes if n.get(propname) == node ])
 
-
-    def findAll(self, type = None, cond = lambda x: True, **kwargs):
-        """examples:
-          g.findAll(type = Movie)
-          g.findAll(Episode, lambda x: x.season = 2)
-          g.findall(Movie, lambda m: m.release_year > 2000)
-          g.findAll(Person, role_movie_title = 'The Dark Knight')
-          g.findAll(Character, isCharacterOf_movie_title = 'Fear and loathing.*', regexp = True)
-        """
-        # TODO: not really optimized, we could index on class type, etc...
-        result = []
-
-        if type:
-            validNode = cond
-            cond = lambda x: x.isinstance(type) and validNode(x)
-
-        for node in self._nodes:
-            if not cond(node):
-                continue
-
-            valid = True
-            for prop, value in kwargs.items():
-                if node.get(prop) != value:
-                    valid = False
-                    break
-
-            if not valid:
-                continue
-
-            result.append(node)
-
-        return result
-
-
-    def findOne(self, type = None, cond = lambda x: True, **kwargs):
-        """Returns 1 result. see findAll for description."""
-        pass
-
-    def findOrCreate(self, type, **kwargs):
-        '''This method returns the first object in this graph which has the specified type and
-        properties which match the given keyword args dictionary.
-        If no match is found, it creates a new object with the keyword args, inserts it in the
-        graph, and returns it.
-
-        example: g.findOrCreate(Series, title = 'Arrested Development')'''
-        raise NotImplementedError

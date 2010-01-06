@@ -76,6 +76,7 @@ class BaseObject(object):
         if basenode is None:
             # if no basenode is given, we need to create a new node
             self._node = graph.createNode(**kwargs)
+
         else:
             basenode = getNode(basenode)
 
@@ -92,7 +93,6 @@ class BaseObject(object):
             raise TypeError("Cannot instantiate a valid instance of %s because:\n%s" %
                             (self.__class__.__name__, self._node.invalidProperties(self.__class__)))
 
-        graph._addNode(self._node)
 
 
     def __getattr__(self, name):
@@ -131,10 +131,27 @@ class BaseObject(object):
                 return False
         return True
 
+
     def uniqueKey(self):
         """Return a tuple containing an unique identifier (inside its class) for this instance.
         If some unique fields are not specified, None will be put instead."""
         return tuple(self.get(k) for k in self._class.unique)
+
+
+    def orderedProperties(self):
+        """Returns the list of properties ordered using the defined order in the subclass.
+
+        NB: this should be replaced by using an OrderedDict."""
+        result = []
+        propertyNames = list(self._node.keys())
+
+        for p in self.__class__.order:
+            if p in propertyNames:
+                result.append(p)
+                propertyNames.remove(p)
+
+        return result + propertyNames
+
 
 
 

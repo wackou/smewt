@@ -22,37 +22,9 @@ from smewt.base.textutils import toUtf8
 from objectnode import ObjectNode
 import logging
 
-log = logging.getLogger('smewt.datamodel.ObjectNode')
+log = logging.getLogger('smewt.datamodel.MemoryObjectNode')
 
 class MemoryObjectNode(ObjectNode):
-    """An ObjectNode is a nice and useful mix between an OOP object and a node in a graph.
-
-    An ObjectNode behaves in the following way:
-     - it can have any number of named properties, of any type (literal type or another ObjectNode)
-     - it implements dotted attribute access.
-     - it still has a class which "declares" a schema of standard properties and their types, like a normal object in OOP
-     - it can be validated against that schema (ie: do the actual properties have the same type as those declared in the class definition)
-     - setting attributes can be validated for type in real-time
-     - it has primary properties, which are used as primary key for identifying ObjectNodes or for indexing purposes
-
-    ObjectNodes should implement different types of equalities:
-      - identity: both refs point to the same node in the ObjectGraph
-      - all their properties are equal (same type and values)
-      - all their standard properties are equal
-      - only their primary properties are equal
-
-    To be precise, ObjectNodes use a type system based on relaxed type classes
-    (http://en.wikipedia.org/wiki/Type_classes)
-    where there is a standard object hierarchy, but an ObjectNode can be of various distinct
-    classes at the same time.
-
-    As this doesn't fit exactly with python's way of doing things, class value should be tested
-    using the ObjectNode.isinstance(class) and ObjectNode.issubclass(class, subclass) methods,
-    instead of the usual isinstance(obj, class) function.
-
-    Classes which have been registered in the global ontology can also be tested with their basename
-    given as a string (ie: node.isinstance('Movie'))
-    """
 
     def __init__(self, graph, **kwargs):
         # NB: this should go before super().__init__() because the latter checks for all
@@ -60,25 +32,18 @@ class MemoryObjectNode(ObjectNode):
         self._props = kwargs
         super(MemoryObjectNode, self).__init__(graph)
 
-    def isinstance(self, cls):
-        return any(issubclass(c, cls) for c in self._classes)
-
     def __eq__(self, other):
-        if not isinstance(other, ObjectNode): return False
-        #return self._props == other._props
         return self is other
-
-    def __ne__(self, other):
-        return not (self == other)
 
     def __hash__(self):
         # TODO: verify me
-        #return hash((self._class, self.uniqueKey()))
         return id(self)
 
     ### Acessing properties methods
 
     def __getattr__(self, name):
+        # FIXME: THIS METHOD IS OUTDATED
+
         # TODO: this should go into the PersistentObjectNode
         #if name == '_node':
         #    return self.__dict__[name]
@@ -98,19 +63,6 @@ class MemoryObjectNode(ObjectNode):
 
             raise AttributeError, name
 
-    def get(self, name):
-        """Returns the given property or None if not found."""
-        try:
-            # First look for literal value properties
-            return getattr(self, name)
-        except AttributeError:
-            return None
-            # TODO: PersistentObjectNode impl:
-            # if no literal was found, try to find another ObjectNode
-            #result = list(self._node.relationships(name))
-            #if not result: return None # raise AttributeError
-            #if len(result) == 1: return wrapNode(result[0].end)
-            #return result
 
     def __setattr__(self, name, value):
         if name in [ '_graph', '_classes', '_props' ]:
@@ -130,76 +82,22 @@ class MemoryObjectNode(ObjectNode):
     ### Container methods
 
     def keys(self):
-        # TODO: should return a generator
         return self._props.keys()
 
     def values(self):
-        # TODO: should return a generator
         return self._props.values()
 
     def items(self):
-        # TODO: should return a generator
         return self._props.items()
-
-    ### Validation against a class schema
-
-    def isValid(self):
-        """Return whether all the ObjectNode properties which exist in the class schema have the same
-        type as what is defined."""
-        try:
-            for prop in self._class.schema.keys():
-                if prop in self._props and type(self._props[prop]) != self._class.schema[prop]:
-                    return False
-        except KeyError:
-            return False
-
-        return True
 
 
     ### manipulation methods
 
     def update(self, other):
-        """Update this ObjectNode properties with the ones contained in the given dict."""
         self._props.update(other)
 
     def updateNew(self, other):
-        """Update this ObjectNode properties with the only other ones it doesn't have yet."""
         for name, value in other._props.items():
             if name not in self._props:
                 self._props[name] = value
-
-    def orderedProperties(self):
-        """Returns the list of properties ordered using the defined order in the subclass.
-
-        NB: this should be replaced by using an OrderedDict."""
-        result = []
-        propertyNames = self._props.keys()
-
-        for p in self._class.order:
-            if p in propertyNames:
-                result.append(p)
-                propertyNames.remove(p)
-
-        return result + propertyNames
-
-    '''
-    def toShortString(self):
-        return '%s(%s)' % (self.__class__.__name__,
-                           ', '.join([ '%s=%s' % (k, v) for k, v in self._props.items() ]))
-    '''
-
-    def toFullString(self, tabs = 0):
-        tabstr = 4 * tabs * ' '
-        tabstr1 = 4 * (tabs+1) * ' '
-        result = ('valid ' if self.isValid() else 'invalid ') + self._class.__name__ + ' : {\n'
-
-        schema = self._class.schema
-        for propname in self.orderedProperties():
-            if propname in schema and isinstance(self._props[propname], ObjectNode):
-                s = self._props[propname].toString(tabs = tabs+1)
-            else:
-                s = toUtf8(self._props[propname])
-            result += tabstr1 + '%-20s : %s\n' % (propname, s)
-
-        return result + tabstr + '}'
 

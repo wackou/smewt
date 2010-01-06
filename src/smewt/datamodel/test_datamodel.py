@@ -19,7 +19,7 @@
 #
 
 from objectnode import ObjectNode
-from objectgraph import ObjectGraph, Recurse
+from objectgraph import ObjectGraph, Equal
 from memoryobjectgraph import MemoryObjectGraph
 from baseobject import BaseObject
 import ontology
@@ -219,7 +219,7 @@ class TestObjectNode(unittest.TestCase):
 
         # if we add and recurse on value, we shouldn't be adding the same node again and again
         n4 = g1.BaseObject(name = '3rd of its kind', friend = n1)
-        r4 = g2.addNode(n4, recurse = Recurse.OnValue)
+        r4 = g2.addNode(n4, recurse = Equal.OnValue)
 
         self.assertEquals(len(g2.findAll(a = 23)), 2) # no new node added with a = 23
         # reference should have been updated though, no trying to keep old friends

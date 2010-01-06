@@ -69,6 +69,7 @@ class ObjectNode(object):
 
         return True
 
+
     def invalidProperties(self, cls):
         invalid = []
         for prop in cls.valid:
@@ -82,10 +83,12 @@ class ObjectNode(object):
 
         return '\n'.join(invalid)
 
+
     def updateValidClasses(self):
         self._classes = [ cls for cls in ontology._classes.values() if self.isValidInstance(cls) ]
 
         log.debug('valid classes for %s:\n  %s' % (self.toString(), self._classes))
+
 
     def isinstance(self, cls):
         # this should deal with inheritance correctly, as if this node is a correct instance
@@ -103,12 +106,12 @@ class ObjectNode(object):
 
         return cls in self._classes
 
+
     def __eq__(self, other):
         # This should implement identity of nodes, not properties equality (this should be done
         # in the BaseObject instance)
-        # TODO: we should also allow comparison with instances of BaseObject directly
         raise NotImplementedError
-        # TODO: maybe like that? return hash(self) == hash(other)
+
 
     def sameProperties(self, other):
         # NB: sameValidProperties and sameUniqueProperties should be defined in BaseObject
@@ -127,22 +130,11 @@ class ObjectNode(object):
         return not (self == other)
 
     def __hash__(self):
-        # TODO: verify me
-        #return hash((self._class, self.uniqueKey()))
-        #return id(self)
-        # TODO: look at comment in __eq__ method.
+        # TODO: why do we need this again?
         raise NotImplementedError
 
-    def __str__(self):
-        return self.toString().encode('utf-8')
-
-    def __unicode__(self):
-        return self.toString()
 
     ### Acessing properties methods
-
-    def __getattr__(self, name):
-        raise NotImplementedError
 
     def get(self, name):
         """Returns the given property or None if not found."""
@@ -151,24 +143,28 @@ class ObjectNode(object):
         except AttributeError:
             return None
 
+    def __getattr__(self, name):
+        raise NotImplementedError
+
     def __setattr__(self, name, value):
         if name in [ '_graph', '_classes' ]:
             object.__setattr__(self, name, value)
         else:
             raise NotImplementedError
 
+
     ### Container methods
 
     def keys(self):
-        # TODO: should return a generator
+        # TODO: should return an iterator
         raise NotImplementedError
 
     def values(self):
-        # TODO: should return a generator
+        # TODO: should return an iterator
         raise NotImplementedError
 
     def items(self):
-        # TODO: should return a generator
+        # TODO: should return an iterator
         raise NotImplementedError
 
     def __iter__(self):
@@ -176,7 +172,7 @@ class ObjectNode(object):
             yield prop
 
 
-    ### manipulation methods
+    ### properties manipulation methods
 
     def update(self, props):
         """Update this ObjectNode properties with the ones contained in the given dict.
@@ -187,6 +183,16 @@ class ObjectNode(object):
     def updateNew(self, other):
         """Update this ObjectNode properties with the only other ones it doesn't have yet."""
         raise NotImplementedError
+
+
+    ### String methods
+
+    def __str__(self):
+        return self.toString().encode('utf-8')
+
+    def __unicode__(self):
+        return self.toString()
+
 
     def toString(self, cls = None):
         if cls is None:
