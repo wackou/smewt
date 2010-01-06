@@ -19,6 +19,7 @@
 #
 
 from objectnode import ObjectNode
+from objectgraph import ObjectGraph, Recurse
 from memoryobjectgraph import MemoryObjectGraph
 from baseobject import BaseObject
 import ontology
@@ -176,6 +177,7 @@ class TestObjectNode(unittest.TestCase):
         g2 = MemoryObjectGraph()
 
         n1 = g.BaseObject(x = 1)
+        self.assert_(n1._node in g)
         n2 = g.BaseObject(x = 1)
         n3 = g.BaseObject(n1)
         n4 = g2.BaseObject(n1)
@@ -217,13 +219,15 @@ class TestObjectNode(unittest.TestCase):
 
         # if we add and recurse on value, we shouldn't be adding the same node again and again
         n4 = g1.BaseObject(name = '3rd of its kind', friend = n1)
-        r4 = g2.addNode(n4, recurse = ObjectGraph.OnValue)
+        r4 = g2.addNode(n4, recurse = Recurse.OnValue)
 
         self.assertEquals(len(g2.findAll(a = 23)), 2) # no new node added with a = 23
         # reference should have been updated though, no trying to keep old friends
         self.assert_(r4.friend._node == r2.friend._node or r4.friend._node == r3.friend._node)
 
+
     def atestReverseAttributeLookup(self):
+        """not valid test anymore, needs updating"""
         g = MemoryObjectGraph()
 
         n1 = g.BaseObject(x = 1)
@@ -238,9 +242,11 @@ class TestObjectNode(unittest.TestCase):
         self.assert_(n1 in g)
         self.assertEqual(n1.is_friend_of, n2)
 
+
     def createData(self, g):
         g.Movie(title = 'Fear and Loathing in Las Vegas')
         g.Movie(title = 'The Dark Knight')
+
 
     def testFindObjectsInGraph(self):
         self.registerMediaOntology()
@@ -265,9 +271,6 @@ class TestObjectNode(unittest.TestCase):
         print c.is_character_of.movie.title
         '''
 
-    def testChainedAttributes(self):
-        #a = findAll(Episode, series__title = 'Scrubs')
-        pass
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestObjectNode)

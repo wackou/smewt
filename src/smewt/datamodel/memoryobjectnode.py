@@ -76,9 +76,6 @@ class MemoryObjectNode(ObjectNode):
         #return hash((self._class, self.uniqueKey()))
         return id(self)
 
-    def __str__(self):
-        return self.toShortString()
-
     ### Acessing properties methods
 
     def __getattr__(self, name):
@@ -185,9 +182,11 @@ class MemoryObjectNode(ObjectNode):
 
         return result + propertyNames
 
+    '''
     def toShortString(self):
         return '%s(%s)' % (self.__class__.__name__,
                            ', '.join([ '%s=%s' % (k, v) for k, v in self._props.items() ]))
+    '''
 
     def toFullString(self, tabs = 0):
         tabstr = 4 * tabs * ' '

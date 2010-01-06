@@ -110,6 +110,19 @@ class ObjectNode(object):
         raise NotImplementedError
         # TODO: maybe like that? return hash(self) == hash(other)
 
+    def sameProperties(self, other):
+        # NB: sameValidProperties and sameUniqueProperties should be defined in BaseObject
+        # TODO: this can surely be optimized
+        try:
+            for name, value in sorted(other.items()):
+                if getattr(self, name) != value:
+                    return False
+
+            return True
+
+        except AttributeError:
+            return False
+
     def __ne__(self, other):
         return not (self == other)
 
@@ -175,8 +188,11 @@ class ObjectNode(object):
         """Update this ObjectNode properties with the only other ones it doesn't have yet."""
         raise NotImplementedError
 
-    def toString(self):
-        return u'ObjectNode(%s)' % (', '.join([ u'%s=%s' % (k, v) for k, v in self.items() ]))
+    def toString(self, cls = None):
+        if cls is None:
+            cls = self.__class__.__name__
+
+        return u'%s(%s)' % (cls, ', '.join([ u'%s=%s' % (k, v) for k, v in self.items() ]))
 
     '''
     def toFullString(self, tabs = 0):

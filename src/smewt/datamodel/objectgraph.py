@@ -42,8 +42,23 @@ def toresult(lst):
     else: return lst
 
 
+class Recurse:
+    # some constants
+    OnIdentity = 1
+    OnValue = 2
+    OnValidValue = 3
+    OnUniqueValue = 4
+
+
+def unwrapNode(node):
+    nodeClass = node.__class__ if isinstance(node, BaseObject) else None
+    node = getNode(node)
+
+    return node, nodeClass
+
+
 class ObjectGraph(object):
-    """An ObjectGraph is an directed graph of nodes in which each node is actually an object,
+    """An ObjectGraph is a directed graph of nodes in which each node is actually an object,
     with a class type and any number of properties/attributes, which can be either literal
     values or other objects in the graph.
 
@@ -114,7 +129,26 @@ class ObjectGraph(object):
 
     # TODO: implement iterator / generator interface (ie: for node in graph: do...)
 
-    def addNode(self, node):
+    def createNode(self, **kwargs):
+        return self.__class__._objectNodeClass(self, **kwargs)
+
+
+    def wrapNode(self, node, nodeClass = None):
+        if nodeClass is not None:
+            return nodeClass(self, basenode = node)
+
+        return node
+
+
+    def importNodeDependencies(self, node, recurse):
+        """Import all the other nodes this node depends on, and update this node's links."""
+        for name, value in node.items():
+            if isinstance(value, ObjectNode) or isinstance(value, BaseObject):
+                print 'also adding node', value
+                setattr(node, name, self.addNode(value, recurse))
+
+
+    def addNode(self, node, recurse = Recurse.OnIdentity):
         """Add a single node and its links recursively into the graph.
 
         If some dependencies of the node are already in the graph, we should not add
@@ -126,33 +160,45 @@ class ObjectGraph(object):
           - recurse = OnValidValue : do not add the dependency only if there is already a node with the same valid properties
           - recurse = OnUnique     : do not add the dependency only if there is already a node with the same unique properties
         """
-        # FIXME: Do we want to add *this* node to the graph, or do we want to make a copy?
 
-        node = getNode(node)
+        node, nodeClass = unwrapNode(node)
 
-        if node in self:
-            return
+        # first make sure the node's not already in the graph, using the requested equality comparison
+        if recurse == Recurse.OnIdentity:
+            if node in self:
+                print 'already in graph (id)...'
+                return self.wrapNode(node, nodeClass)
 
-        # FIXME: we should be making a copy here
+        elif recurse == Recurse.OnValue:
+            for n in self._nodes:
+                if node.sameProperties(n):
+                    print 'already in graph (value)...'
+                    return self.wrapNode(n, nodeClass)
+        else:
+            raise NotImplementedError
+
+        # if node isn't already in graph, we need to make a copy of it that lives in this graph
+        result = self.createNode(**dict(node.items()))
 
         # first add any node this node might depend on
-        for name, value in node._props.items():
-            if isinstance(value, ObjectNode):
-                self.addNode(value)
-                # FIXME: update dependencies in node we want to add
+        self.importNodeDependencies(result, recurse)
 
         # now add node
-        node._graph = self
-        self._addNode(node)
+        self._addNode(result)
 
-        # find all valid classes for this node with the classes registered in this graph's ontology
+        # NB: possible optimization: we know the node should be valid, no need to recreate an instance
+        #     from scratch and re-validate its properties
+        return self.wrapNode(result, nodeClass)
 
-        # TODO: return the node we just added
-        return node
 
     def __iadd__(self, node):
-        """Should allow node, but also list of nodes, ..."""
-        self.addNode(node)
+        """Should allow node, but also list of nodes, graph, ..."""
+        if isinstance(node, list):
+            for n in node:
+                self.addNode(n)
+        else:
+            self.addNode(node)
+
         return self
 
     def removeNode(self, node):

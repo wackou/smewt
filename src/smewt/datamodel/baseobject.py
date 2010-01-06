@@ -36,14 +36,11 @@ def getNode(node):
 class BaseObject(object):
     """Derive from this class to define an ontology domain.
 
-    Instantiating an object through derived classes should return an ObjectNode and
-    not a derived class instance.
-
     You should define the following class variables in derived classes:
 
     1- 'schema' which is a dict of property names to their respective types
         ex: schema = { 'epNumber': int,
-                       'title': str
+                       'title': unicode
                        }
 
     2- 'reverseLookup' which is a dict used to indicate the name to be used for the property name
@@ -65,10 +62,6 @@ class BaseObject(object):
     6- 'converters' (optional), which is a dictionary from property name to a pair of functions
                     that are able to serialize/deserialize this property to/from a unicode string.
 
-
-    NB: this class only has class methods, because as instantiated objects are ObjectNodes instances,
-    we could not even call member functions from this subclass.
-    (WRONG: methods of subclasses should be accessible throught the smart getattr mechanism)
     """
 
     # TODO: remove those variables which definition should be mandatory
@@ -82,7 +75,7 @@ class BaseObject(object):
     def __init__(self, graph, basenode = None, **kwargs):
         if basenode is None:
             # if no basenode is given, we need to create a new node
-            self._node = graph._objectNodeImpl(graph, **kwargs)
+            self._node = graph.createNode(**kwargs)
         else:
             basenode = getNode(basenode)
 
@@ -90,21 +83,17 @@ class BaseObject(object):
             if basenode._graph is graph:
                 self._node = basenode
             else:
-                # FIXME: this should use Graph.addNode to make sure it is correctly added (with its linkes nodes and all)
-                self._node = graph._objectNodeImpl(graph, **dict(basenode.items()))
+                # FIXME: this should use Graph.addNode to make sure it is correctly added (with its linked nodes and all)
+                self._node = graph.createNode(**dict(basenode.items()))
             self._node.update(kwargs)
 
+        # make sure that the new instance we're creating is actually a valid one
         if not self._node.isValidInstance(self.__class__):
             raise TypeError("Cannot instantiate a valid instance of %s because:\n%s" %
-                            (self.__class__, self._node.invalidProperties(self.__class__)))
+                            (self.__class__.__name__, self._node.invalidProperties(self.__class__)))
 
-        graph.addNode(self)
+        graph._addNode(self._node)
 
-
-    def isinstance(self, cls):
-        if cls is BaseObject._objectNodeClass:
-            return True
-        return isinstance(self, cls)
 
     def __getattr__(self, name):
         return getattr(self._node, name)
@@ -122,6 +111,9 @@ class BaseObject(object):
         if self._node == other._node: return True
         # FIXME: this could lead to cycles or very long chained __eq__ calling on properties
         return self.items() == other.items()
+
+    def __str__(self):
+        return self._node.toString(cls = self.__class__.__name__).encode('utf-8')
 
     @classmethod
     def className(cls):

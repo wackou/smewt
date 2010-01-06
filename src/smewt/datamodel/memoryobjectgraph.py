@@ -29,10 +29,10 @@ log = logging.getLogger('smewt.datamodel.MemoryObjectGraph')
 
 
 class MemoryObjectGraph(ObjectGraph):
+    _objectNodeClass = MemoryObjectNode
 
     def __init__(self):
         self._nodes = set()
-        self._objectNodeImpl = MemoryObjectNode
 
     def clear(self):
         """Delete all objects in this graph."""
@@ -50,10 +50,6 @@ class MemoryObjectGraph(ObjectGraph):
     def _addNode(self, node):
         self._nodes.add(node)
 
-    def __iadd__(self, node):
-        """Should allow node, but also list of nodes, ..."""
-        self.addNode(node)
-        return self
 
     def removeNode(self, node):
         """Remove a given node.
