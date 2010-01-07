@@ -105,7 +105,7 @@ class BaseObject(object):
             setattr(self._node, name, value)
 
     def __eq__(self, other):
-        # TODO: should allow comparing a BaseObject with an ObjectNode
+        # TODO: should allow comparing a BaseObject with an ObjectNode?
         if not isinstance(other, BaseObject): return False
 
         if self._node == other._node: return True

@@ -272,7 +272,8 @@ class ObjectGraph(object):
 
     def findOne(self, type = None, cond = lambda x: True, **kwargs):
         """Returns 1 result. see findAll for description."""
-        pass
+        # TODO: optimize me, we don't really need to find all of them
+        return self.findAll(type, cond, **kwargs)[0]
 
     def findOrCreate(self, type, **kwargs):
         '''This method returns the first object in this graph which has the specified type and

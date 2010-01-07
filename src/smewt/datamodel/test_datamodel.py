@@ -136,6 +136,8 @@ class TestObjectNode(unittest.TestCase):
                        'director': Person,
                        }
             reverseLookup = { 'director': 'filmography' }
+            valid = [ 'title', 'year' ]
+            unique = valid
 
         class Character(BaseObject):
             schema = { 'name': unicode }
@@ -244,8 +246,20 @@ class TestObjectNode(unittest.TestCase):
 
 
     def createData(self, g):
-        g.Movie(title = 'Fear and Loathing in Las Vegas')
-        g.Movie(title = 'The Dark Knight')
+        g.Movie(title = u'Fear and Loathing in Las Vegas', year = 1998)
+        g.Movie(title = u'The Dark Knight', year = 2008)
+
+        wire = g.Series(title = u'The Wire')
+
+        g.Episode(series = wire,
+                  season = 2,
+                  episodeNumber = 1,
+                  title = u'Ebb Tide')
+
+        g.Episode(series = wire,
+                  season = 2,
+                  episodeNumber = 2,
+                  title = u'Collateral Damage')
 
 
     def testFindObjectsInGraph(self):
@@ -259,11 +273,14 @@ class TestObjectNode(unittest.TestCase):
         g = MemoryObjectGraph()
         self.createData(g)
 
-        print g.findAll(type = Movie)
+        self.assertEqual(len(g.findAll(type = Movie)), 2)
+        self.assertEqual(len(g.findAll(Episode, lambda x: x.season == 2)), 2)
+        self.assertEqual(len(g.findAll(Episode, season = 2)), 2)
+        self.assertEqual(g.findOne(Episode, season = 2, episodeNumber = 1).title, 'Ebb Tide')
+        recentMovies = g.findAll(Movie, lambda m: m.year > 2000)
+        self.assertEqual(len(recentMovies), 1)
+        self.assertEqual(recentMovies[0].title, 'The Dark Knight')
         '''
-        g.findAll(Episode, lambda x: x.season == 2)
-        g.findAll(Episode, season = 2)
-        g.findall(Movie, lambda m: m.release_year > 2000)
         g.findAll(Person, role_movie_title = 'The Dark Knight') # role == Role.isPersonOf
         g.findAll(Character, isCharacterOf_movie_title = 'Fear and Loathing in Las Vegas', regexp = True)
         g.findAll(Character, roles_movie_title = 'Fear and loathing.*', regexp = True)
