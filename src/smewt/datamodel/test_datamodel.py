@@ -76,11 +76,10 @@ class TestObjectNode(unittest.TestCase):
         self.assertEqual(B.parentClass().className(), 'A')
 
         ontology.register(A, B, C)
-        #self.assertRaises(TypeError, ontology.register, D) # put this later on again
-        self.assertRaises(TypeError, ontology.register, E)
+        self.assertRaises(TypeError, ontology.register, E) # should inherit from BaseObject
 
         self.assert_(ontology.getClass('A') is A)
-        self.assertRaises(ValueError, ontology.getClass, 'D')
+        self.assertRaises(ValueError, ontology.getClass, 'D') # not registered
         self.assert_(ontology.getClass('B').parentClass().parentClass() is BaseObject)
 
         # test instance creation
@@ -280,6 +279,8 @@ class TestObjectNode(unittest.TestCase):
         recentMovies = g.findAll(Movie, lambda m: m.year > 2000)
         self.assertEqual(len(recentMovies), 1)
         self.assertEqual(recentMovies[0].title, 'The Dark Knight')
+
+        self.assertEqual(len(g.findAll(Episode, series_title = 'The Wire')), 2)
         '''
         g.findAll(Person, role_movie_title = 'The Dark Knight') # role == Role.isPersonOf
         g.findAll(Character, isCharacterOf_movie_title = 'Fear and Loathing in Las Vegas', regexp = True)

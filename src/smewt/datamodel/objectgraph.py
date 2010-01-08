@@ -56,6 +56,16 @@ def unwrapNode(node):
 
     return node, nodeClass
 
+def getChainedProperties(node, propList):
+    """Given a list of successive chained properties, returns the final value.
+    e.g.: get( Movie('2001'), [ 'director', 'firstName' ] ) = 'Stanley'
+
+    In case some property does not exist, it will raise an AttributeError."""
+    for prop in propList:
+        node = node.get(prop)
+
+    return node
+
 
 class ObjectGraph(object):
     """An ObjectGraph is a directed graph of nodes in which each node is actually an object,
@@ -169,6 +179,9 @@ class ObjectGraph(object):
         node, nodeClass = unwrapNode(node)
 
         # first make sure the node's not already in the graph, using the requested equality comparison
+        # TODO: if node is already there, we need to decide what to do with the additional information we have
+        #       in the added node dependencies: update missing properties, update all properties (even if already present),
+        #       update non-valid properties, ignore new data, etc...
         if recurse == Equal.OnIdentity:
             if node in self:
                 print 'already in graph (id)...'
@@ -258,7 +271,12 @@ class ObjectGraph(object):
 
             valid = True
             for prop, value in kwargs.items():
-                if node.get(prop) != value:
+                try:
+                    #if node.get(prop) != value:
+                    if getChainedProperties(node, prop.split('_')) != value:
+                        valid = False
+                        break
+                except AttributeError:
                     valid = False
                     break
 

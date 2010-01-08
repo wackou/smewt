@@ -147,9 +147,11 @@ ie: the following should be illegal:
 
 
 class A:
-  schema = [ ('b', B, 'a')
+  schema = { 'b': B }
+  reverseLookup = { 'b': 'a' }
 
-class A2
-  schema = [ ('b2', B, 'a')
+class A2:
+  schema = { 'b2': B }
+  reverseLookup = { 'b2': 'a' }
 
 because then we cannot know whether B.a is a A or a A2
