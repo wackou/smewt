@@ -37,25 +37,11 @@ findOne(Actor,
 
 
 
-define reverse attribute name definition (django yeah!)
-
-ie: person.is_person_of (role) -> person.role
-
 in neo4j:
  - nodes are persistent, hence always live in a graph (ie: they can't be free, unbound to a graph)
  - the ontology is defined inside the graph as well (for indexing by class)
 
-creating a PersistentObjectNode *REQUIRES* a PersistentGraph (context)
--> should we allow it to be implicit? (nodes are automatically created in the default graph (a singleton))
--> the function addNode is a no-op (not if the node is not a PersistentObjectNode, but a simple ObjectNode)
 
-
-when creating non-persistent ObjectNode, they do not need to be in a graph
-it also probably doesn't make sense to put them in a default graph, because we might want
-to create easily nodes that live in different graphs
-
-
-adding a memObjectNode to a Neo4jObjectGraph should be possible (and thus make a deepcopy of the object)
 
 in fact, we have "dynamic polymorphism" in the sense that our nodes in the graph can be attributed
 a class at runtime depending on the properties they have. If there is a match, the node is considered
@@ -78,10 +64,6 @@ labelled as a correct instance if there's a match
 
 
 
-----------------
-if there are multiple interfaces that match a given node, we need to find a way to have a
-correctly defined MRO for member methods propagation to the ObjectNode's __getattr__ method.
-
 ------------
 Scenario:
 - You have an undirected graph. It is the world
@@ -95,6 +77,7 @@ Scenario:
 - when calling attributes on an ObjectNode, the following is resolved:
   - first look at an ObjectNode's attributes
   - look into the properties first
+  # WARNING: This is outdated, Nodes always need to be used through a BaseObject interface to be able to access those methods
   - look into the valid classes this node has for a corresponding method
     -> the order here is important: if all possible classes are part of the same hierarchy,
        just take the most derived class and call its method: "all functions are virtual"
@@ -104,29 +87,6 @@ Scenario:
        (note no parentheses are used, the function is always called without any arguments)
 
 
-there should not be ambiguity when calling member methods whose type can be deduced, ie:
-if Episode.series -> Series, Series.func and Gloub.func are 2 functions that resolved
-(series is a valid Series and a valid Gloub), then Episode.series.func should resolve to
-the correct function Series.func
-
-
-# This class allows to have correct MRO when chaining
-class ObjectNodeInstance:
-   def __init__(self):
-      self._class = BaseObject
-      self._node = ObjectNode
-
-  def __getattr__(self, name):
-      # TODO: do we want to have virtual functions?
-      result = self._node.__getattr__(name, currentClass = self._class)
-      # result is an ObjectNode
-      return ObjectNodeInstance(self._class.schema[name], result)
-
-we need to have member methods who accept a currentClass arg, which is the
-current class of the object.
-
-def BaseObject.__init__(self, copy = None):
-    if
 
 
 a query is a tree that needs to be mapped on top of the graph. the property names indicated the
@@ -137,14 +97,10 @@ direction they are traversed)
 
 ----------------------------------------------------
 
-Ontology depends on ObjectNode for BaseObject.__new__
-ObjectNode._classes should not contain BaseObject 
-
 even though all declared properties in a schema need to have an associated reverse lookup name, we still need to have the is_*_of relation searched, because we might use and set properties which are not part of the schema, in which case they still need to be accessible in both directions.
 
 when registering the classes, we need to make sure that between all the reverse lookups, there are no ambiguities.
 ie: the following should be illegal:
-
 
 class A:
   schema = { 'b': B }

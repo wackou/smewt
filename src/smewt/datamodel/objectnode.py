@@ -30,16 +30,20 @@ class ObjectNode(object):
     An ObjectNode behaves in the following way:
      - it can have any number of named properties, of any type (literal type or another ObjectNode)
      - it implements dotted attribute access.
-     - it still has a class which "declares" a schema of standard properties and their types, like a normal object in OOP
-     - it can be validated against that schema (ie: do the actual properties have the same type as those declared in the class definition)
-     - setting attributes can be validated for type in real-time
-     - it has primary properties, which are used as primary key for identifying ObjectNodes or for indexing purposes
+     - DEPRECATED(*): it still has a class which "declares" a schema of standard properties and their types, like a normal object in OOP
+     - DEPRECATED(*): it can be validated against that schema (ie: do the actual properties have the same type as those declared in the class definition)
+     - DEPRECATED(*): setting attributes can be validated for type in real-time
+     - DEPRECATED(*): it has primary properties, which are used as primary key for identifying ObjectNodes or for indexing purposes
 
     ObjectNodes should implement different types of equalities:
       - identity: both refs point to the same node in the ObjectGraph
       - all their properties are equal (same type and values)
-      - all their standard properties are equal
-      - only their primary properties are equal
+      - DEPRECATED(*) all their standard properties are equal
+      - DEPRECATED(*) only their primary properties are equal
+
+    (*) this should now be done in BaseObject instances instead of directly on the ObjectNode.
+
+    ---------------------------------------------------------------------------------------------------------
 
     To be precise, ObjectNodes use a type system based on relaxed type classes
     (http://en.wikipedia.org/wiki/Type_classes)
@@ -52,6 +56,18 @@ class ObjectNode(object):
 
     Classes which have been registered in the global ontology can also be tested with their basename
     given as a string (ie: node.isinstance('Movie')) to avoid too many importing headaches.
+
+    ---------------------------------------------------------------------------------------------------------
+
+    Accessing properties should return a "smart" iterator when accessing properties which are instances of
+    BaseObject, which also allows to call dotted attribute access on it, so that this becomes possible:
+
+    for f in Series.episodes.file.filename:
+        do_sth()
+
+    where Series.episodes returns multiple results, but Episode.file might also return multiple results.
+    File.filename returns a literal property, which means that we can now convert our iterator over BaseObject
+    into a list (or single element) of literal
     """
 
     def __init__(self, graph):
