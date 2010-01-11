@@ -80,8 +80,15 @@ class ObjectNode(object):
                 return False
 
             if True: # graphType == 'STATIC'
-                if type(getattr(self, prop)) != cls.schema[prop]:
-                    return False
+                value = getattr(self, prop)
+
+                if isinstance(value, ObjectNode):
+                    # TODO: check isValidInstance
+                    if not value.isValidInstance(cls.schema[prop]):
+                        return False
+                else:
+                    if type(value) != cls.schema[prop]:
+                        return False
 
         return True
 
@@ -129,11 +136,13 @@ class ObjectNode(object):
         raise NotImplementedError
 
 
-    def sameProperties(self, other):
+    def sameProperties(self, other, exclude = []):
         # NB: sameValidProperties and sameUniqueProperties should be defined in BaseObject
         # TODO: this can surely be optimized
         try:
             for name, value in sorted(other.items()):
+                if name in exclude:
+                    continue
                 if getattr(self, name) != value:
                     return False
 
@@ -166,7 +175,37 @@ class ObjectNode(object):
         if name in [ '_graph', '_classes' ]:
             object.__setattr__(self, name, value)
         else:
-            raise NotImplementedError
+            self.set(name, value)
+
+    def set(self, name, value, reverseName = None):
+        """Sets the property name to the given value.
+
+        If value is an ObjectNode, we're actually setting a link between them two, so we use reverseName as the
+        name of the link when followed in the other direction.
+        If reverseName is not given, a default of 'isNameOf' (using the given name) will be used."""
+
+        if isinstance(value, ObjectNode):
+            self.setLink(name, value, reverseName)
+        elif type(value) in ontology.validLiteralTypes or value is None:
+            self.setLiteral(name, value)
+        else:
+            raise TypeError("Trying to set property '%s' of %s to '%s', but it is not of a supported type (literal or object node): %s" % (name, self, value, type(value).__name__))
+
+
+    def setLiteral(self, name, value):
+        """Need to be implemented by implementation subclass.
+        Can assume that literal is always one of the valid literal types."""
+        raise NotImplementedError
+
+    def setLink(self, name, value, reverseName = None):
+        """Can assume that value is always an object node."""
+        if self._graph != value._graph:
+            raise ValueError('Both nodes do not live in the same graph, cannot link them together')
+
+        if reverseName is None:
+            reverseName = 'is%sOf' % (name[0].upper() + name[1:])
+
+        self._graph.setLink(self, name, value, reverseName)
 
 
     ### Container methods
@@ -192,9 +231,9 @@ class ObjectNode(object):
 
     def update(self, props):
         """Update this ObjectNode properties with the ones contained in the given dict.
-        Should also allow instances of other ObjectNode, or even BaseObject. (or should we
-        have an API like n.update(dict(other.items())? )"""
-        raise NotImplementedError
+        Should also allow instances of other ObjectNode, or even BaseObject."""
+        for name, value in props.items():
+            setattr(self, name, value)
 
     def updateNew(self, other):
         """Update this ObjectNode properties with the only other ones it doesn't have yet."""
@@ -209,12 +248,24 @@ class ObjectNode(object):
     def __unicode__(self):
         return self.toString()
 
+    def __repr__(self):
+        return str(self)
+
 
     def toString(self, cls = None):
         if cls is None:
-            cls = self.__class__.__name__
+            # most likely called from a node, but anyway we can't infer anything on the links so just display
+            # them as anonymous ObjectNodes
+            cls = self.__class__
+            props = [ (prop, cls.__name__) if isinstance(value, ObjectNode) else (prop, str(value)) for prop, value in self.items() ]
 
-        return u'%s(%s)' % (cls, ', '.join([ u'%s=%s' % (k, v) for k, v in self.items() ]))
+        else:
+            props = [ (prop, value.toString(cls = cls.schema[prop]))                        # call toString with the inferred class of a node
+                      if isinstance(value, ObjectNode) and prop in cls.schema               # if we have a node in our schema
+                      else (prop, str(value))                                               # or just convert to string
+                      for prop, value in self.items() if prop not in cls.schema._implicit ] # for all non-implicit properties
+
+        return u'%s(%s)' % (cls.__name__, ', '.join([ u'%s=%s' % (k, v) for k, v in props ]))
 
     '''
     def toFullString(self, tabs = 0):

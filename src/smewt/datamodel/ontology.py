@@ -28,17 +28,26 @@ _classes = {}
 _graphs = weakref.WeakValueDictionary()
 
 
+# Note: voluntarily omit to put str as allowed types, unicode is much better
+#       and it will save us a *lot* of trouble
+# Note: list should only be list of literal values
+# TODO: add datetime
+validLiteralTypes = [ unicode, int, long, float, list ]
+
+
+class Schema(dict):
+    def __init__(self, *args, **kwargs):
+        dict.__init__(self, *args, **kwargs)
+        self._implicit = set()
+
+
 def validateClassDefinition(cls):
     BaseObject = _classes['BaseObject']
 
+    validTypes = validLiteralTypes + [ BaseObject ]
+
     if not issubclass(cls, BaseObject):
         raise TypeError, "'%s' needs to derive from ontology.BaseObject" % cls.__name__
-
-    # Note: voluntarily omit to put str as allowed types, unicode is much better
-    #       and it will save us a *lot* of trouble
-    # Note: list should only be list of literal values
-    # TODO: add datetime
-    validTypes = [ unicode, int, long, float, list, BaseObject ]
 
     def checkPresent(cls, var, ctype):
         try:
@@ -55,7 +64,7 @@ def validateClassDefinition(cls):
                 raise TypeError("In '%s': when defining '%s', you used the '%s' variable, which is not defined in the schema" % (cls.__name__, var, prop))
 
     # validate the schema is correctly defined
-    checkPresent(cls, 'schema', dict)
+    checkPresent(cls, 'schema', Schema)
     for name, ctype in cls.schema.items():
         if not isinstance(name, str) or not any(issubclass(ctype, dtype) for dtype in validTypes):
             raise TypeError("In '%s': the schema should be a dict of 'str' to either one of those accepted types (or a subclass of them): %s'" % (cls.__name__, ', '.join("'%s'" % c.__name__ for c in validTypes)))
@@ -66,7 +75,7 @@ def validateClassDefinition(cls):
     objectProps = [ name for name, ctype in cls.schema.items() if issubclass(ctype, BaseObject) ]
     diff = set(cls.reverseLookup.keys()).symmetric_difference(set(objectProps))
     if diff:
-        raise "In '%s': you should define exactly one reverseLookup name for each property in your schema that is a subclass of BaseObject, different ones: %s" % (cls.__name__, ', '.join("'%s'" % c for c in diff))
+        raise TypeError("In '%s': you should define exactly one reverseLookup name for each property in your schema that is a subclass of BaseObject, different ones: %s" % (cls.__name__, ', '.join("'%s'" % c for c in diff)))
 
     checkSchemaSubset(cls, 'valid')
     checkSchemaSubset(cls, 'unique')
@@ -79,13 +88,36 @@ def register(*args):
     for cls in args:
         if cls.__name__ in _classes:
             if cls == _classes[cls.__name__]:
-                print 'INFO: class %s already registered' % cls.__name__
-                return
+                #print 'INFO: class %s already registered' % cls.__name__
+                continue
 
-            print 'WARNING: overriding previous definition of class %s' % cls.__name__
+            #print 'WARNING: Found previous definition of class %s. Ignoring new definition...' % cls.__name__
+            continue
 
         validateClassDefinition(cls)
+
+        # add an implicitSchema class variable that we'll fill in later
+        # this needs to be set to a new dict here because otherwise BaseObject._implicitSchema would get
+        # shared between all the subclasses of BaseObject
+        #cls._implicitSchema = {}
+
+        # if we didn't redefine the reverseLookup var in our subclass, we need to create a new instance anyway here
+        # FIXME: this probably doesn't work correctly with inheritance
+        if not cls.reverseLookup:
+            cls.reverseLookup = {}
+
         _classes[cls.__name__] = cls
+
+        # also update the implicit schema for other classes where needed
+        #for prop, rprop in cls.reverseLookup.items():
+        #    cls.schema[prop]._implicitSchema[rprop] = cls
+
+        # directly update the schema for other classes where needed
+        # TODO: make sure we don't overwrite anything (should have been done in the validateClassDefinition, right?)
+        for prop, rprop in cls.reverseLookup.items():
+            cls.schema[prop].schema._implicit.add(rprop)
+            cls.schema[prop].schema[rprop] = cls
+            cls.schema[prop].reverseLookup[rprop] = prop
 
     # revalidate all ObjectNodes in all registered Graphs
     for g in _graphs.values():

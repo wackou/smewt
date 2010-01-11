@@ -20,6 +20,7 @@
 
 from smewt.base.textutils import toUtf8
 from objectnode import ObjectNode
+from baseobject import BaseObject #, getNode
 import logging
 
 log = logging.getLogger('smewt.datamodel.MemoryObjectNode')
@@ -49,8 +50,12 @@ class MemoryObjectNode(ObjectNode):
         #    return self.__dict__[name]
 
         try:
-            return self._props[name]
-        except:
+            result = self._props[name]
+            #if isinstance(result, BaseObject):
+            #    result = result._node
+
+            return result
+        except KeyError:
             # if attribute was not found, look whether it might be a reverse attribute
             if name.startswith('is_') and name.endswith('_of'):
                 if self._graph is None:
@@ -65,19 +70,15 @@ class MemoryObjectNode(ObjectNode):
 
 
     def __setattr__(self, name, value):
-        if name in [ '_graph', '_classes', '_props' ]:
+        if name == '_props':
             object.__setattr__(self, name, value)
         else:
-            #setting attribute should validate that the attribute stayed of the same type
-            # as what is defined in its schema
-            for c in self._classes:
-                if name in c.schema:
-                    if type(value) != c.schema[name]:
-                        raise TypeError, "The '%s' attribute is of type '%s' but you tried to assign it a '%s'" % (name, c.schema[name], type(value))
-                    else:
-                        break # exit earlier from loop, type is validated
+            ObjectNode.__setattr__(self, name, value)
 
-            self._props[name] = value
+
+    def setLiteral(self, name, value):
+        self._props[name] = value
+
 
     ### Container methods
 
@@ -92,9 +93,6 @@ class MemoryObjectNode(ObjectNode):
 
 
     ### manipulation methods
-
-    def update(self, other):
-        self._props.update(other)
 
     def updateNew(self, other):
         for name, value in other._props.items():

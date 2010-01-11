@@ -22,7 +22,7 @@ from objectnode import ObjectNode
 from memoryobjectnode import MemoryObjectNode
 from baseobject import BaseObject, getNode
 import ontology
-from objectgraph import ObjectGraph
+from objectgraph import ObjectGraph, tolist, toresult
 import logging
 
 log = logging.getLogger('smewt.datamodel.MemoryObjectGraph')
@@ -53,13 +53,34 @@ class MemoryObjectGraph(ObjectGraph):
     def _addNode(self, node):
         self._nodes.add(node)
 
+    def setLink(self, node, name, otherNode, otherName):
+        # FIXME: need to do the reverse as well
+        #node._props[name] = otherNode
+        # FIXME: when we don't do remove, some tests fail. This might hide a potential bug.
+        self.removeDirectedEdge(node, None, name)
+        self.addDirectedEdge(node, otherNode, name)
+
+        self.addDirectedEdge(otherNode, node, otherName)
+
+
+    def removeDirectedEdge(self, node, otherNode, name):
+        if otherNode is None:
+            node._props[name] = []
+        else:
+            node._props[name].remove(otherNode)
+
+    def addDirectedEdge(self, node, otherNode, name):
+        nodeList = tolist(node.get(name))
+        nodeList.append(otherNode)
+        node._props[name] = toresult(nodeList)
+
 
     ### Search methods
 
     def reverseLookup(self, node, propname):
         """Return all the nodes in the graph which have a property which name is propname
-        and which value is the given node."""
+        and which value is the given node.
+        This always returns a list of nodes."""
         # FIXME: this is completely not optimized...
-        # FIXME: make sure this is == we want here, and not some other equality type
-        return toresult([ n for n in self._nodes if n.get(propname) == node ])
+        return [ n for n in self._nodes if n.get(propname) == node ]
 

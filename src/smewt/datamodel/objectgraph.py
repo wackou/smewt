@@ -56,6 +56,12 @@ def unwrapNode(node):
 
     return node, nodeClass
 
+def wrapNode(node, nodeClass = None):
+    if nodeClass is not None:
+        return nodeClass(basenode = node)
+
+    return node
+
 def getChainedProperties(node, propList):
     """Given a list of successive chained properties, returns the final value.
     e.g.: get( Movie('2001'), [ 'director', 'firstName' ] ) = 'Stanley'
@@ -116,7 +122,7 @@ class ObjectGraph(object):
         # such an object in this graph
         if name[0].isupper() and name in ontology.classNames():
             def inst(basenode = None, **kwargs):
-                return ontology.getClass(name)(self, basenode, **kwargs)
+                return ontology.getClass(name)(basenode = basenode, graph = self, **kwargs)
 
             return inst
 
@@ -148,19 +154,59 @@ class ObjectGraph(object):
         return result
 
 
-    def wrapNode(self, node, nodeClass = None):
-        if nodeClass is not None:
-            return nodeClass(self, basenode = node)
-
-        return node
 
 
-    def importNodeDependencies(self, node, recurse):
-        """Import all the other nodes this node depends on, and update this node's links."""
+
+    def importNodeDependencies(self, node, recurse, cls):
+        """Import all the other nodes this node depends on, and update this node's links.
+        Import nodes only if they are part of the direct properties defined in the class schema"""
+        print 'importing deps of', node, cls
         for name, value in node.items():
-            if isinstance(value, ObjectNode) or isinstance(value, BaseObject):
-                print 'also adding node', value
-                setattr(node, name, self.addNode(value, recurse))
+            if isinstance(value, ObjectNode):
+                if cls is None:
+                    # TODO: allow to import untyped nodes
+                    raise TypeError("Cannot import a node without knowing its class.")
+                    #setattr(node, name, self.addNode(value, recurse, flaggedNodes)) # does not work with implicit is*of properties
+                else:
+                    if name in cls.schema:
+                        if name not in cls.schema._implicit:
+                            added = self.addNode(cls.schema[name](value), recurse)
+                            print '----------------------'
+                            print self._nodes
+                            print 'added', added
+                            print self
+                            print node._graph
+                            print added._node._graph
+                            setattr(node, name, added._node)
+                        else:
+                            print 'impl' #, added
+                            setattr(node, name, None)
+                    else:
+                        print '-----', BaseObject.schema
+                        print '-----', BaseObject.schema._implicit
+                        print '-----', BaseObject.reverseLookup
+
+                        raise TypeError("Cannot import a node's dependencies without knowing its class.")
+
+    def findNode(self, node, cmp = Equal.OnIdentity, excludeProperties = []):
+        """Return a node in the graph that is equal to the given one using the specified comparison type.
+
+        Return None if not found."""
+
+        if cmp == Equal.OnIdentity:
+            if node in self:
+                print 'already in graph (id)...'
+                return node
+
+        elif cmp == Equal.OnValue:
+            for n in self._nodes:
+                if node.sameProperties(n, exclude = excludeProperties):
+                    print 'already in graph (value)...'
+                    return n
+        else:
+            raise NotImplementedError
+
+        return None
 
 
     def addNode(self, node, recurse = Equal.OnIdentity):
@@ -175,38 +221,44 @@ class ObjectGraph(object):
           - recurse = OnValidValue : do not add the dependency only if there is already a node with the same valid properties
           - recurse = OnUnique     : do not add the dependency only if there is already a node with the same unique properties
         """
+        # FIXME: addNode with a node from a different graph and recurse = OnIdentity doesn't work correctly
+        # ex: import all three nodes from the bottom into a different graph
+        #    o    o
+        #   / \   |
+        #  o   o  o
+        # edit: or does it? maybe this is what we want, here...
 
         node, nodeClass = unwrapNode(node)
+
+        # we're adding nodes in an undirected graph. we have flagged all those previously added
+        #if node in flaggedNodes:
+        #    return self.wrapNode(node, nodeClass)
 
         # first make sure the node's not already in the graph, using the requested equality comparison
         # TODO: if node is already there, we need to decide what to do with the additional information we have
         #       in the added node dependencies: update missing properties, update all properties (even if already present),
         #       update non-valid properties, ignore new data, etc...
-        if recurse == Equal.OnIdentity:
-            if node in self:
-                print 'already in graph (id)...'
-                return self.wrapNode(node, nodeClass)
-
-        elif recurse == Equal.OnValue:
-            for n in self._nodes:
-                if node.sameProperties(n):
-                    print 'already in graph (value)...'
-                    return self.wrapNode(n, nodeClass)
-        else:
-            raise NotImplementedError
+        excludeProperties = nodeClass.schema._implicit if nodeClass is not None else []
+        gnode = self.findNode(node, recurse, excludeProperties)
+        if gnode is not None:
+            return wrapNode(node, nodeClass)
 
         # if node isn't already in graph, we need to make a copy of it that lives in this graph
         result = self.createNode(**dict(node.items()))
 
+        # flag this node to avoid recursing on it later
+        #flaggedNodes += [ node, result ]
+
         # first add any node this node might depend on
-        self.importNodeDependencies(result, recurse)
+        # FIXME: what to do when nodeClass is None?
+        self.importNodeDependencies(result, recurse, nodeClass)
 
         # now add node
         self._addNode(result)
 
         # NB: possible optimization: we know the node should be valid, no need to recreate an instance
         #     from scratch and re-validate its properties
-        return self.wrapNode(result, nodeClass)
+        return wrapNode(result, nodeClass)
 
 
     def __iadd__(self, node):
@@ -231,7 +283,8 @@ class ObjectGraph(object):
 
     def reverseLookup(self, node, propname):
         """Return all the nodes in the graph which have a property which name is propname
-        and which value is the given node."""
+        and which value is the given node.
+        This always returns a list of nodes."""
         raise NotImplementedError
 
 
@@ -283,7 +336,10 @@ class ObjectGraph(object):
             if not valid:
                 continue
 
-            result.append(node)
+            if type:
+                result.append(type(node))
+            else:
+                result.append(node)
 
         return result
 

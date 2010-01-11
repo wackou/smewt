@@ -19,6 +19,7 @@
 #
 
 from objectnode import ObjectNode
+from ontology import Schema
 import logging
 
 log = logging.getLogger('smewt.datamodel.Ontology')
@@ -31,6 +32,10 @@ def getNode(node):
         return node._node
     else:
         raise TypeError("Given object is not an ObjectNode or BaseObject instance")
+
+def checkClass(name, value, schema):
+    if name in schema and type(value) != schema[name]:
+        raise TypeError, "The '%s' attribute is of type '%s' but you tried to assign it a '%s'" % (name, schema[name], type(value))
 
 
 class BaseObject(object):
@@ -65,14 +70,30 @@ class BaseObject(object):
     """
 
     # TODO: remove those variables which definition should be mandatory
-    schema = {}
+    schema = Schema({})
     reverseLookup = {}
     valid = []
     unique = []
     order = []
     converters = {}
 
-    def __init__(self, graph, basenode = None, **kwargs):
+    # This variable works just like the 'schema' one, except that it only contains properties which have been defined
+    # as a result of the reverseLookup names of other classes
+    #_implicitSchema = {}
+
+    def __init__(self, basenode = None, graph = None, **kwargs):
+        if graph is None and basenode is None:
+            raise ValueError('You need to specify either a graph or a base node when instantiating a %s' % self.__class__.__name__)
+
+        # just to make sure, while developing. This should probably be removed in a stable version
+        if (#(graph is not None and not isinstance(graph, ObjectGraph)) or
+            (basenode is not None and not (isinstance(basenode, ObjectNode) or
+                                           isinstance(basenode, BaseObject)))):
+                print BaseObject
+                print type(basenode)
+                print isinstance(basenode, BaseObject)
+                raise ValueError('graph: %s - node: %s' % (type(graph), type(basenode)))
+
         if basenode is None:
             # if no basenode is given, we need to create a new node
             self._node = graph.createNode(**kwargs)
@@ -81,12 +102,19 @@ class BaseObject(object):
             basenode = getNode(basenode)
 
             # if basenode is already in this graph, no need to make a copy of it
-            if basenode._graph is graph:
+            # if graph is None, we might just be making a new instance of a node, so it's in the same graph as well
+            if graph is None or graph is basenode._graph:
                 self._node = basenode
             else:
                 # FIXME: this should use Graph.addNode to make sure it is correctly added (with its linked nodes and all)
                 self._node = graph.createNode(**dict(basenode.items()))
-            self._node.update(kwargs)
+
+        # we can only give ObjectNodes to a node's method arguments
+        #for name, value in kwargs.items():
+        #    if isinstance(value, BaseObject):
+        #        kwargs[name] = value._node
+        #self._node.update(kwargs)
+        self.update(kwargs)
 
         # make sure that the new instance we're creating is actually a valid one
         if not self._node.isValidInstance(self.__class__):
@@ -94,15 +122,40 @@ class BaseObject(object):
                             (self.__class__.__name__, self._node.invalidProperties(self.__class__)))
 
 
-
     def __getattr__(self, name):
-        return getattr(self._node, name)
+        result = getattr(self._node, name)
+
+        # if the result is an ObjectNode, wrap it with the class it has been given in the class schema
+        # if it was not in the class schema, simply returns an instance of BaseObject
+        # FIXME: make sure that if we return a list of objects, each of them gets converted properly
+        if isinstance(result, ObjectNode):
+            cls = self.__class__
+            if name in cls.schema:
+                resultClass = cls.schema[name]
+            else:
+                resultClass = BaseObject
+
+            return resultClass(basenode = result)
+
+        else:
+            return result
+
 
     def __setattr__(self, name, value):
         if name == '_node':
             object.__setattr__(self, name, value)
         else:
-            setattr(self._node, name, value)
+            cls = self.__class__
+            if name in cls.schema._implicit:
+                print '-'*10000
+                raise ValueError("Implicit properties are read-only (%s.%s)" % (cls.__name__, name))
+            checkClass(name, value, cls.schema)
+
+            if isinstance(value, BaseObject):
+                value = value._node
+
+            self._node.set(name, value, reverseName = cls.reverseLookup.get(name))
+
 
     def __eq__(self, other):
         # TODO: should allow comparing a BaseObject with an ObjectNode?
@@ -110,10 +163,13 @@ class BaseObject(object):
 
         if self._node == other._node: return True
         # FIXME: this could lead to cycles or very long chained __eq__ calling on properties
-        return self.items() == other.items()
+        return self.explicitItems() == other.explicitItems()
 
     def __str__(self):
-        return self._node.toString(cls = self.__class__.__name__).encode('utf-8')
+        return self._node.toString(cls = self.__class__).encode('utf-8')
+
+    def explicitItems(self):
+        return [ x for x in self.items() if x[0] not in self.__class__.schema._implicit ]
 
     @classmethod
     def className(cls):
@@ -122,6 +178,16 @@ class BaseObject(object):
     @classmethod
     def parentClass(cls):
         return cls.__mro__[1]
+
+    def update(self, props):
+        for name, value in props.items():
+            if isinstance(value, BaseObject):
+                value = value._node
+                reverseName = self.__class__.reverseLookup.get(name)
+            else:
+                reverseName = None
+            self._node.set(name, value, reverseName)
+
 
     def isUnique(self):
         """Return whether all unique properties (as defined by the class) of the ObjectNode
