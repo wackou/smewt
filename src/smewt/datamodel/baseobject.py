@@ -20,6 +20,7 @@
 
 from objectnode import ObjectNode
 from ontology import Schema
+from utils import isOf, reverseLookup
 import logging
 
 log = logging.getLogger('smewt.datamodel.Ontology')
@@ -32,6 +33,13 @@ def getNode(node):
         return node._node
     else:
         raise TypeError("Given object is not an ObjectNode or BaseObject instance")
+
+def toNodes(d):
+    result = dict(d)
+    for k, v in d.items():
+        if isinstance(v, BaseObject):
+            result[k] = v._node
+    return result
 
 def checkClass(name, value, schema):
     if name in schema and type(value) != schema[name]:
@@ -94,9 +102,12 @@ class BaseObject(object):
                 print isinstance(basenode, BaseObject)
                 raise ValueError('graph: %s - node: %s' % (type(graph), type(basenode)))
 
+        print 'BaseObject.__init__'
+
         if basenode is None:
             # if no basenode is given, we need to create a new node
-            self._node = graph.createNode(**kwargs)
+            props =  [ (name, value, self.__class__.reverseLookup.get(name) or isOf(name)) for name, value in toNodes(kwargs).items() ]
+            self._node = graph.createNode(reverseLookup(toNodes(kwargs), self.__class__))
 
         else:
             basenode = getNode(basenode)
@@ -107,13 +118,18 @@ class BaseObject(object):
                 self._node = basenode
             else:
                 # FIXME: this should use Graph.addNode to make sure it is correctly added (with its linked nodes and all)
-                self._node = graph.createNode(**dict(basenode.items()))
+                # TODO: should use the reverse names from the original node instead of looking it up in our schema
+                #props =  [ (name, value, self.__class__.reverseLookup.get(name) or isOf(name)) for name, value in basenode.items() ]
+                self._node = graph.createNode(reverseLookup(basenode, self.__class__)) # TODO: we should be able to construct directly from the other node
+
+            self.update(kwargs)
 
         # we can only give ObjectNodes to a node's method arguments
         #for name, value in kwargs.items():
         #    if isinstance(value, BaseObject):
         #        kwargs[name] = value._node
         #self._node.update(kwargs)
+        # TODO: good test to put here, if the graph implem is correct, this shouldn't change anything
         self.update(kwargs)
 
         # make sure that the new instance we're creating is actually a valid one
@@ -145,16 +161,24 @@ class BaseObject(object):
         if name == '_node':
             object.__setattr__(self, name, value)
         else:
-            cls = self.__class__
-            if name in cls.schema._implicit:
-                print '-'*10000
-                raise ValueError("Implicit properties are read-only (%s.%s)" % (cls.__name__, name))
-            checkClass(name, value, cls.schema)
+            self.set(name, value)
 
-            if isinstance(value, BaseObject):
-                value = value._node
+    def set(self, name, value):
+        """Sets the given value to the named property."""
+        cls = self.__class__
+        if name in cls.schema._implicit:
+            raise ValueError("Implicit properties are read-only (%s.%s)" % (cls.__name__, name))
 
-            self._node.set(name, value, reverseName = cls.reverseLookup.get(name))
+        # objects are statically-typed here
+        checkClass(name, value, cls.schema)
+
+        # if we don't have a reverse lookup for this property, default to a reverse name of 'is%(Property)Of'
+        reverseName = self.__class__.reverseLookup.get(name) or isOf(name)
+
+        if isinstance(value, BaseObject):
+            self._node.set(name, value._node, reverseName)
+        else:
+            self._node.set(name, value, reverseName)
 
 
     def __eq__(self, other):
@@ -181,12 +205,15 @@ class BaseObject(object):
 
     def update(self, props):
         for name, value in props.items():
+            self.set(name, value)
+            '''
             if isinstance(value, BaseObject):
-                value = value._node
-                reverseName = self.__class__.reverseLookup.get(name)
+                reverseName = self.__class__.reverseLookup.get(name) or 'is%sOf' % (name[0].upper() + name[1:])
+                self._node.set(name, value._node, reverseName)
+
             else:
-                reverseName = None
-            self._node.set(name, value, reverseName)
+                self._node.set(name, value)
+                '''
 
 
     def isUnique(self):

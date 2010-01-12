@@ -293,10 +293,14 @@ class TestObjectNode(unittest.TestCase):
 
         wire = g.Series(title = u'The Wire')
 
+        print 'creating episode 1'
+
         g.Episode(series = wire,
                   season = 2,
                   episodeNumber = 1,
                   title = u'Ebb Tide')
+
+        print 'creating episode 2'
 
         g.Episode(series = wire,
                   season = 2,

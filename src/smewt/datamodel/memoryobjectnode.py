@@ -27,11 +27,11 @@ log = logging.getLogger('smewt.datamodel.MemoryObjectNode')
 
 class MemoryObjectNode(ObjectNode):
 
-    def __init__(self, graph, **kwargs):
-        # NB: this should go before super().__init__() because the latter checks for all
-        #     the valid classes, and it needs to know the properties to do that
-        self._props = kwargs
-        super(MemoryObjectNode, self).__init__(graph)
+    def __init__(self, graph, props = []):
+        # NB: this should go before super().__init__() because we need self._props to exist
+        #     before we can set attributes
+        self._props = {}
+        ObjectNode.__init__(self, graph, props)
 
     def __eq__(self, other):
         return self is other

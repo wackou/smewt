@@ -22,7 +22,8 @@ from objectnode import ObjectNode
 from memoryobjectnode import MemoryObjectNode
 from baseobject import BaseObject, getNode
 import ontology
-from objectgraph import ObjectGraph, tolist, toresult
+from objectgraph import ObjectGraph
+from utils import tolist, toresult
 import logging
 
 log = logging.getLogger('smewt.datamodel.MemoryObjectGraph')
@@ -53,6 +54,7 @@ class MemoryObjectGraph(ObjectGraph):
     def _addNode(self, node):
         self._nodes.add(node)
 
+    '''
     def setLink(self, node, name, otherNode, otherName):
         # FIXME: need to do the reverse as well
         #node._props[name] = otherNode
@@ -62,15 +64,45 @@ class MemoryObjectGraph(ObjectGraph):
 
         self.addDirectedEdge(otherNode, node, otherName)
 
+    def setLink2(self, node, name, otherNode, otherName):
+        # first remove the old link(s)
+        for n in tolist(node.get(name)):
+            self.removeLink(node, name, n, otherName)
+        # then add the new link
+        self.addLink(node, name, otherNode, otherName)
+    '''
 
-    def removeDirectedEdge(self, node, otherNode, name):
-        if otherNode is None:
-            node._props[name] = []
-        else:
-            node._props[name].remove(otherNode)
+    def removeLink(self, node, name, otherNode, reverseName):
+        print 'removeLink', node, name, otherNode, reverseName
+        self.removeDirectedEdge(node, name, otherNode)
+        self.removeDirectedEdge(otherNode, reverseName, node)
 
-    def addDirectedEdge(self, node, otherNode, name):
-        nodeList = tolist(node.get(name))
+    def addLink(self, node, name, otherNode, reverseName):
+        # otherNode should always be a valid node
+        print 'addLink', node, name, otherNode, reverseName
+        self.addDirectedEdge(node, name, otherNode)
+        self.addDirectedEdge(otherNode, reverseName, node)
+
+    def removeDirectedEdge(self, node, name, otherNode):
+        # otherNode should always be a valid node
+        # FIXME: for lists
+        #if otherNode is None:
+        #    node._props[name] = []
+        #else:
+        #    node._props[name].remove(otherNode)
+
+        print 'remove edge', node, name, otherNode
+        nodeList = tolist(node._props.get(name))
+        print 'from', nodeList
+        nodeList.remove(otherNode)
+        node._props[name] = toresult(nodeList)
+
+        # if node._props[name] == []: del node._props[name]
+
+    def addDirectedEdge(self, node, name, otherNode):
+        # otherNode should always be a valid node
+        print 'add edge', node, name, otherNode
+        nodeList = tolist(node._props.get(name))
         nodeList.append(otherNode)
         node._props[name] = toresult(nodeList)
 

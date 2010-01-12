@@ -20,26 +20,11 @@
 
 from objectnode import ObjectNode
 from baseobject import BaseObject, getNode
+from utils import reverseLookup
 import ontology
 import logging
 
 log = logging.getLogger('smewt.datamodel.ObjectGraph')
-
-# TODO: make these functionas available everywhere
-def tolist(obj):
-    if    obj is None: return []
-    elif  isinstance(obj, list): return obj
-    else: return [ obj ]
-
-
-def toresult(lst):
-    """Take a list and return a value depending on the number of elements in that list:
-     - 0 elements -> return None
-     - 1 element  -> return the single element
-     - 2 or more elements -> returns the original list."""
-    if    not lst: return None
-    elif  len(lst) == 1: return lst[0]
-    else: return lst
 
 
 class Equal:
@@ -148,9 +133,13 @@ class ObjectGraph(object):
         raise NotImplementedError
 
 
-    def createNode(self, **kwargs):
-        result = self.__class__._objectNodeClass(self, **kwargs)
+    def createNode(self, props):
+        print 'createNode'
+        result = self.__class__._objectNodeClass(self, props)
+        print 'addNode'
         self._addNode(result)
+        print 'addNode ok'
+        print result
         return result
 
 
@@ -244,7 +233,7 @@ class ObjectGraph(object):
             return wrapNode(node, nodeClass)
 
         # if node isn't already in graph, we need to make a copy of it that lives in this graph
-        result = self.createNode(**dict(node.items()))
+        result = self.createNode(reverseLookup(node, nodeClass))
 
         # flag this node to avoid recursing on it later
         #flaggedNodes += [ node, result ]

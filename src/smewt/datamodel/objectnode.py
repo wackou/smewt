@@ -19,6 +19,7 @@
 #
 
 from smewt.base.textutils import toUtf8
+from utils import tolist, toresult
 import ontology
 import logging
 
@@ -70,9 +71,14 @@ class ObjectNode(object):
     into a list (or single element) of literal
     """
 
-    def __init__(self, graph):
+    def __init__(self, graph, props = []):
         self._graph = graph
-        self.updateValidClasses()
+        self._classes = []
+        #self.updateValidClasses() # FIXME: remove this useless update, we can only create empty nodes now
+
+        for prop, value, reverseName in props:
+            self.set(prop, value, reverseName)
+
 
     def isValidInstance(self, cls):
         for prop in cls.valid:
@@ -184,10 +190,17 @@ class ObjectNode(object):
         name of the link when followed in the other direction.
         If reverseName is not given, a default of 'isNameOf' (using the given name) will be used."""
 
+        print 'node set:', name, value, reverseName
+
         if isinstance(value, ObjectNode):
+            if reverseName is None:
+                raise ValueError('When setting a link between 2 nodes, you also need to give a reverseName for the link.')
+
             self.setLink(name, value, reverseName)
+
         elif type(value) in ontology.validLiteralTypes or value is None:
             self.setLiteral(name, value)
+
         else:
             raise TypeError("Trying to set property '%s' of %s to '%s', but it is not of a supported type (literal or object node): %s" % (name, self, value, type(value).__name__))
 
@@ -197,15 +210,26 @@ class ObjectNode(object):
         Can assume that literal is always one of the valid literal types."""
         raise NotImplementedError
 
-    def setLink(self, name, value, reverseName = None):
+    def setLink(self, name, otherNode, reverseName):
         """Can assume that value is always an object node."""
-        if self._graph != value._graph:
+        # TODO: remove check later
+        if not isinstance(otherNode, ObjectNode):
+            raise TypeError('otherNode should be an ObjectNode, but is it a %s' % type(otherNode).__name__)
+
+        if self._graph != otherNode._graph:
             raise ValueError('Both nodes do not live in the same graph, cannot link them together')
 
-        if reverseName is None:
-            reverseName = 'is%sOf' % (name[0].upper() + name[1:])
+        g = self._graph
 
-        self._graph.setLink(self, name, value, reverseName)
+        # first remove the old link(s)
+        print 'currrent', name, self.get(name)
+        for n in tolist(self.get(name)):
+            g.removeLink(self, name, n, reverseName)
+
+        # then add the new link
+        g.addLink(self, name, otherNode, reverseName)
+
+        #self._graph.setLink(self, name, value, reverseName)
 
 
     ### Container methods
