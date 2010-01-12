@@ -257,6 +257,9 @@ class TestObjectNode(unittest.TestCase):
 
         # if we add and recurse on value, we shouldn't be adding the same node again and again
         n4 = g1.NiceGuy(name = u'3rd of its kind', friend = g1.BaseObject(a = 23))
+
+        print 'g1', g1
+        print 'g2', g2
         r4 = g2.addNode(n4, recurse = Equal.OnValue)
 
         self.assertEquals(len(g2.findAll(a = 23)), 2) # no new node added with a = 23
@@ -338,6 +341,10 @@ class TestObjectNode(unittest.TestCase):
         print c.is_character_of.movie.title
         '''
 
+
+import logging
+logging.basicConfig(level = logging.INFO,
+                    format = '%(levelname)-8s %(module)s:%(funcName)s -- %(message)s')
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestObjectNode)

@@ -43,6 +43,9 @@ def unwrapNode(node):
 
 def wrapNode(node, nodeClass = None):
     if nodeClass is not None:
+        result = nodeClass(basenode = node)
+        print 'wrapNode', node._graph, result, result._graph
+
         return nodeClass(basenode = node)
 
     return node
@@ -184,13 +187,13 @@ class ObjectGraph(object):
 
         if cmp == Equal.OnIdentity:
             if node in self:
-                print 'already in graph (id)...'
+                print 'already in graph (id)...', self, node._graph
                 return node
 
         elif cmp == Equal.OnValue:
             for n in self._nodes:
                 if node.sameProperties(n, exclude = excludeProperties):
-                    print 'already in graph (value)...'
+                    print 'already in graph (value)...', self, n._graph
                     return n
         else:
             raise NotImplementedError
@@ -198,7 +201,7 @@ class ObjectGraph(object):
         return None
 
 
-    def addNode(self, node, recurse = Equal.OnIdentity):
+    def addNode(self, node, recurse = Equal.OnIdentity, excludeDeps = []):
         """Add a single node and its links recursively into the graph.
 
         If some dependencies of the node are already in the graph, we should not add
@@ -217,7 +220,11 @@ class ObjectGraph(object):
         #  o   o  o
         # edit: or does it? maybe this is what we want, here...
 
+        print 'addNode', node
         node, nodeClass = unwrapNode(node)
+
+        if nodeClass is None:
+            raise TypeError("Can only add BaseObjects to a graph at the moment...")
 
         # we're adding nodes in an undirected graph. we have flagged all those previously added
         #if node in flaggedNodes:
@@ -230,17 +237,41 @@ class ObjectGraph(object):
         excludeProperties = nodeClass.schema._implicit if nodeClass is not None else []
         gnode = self.findNode(node, recurse, excludeProperties)
         if gnode is not None:
-            return wrapNode(node, nodeClass)
+            print 'gnode', gnode._graph
+            result = wrapNode(gnode, nodeClass)
+            print 'gnode result', result._node._graph
+            return result
 
         # if node isn't already in graph, we need to make a copy of it that lives in this graph
-        result = self.createNode(reverseLookup(node, nodeClass))
+        # use only the explicit properties here
+        newprops = []
+        for prop, value, reverseName in reverseLookup(node, nodeClass):
+            if isinstance(value, ObjectNode):
+                if prop not in nodeClass.schema._implicit and value not in excludeDeps:
+                    importedObject = self.addNode(wrapNode(value, nodeClass.schema[prop]), recurse, excludeDeps = excludeDeps + [node])
+                    print 'imported dep in', importedObject._node._graph
+                    newprops.append((prop, importedObject._node, reverseName))
+            elif isinstance(value, BaseObject):
+                raise 42
+            else:
+                newprops.append((prop, value, reverseName))
+
+        print '-'*200
+        print self
+        print newprops
+        for p in newprops:
+            if isinstance(p[1], ObjectNode):
+                print p[1]._graph
+
+        #literal = [ prop for prop in reverseLookup(node, nodeClass) if not isinstance(prop[1], ObjectNode) ]
+        result = self.createNode(newprops)
 
         # flag this node to avoid recursing on it later
         #flaggedNodes += [ node, result ]
 
         # first add any node this node might depend on
         # FIXME: what to do when nodeClass is None?
-        self.importNodeDependencies(result, recurse, nodeClass)
+        #self.importNodeDependencies(result, recurse, nodeClass)
 
         # now add node
         self._addNode(result)

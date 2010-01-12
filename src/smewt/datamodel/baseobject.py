@@ -130,7 +130,7 @@ class BaseObject(object):
         #        kwargs[name] = value._node
         #self._node.update(kwargs)
         # TODO: good test to put here, if the graph implem is correct, this shouldn't change anything
-        self.update(kwargs)
+        #self.update(kwargs)
 
         # make sure that the new instance we're creating is actually a valid one
         if not self._node.isValidInstance(self.__class__):

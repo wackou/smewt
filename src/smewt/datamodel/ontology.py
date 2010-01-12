@@ -34,6 +34,11 @@ _graphs = weakref.WeakValueDictionary()
 # TODO: add datetime
 validLiteralTypes = [ unicode, int, long, float, list ]
 
+def clear():
+    global _classes, _graphs
+    _classes = {}
+    _graphs = weakref.WeakValueDictionary()
+
 
 class Schema(dict):
     def __init__(self, *args, **kwargs):
@@ -50,10 +55,18 @@ def validateClassDefinition(cls):
         raise TypeError, "'%s' needs to derive from ontology.BaseObject" % cls.__name__
 
     def checkPresent(cls, var, ctype):
+        print 'checkPresent', cls, var, ctype
+
         try:
             value = getattr(cls, var)
         except AttributeError:
             raise TypeError("Your subclass '%s' should define the '%s' class variable as a '%s'" % (cls.__name__, var, ctype.__name__))
+
+        # if not explicitly in subclass definition, create a default one
+        # warning: does not allow inheritance
+        if value is getattr(BaseObject, var):
+            setattr(cls, var, ctype())
+
         if type(value) != ctype:
             raise TypeError("Your subclass '%s' defines the '%s' class variable as a '%s', but it should be of type '%s'" % (cls.__name__, var, type(value).__name__, ctype.__name__))
 
@@ -73,7 +86,9 @@ def validateClassDefinition(cls):
     # associated reverseLookup entry
     checkPresent(cls, 'reverseLookup', dict)
     objectProps = [ name for name, ctype in cls.schema.items() if issubclass(ctype, BaseObject) ]
-    diff = set(cls.reverseLookup.keys()).symmetric_difference(set(objectProps))
+    reverseLookup = [ prop for prop in cls.reverseLookup.keys() if prop not in BaseObject.schema._implicit ]
+    print 'reverseLookup', reverseLookup
+    diff = set(reverseLookup).symmetric_difference(set(objectProps))
     if diff:
         raise TypeError("In '%s': you should define exactly one reverseLookup name for each property in your schema that is a subclass of BaseObject, different ones: %s" % (cls.__name__, ', '.join("'%s'" % c for c in diff)))
 
@@ -88,23 +103,18 @@ def register(*args):
     for cls in args:
         if cls.__name__ in _classes:
             if cls == _classes[cls.__name__]:
-                #print 'INFO: class %s already registered' % cls.__name__
+                log.info('Class %s already registered' % cls.__name__)
                 continue
 
-            #print 'WARNING: Found previous definition of class %s. Ignoring new definition...' % cls.__name__
+            log.warn('Found previous definition of class %s. Ignoring new definition...' % cls.__name__)
             continue
 
         validateClassDefinition(cls)
 
-        # add an implicitSchema class variable that we'll fill in later
-        # this needs to be set to a new dict here because otherwise BaseObject._implicitSchema would get
-        # shared between all the subclasses of BaseObject
-        #cls._implicitSchema = {}
-
         # if we didn't redefine the reverseLookup var in our subclass, we need to create a new instance anyway here
         # FIXME: this probably doesn't work correctly with inheritance
-        if not cls.reverseLookup:
-            cls.reverseLookup = {}
+        #if not cls.reverseLookup:
+        #    cls.reverseLookup = {}
 
         _classes[cls.__name__] = cls
 
