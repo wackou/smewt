@@ -120,7 +120,7 @@ class BaseObject(object):
             self.update(kwargs)
 
         # make sure that the new instance we're creating is actually a valid one
-        if not self._node.isValidInstance(self.__class__):
+        if not self._node.isinstance(self.__class__):
             raise TypeError("Cannot instantiate a valid instance of %s because:\n%s" %
                             (self.__class__.__name__, self._node.invalidProperties(self.__class__)))
 

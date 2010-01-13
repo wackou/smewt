@@ -27,6 +27,10 @@ import unittest
 
 class TestObjectNode(unittest.TestCase):
 
+    def setUp(self):
+        # FIXME: clear the previous ontology because the graphs do not get GC-ed properly
+        ontology.clear()
+
     def testBasicObjectNode(self):
         g = MemoryObjectGraph()
         n1 = g.BaseObject()
@@ -122,6 +126,7 @@ class TestObjectNode(unittest.TestCase):
                               'lastName': unicode,
                               'dateOfBirth': float, # TODO: should be datetime
                               })
+            valid = [ 'firstName', 'lastName' ]
 
             def name(self):
                 return self.firstName + ' ' + self.lastName
@@ -152,11 +157,12 @@ class TestObjectNode(unittest.TestCase):
                               'actor': Person,
                               'character': Character
                               })
-
             reverseLookup = { 'movie': 'roles',
                               'actor': 'actingRoles',
                               'character': 'roles'
                               }
+            valid = schema.keys()
+            unique = valid
 
         # register all these classes onto the global ontology
         # until this is done automatically, we need to make sure they are registered in the same order as they are defined
@@ -167,10 +173,24 @@ class TestObjectNode(unittest.TestCase):
     def testMediaOntology(self):
         self.registerMediaOntology()
 
-        self.assert_('episodes' in ontology.getClass('Series').schema)
-        self.assert_('episodes' in ontology.getClass('Series').reverseLookup)
-        self.assertEqual(ontology.getClass('Person').schema['filmography'], ontology.getClass('Movie'))
-        self.assertEqual(ontology.getClass('Person').reverseLookup['filmography'], 'director')
+        Series = ontology.getClass('Series')
+        Episode = ontology.getClass('Episode')
+        Person = ontology.getClass('Person')
+
+        self.assert_('episodes' in Series.schema)
+        self.assert_('episodes' in Series.reverseLookup)
+        self.assertEqual(Person.schema['filmography'], ontology.getClass('Movie'))
+        self.assertEqual(Person.reverseLookup['filmography'], 'director')
+
+        g = MemoryObjectGraph()
+        self.createData(g)
+
+        ep = g.findOne(Episode)
+        # Series needs only 'title', so it should be a fit
+        self.assertEqual(ep._node, Series(ep)._node)
+
+        s = g.findOne(Series)
+        self.assertRaises(TypeError, Episode, s)
 
     def testValidUniqueMethods(self):
         self.registerMediaOntology()
@@ -215,15 +235,15 @@ class TestObjectNode(unittest.TestCase):
 
 
     def testGraphTransfer(self):
-        g1 = MemoryObjectGraph()
-        g2 = MemoryObjectGraph()
-
         class NiceGuy(BaseObject):
             schema = Schema({ 'friend': BaseObject })
             valid = [ 'friend' ]
             reverseLookup = { 'friend': 'friend' }
 
         ontology.register(NiceGuy)
+
+        g1 = MemoryObjectGraph()
+        g2 = MemoryObjectGraph()
 
         n1 = g1.BaseObject(a = 23)
         n2 = g1.NiceGuy(friend = n1)
@@ -334,7 +354,8 @@ if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestObjectNode)
 
     import logging
-    logging.getLogger('smewt').setLevel(logging.INFO)
+    logging.getLogger('smewt').setLevel(logging.WARNING)
     logging.getLogger('smewt.datamodel.Ontology').setLevel(logging.ERROR)
+    #logging.getLogger('smewt.datamodel.ObjectNode').setLevel(logging.DEBUG)
 
     unittest.TextTestRunner(verbosity=2).run(suite)

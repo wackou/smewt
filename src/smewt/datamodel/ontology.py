@@ -36,7 +36,7 @@ validLiteralTypes = [ unicode, int, long, float, list ]
 
 def clear():
     global _classes, _graphs
-    _classes = {}
+    _classes = { 'BaseObject': _classes['BaseObject'] }
     _graphs = weakref.WeakValueDictionary()
 
 
@@ -54,22 +54,25 @@ def validateClassDefinition(cls):
     if not issubclass(cls, BaseObject):
         raise TypeError, "'%s' needs to derive from ontology.BaseObject" % cls.__name__
 
-    def checkPresent(cls, var, ctype):
+    def checkPresent(cls, var, ctype, defaultValue = True):
         try:
             value = getattr(cls, var)
         except AttributeError:
             raise TypeError("Your subclass '%s' should define the '%s' class variable as a '%s'" % (cls.__name__, var, ctype.__name__))
 
-        # if not explicitly in subclass definition, create a default one
         # FIXME: does not allow inheritance
         if value is getattr(BaseObject, var):
-            setattr(cls, var, ctype())
+            if defaultValue:
+                # if not explicitly in subclass definition, create a default one
+                setattr(cls, var, ctype())
+            else:
+                raise TypeError("Your subclass '%s' should define the '%s' class variable as a '%s'" % (cls.__name__, var, ctype.__name__))
 
         if type(value) != ctype:
             raise TypeError("Your subclass '%s' defines the '%s' class variable as a '%s', but it should be of type '%s'" % (cls.__name__, var, type(value).__name__, ctype.__name__))
 
-    def checkSchemaSubset(cls, var):
-        checkPresent(cls, var, list)
+    def checkSchemaSubset(cls, var, defaultValue = True):
+        checkPresent(cls, var, list, defaultValue)
         for prop in getattr(cls, var):
             if not prop in cls.schema:
                 raise TypeError("In '%s': when defining '%s', you used the '%s' variable, which is not defined in the schema" % (cls.__name__, var, prop))
@@ -91,7 +94,7 @@ def validateClassDefinition(cls):
     if diff:
         raise TypeError("In '%s': you should define exactly one reverseLookup name for each property in your schema that is a subclass of BaseObject, different ones: %s" % (cls.__name__, ', '.join("'%s'" % c for c in diff)))
 
-    checkSchemaSubset(cls, 'valid')
+    checkSchemaSubset(cls, 'valid', defaultValue = False)
     checkSchemaSubset(cls, 'unique')
     checkSchemaSubset(cls, 'order')
     # TODO: validate converters

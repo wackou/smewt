@@ -76,24 +76,24 @@ class ObjectNode(object):
         self._classes = []
 
         for prop, value, reverseName in props:
-            self.set(prop, value, reverseName)
+            self.set(prop, value, reverseName, validate = False)
+
+        self.updateValidClasses()
 
 
     def isValidInstance(self, cls):
+        # if graphType == 'DYNAMIC': return True # != 'STATIC'
         for prop in cls.valid:
-            if prop not in self:
-                return False
+            value = self.get(prop)
 
-            if True: # graphType == 'STATIC'
-                value = getattr(self, prop)
-
-                if isinstance(value, ObjectNode):
-                    # TODO: check isValidInstance
-                    if not value.isValidInstance(cls.schema[prop]):
-                        return False
-                else:
-                    if type(value) != cls.schema[prop]:
-                        return False
+            if isinstance(value, ObjectNode):
+                # TODO: we might need value.isValidInstance in some cases
+                if not value.isinstance(cls.schema[prop]):
+                    return False
+            else:
+                # TODO: here we might want to check if value is None and allow it or not
+                if type(value) != cls.schema[prop]:
+                    return False
 
         return True
 
@@ -113,7 +113,7 @@ class ObjectNode(object):
 
 
     def updateValidClasses(self):
-        self._classes = [ cls for cls in ontology._classes.values() if self.isValidInstance(cls) ]
+        self._classes = set([ cls for cls in ontology._classes.values() if self.isValidInstance(cls) ])
 
         log.debug('valid classes for %s:\n  %s' % (self.toString(), [ cls.__name__ for cls in self._classes ]))
 
@@ -123,14 +123,14 @@ class ObjectNode(object):
         # of a derived class, it should also necessarily be a correct instance of a parent class
         # TODO: for this to be true, we must make sure that derived classes in the ontology
         #       do not override properties defined in a parent class
-        if cls in self._classes:
-            return True
+        #if cls in self._classes:
+        #    return True
 
         # maybe we changed some value that now made this into a valid class, just revalidate
         # to make sure
         # TODO: this should probably go into setattr to revalidate in realtime (only for
         #       arguments which are not part of the schema, for optimization)
-        self.updateValidClasses()
+        #self.updateValidClasses()
 
         return cls in self._classes
 
@@ -182,7 +182,7 @@ class ObjectNode(object):
         else:
             self.set(name, value)
 
-    def set(self, name, value, reverseName = None):
+    def set(self, name, value, reverseName = None, validate = True):
         """Sets the property name to the given value.
 
         If value is an ObjectNode, we're actually setting a link between them two, so we use reverseName as the
@@ -200,6 +200,10 @@ class ObjectNode(object):
 
         else:
             raise TypeError("Trying to set property '%s' of %s to '%s', but it is not of a supported type (literal or object node): %s" % (name, self, value, type(value).__name__))
+
+        # update the cache of valid classes
+        if validate:
+            self.updateValidClasses()
 
 
     def setLiteral(self, name, value):
@@ -251,7 +255,9 @@ class ObjectNode(object):
         """Update this ObjectNode properties with the ones contained in the given dict.
         Should also allow instances of other ObjectNode, or even BaseObject."""
         for name, value in props.items():
-            self.set(name, value)
+            self.set(name, value, validate = False)
+
+        self.updateValidClasses()
 
     def updateNew(self, other):
         """Update this ObjectNode properties with the only other ones it doesn't have yet."""

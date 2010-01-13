@@ -100,6 +100,7 @@ class ObjectGraph(object):
         raise NotImplementedError
 
     def revalidateObjects(self):
+        log.info('revalidating objects in graph %s' % self)
         for node in self._nodes:
             node.updateValidClasses()
 
@@ -146,13 +147,13 @@ class ObjectGraph(object):
 
         if cmp == Equal.OnIdentity:
             if node in self:
-                print '%s already in graph (id)...' % node
+                log.info('%s already in graph %s (id)...' % (node, self))
                 return node
 
         elif cmp == Equal.OnValue:
             for n in self._nodes:
                 if node.sameProperties(n, exclude = excludeProperties):
-                    print '%s already in graph (value)...' % node
+                    log.info('%s already in graph %s (value)...' % (node, self))
                     return n
         else:
             raise NotImplementedError
