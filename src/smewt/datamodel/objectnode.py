@@ -123,15 +123,6 @@ class ObjectNode(object):
         # of a derived class, it should also necessarily be a correct instance of a parent class
         # TODO: for this to be true, we must make sure that derived classes in the ontology
         #       do not override properties defined in a parent class
-        #if cls in self._classes:
-        #    return True
-
-        # maybe we changed some value that now made this into a valid class, just revalidate
-        # to make sure
-        # TODO: this should probably go into setattr to revalidate in realtime (only for
-        #       arguments which are not part of the schema, for optimization)
-        #self.updateValidClasses()
-
         return cls in self._classes
 
 

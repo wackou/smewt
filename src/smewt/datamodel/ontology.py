@@ -37,6 +37,7 @@ validLiteralTypes = [ unicode, int, long, float, list ]
 def clear():
     global _classes, _graphs
     _classes = { 'BaseObject': _classes['BaseObject'] }
+    # FIXME: this still leaks memory, as the nodes in a graph have a ref to itself
     _graphs = weakref.WeakValueDictionary()
 
 
@@ -78,7 +79,7 @@ def validateClassDefinition(cls):
                 raise TypeError("In '%s': when defining '%s', you used the '%s' variable, which is not defined in the schema" % (cls.__name__, var, prop))
 
     # validate that the schema is correctly defined
-    checkPresent(cls, 'schema', Schema)
+    checkPresent(cls, 'schema', Schema, defaultValue =  False)
     for name, ctype in cls.schema.items():
         if not isinstance(name, str) or not any(issubclass(ctype, dtype) for dtype in validTypes):
             raise TypeError("In '%s': the schema should be a dict of 'str' to either one of those accepted types (or a subclass of them): %s'" % (cls.__name__, ', '.join("'%s'" % c.__name__ for c in validTypes)))
@@ -113,16 +114,7 @@ def register(*args):
 
         validateClassDefinition(cls)
 
-        # if we didn't redefine the reverseLookup var in our subclass, we need to create a new instance anyway here
-        # FIXME: this probably doesn't work correctly with inheritance
-        #if not cls.reverseLookup:
-        #    cls.reverseLookup = {}
-
         _classes[cls.__name__] = cls
-
-        # also update the implicit schema for other classes where needed
-        #for prop, rprop in cls.reverseLookup.items():
-        #    cls.schema[prop]._implicitSchema[rprop] = cls
 
         # directly update the schema for other classes where needed
         # TODO: make sure we don't overwrite anything (should have been done in the validateClassDefinition, right?)

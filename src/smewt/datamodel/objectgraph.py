@@ -139,6 +139,24 @@ class ObjectGraph(object):
     def createNode(self, props):
         return self.__class__._objectNodeClass(self, props)
 
+    def removeLink(self, node, name, otherNode, reverseName):
+        # otherNode should always be a valid node
+        self.removeDirectedEdge(node, name, otherNode)
+        self.removeDirectedEdge(otherNode, reverseName, node)
+
+    def addLink(self, node, name, otherNode, reverseName):
+        # otherNode should always be a valid node
+        self.addDirectedEdge(node, name, otherNode)
+        self.addDirectedEdge(otherNode, reverseName, node)
+
+    def removeDirectedEdge(self, node, name, otherNode):
+        # otherNode should always be a valid node
+        raise NotImplementedError
+
+    def addDirectedEdge(self, node, name, otherNode):
+        # otherNode should always be a valid node
+        raise NotImplementedError
+
 
     def findNode(self, node, cmp = Equal.OnIdentity, excludeProperties = []):
         """Return a node in the graph that is equal to the given one using the specified comparison type.

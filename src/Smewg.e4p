@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2009-12-29, 02:21:20 -->
-<!-- Copyright (C) 2009 Nicolas Wack, wackou@gmail.com -->
+<!-- Saved: 2010-01-13, 03:34:52 -->
+<!-- Copyright (C) 2010 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -85,6 +85,7 @@
     <Source>smewt/datamodel/memoryobjectnode.py</Source>
     <Source>smewt/datamodel/memoryobjectgraph.py</Source>
     <Source>smewt/datamodel/baseobject.py</Source>
+    <Source>smewt/datamodel/utils.py</Source>
   </Sources>
   <Forms>
   </Forms>

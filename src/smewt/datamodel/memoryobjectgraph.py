@@ -51,14 +51,6 @@ class MemoryObjectGraph(ObjectGraph):
         for node in self._nodes:
             yield node
 
-    def removeLink(self, node, name, otherNode, reverseName):
-        self.removeDirectedEdge(node, name, otherNode)
-        self.removeDirectedEdge(otherNode, reverseName, node)
-
-    def addLink(self, node, name, otherNode, reverseName):
-        # otherNode should always be a valid node
-        self.addDirectedEdge(node, name, otherNode)
-        self.addDirectedEdge(otherNode, reverseName, node)
 
     def removeDirectedEdge(self, node, name, otherNode):
         # otherNode should always be a valid node

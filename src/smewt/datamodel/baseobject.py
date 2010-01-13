@@ -149,22 +149,22 @@ class BaseObject(object):
         else:
             self.set(name, value)
 
-    def set(self, name, value):
+    def set(self, name, value, validate = True):
         """Sets the given value to the named property."""
         cls = self.__class__
         if name in cls.schema._implicit:
             raise ValueError("Implicit properties are read-only (%s.%s)" % (cls.__name__, name))
 
-        # objects are statically-typed here
+        # objects are statically-typed here; graphType == 'STATIC'
         checkClass(name, value, cls.schema)
 
         # if we don't have a reverse lookup for this property, default to a reverse name of 'is%(Property)Of'
         reverseName = self.__class__.reverseLookup.get(name) or isOf(name)
 
         if isinstance(value, BaseObject):
-            self._node.set(name, value._node, reverseName)
+            self._node.set(name, value._node, reverseName, validate)
         else:
-            self._node.set(name, value, reverseName)
+            self._node.set(name, value, reverseName, validate)
 
 
     def __eq__(self, other):
@@ -172,6 +172,7 @@ class BaseObject(object):
         if not isinstance(other, BaseObject): return False
 
         if self._node == other._node: return True
+
         # FIXME: this could lead to cycles or very long chained __eq__ calling on properties
         return self.explicitItems() == other.explicitItems()
 
@@ -191,16 +192,8 @@ class BaseObject(object):
 
     def update(self, props):
         for name, value in props.items():
-            self.set(name, value)
-            '''
-            if isinstance(value, BaseObject):
-                reverseName = self.__class__.reverseLookup.get(name) or 'is%sOf' % (name[0].upper() + name[1:])
-                self._node.set(name, value._node, reverseName)
-
-            else:
-                self._node.set(name, value)
-                '''
-
+            self.set(name, value, validate = False)
+        self._node.updateValidClasses()
 
     def isUnique(self):
         """Return whether all unique properties (as defined by the class) of the ObjectNode

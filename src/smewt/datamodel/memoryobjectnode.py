@@ -28,11 +28,12 @@ log = logging.getLogger('smewt.datamodel.MemoryObjectNode')
 class MemoryObjectNode(ObjectNode):
 
     def __init__(self, graph, props = []):
+        graph._nodes.add(self)
+
         # NB: this should go before super().__init__() because we need self._props to exist
         #     before we can set attributes
         self._props = {}
         ObjectNode.__init__(self, graph, props)
-        graph._nodes.add(self)
 
 
     def __eq__(self, other):
@@ -76,8 +77,9 @@ class MemoryObjectNode(ObjectNode):
 
     ### manipulation methods
 
+    '''
     def updateNew(self, other):
         for name, value in other._props.items():
             if name not in self._props:
                 self._props[name] = value
-
+    '''
