@@ -74,7 +74,6 @@ class ObjectNode(object):
     def __init__(self, graph, props = []):
         self._graph = graph
         self._classes = []
-        #self.updateValidClasses() # FIXME: remove this useless update, we can only create empty nodes now
 
         for prop, value, reverseName in props:
             self.set(prop, value, reverseName)
@@ -116,7 +115,7 @@ class ObjectNode(object):
     def updateValidClasses(self):
         self._classes = [ cls for cls in ontology._classes.values() if self.isValidInstance(cls) ]
 
-        log.debug('valid classes for %s:\n  %s' % (self.toString(), self._classes))
+        log.debug('valid classes for %s:\n  %s' % (self.toString(), [ cls.__name__ for cls in self._classes ]))
 
 
     def isinstance(self, cls):
@@ -190,8 +189,6 @@ class ObjectNode(object):
         name of the link when followed in the other direction.
         If reverseName is not given, a default of 'isNameOf' (using the given name) will be used."""
 
-        print 'node set:', name, value, reverseName
-
         if isinstance(value, ObjectNode):
             if reverseName is None:
                 raise ValueError('When setting a link between 2 nodes, you also need to give a reverseName for the link.')
@@ -222,14 +219,11 @@ class ObjectNode(object):
         g = self._graph
 
         # first remove the old link(s)
-        print 'currrent', name, self.get(name)
         for n in tolist(self.get(name)):
             g.removeLink(self, name, n, reverseName)
 
         # then add the new link
         g.addLink(self, name, otherNode, reverseName)
-
-        #self._graph.setLink(self, name, value, reverseName)
 
 
     ### Container methods
@@ -257,7 +251,7 @@ class ObjectNode(object):
         """Update this ObjectNode properties with the ones contained in the given dict.
         Should also allow instances of other ObjectNode, or even BaseObject."""
         for name, value in props.items():
-            setattr(self, name, value)
+            self.set(name, value)
 
     def updateNew(self, other):
         """Update this ObjectNode properties with the only other ones it doesn't have yet."""

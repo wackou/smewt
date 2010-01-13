@@ -39,7 +39,7 @@ class MemoryObjectGraph(ObjectGraph):
     def clear(self):
         """Delete all objects in this graph."""
         for n in self._nodes:
-            n._graph = None # TODO: really necessary?
+            n._graph = None
         self._nodes.clear()
 
     def __contains__(self, node):
@@ -51,68 +51,26 @@ class MemoryObjectGraph(ObjectGraph):
         for node in self._nodes:
             yield node
 
-    def _addNode(self, node):
-        self._nodes.add(node)
-
-    '''
-    def setLink(self, node, name, otherNode, otherName):
-        # FIXME: need to do the reverse as well
-        #node._props[name] = otherNode
-        # FIXME: when we don't do remove, some tests fail. This might hide a potential bug.
-        self.removeDirectedEdge(node, None, name)
-        self.addDirectedEdge(node, otherNode, name)
-
-        self.addDirectedEdge(otherNode, node, otherName)
-
-    def setLink2(self, node, name, otherNode, otherName):
-        # first remove the old link(s)
-        for n in tolist(node.get(name)):
-            self.removeLink(node, name, n, otherName)
-        # then add the new link
-        self.addLink(node, name, otherNode, otherName)
-    '''
-
     def removeLink(self, node, name, otherNode, reverseName):
-        print 'removeLink', node, name, otherNode, reverseName
         self.removeDirectedEdge(node, name, otherNode)
         self.removeDirectedEdge(otherNode, reverseName, node)
 
     def addLink(self, node, name, otherNode, reverseName):
         # otherNode should always be a valid node
-        print 'addLink', node, name, otherNode, reverseName
         self.addDirectedEdge(node, name, otherNode)
         self.addDirectedEdge(otherNode, reverseName, node)
 
     def removeDirectedEdge(self, node, name, otherNode):
         # otherNode should always be a valid node
-        # FIXME: for lists
-        #if otherNode is None:
-        #    node._props[name] = []
-        #else:
-        #    node._props[name].remove(otherNode)
-
-        print 'remove edge', node, name, otherNode
         nodeList = tolist(node._props.get(name))
-        print 'from', nodeList
         nodeList.remove(otherNode)
         node._props[name] = toresult(nodeList)
 
-        # if node._props[name] == []: del node._props[name]
+        # TODO: ? if node._props[name] == []: del node._props[name]
 
     def addDirectedEdge(self, node, name, otherNode):
         # otherNode should always be a valid node
-        print 'add edge', node, name, otherNode
         nodeList = tolist(node._props.get(name))
         nodeList.append(otherNode)
         node._props[name] = toresult(nodeList)
-
-
-    ### Search methods
-
-    def reverseLookup(self, node, propname):
-        """Return all the nodes in the graph which have a property which name is propname
-        and which value is the given node.
-        This always returns a list of nodes."""
-        # FIXME: this is completely not optimized...
-        return [ n for n in self._nodes if n.get(propname) == node ]
 

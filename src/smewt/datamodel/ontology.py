@@ -55,15 +55,13 @@ def validateClassDefinition(cls):
         raise TypeError, "'%s' needs to derive from ontology.BaseObject" % cls.__name__
 
     def checkPresent(cls, var, ctype):
-        print 'checkPresent', cls, var, ctype
-
         try:
             value = getattr(cls, var)
         except AttributeError:
             raise TypeError("Your subclass '%s' should define the '%s' class variable as a '%s'" % (cls.__name__, var, ctype.__name__))
 
         # if not explicitly in subclass definition, create a default one
-        # warning: does not allow inheritance
+        # FIXME: does not allow inheritance
         if value is getattr(BaseObject, var):
             setattr(cls, var, ctype())
 
@@ -76,7 +74,7 @@ def validateClassDefinition(cls):
             if not prop in cls.schema:
                 raise TypeError("In '%s': when defining '%s', you used the '%s' variable, which is not defined in the schema" % (cls.__name__, var, prop))
 
-    # validate the schema is correctly defined
+    # validate that the schema is correctly defined
     checkPresent(cls, 'schema', Schema)
     for name, ctype in cls.schema.items():
         if not isinstance(name, str) or not any(issubclass(ctype, dtype) for dtype in validTypes):
@@ -85,9 +83,10 @@ def validateClassDefinition(cls):
     # all the properties defined as subclasses of BaseObject need to have an
     # associated reverseLookup entry
     checkPresent(cls, 'reverseLookup', dict)
+
     objectProps = [ name for name, ctype in cls.schema.items() if issubclass(ctype, BaseObject) ]
-    reverseLookup = [ prop for prop in cls.reverseLookup.keys() if prop not in BaseObject.schema._implicit ]
-    print 'reverseLookup', reverseLookup
+    reverseLookup = [ prop for prop in cls.reverseLookup.keys() if prop not in cls.schema._implicit ]
+
     diff = set(reverseLookup).symmetric_difference(set(objectProps))
     if diff:
         raise TypeError("In '%s': you should define exactly one reverseLookup name for each property in your schema that is a subclass of BaseObject, different ones: %s" % (cls.__name__, ', '.join("'%s'" % c for c in diff)))
@@ -106,7 +105,7 @@ def register(*args):
                 log.info('Class %s already registered' % cls.__name__)
                 continue
 
-            log.warn('Found previous definition of class %s. Ignoring new definition...' % cls.__name__)
+            log.warning('Found previous definition of class %s. Ignoring new definition...' % cls.__name__)
             continue
 
         validateClassDefinition(cls)

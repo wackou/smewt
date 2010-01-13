@@ -228,13 +228,6 @@ class TestObjectNode(unittest.TestCase):
         n1 = g1.BaseObject(a = 23)
         n2 = g1.NiceGuy(friend = n1)
 
-        print '-------------------------------------'
-        print n2
-        print n2._node
-        print n2._node.friend
-        print n2._node.items()
-        print '-------------------------------------'
-
         # by default we use recurse = OnIdentity
         # we could also have g2.addNode(n2, recurse = OnValue) or recurse = OnUnique
         r2 = g2.addNode(n2)
@@ -258,8 +251,6 @@ class TestObjectNode(unittest.TestCase):
         # if we add and recurse on value, we shouldn't be adding the same node again and again
         n4 = g1.NiceGuy(name = u'3rd of its kind', friend = g1.BaseObject(a = 23))
 
-        print 'g1', g1
-        print 'g2', g2
         r4 = g2.addNode(n4, recurse = Equal.OnValue)
 
         self.assertEquals(len(g2.findAll(a = 23)), 2) # no new node added with a = 23
@@ -277,10 +268,10 @@ class TestObjectNode(unittest.TestCase):
         self.createData(g)
 
         s = g.findOne(Series, title = u'The Wire')
-        print s
+        self.assertEqual(s, s.episodes[0].series)
 
-        print s.is_series_of
-        print s.episodes
+        ep = g.findOne(Episode)
+        self.assert_(ep in ep.series.episodes)
 
         # make sure auto-reverse name work correctly
         vador = g.BaseObject(side = u'dark')
@@ -296,14 +287,10 @@ class TestObjectNode(unittest.TestCase):
 
         wire = g.Series(title = u'The Wire')
 
-        print 'creating episode 1'
-
         g.Episode(series = wire,
                   season = 2,
                   episodeNumber = 1,
                   title = u'Ebb Tide')
-
-        print 'creating episode 2'
 
         g.Episode(series = wire,
                   season = 2,
@@ -327,7 +314,7 @@ class TestObjectNode(unittest.TestCase):
         self.assertEqual(len(g.findAll(Episode, season = 2)), 2)
         self.assertEqual(g.findOne(Episode, season = 2, episodeNumber = 1).title, 'Ebb Tide')
         e = g.findOne(Episode, season = 2, episodeNumber = 1)
-        print type(e), e
+
         recentMovies = g.findAll(Movie, lambda m: m.year > 2000)
         self.assertEqual(len(recentMovies), 1)
         self.assertEqual(recentMovies[0].title, 'The Dark Knight')
@@ -342,10 +329,12 @@ class TestObjectNode(unittest.TestCase):
         '''
 
 
-import logging
-logging.basicConfig(level = logging.INFO,
-                    format = '%(levelname)-8s %(module)s:%(funcName)s -- %(message)s')
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestObjectNode)
+
+    import logging
+    logging.getLogger('smewt').setLevel(logging.INFO)
+    logging.getLogger('smewt.datamodel.Ontology').setLevel(logging.ERROR)
+
     unittest.TextTestRunner(verbosity=2).run(suite)

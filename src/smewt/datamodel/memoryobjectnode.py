@@ -32,6 +32,8 @@ class MemoryObjectNode(ObjectNode):
         #     before we can set attributes
         self._props = {}
         ObjectNode.__init__(self, graph, props)
+        graph._nodes.add(self)
+
 
     def __eq__(self, other):
         return self is other
@@ -43,29 +45,9 @@ class MemoryObjectNode(ObjectNode):
     ### Acessing properties methods
 
     def __getattr__(self, name):
-        # FIXME: THIS METHOD IS OUTDATED
-
-        # TODO: this should go into the PersistentObjectNode
-        #if name == '_node':
-        #    return self.__dict__[name]
-
         try:
-            result = self._props[name]
-            #if isinstance(result, BaseObject):
-            #    result = result._node
-
-            return result
+            return self._props[name]
         except KeyError:
-            # if attribute was not found, look whether it might be a reverse attribute
-            if name.startswith('is_') and name.endswith('_of'):
-                if self._graph is None:
-                    raise AttributeError, 'Cannot get reverse attribute of node for which no Graph has been set'
-                return self._graph.reverseLookup(self, name[3:-3])
-
-            # TODO: find valid classes which have a method with a corresponding name
-            classes = [ c for c in self._classes if name in c.__dict__ ]
-
-
             raise AttributeError, name
 
 

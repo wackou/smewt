@@ -102,8 +102,6 @@ class BaseObject(object):
                 print isinstance(basenode, BaseObject)
                 raise ValueError('graph: %s - node: %s' % (type(graph), type(basenode)))
 
-        print 'BaseObject.__init__'
-
         if basenode is None:
             # if no basenode is given, we need to create a new node
             props =  [ (name, value, self.__class__.reverseLookup.get(name) or isOf(name)) for name, value in toNodes(kwargs).items() ]
@@ -117,20 +115,9 @@ class BaseObject(object):
             if graph is None or graph is basenode._graph:
                 self._node = basenode
             else:
-                # FIXME: this should use Graph.addNode to make sure it is correctly added (with its linked nodes and all)
-                # TODO: should use the reverse names from the original node instead of looking it up in our schema
-                #props =  [ (name, value, self.__class__.reverseLookup.get(name) or isOf(name)) for name, value in basenode.items() ]
                 self._node = graph.createNode(reverseLookup(basenode, self.__class__)) # TODO: we should be able to construct directly from the other node
 
             self.update(kwargs)
-
-        # we can only give ObjectNodes to a node's method arguments
-        #for name, value in kwargs.items():
-        #    if isinstance(value, BaseObject):
-        #        kwargs[name] = value._node
-        #self._node.update(kwargs)
-        # TODO: good test to put here, if the graph implem is correct, this shouldn't change anything
-        #self.update(kwargs)
 
         # make sure that the new instance we're creating is actually a valid one
         if not self._node.isValidInstance(self.__class__):
@@ -143,15 +130,14 @@ class BaseObject(object):
 
         # if the result is an ObjectNode, wrap it with the class it has been given in the class schema
         # if it was not in the class schema, simply returns an instance of BaseObject
-        # FIXME: make sure that if we return a list of objects, each of them gets converted properly
         if isinstance(result, ObjectNode):
-            cls = self.__class__
-            if name in cls.schema:
-                resultClass = cls.schema[name]
-            else:
-                resultClass = BaseObject
-
+            resultClass = self.__class__.schema.get(name) or BaseObject
             return resultClass(basenode = result)
+
+        # FIXME: better test here (although if the graph is consistent it shouldn't be necessary)
+        elif isinstance(result, list) and isinstance(result[0], ObjectNode):
+            resultClass = self.__class__.schema.get(name) or BaseObject
+            return [ resultClass(basenode = node) for node in result ]
 
         else:
             return result
