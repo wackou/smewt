@@ -88,7 +88,7 @@ class ObjectGraph(object):
     are first-class citizens also, and can themselves have attributes, such as confidence, etc...
     """
 
-    # this should be set to the used ObjectNode class (ie: MemoryObjectNode or PersistentObjectNode)
+    # this should be set to the used ObjectNode class (ie: MemoryObjectNode or Neo4jObjectNode)
     # in the corresponding derived ObjectGraph class
     _objectNodeClass = type(None)
 

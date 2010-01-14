@@ -244,7 +244,7 @@ class ObjectNode(object):
 
     def update(self, props):
         """Update this ObjectNode properties with the ones contained in the given dict.
-        Should also allow instances of other ObjectNode, or even BaseObject."""
+        Should also allow instances of other ObjectNodes."""
         for name, value in props.items():
             self.set(name, value, validate = False)
 
