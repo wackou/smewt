@@ -21,7 +21,9 @@
 from objectnode import ObjectNode
 from objectgraph import ObjectGraph, Equal
 from memoryobjectgraph import MemoryObjectGraph
+from neo4jobjectgraph import Neo4jObjectGraph
 from baseobject import BaseObject, Schema
+from utils import tolist
 import ontology
 import unittest
 
@@ -275,7 +277,8 @@ class TestObjectNode(unittest.TestCase):
 
         self.assertEquals(len(g2.findAll(a = 23)), 2) # no new node added with a = 23
         # reference should have been updated though, no trying to keep old friends
-        self.assert_(r4.friend._node == r2.friend._node or r4.friend._node == r3.friend._node)
+        self.assert_(r4.friend._node in [ r._node for r in tolist(r2.friend) ] or
+                     r4.friend._node in [ r._node for r in tolist(r3.friend) ])
 
 
     def testReverseAttributeLookup(self):
@@ -350,12 +353,31 @@ class TestObjectNode(unittest.TestCase):
 
 
 
+    def testNeo4j(self):
+        self.registerMediaOntology()
+        g = Neo4jObjectGraph('/tmp/gloub')
+        g.clear()
+
+
+        Movie = ontology.getClass('Movie')
+        print 'creating movie'
+        m = g.Movie(title = u'hello')
+        print 'movie created'
+
+        g.close()
+
+        g2 = Neo4jObjectGraph('/tmp/gloub')
+
+
+
+
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestObjectNode)
 
     import logging
     logging.getLogger('smewt').setLevel(logging.WARNING)
     logging.getLogger('smewt.datamodel.Ontology').setLevel(logging.ERROR)
-    #logging.getLogger('smewt.datamodel.ObjectNode').setLevel(logging.DEBUG)
+    logging.getLogger('smewt.datamodel.Neo4jObjectNode').setLevel(logging.DEBUG)
+   #logging.getLogger('smewt.datamodel.ObjectNode').setLevel(logging.DEBUG)
 
     unittest.TextTestRunner(verbosity=2).run(suite)

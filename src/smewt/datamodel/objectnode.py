@@ -119,10 +119,15 @@ class ObjectNode(object):
 
 
     def isinstance(self, cls):
+
+        print 'objnode isinstance', cls
         # this should deal with inheritance correctly, as if this node is a correct instance
         # of a derived class, it should also necessarily be a correct instance of a parent class
         # TODO: for this to be true, we must make sure that derived classes in the ontology
         #       do not override properties defined in a parent class
+        print self
+        r = cls in self._classes
+        print 'r = ', r
         return cls in self._classes
 
 
@@ -158,11 +163,16 @@ class ObjectNode(object):
     ### Acessing properties methods
 
     def get(self, name):
-        """Returns the given property or None if not found."""
+        """Returns the given property or None if not found.
+        This can return either a literal value, or an iterator through other nodes if
+        the given property actually was a link relation."""
         try:
-            return getattr(self, name)
-        except AttributeError:
-            return None
+            return self.getLiteral(name)
+        except:
+            try:
+                return self.getLink(name) # TODO: this should return an iterator to the pointed nodes
+            except:
+                return None
 
     def __getattr__(self, name):
         raise NotImplementedError

@@ -42,13 +42,20 @@ def open(dbpath):
     if dirname:
         raise RuntimeError("A Neo4j database is already open. Please close it before opening a new one.")
 
+    dirname = dbpath
     graph = NeoService(dbpath, jvm = defaultJVM())
     transaction = graph.transaction
 
 
 def deleteAllData():
+    global dirname
+    dbpath = dirname
+
     close()
 
+    print dbpath, type(dbpath)
     # do it the brute-force way...
-    subprocess.call([ 'rm', '-fr', NEO_DB ])
+    subprocess.call([ 'rm', '-fr', dbpath ])
+
+    open(dbpath)
 

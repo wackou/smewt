@@ -45,6 +45,12 @@ class MemoryObjectNode(ObjectNode):
 
     ### Acessing properties methods
 
+    def getLiteral(self, name):
+        return getattr(self, name)
+
+    def getLink(self, name):
+        return getattr(self, name)
+
     def __getattr__(self, name):
         try:
             return self._props[name]
