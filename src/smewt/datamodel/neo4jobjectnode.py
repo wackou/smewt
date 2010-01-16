@@ -19,6 +19,7 @@
 #
 
 from __future__ import with_statement
+from memoryobjectnode import MemoryObjectNode
 from objectnode import ObjectNode
 import neo
 import logging
@@ -38,8 +39,10 @@ class Neo4jObjectNode(MemoryObjectNode):
     It derives from the MemoryObjectNode, which serves as a cache.
     This only loads the nodes needed from the DB when it needs them."""
 
-    def __init__(self, graph, props = []):
-        MemoryObjectNode.__init__(self, graph, props)
+    def __init__(self, graph, props = [], neonode = None):
+        if neonode is not None:
+            self._neonode = neonode
+            return
 
         literal = {}
         links = []
@@ -49,10 +52,18 @@ class Neo4jObjectNode(MemoryObjectNode):
             else:
                 literal[prop] = value
 
+        print 'starting transaction'
         with neo.transaction:
             self._neonode = neo.graph.node(**literal)
-            for prop in props:
-                self._neonode.setLink(*prop)
+            print 'node created'
+            self._neonode._ingraph(neo.graph.reference_node) # as a way to get them all
+            print 'setting links'
+            for link in links:
+                self.setLink(*link)
+            print 'setting links ok'
+        print 'transaction ok'
+
+        #MemoryObjectNode.__init__(self, graph, props)
 
 
     def __eq__(self, other):
@@ -71,6 +82,17 @@ class Neo4jObjectNode(MemoryObjectNode):
         else:
             MemoryObjectNode.__setattr__(self, name, value)
 
+    def getLink(self, name):
+        log.debug('getlink:', name)
+        return toResult([ r.end for r in self._neonode.relationships() if r.type == name ])
+
+    def getLiteral(self, name):
+        log.debug('getliteral:', name)
+        result = self._neonode[name]
+        if isinstance(result, basestring):
+            return result
+
+        return result.value # fix in neo4j.py
 
     def setLiteral(self, name, value):
         MemoryObjectNode.setLiteral(self, name, value) # keep in cache

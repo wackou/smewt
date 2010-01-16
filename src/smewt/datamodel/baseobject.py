@@ -104,8 +104,9 @@ class BaseObject(object):
 
         if basenode is None:
             # if no basenode is given, we need to create a new node
-            props =  [ (name, value, self.__class__.reverseLookup.get(name) or isOf(name)) for name, value in toNodes(kwargs).items() ]
+            #print 'creating basenode'
             self._node = graph.createNode(reverseLookup(toNodes(kwargs), self.__class__))
+            #print 'creating basenode ok'
 
         else:
             basenode = getNode(basenode)
@@ -119,10 +120,13 @@ class BaseObject(object):
 
             self.update(kwargs)
 
+        #print 'hep'
         # make sure that the new instance we're creating is actually a valid one
         if not self._node.isinstance(self.__class__):
+            #print 'glou'
             raise TypeError("Cannot instantiate a valid instance of %s because:\n%s" %
                             (self.__class__.__name__, self._node.invalidProperties(self.__class__)))
+        #print 'glah'
 
 
     def __getattr__(self, name):

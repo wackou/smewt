@@ -25,6 +25,106 @@ import logging
 
 log = logging.getLogger('smewt.datamodel.ObjectNode')
 
+class BasicNode(object):
+
+    def __init__(self, graph, props = []):
+        self._graph = graph
+        self._classes = []
+
+        for prop, value, reverseName in props:
+            self.set(prop, value, reverseName, validate = False)
+
+        self.updateValidClasses()
+
+    def __eq__(self, other):
+        # This should implement identity of nodes, not properties equality (this should be done
+        # in the BaseObject instance)
+        raise NotImplementedError
+
+    ### Methods needed for storing the nodes ontology (caching)
+    ### Note: this could be implemented only using literal values, but it is left
+    ###       as part of the API as this is something which is used a lot and benefits
+    ###       a lot from being optimized, which can be more easily done in the implementation
+
+    def addClass(self, cls):
+        """Add the given class to the list of valid classes for this node."""
+        raise NotImplementedError
+
+    def removeClass(self, cls):
+        """Remove the given class from the list of valid classes for this node."""
+        raise NotImplementedError
+
+    def nodesFromClass(self, cls):
+        """Return all the nodes of a given class."""
+        raise NotImplementedError
+
+
+
+    def addDirectedEdge(self, name, otherNode):
+        raise NotImplementedError
+
+    def removeDirectedEdge(self, name, otherNode):
+        raise NotImplementedError
+
+    def outgoingEdgeEndpoints(self, name = None):
+        """Return all the nodes which this node points to with the given edge type.
+        If name is None, return all outgoing edge points."""
+        raise NotImplementedError
+
+    def getLiteral(self, name):
+        raise NotImplementedError
+
+    def setLiteral(self, name, value):
+        """Need to be implemented by implementation subclass.
+        Can assume that literal is always one of the valid literal types."""
+        raise NotImplementedError
+
+    def literalKeys(self):
+        # TODO: should return an iterator
+        raise NotImplementedError
+
+    def literalValues(self):
+        raise NotImplementedError
+
+    def literalItems(self):
+        raise NotImplementedError
+
+    def edgeKeys(self):
+        # TODO: should return an iterator
+        raise NotImplementedError
+
+    def edgeValues(self):
+        # TODO: should return an iterator of (iterator on BasicNodes)
+        raise NotImplementedError
+
+    def edgeItems(self):
+        raise NotImplementedError
+
+    ### Container methods
+
+    def keys(self):
+        for k in self.literalKeys():
+            yield k
+        for k in self.edgeKeys():
+            yield k
+
+    def values(self):
+        # TODO: should return an iterator
+        raise NotImplementedError
+
+    def items(self):
+        # TODO: should return an iterator
+        raise NotImplementedError
+
+    def __iter__(self):
+        for prop in self.keys():
+            yield prop
+
+    def __getattr__(self, name):
+        # TODO: should go into ObjectNode, here we want ony getLinks or getLiteral
+        raise NotImplementedError
+
+
 class ObjectNode(object):
     """An ObjectNode is a nice and useful mix between an OOP object and a node in a graph.
 
@@ -71,14 +171,6 @@ class ObjectNode(object):
     into a list (or single element) of literal
     """
 
-    def __init__(self, graph, props = []):
-        self._graph = graph
-        self._classes = []
-
-        for prop, value, reverseName in props:
-            self.set(prop, value, reverseName, validate = False)
-
-        self.updateValidClasses()
 
 
     def isValidInstance(self, cls):
@@ -119,17 +211,18 @@ class ObjectNode(object):
 
 
     def isinstance(self, cls):
+
+        #print 'objnode isinstance', cls
         # this should deal with inheritance correctly, as if this node is a correct instance
         # of a derived class, it should also necessarily be a correct instance of a parent class
         # TODO: for this to be true, we must make sure that derived classes in the ontology
         #       do not override properties defined in a parent class
+        #print self
+        #r = cls in self._classes
+        #print 'r = ', r
         return cls in self._classes
 
 
-    def __eq__(self, other):
-        # This should implement identity of nodes, not properties equality (this should be done
-        # in the BaseObject instance)
-        raise NotImplementedError
 
 
     def sameProperties(self, other, exclude = []):
@@ -158,14 +251,17 @@ class ObjectNode(object):
     ### Acessing properties methods
 
     def get(self, name):
-        """Returns the given property or None if not found."""
+        """Returns the given property or None if not found.
+        This can return either a literal value, or an iterator through other nodes if
+        the given property actually was a link relation."""
         try:
-            return getattr(self, name)
-        except AttributeError:
-            return None
+            return self.getLiteral(name)
+        except:
+            try:
+                return self.getLink(name) # TODO: this should return an iterator to the pointed nodes
+            except:
+                return None
 
-    def __getattr__(self, name):
-        raise NotImplementedError
 
     def __setattr__(self, name, value):
         if name in [ '_graph', '_classes' ]:
@@ -197,10 +293,6 @@ class ObjectNode(object):
             self.updateValidClasses()
 
 
-    def setLiteral(self, name, value):
-        """Need to be implemented by implementation subclass.
-        Can assume that literal is always one of the valid literal types."""
-        raise NotImplementedError
 
     def setLink(self, name, otherNode, reverseName):
         """Can assume that value is always an object node."""
@@ -221,23 +313,6 @@ class ObjectNode(object):
         g.addLink(self, name, otherNode, reverseName)
 
 
-    ### Container methods
-
-    def keys(self):
-        # TODO: should return an iterator
-        raise NotImplementedError
-
-    def values(self):
-        # TODO: should return an iterator
-        raise NotImplementedError
-
-    def items(self):
-        # TODO: should return an iterator
-        raise NotImplementedError
-
-    def __iter__(self):
-        for prop in self.keys():
-            yield prop
 
 
     ### properties manipulation methods

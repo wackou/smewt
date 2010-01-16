@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2010-01-13, 03:34:52 -->
+<!-- Saved: 2010-01-14, 04:29:26 -->
 <!-- Copyright (C) 2010 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -78,14 +78,15 @@
     <Source>smewt/media/subtitle/subtitleprovider.py</Source>
     <Source>smewt/datamodel/objectnode.py</Source>
     <Source>smewt/datamodel/objectgraph.py</Source>
-    <Source>smewt/datamodel/persistentobjectgraph.py</Source>
-    <Source>smewt/datamodel/persistentobjectnode.py</Source>
     <Source>smewt/datamodel/ontology.py</Source>
     <Source>smewt/datamodel/test_datamodel.py</Source>
     <Source>smewt/datamodel/memoryobjectnode.py</Source>
     <Source>smewt/datamodel/memoryobjectgraph.py</Source>
     <Source>smewt/datamodel/baseobject.py</Source>
     <Source>smewt/datamodel/utils.py</Source>
+    <Source>smewt/datamodel/neo.py</Source>
+    <Source>smewt/datamodel/neo4jobjectgraph.py</Source>
+    <Source>smewt/datamodel/neo4jobjectnode.py</Source>
   </Sources>
   <Forms>
   </Forms>

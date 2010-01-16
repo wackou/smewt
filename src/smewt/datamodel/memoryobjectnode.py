@@ -19,13 +19,13 @@
 #
 
 from smewt.base.textutils import toUtf8
-from objectnode import ObjectNode
+from objectnode import BasicNode, ObjectNode
 from baseobject import BaseObject #, getNode
 import logging
 
 log = logging.getLogger('smewt.datamodel.MemoryObjectNode')
 
-class MemoryObjectNode(ObjectNode):
+class MemoryNode(BasicNode):
 
     def __init__(self, graph, props = []):
         graph._nodes.add(self)
@@ -44,6 +44,12 @@ class MemoryObjectNode(ObjectNode):
         return id(self)
 
     ### Acessing properties methods
+
+    def getLiteral(self, name):
+        return getattr(self, name)
+
+    def getLink(self, name):
+        return getattr(self, name)
 
     def __getattr__(self, name):
         try:
@@ -83,3 +89,6 @@ class MemoryObjectNode(ObjectNode):
             if name not in self._props:
                 self._props[name] = value
     '''
+
+class MemoryObjectNode(ObjectNode, MemoryNode):
+    pass

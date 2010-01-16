@@ -60,6 +60,69 @@ def getChainedProperties(node, propList):
     return node
 
 
+class BasicGraph(object):
+    def clear(self):
+        """Delete all nodes and links in this graph."""
+        raise NotImplementedError
+
+    def createNode(self, props):
+        # FIXME: this might not work anymore (multiple inheritance)
+        return self.__class__._objectNodeClass(self, props)
+
+    def deleteNode(self, node):
+        """Remove a given node.
+
+        strategies for what to do with linked nodes should be configurable, ie:
+        remove incoming/outgoing linked nodes as well, only remove link but do not
+        touch linked nodes, etc..."""
+        raise NotImplementedError
+
+    def nodes(self):
+        """Return an iterator that goes over all the nodes in the graph."""
+        raise NotImplementedError
+
+    def addDirectedEdge(self, node, name, otherNode):
+        # otherNode should always be a valid node
+        raise NotImplementedError
+
+    def removeDirectedEdge(self, node, name, otherNode):
+        # otherNode should always be a valid node
+        raise NotImplementedError
+
+    def contains(self, node):
+        """Return whether this graph contains the given node.
+
+        multiple strategies can be used here for determing object equality, such as
+        all properties equal, the primary subset of properties equal, etc... (those are defined
+        by the ObjectNode)"""
+        raise NotImplementedError
+
+    def __contains__(self, node):
+        """Return whether this graph contains the given node (identity)."""
+        raise NotImplementedError
+
+
+    def findNode(self, node, cmp = Equal.OnIdentity, excludeProperties = []):
+        """Return a node in the graph that is equal to the given one using the specified comparison type.
+
+        Return None if not found."""
+
+        if cmp == Equal.OnIdentity:
+            if node in self:
+                log.info('%s already in graph %s (id)...' % (node, self))
+                return node
+
+        elif cmp == Equal.OnValue:
+            for n in self._nodes:
+                if node.sameProperties(n, exclude = excludeProperties):
+                    log.info('%s already in graph %s (value)...' % (node, self))
+                    return n
+        else:
+            raise NotImplementedError
+
+        return None
+
+
 class ObjectGraph(object):
     """An ObjectGraph is a directed graph of nodes in which each node is actually an object,
     with a class type and any number of properties/attributes, which can be either literal
@@ -84,6 +147,8 @@ class ObjectGraph(object):
 
     An ObjectGraph can be thought of as a context in which objects live.
 
+    Actually, they are not objects, but simply nodes which the graph knows how to wrap into objects.
+
     Even though the dotted attribute access makes this less visible, the links between ObjectNodes
     are first-class citizens also, and can themselves have attributes, such as confidence, etc...
     """
@@ -95,13 +160,9 @@ class ObjectGraph(object):
     def __init__(self):
         ontology.registerGraph(self)
 
-    def clear(self):
-        """Delete all objects in this graph."""
-        raise NotImplementedError
-
     def revalidateObjects(self):
         log.info('revalidating objects in graph %s' % self)
-        for node in self._nodes:
+        for node in self.nodes():
             node.updateValidClasses()
 
     def __getattr__(self, name):
@@ -117,27 +178,6 @@ class ObjectGraph(object):
         raise AttributeError
 
 
-    def contains(self, node):
-        """Return whether this graph contains the given node.
-
-        multiple strategies can be used here for determing object equality, such as
-        all properties equal, the primary subset of properties equal, etc... (those are defined
-        by the ObjectNode)"""
-        raise NotImplementedError
-
-
-    def __contains__(self, node):
-        """Return whether this graph contains the given node (identity)."""
-        raise NotImplementedError
-
-
-    def nodes(self):
-        """Return an iterator that goes over all the nodes in the graph."""
-        raise NotImplementedError
-
-
-    def createNode(self, props):
-        return self.__class__._objectNodeClass(self, props)
 
     def removeLink(self, node, name, otherNode, reverseName):
         # otherNode should always be a valid node
@@ -149,34 +189,6 @@ class ObjectGraph(object):
         self.addDirectedEdge(node, name, otherNode)
         self.addDirectedEdge(otherNode, reverseName, node)
 
-    def removeDirectedEdge(self, node, name, otherNode):
-        # otherNode should always be a valid node
-        raise NotImplementedError
-
-    def addDirectedEdge(self, node, name, otherNode):
-        # otherNode should always be a valid node
-        raise NotImplementedError
-
-
-    def findNode(self, node, cmp = Equal.OnIdentity, excludeProperties = []):
-        """Return a node in the graph that is equal to the given one using the specified comparison type.
-
-        Return None if not found."""
-
-        if cmp == Equal.OnIdentity:
-            if node in self:
-                log.info('%s already in graph %s (id)...' % (node, self))
-                return node
-
-        elif cmp == Equal.OnValue:
-            for n in self._nodes:
-                if node.sameProperties(n, exclude = excludeProperties):
-                    log.info('%s already in graph %s (value)...' % (node, self))
-                    return n
-        else:
-            raise NotImplementedError
-
-        return None
 
 
     def addNode(self, node, recurse = Equal.OnIdentity, excludedDeps = []):
@@ -237,13 +249,6 @@ class ObjectGraph(object):
 
         return self
 
-    def removeNode(self, node):
-        """Remove a given node.
-
-        strategies for what to do with linked nodes should be configurable, ie:
-        remove incoming/outgoing linked nodes as well, only remove link but do not
-        touch linked nodes, etc..."""
-        raise NotImplementedError
 
     ### Search methods
 
