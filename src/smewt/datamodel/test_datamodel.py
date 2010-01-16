@@ -265,10 +265,19 @@ class TestObjectNode(unittest.TestCase):
         #r3 = g2.addNode(n3)
         #self.assertEquals(len(g2.findAll(a = 23)), 2)
 
+        print '*'*100
+        print [ r2 ]
+        print tolist(r2._node.friend)
+
         # if we keep on adding by identity, we will end up with lots of friends with a=23
         n3 = g1.NiceGuy(name = u'other node', friend = n1)
         r3 = g2.addNode(n3)
         self.assertEquals(len(g2.findAll(a = 23)), 2)
+
+        print '*'*100
+        print [ r2, r3 ]
+        print tolist(r2.friend)
+        print tolist(r3.friend)
 
         # if we add and recurse on value, we shouldn't be adding the same node again and again
         n4 = g1.NiceGuy(name = u'3rd of its kind', friend = g1.BaseObject(a = 23))
@@ -277,6 +286,13 @@ class TestObjectNode(unittest.TestCase):
 
         self.assertEquals(len(g2.findAll(a = 23)), 2) # no new node added with a = 23
         # reference should have been updated though, no trying to keep old friends
+        print '*'*100
+        print [ r2, r3, r4 ]
+        print tolist(r2.friend)
+        print tolist(r3.friend)
+        print tolist(r4.friend)
+        print r4.friend._node
+        print '*'*100
         self.assert_(r4.friend._node in [ r._node for r in tolist(r2.friend) ] or
                      r4.friend._node in [ r._node for r in tolist(r3.friend) ])
 
@@ -353,7 +369,7 @@ class TestObjectNode(unittest.TestCase):
 
 
 
-    def testNeo4j(self):
+    def atestNeo4j(self):
         self.registerMediaOntology()
         g = Neo4jObjectGraph('/tmp/gloub')
         g.clear()
@@ -378,6 +394,6 @@ if __name__ == '__main__':
     logging.getLogger('smewt').setLevel(logging.WARNING)
     logging.getLogger('smewt.datamodel.Ontology').setLevel(logging.ERROR)
     logging.getLogger('smewt.datamodel.Neo4jObjectNode').setLevel(logging.DEBUG)
-   #logging.getLogger('smewt.datamodel.ObjectNode').setLevel(logging.DEBUG)
+    #logging.getLogger('smewt.datamodel.ObjectNode').setLevel(logging.DEBUG)
 
     unittest.TextTestRunner(verbosity=2).run(suite)
