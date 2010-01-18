@@ -18,9 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base.textutils import toUtf8
-from objectnode import BasicNode, ObjectNode
-from baseobject import BaseObject #, getNode
+from objectnode import ObjectNode
+from basicgraph import BasicNode
 import logging
 
 log = logging.getLogger('smewt.datamodel.MemoryObjectNode')
@@ -33,7 +32,7 @@ class MemoryNode(BasicNode):
         # NB: this should go before super().__init__() because we need self._props to exist
         #     before we can set attributes
         self._props = {}
-        ObjectNode.__init__(self, graph, props)
+        BasicNode.__init__(self, graph, props)
 
 
     def __eq__(self, other):
@@ -50,6 +49,24 @@ class MemoryNode(BasicNode):
 
     def getLink(self, name):
         return getattr(self, name)
+
+    def removeDirectedEdge(self, name, otherNode):
+        # otherNode should always be a valid node
+        nodeList = tolist(self._props.get(name))
+        nodeList.remove(otherNode)
+        self._props[name] = toresult(nodeList)
+
+        # TODO: we should have this, right?
+        if list(node._props[name]) == []:
+            del node._props[name]
+
+    def addDirectedEdge(self, name, otherNode):
+        # otherNode should always be a valid node
+        nodeList = tolist(self._props.get(name))
+        nodeList.append(otherNode)
+        self._props[name] = toresult(nodeList)
+
+
 
     def __getattr__(self, name):
         try:

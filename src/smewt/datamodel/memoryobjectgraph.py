@@ -19,6 +19,7 @@
 #
 
 from objectnode import ObjectNode
+from basicgraph import BasicGraph
 from memoryobjectnode import MemoryObjectNode
 from baseobject import BaseObject, getNode
 import ontology
@@ -29,40 +30,30 @@ import logging
 log = logging.getLogger('smewt.datamodel.MemoryObjectGraph')
 
 
-class MemoryObjectGraph(ObjectGraph):
+class MemoryGraph(BasicGraph):
     _objectNodeClass = MemoryObjectNode
 
     def __init__(self):
-        ObjectGraph.__init__(self)
+        BasicGraph.__init__(self)
         self._nodes = set()
 
     def clear(self):
         """Delete all objects in this graph."""
-        for n in self._nodes:
-            n._graph = None
+        ObjectGraph.clear()
         self._nodes.clear()
 
-    def __contains__(self, node):
-        """Return whether this graph contains the given node (identity)."""
-        return getNode(node) in self._nodes
+    def deleteNode(self, node):
+        raise NotImplementedError
 
 
     def nodes(self):
         for node in self._nodes:
             yield node
 
+    def __contains__(self, node):
+        """Return whether this graph contains the given node (identity)."""
+        return node in self._nodes
 
-    def removeDirectedEdge(self, node, name, otherNode):
-        # otherNode should always be a valid node
-        nodeList = tolist(node._props.get(name))
-        nodeList.remove(otherNode)
-        node._props[name] = toresult(nodeList)
 
-        # TODO: ? if node._props[name] == []: del node._props[name]
-
-    def addDirectedEdge(self, node, name, otherNode):
-        # otherNode should always be a valid node
-        nodeList = tolist(node._props.get(name))
-        nodeList.append(otherNode)
-        node._props[name] = toresult(nodeList)
-
+class MemoryObjectGraph(MemoryGraph, ObjectGraph):
+    pass

@@ -25,104 +25,6 @@ import logging
 
 log = logging.getLogger('smewt.datamodel.ObjectNode')
 
-class BasicNode(object):
-
-    def __init__(self, graph, props = []):
-        self._graph = graph
-        self._classes = []
-
-        for prop, value, reverseName in props:
-            self.set(prop, value, reverseName, validate = False)
-
-        self.updateValidClasses()
-
-    def __eq__(self, other):
-        # This should implement identity of nodes, not properties equality (this should be done
-        # in the BaseObject instance)
-        raise NotImplementedError
-
-    ### Methods needed for storing the nodes ontology (caching)
-    ### Note: this could be implemented only using literal values, but it is left
-    ###       as part of the API as this is something which is used a lot and benefits
-    ###       a lot from being optimized, which can be more easily done in the implementation
-
-    def addClass(self, cls):
-        """Add the given class to the list of valid classes for this node."""
-        raise NotImplementedError
-
-    def removeClass(self, cls):
-        """Remove the given class from the list of valid classes for this node."""
-        raise NotImplementedError
-
-    def nodesFromClass(self, cls):
-        """Return all the nodes of a given class."""
-        raise NotImplementedError
-
-
-
-    def addDirectedEdge(self, name, otherNode):
-        raise NotImplementedError
-
-    def removeDirectedEdge(self, name, otherNode):
-        raise NotImplementedError
-
-    def outgoingEdgeEndpoints(self, name = None):
-        """Return all the nodes which this node points to with the given edge type.
-        If name is None, return all outgoing edge points."""
-        raise NotImplementedError
-
-    def getLiteral(self, name):
-        raise NotImplementedError
-
-    def setLiteral(self, name, value):
-        """Need to be implemented by implementation subclass.
-        Can assume that literal is always one of the valid literal types."""
-        raise NotImplementedError
-
-    def literalKeys(self):
-        # TODO: should return an iterator
-        raise NotImplementedError
-
-    def literalValues(self):
-        raise NotImplementedError
-
-    def literalItems(self):
-        raise NotImplementedError
-
-    def edgeKeys(self):
-        # TODO: should return an iterator
-        raise NotImplementedError
-
-    def edgeValues(self):
-        # TODO: should return an iterator of (iterator on BasicNodes)
-        raise NotImplementedError
-
-    def edgeItems(self):
-        raise NotImplementedError
-
-    ### Container methods
-
-    def keys(self):
-        for k in self.literalKeys():
-            yield k
-        for k in self.edgeKeys():
-            yield k
-
-    def values(self):
-        # TODO: should return an iterator
-        raise NotImplementedError
-
-    def items(self):
-        # TODO: should return an iterator
-        raise NotImplementedError
-
-    def __iter__(self):
-        for prop in self.keys():
-            yield prop
-
-    def __getattr__(self, name):
-        # TODO: should go into ObjectNode, here we want ony getLinks or getLiteral
-        raise NotImplementedError
 
 
 class ObjectNode(object):
@@ -223,22 +125,35 @@ class ObjectNode(object):
         return cls in self._classes
 
 
+    ### Container methods
+
+    def keys(self):
+        for k in self.literalKeys():
+            yield k
+        for k in self.edgeKeys():
+            yield k
+
+    def values(self):
+        for v in self.literalValues():
+            yield v
+        for v in self.edgeValues():
+            yield v
+
+    def items(self):
+        for i in self.literalItems():
+            yield i
+        for i in self.edgeItems():
+            yield i
+
+    def __iter__(self):
+        for prop in self.keys():
+            yield prop
+
+    def __getattr__(self, name):
+        # TODO: should go into ObjectNode, here we want ony getLinks or getLiteral
+        raise NotImplementedError
 
 
-    def sameProperties(self, other, exclude = []):
-        # NB: sameValidProperties and sameUniqueProperties should be defined in BaseObject
-        # TODO: this can surely be optimized
-        try:
-            for name, value in sorted(other.items()):
-                if name in exclude:
-                    continue
-                if getattr(self, name) != value:
-                    return False
-
-            return True
-
-        except AttributeError:
-            return False
 
     def __ne__(self, other):
         return not (self == other)
@@ -262,6 +177,8 @@ class ObjectNode(object):
             except:
                 return None
 
+
+    ### properties manipulation methods
 
     def __setattr__(self, name, value):
         if name in [ '_graph', '_classes' ]:
@@ -292,8 +209,6 @@ class ObjectNode(object):
         if validate:
             self.updateValidClasses()
 
-
-
     def setLink(self, name, otherNode, reverseName):
         """Can assume that value is always an object node."""
         # TODO: remove check later
@@ -313,9 +228,6 @@ class ObjectNode(object):
         g.addLink(self, name, otherNode, reverseName)
 
 
-
-
-    ### properties manipulation methods
 
     def update(self, props):
         """Update this ObjectNode properties with the ones contained in the given dict.
