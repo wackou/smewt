@@ -19,15 +19,17 @@
 #
 
 from smewt.base.textutils import toUtf8
-from utils import tolist, toresult
+from basicgraph import BasicNode
+from utils import tolist, toresult, isOf
 import ontology
+import types
 import logging
 
 log = logging.getLogger('smewt.datamodel.ObjectNode')
 
 
 
-class ObjectNode(object):
+class ObjectNode(BasicNode):
     """An ObjectNode is a nice and useful mix between an OOP object and a node in a graph.
 
     An ObjectNode behaves in the following way:
@@ -73,6 +75,16 @@ class ObjectNode(object):
     into a list (or single element) of literal
     """
 
+    def __init__(self, graph, props = []):
+        print 'ObjectNode.__init__'
+        super(ObjectNode, self).__init__(graph, props)
+
+        print 'setting', props
+        for prop, value, reverseName in props:
+            self.set(prop, value, reverseName, validate = False)
+
+        print 'update valid classes'
+        self.updateValidClasses()
 
 
     def isValidInstance(self, cls):
@@ -80,7 +92,12 @@ class ObjectNode(object):
         for prop in cls.valid:
             value = self.get(prop)
 
-            if isinstance(value, ObjectNode):
+            if isinstance(value, types.GeneratorType):
+                value = list(value)
+                if value != [] and not value[0].isinstance(cls.schema[prop]):
+                    return False
+            # TODO: remove this elif
+            elif isinstance(value, BasicNode):
                 # TODO: we might need value.isValidInstance in some cases
                 if not value.isinstance(cls.schema[prop]):
                     return False
@@ -107,22 +124,13 @@ class ObjectNode(object):
 
 
     def updateValidClasses(self):
-        self._classes = set([ cls for cls in ontology._classes.values() if self.isValidInstance(cls) ])
+        self.clearClasses()
+        for cls in ontology._classes.values():
+            if self.isValidInstance(cls):
+                self.addClass(cls)
+        #self._classes = set([ cls for cls in ontology._classes.values() if self.isValidInstance(cls) ])
 
         log.debug('valid classes for %s:\n  %s' % (self.toString(), [ cls.__name__ for cls in self._classes ]))
-
-
-    def isinstance(self, cls):
-
-        #print 'objnode isinstance', cls
-        # this should deal with inheritance correctly, as if this node is a correct instance
-        # of a derived class, it should also necessarily be a correct instance of a parent class
-        # TODO: for this to be true, we must make sure that derived classes in the ontology
-        #       do not override properties defined in a parent class
-        #print self
-        #r = cls in self._classes
-        #print 'r = ', r
-        return cls in self._classes
 
 
     ### Container methods
@@ -150,10 +158,7 @@ class ObjectNode(object):
             yield prop
 
     def __getattr__(self, name):
-        # TODO: should go into ObjectNode, here we want ony getLinks or getLiteral
-        raise NotImplementedError
-
-
+        return self.get(name)
 
     def __ne__(self, other):
         return not (self == other)
@@ -195,7 +200,8 @@ class ObjectNode(object):
 
         if isinstance(value, ObjectNode):
             if reverseName is None:
-                raise ValueError('When setting a link between 2 nodes, you also need to give a reverseName for the link.')
+                #raise ValueError('When setting a link between 2 nodes, you also need to give a reverseName for the link.')
+                reverseName = isOf(name)
 
             self.setLink(name, value, reverseName)
 

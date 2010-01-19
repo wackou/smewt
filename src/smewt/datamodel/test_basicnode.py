@@ -20,7 +20,7 @@
 
 from objectnode import ObjectNode
 from objectgraph import ObjectGraph, Equal
-from memoryobjectgraph import MemoryObjectGraph
+from memoryobjectgraph import MemoryGraph, MemoryObjectGraph
 from baseobject import BaseObject, Schema
 from utils import tolist
 import ontology
@@ -32,8 +32,8 @@ class TestBasicNode(unittest.TestCase):
         # FIXME: clear the previous ontology because the graphs do not get GC-ed properly
         ontology.clear()
 
-    def testBasicNode(self):
-        g = BasicGraph()
+    def testBasicNode(self, GraphClass = MemoryGraph):
+        g = GraphClass()
 
         n = g.createNode()
         n.setLiteral('title', u'abc')
@@ -42,17 +42,25 @@ class TestBasicNode(unittest.TestCase):
         self.assertEqual(list(n.edgeKeys()), [])
 
         n2 = g.createNode()
-        n.setLink('friend', n2)
-        n2.setLink('friend', n)
+        n.addDirectedEdge('friend', n2)
+        n2.addDirectedEdge('friend', n)
         self.assertEqual(n.getLiteral('title'), u'abc')
         self.assertEqual(list(n.literalKeys()), [ 'title' ])
         self.assertEqual(list(n.edgeKeys()), [ 'friend' ])
         self.assertEqual(list(n.outgoingEdgeEndpoints('friend')), [ n2 ])
         self.assertEqual(list(n2.outgoingEdgeEndpoints('friend')), [ n ])
 
+        n3 = g.createNode()
+        n.addDirectedEdge('friend', n3)
+        n3.addDirectedEdge('friend', n)
+        self.assertEqual(len(list(n.outgoingEdgeEndpoints('friend'))), 2)
+        self.assertEqual(len(list(n.outgoingEdgeEndpoints())), 2)
+        self.assert_(n2 in n.outgoingEdgeEndpoints('friend'))
+        self.assert_(n3 in n.outgoingEdgeEndpoints('friend'))
 
-    def testBasicObjectNode(self):
-        g = BasicGraph()
+
+    def testBasicObjectNode(self, ObjectGraphClass = MemoryObjectGraph):
+        g = ObjectGraphClass()
 
         n = g.createNode()
         n.title = u'abc'
@@ -65,7 +73,7 @@ class TestBasicNode(unittest.TestCase):
         self.assertEqual(n.title, u'abc')
         self.assertEqual(list(n.literalKeys()), [ 'title' ])
         self.assertEqual(list(n.edgeKeys()), [ 'friend' ])
-        self.assertEqual(list(n.friend), [ n ])
+        self.assertEqual(list(n.friend), [ n2 ])
         self.assertEqual(list(n2.isFriendOf), [ n ])
 
 
@@ -74,23 +82,39 @@ class TestBasicNode(unittest.TestCase):
             def __init__(self):
                 print 'A.__init__()'
 
+            def __contains__(self, obj):
+                print 'A.__contains__'
+
         class B(A):
             def __init__(self):
-                A.__init__(self)
+                super(B, self).__init__()
                 print 'B.__init__()'
+
+            def __contains__(self, obj):
+                print 'B.__contains__'
 
         class C(A):
             def __init__(self):
-                A.__init__(self)
+                super(C, self).__init__()
                 print 'C.__init__()'
+
+            def __contains__(self, obj):
+                print 'C.__contains__'
 
         class D(B, C):
             def __init__(self):
-                B.__init__(self)
-                C.__init__(self)
+                super(D, self).__init__()
                 print 'D.__init__()'
 
+            def __contains__(self, obj):
+                print 'D.__contains__'
+
         d = D()
+        3 in d
+
+    def testBaseObject(self, GraphClass = MemoryObjectGraph):
+        g = GraphClass()
+        o = g.BaseObject()
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestBasicNode)

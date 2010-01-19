@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import ontology
 
 def tolist(obj):
     if    obj is None: return []
@@ -34,9 +35,15 @@ def toresult(lst):
     elif  len(lst) == 1: return lst[0]
     else: return lst
 
+def toIterator(obj):
+    for i in tolist(obj):
+        yield i
 
 def isOf(name):
     return 'is%sOf' % (name[0].upper() + name[1:])
+
+def isLiteral(value):
+    return type(value) in ontology.validLiteralTypes
 
 def reverseLookup(d, cls):
     return [ (name, value, cls.reverseLookup.get(name) or isOf(name)) for name, value in d.items() ]

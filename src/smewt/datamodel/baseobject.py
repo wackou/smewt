@@ -18,16 +18,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from basicgraph import BasicNode
 from objectnode import ObjectNode
 from ontology import Schema
-from utils import isOf, reverseLookup
+from utils import isOf, reverseLookup, toresult
+import types
 import logging
 
 log = logging.getLogger('smewt.datamodel.Ontology')
 
 
 def getNode(node):
-    if isinstance(node, ObjectNode):
+    if isinstance(node, BasicNode):
         return node
     elif isinstance(node, BaseObject):
         return node._node
@@ -120,7 +122,8 @@ class BaseObject(object):
 
             self.update(kwargs)
 
-        #print 'hep'
+        print 'hep', self
+        print self._classes
         # make sure that the new instance we're creating is actually a valid one
         if not self._node.isinstance(self.__class__):
             #print 'glou'
@@ -134,14 +137,14 @@ class BaseObject(object):
 
         # if the result is an ObjectNode, wrap it with the class it has been given in the class schema
         # if it was not in the class schema, simply returns an instance of BaseObject
-        if isinstance(result, ObjectNode):
+        if isinstance(result, types.GeneratorType):
             resultClass = self.__class__.schema.get(name) or BaseObject
-            return resultClass(basenode = result)
+            return toresult([ resultClass(basenode = n) for n in result ])
 
         # FIXME: better test here (although if the graph is consistent it shouldn't be necessary)
-        elif isinstance(result, list) and isinstance(result[0], ObjectNode):
-            resultClass = self.__class__.schema.get(name) or BaseObject
-            return [ resultClass(basenode = node) for node in result ]
+        #elif isinstance(result, list) and isinstance(result[0], BasicNode):
+        #    resultClass = self.__class__.schema.get(name) or BaseObject
+        #    return [ resultClass(basenode = node) for node in result ]
 
         else:
             return result

@@ -39,7 +39,7 @@ class BasicGraph(object):
         for n in self._nodes:
             n._graph = None
 
-    def createNode(self, props):
+    def createNode(self, props = []):
         # FIXME: this might not work anymore (multiple inheritance)
         return self.__class__._objectNodeClass(self, props)
 
@@ -104,17 +104,11 @@ class BasicNode(object):
 
     You need only implement those methods which are necessary to be defined for a node that can have
     literal properties and named edges to other nodes in a directed graph.
-    These signaled in this interface by raising NotImplementedError."""
+    These are signaled in this interface by raising NotImplementedError."""
 
     def __init__(self, graph, props = []):
+        print 'BasicNode.__init__', type(graph)
         self._graph = graph
-        self._classes = [] # TODO: should go in the mem implementation
-
-        # contains reverseName, should go into ObjectNode
-        for prop, value, reverseName in props:
-            self.set(prop, value, reverseName, validate = False)
-
-        self.updateValidClasses()
 
 
     def __eq__(self, other):
@@ -133,6 +127,14 @@ class BasicNode(object):
 
     def removeClass(self, cls):
         """Remove the given class from the list of valid classes for this node."""
+        raise NotImplementedError
+
+    def clearClasses(self):
+        """Clears the current list of valid classes."""
+        raise NotImplementedError
+
+    def classes(self):
+        """Returns an iterator over the list of classes."""
         raise NotImplementedError
 
     def isinstance(self, cls):

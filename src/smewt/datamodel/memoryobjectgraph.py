@@ -20,7 +20,7 @@
 
 from objectnode import ObjectNode
 from basicgraph import BasicGraph
-from memoryobjectnode import MemoryObjectNode
+from memoryobjectnode import MemoryNode, MemoryObjectNode
 from baseobject import BaseObject, getNode
 import ontology
 from objectgraph import ObjectGraph
@@ -31,10 +31,10 @@ log = logging.getLogger('smewt.datamodel.MemoryObjectGraph')
 
 
 class MemoryGraph(BasicGraph):
-    _objectNodeClass = MemoryObjectNode
+    _objectNodeClass = MemoryNode
 
     def __init__(self):
-        BasicGraph.__init__(self)
+        super(MemoryGraph, self).__init__()
         self._nodes = set()
 
     def clear(self):
@@ -50,10 +50,10 @@ class MemoryGraph(BasicGraph):
         for node in self._nodes:
             yield node
 
-    def __contains__(self, node):
+    def contains(self, node):
         """Return whether this graph contains the given node (identity)."""
         return node in self._nodes
 
 
 class MemoryObjectGraph(MemoryGraph, ObjectGraph):
-    pass
+    _objectNodeClass = MemoryObjectNode

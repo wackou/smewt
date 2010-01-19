@@ -35,7 +35,7 @@ def importClasses(classes):
 #       and it will save us a *lot* of trouble
 # Note: list should only be list of literal values
 # TODO: add datetime
-validLiteralTypes = [ unicode, int, long, float, list ]
+validLiteralTypes = [ unicode, int, long, float ] #, list ]
 
 def clear():
     global _classes, _graphs
