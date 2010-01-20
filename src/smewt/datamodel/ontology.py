@@ -20,6 +20,7 @@
 
 import weakref
 import logging
+import sys
 
 log = logging.getLogger('smewt.datamodel.Ontology')
 
@@ -27,9 +28,6 @@ log = logging.getLogger('smewt.datamodel.Ontology')
 _classes = {}
 _graphs = weakref.WeakValueDictionary()
 
-# TODO: import function that imports the given classes in the caller's local variables
-def importClasses(classes):
-    pass
 
 # Note: voluntarily omit to put str as allowed types, unicode is much better
 #       and it will save us a *lot* of trouble
@@ -142,3 +140,8 @@ def getClass(className):
 
 def classNames():
     return _classes.keys()
+
+def importClasses(classes):
+    """Import the given classes in the caller's global variables namespace."""
+    for cls in classes:
+        sys._getframe(1).f_globals[cls] = getClass(cls)

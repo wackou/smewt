@@ -176,10 +176,7 @@ class TestObjectNode(unittest.TestCase):
 
     def testMediaOntology(self):
         self.registerMediaOntology()
-
-        Series = ontology.getClass('Series')
-        Episode = ontology.getClass('Episode')
-        Person = ontology.getClass('Person')
+        ontology.importClasses([ 'Series', 'Episode', 'Person' ])
 
         self.assert_('episodes' in Series.schema)
         self.assert_('episodes' in Series.reverseLookup)
@@ -285,9 +282,7 @@ class TestObjectNode(unittest.TestCase):
 
     def testReverseAttributeLookup(self):
         self.registerMediaOntology()
-
-        Series = ontology.getClass('Series')
-        Episode = ontology.getClass('Episode')
+        ontology.importClass([ 'Series', 'Episode' ])
 
         g = MemoryObjectGraph()
         self.createData(g)
@@ -325,12 +320,7 @@ class TestObjectNode(unittest.TestCase):
 
     def testFindObjectsInGraph(self):
         self.registerMediaOntology()
-
-        Movie = ontology.getClass('Movie')
-        Series = ontology.getClass('Series')
-        Episode = ontology.getClass('Episode')
-        Person = ontology.getClass('Person')
-        Character = ontology.getClass('Character')
+        ontology.importClasses([ 'Movie', 'Series', 'Episode', 'Person', 'Character' ])
 
         g = MemoryObjectGraph()
         self.createData(g)
@@ -358,12 +348,7 @@ class TestObjectNode(unittest.TestCase):
 
     def testComplexGraph(self):
         self.registerMediaOntology()
-
-        Movie = ontology.getClass('Movie')
-        Series = ontology.getClass('Series')
-        Episode = ontology.getClass('Episode')
-        Person = ontology.getClass('Person')
-        Character = ontology.getClass('Character')
+        ontology.importClasses([ 'Movie', 'Series', 'Episode', 'Person', 'Character' ])
 
         g = MemoryObjectGraph()
 

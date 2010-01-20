@@ -35,9 +35,8 @@ class ObjectNode(AbstractNode):
     An ObjectNode behaves in the following way:
      - it can have any number of named properties, of any type (literal type or another ObjectNode)
      - it implements dotted attribute access.
-     - DEPRECATED(*): it still has a class which "declares" a schema of standard properties and their types, like a normal object in OOP
-     - DEPRECATED(*): it can be validated against that schema (ie: do the actual properties have the same type as those declared in the class definition)
-     - DEPRECATED(*): setting attributes can be validated for type in real-time
+     - it keeps a list of valid classes for this node. If a node has a certain class, we can then create a valid instance of
+       that class (subclass of BaseObject) with the data from this node
      - DEPRECATED(*): it has primary properties, which are used as primary key for identifying ObjectNodes or for indexing purposes
 
     ObjectNodes should implement different types of equalities:
@@ -56,10 +55,9 @@ class ObjectNode(AbstractNode):
     classes at the same time.
 
     As this doesn't fit exactly with python's way of doing things, class value should be tested
-    using the ObjectNode.isinstance(class) and ObjectNode.issubclass(class, subclass) methods,
-    instead of the usual isinstance(obj, class) function.
+    using the ObjectNode.isinstance(class) method instead of the usual isinstance(obj, class) function.
 
-    Classes which have been registered in the global ontology can also be tested with their basename
+    TODO: deprecate: Classes which have been registered in the global ontology can also be tested with their basename
     given as a string (ie: node.isinstance('Movie')) to avoid too many importing headaches.
 
     ---------------------------------------------------------------------------------------------------------
