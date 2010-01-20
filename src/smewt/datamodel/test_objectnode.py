@@ -250,8 +250,8 @@ class TestObjectNode(unittest.TestCase):
         n2 = g1.NiceGuy(friend = n1)
 
         # by default we use recurse = OnIdentity
-        # we could also have g2.addNode(n2, recurse = OnValue) or recurse = OnUnique
-        r2 = g2.addNode(n2)
+        # we could also have g2.addObject(n2, recurse = OnValue) or recurse = OnUnique
+        r2 = g2.addObject(n2)
         self.assert_(r2 in g2)
         # verify it also brought its friend
         self.assert_(r2.friend in g2)
@@ -261,7 +261,7 @@ class TestObjectNode(unittest.TestCase):
         # FIXME: the following fails, it surely hides a bug...
         # if we keep on adding by identity, we will end up with lots of friends with a=23
         #n3 = g1.BaseObject(name = u'other node', friend = n1)
-        #r3 = g2.addNode(n3)
+        #r3 = g2.addObject(n3)
         #self.assertEquals(len(g2.findAll(a = 23)), 2)
 
         print '*'*100
@@ -270,7 +270,7 @@ class TestObjectNode(unittest.TestCase):
 
         # if we keep on adding by identity, we will end up with lots of friends with a=23
         n3 = g1.NiceGuy(name = u'other node', friend = n1)
-        r3 = g2.addNode(n3)
+        r3 = g2.addObject(n3)
         self.assertEquals(len(g2.findAll(a = 23)), 2)
 
         print '*'*100
@@ -281,7 +281,7 @@ class TestObjectNode(unittest.TestCase):
         # if we add and recurse on value, we shouldn't be adding the same node again and again
         n4 = g1.NiceGuy(name = u'3rd of its kind', friend = g1.BaseObject(a = 23))
 
-        r4 = g2.addNode(n4, recurse = Equal.OnValue)
+        r4 = g2.addObject(n4, recurse = Equal.OnValue)
 
         self.assertEquals(len(g2.findAll(a = 23)), 2) # no new node added with a = 23
         # reference should have been updated though, no trying to keep old friends

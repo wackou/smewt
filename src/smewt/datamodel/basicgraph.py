@@ -52,8 +52,13 @@ class BasicGraph(object):
         raise NotImplementedError
 
     def nodes(self):
-        """Return an iterator that goes over all the nodes in the graph."""
+        """Return an iterator on all the nodes in the graph."""
         raise NotImplementedError
+
+    def nodesFromClass(self, cls):
+        """Return an iterator on the nodes of a given class."""
+        raise NotImplementedError
+
 
     def addDirectedEdge(self, node, name, otherNode):
         # otherNode should always be a valid node
@@ -107,7 +112,7 @@ class BasicNode(object):
     These are signaled in this interface by raising NotImplementedError."""
 
     def __init__(self, graph, props = []):
-        print 'BasicNode.__init__', type(graph)
+        log.debug('BasicNode.__init__: graph = %s' % str(graph))
         self._graph = graph
 
 
@@ -138,10 +143,6 @@ class BasicNode(object):
         raise NotImplementedError
 
     def isinstance(self, cls):
-        raise NotImplementedError
-
-    def nodesFromClass(self, cls):
-        """Return all the nodes of a given class."""
         raise NotImplementedError
 
 

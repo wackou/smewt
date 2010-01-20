@@ -32,7 +32,7 @@ class TestBasicNode(unittest.TestCase):
         # FIXME: clear the previous ontology because the graphs do not get GC-ed properly
         ontology.clear()
 
-    def testBasicNode(self, GraphClass = MemoryGraph):
+    def atestBasicNode(self, GraphClass = MemoryGraph):
         g = GraphClass()
 
         n = g.createNode()
@@ -59,7 +59,7 @@ class TestBasicNode(unittest.TestCase):
         self.assert_(n3 in n.outgoingEdgeEndpoints('friend'))
 
 
-    def testBasicObjectNode(self, ObjectGraphClass = MemoryObjectGraph):
+    def atestBasicObjectNode(self, ObjectGraphClass = MemoryObjectGraph):
         g = ObjectGraphClass()
 
         n = g.createNode()
@@ -90,8 +90,8 @@ class TestBasicNode(unittest.TestCase):
                 super(B, self).__init__()
                 print 'B.__init__()'
 
-            def __contains__(self, obj):
-                print 'B.__contains__'
+            #def __contains__(self, obj):
+            #    print 'B.__contains__'
 
         class C(A):
             def __init__(self):
@@ -106,15 +106,42 @@ class TestBasicNode(unittest.TestCase):
                 super(D, self).__init__()
                 print 'D.__init__()'
 
-            def __contains__(self, obj):
-                print 'D.__contains__'
+            #def __contains__(self, obj):
+            #    print 'D.__contains__'
 
         d = D()
         3 in d
 
     def testBaseObject(self, GraphClass = MemoryObjectGraph):
-        g = GraphClass()
-        o = g.BaseObject()
+        class NiceGuy(BaseObject):
+            schema = Schema({ 'friend': BaseObject })
+            valid = [ 'friend' ]
+            reverseLookup = { 'friend': 'friendOf' }
+
+        # There is a problem when the reverse-lookup has the same name as the property because of the types:
+        # NiceGuy.friend = BaseObject, BaseObject.friend = NiceGuy
+        #
+        # it should also be possible to have A.friend = B and C.friend = B, and not be a problem for B, ie: type(B.friend) in [ A, C ]
+        #
+        # or we should restrict the ontology only to accept:
+        #  - no reverseLookup where key == value
+        #  - no 2 classes with the same link types to a third class
+        # actually, no reverseLookup where the implicit property could override an already existing one
+
+        ontology.register(NiceGuy)
+
+        g1 = GraphClass()
+        g2 = GraphClass()
+
+        n1 = g1.BaseObject(a = 23)
+        n2 = g1.NiceGuy(friend = n1)
+
+        r2 = g2.addObject(n2)
+
+        n3 = g1.NiceGuy(name = u'other node', friend = n1)
+        r3 = g2.addObject(n3)
+
+        # TODO: also try adding n2 after n3 is created
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestBasicNode)
@@ -122,6 +149,8 @@ if __name__ == '__main__':
     import logging
     logging.getLogger('smewt').setLevel(logging.WARNING)
     logging.getLogger('smewt.datamodel.Ontology').setLevel(logging.ERROR)
+    #logging.getLogger('smewt.datamodel.BasicGraph').setLevel(logging.DEBUG)
     #logging.getLogger('smewt.datamodel.ObjectNode').setLevel(logging.DEBUG)
+    #logging.getLogger('smewt.datamodel.MemoryObjectNode').setLevel(logging.DEBUG)
 
     unittest.TextTestRunner(verbosity=2).run(suite)

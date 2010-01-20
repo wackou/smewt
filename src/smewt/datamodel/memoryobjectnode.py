@@ -21,6 +21,7 @@
 from objectnode import ObjectNode
 from basicgraph import BasicNode
 from utils import tolist, toresult, isLiteral, toIterator
+import ontology
 import logging
 
 log = logging.getLogger('smewt.datamodel.MemoryObjectNode')
@@ -28,14 +29,14 @@ log = logging.getLogger('smewt.datamodel.MemoryObjectNode')
 class MemoryNode(BasicNode):
 
     def __init__(self, graph, props = []):
-        print 'MemoryNode.__init__'
-        graph._nodes.add(self)
-
         # NB: this should go before super().__init__() because we need self._props to exist
         #     before we can set attributes
         self._props = {}
         self._classes = set()
         super(MemoryNode, self).__init__(graph, props)
+
+        log.debug('MemoryNode.__init__')
+        graph._nodes.add(self)
 
 
     def __eq__(self, other):
@@ -85,7 +86,7 @@ class MemoryNode(BasicNode):
         self._props[name] = toresult(nodeList)
 
         # TODO: we should have this, right?
-        if list(node._props[name]) == []:
+        if self._props[name] is None:
             del node._props[name]
 
     def addDirectedEdge(self, name, otherNode):
@@ -97,7 +98,7 @@ class MemoryNode(BasicNode):
 
 
     def __setattr__(self, name, value):
-        if name == '_props':
+        if name in [ '_props', '_classes' ]:
             object.__setattr__(self, name, value)
         else:
             super(MemoryNode, self).__setattr__(name, value)
@@ -111,11 +112,7 @@ class MemoryNode(BasicNode):
             for ep in tolist(self._props[name]):
                 yield ep
         else:
-            print self._props
-            print list(self.literalKeys())
-            print list(self.edgeKeys())
             for prop, eps in self.edgeItems():
-                print 'it', prop
                 for ep in eps:
                     yield ep
 
@@ -150,23 +147,13 @@ class MemoryNode(BasicNode):
     def items(self):
         return self._props.items()
 
+    def updateValidClasses(self):
+        self._classes = set(cls for cls in ontology._classes.values() if self.isValidInstance(cls))
 
-    ### manipulation methods
-
-    '''
-    def updateNew(self, other):
-        for name, value in other._props.items():
-            if name not in self._props:
-                self._props[name] = value
-    '''
 
 # MemoryNode needs to come before ObjectNode, because we want it to be able to
 # override ObjectNode's methods (for optimization, for instance)
 class MemoryObjectNode(MemoryNode, ObjectNode):
     def __init__(self, graph, props = []):
-        print 'MemoryObjectNode.__init__', props
+        log.debug('MemoryObjectNode.__init__: props = %s' % str(props))
         super(MemoryObjectNode, self).__init__(graph, props)
-        # FIXME: this shouldn't be like that
-        #MemoryNode.__init__(self, graph)
-        #ObjectNode.__init__(self, props)
-        pass

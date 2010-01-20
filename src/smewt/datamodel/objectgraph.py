@@ -19,9 +19,10 @@
 #
 
 from objectnode import ObjectNode
-from basicgraph import BasicGraph
+from basicgraph import BasicGraph, BasicNode
 from baseobject import BaseObject, getNode
-from utils import reverseLookup
+from utils import reverseLookup, toresult
+import types
 import ontology
 import logging
 
@@ -36,11 +37,6 @@ class Equal:
     OnUniqueValue = 4
 
 
-def unwrapNode(node):
-    nodeClass = node.__class__ if isinstance(node, BaseObject) else None
-    node = getNode(node)
-
-    return node, nodeClass
 
 def wrapNode(node, nodeClass = None):
     if nodeClass is not None:
@@ -50,16 +46,11 @@ def wrapNode(node, nodeClass = None):
 
     return node
 
-def getChainedProperties(node, propList):
-    """Given a list of successive chained properties, returns the final value.
-    e.g.: get( Movie('2001'), [ 'director', 'firstName' ] ) = 'Stanley'
+def unwrapNode(node):
+    nodeClass = node.__class__ if isinstance(node, BaseObject) else None
+    node = getNode(node)
 
-    In case some property does not exist, it will raise an AttributeError."""
-    for prop in propList:
-        node = node.get(prop)
-
-    return node
-
+    return node, nodeClass
 
 
 
@@ -118,7 +109,7 @@ class ObjectGraph(BasicGraph):
         raise AttributeError
 
     def __contains__(self, node):
-        """Return whether this graph contains the given node (identity)."""
+        """Return whether this graph contains the given node  or object (identity)."""
         return self.contains(getNode(node))
 
     def removeLink(self, node, name, otherNode, reverseName):
@@ -132,9 +123,11 @@ class ObjectGraph(BasicGraph):
         self.addDirectedEdge(otherNode, reverseName, node)
 
 
-
     def addNode(self, node, recurse = Equal.OnIdentity, excludedDeps = []):
-        """Add a single node and its links recursively into the graph.
+        return self.addObject(BaseObject(node), recurse, excludedDeps)
+
+    def addObject(self, node, recurse = Equal.OnIdentity, excludedDeps = []):
+        """Add an object and its underlying node and its links recursively into the graph.
 
         If some dependencies of the node are already in the graph, we should not add
         new instances of them but use the ones already there (ie: merge links).
@@ -145,6 +138,7 @@ class ObjectGraph(BasicGraph):
           - recurse = OnValidValue : do not add the dependency only if there is already a node with the same valid properties
           - recurse = OnUnique     : do not add the dependency only if there is already a node with the same unique properties
         """
+        log.debug('Adding to graph: %s - node: %s' % (self, node))
         node, nodeClass = unwrapNode(node)
 
         if nodeClass is None:
@@ -155,6 +149,7 @@ class ObjectGraph(BasicGraph):
         #       in the added node dependencies: update missing properties, update all properties (even if already present),
         #       update non-valid properties, ignore new data, etc...
         excludedProperties = nodeClass.schema._implicit if nodeClass is not None else []
+        log.debug('exclude properties: %s' % excludedProperties)
 
         gnode = self.findNode(node, recurse, excludedProperties)
         if gnode is not None:
@@ -165,10 +160,12 @@ class ObjectGraph(BasicGraph):
         # first import any other node this node might depend on
         newprops = []
         for prop, value, reverseName in reverseLookup(node, nodeClass):
-            if isinstance(value, ObjectNode):
+            if (isinstance(value, BasicNode) or
+                (isinstance(value, list) and isinstance(value[0], BasicNode))):
                 # use only the explicit properties here
                 if prop not in excludedProperties and value not in excludedDeps:
-                    importedObject = self.addNode(wrapNode(value, nodeClass.schema[prop]), recurse, excludedDeps = excludedDeps + [node])
+                    log.debug('Importing dependency %s: %s' % (prop, value))
+                    importedObject = self.addObject(wrapNode(value, nodeClass.schema[prop]), recurse, excludedDeps = excludedDeps + [node])
                     newprops.append((prop, importedObject._node, reverseName))
             else:
                 newprops.append((prop, value, reverseName))
@@ -176,8 +173,6 @@ class ObjectGraph(BasicGraph):
         # actually create the node
         result = self.createNode(newprops)
 
-        # NB: possible optimization: we know the node should be valid, no need to recreate an instance
-        #     from scratch and re-validate its properties
         return wrapNode(result, nodeClass)
 
 
@@ -185,16 +180,16 @@ class ObjectGraph(BasicGraph):
         """Should allow node, but also list of nodes, graph, ..."""
         if isinstance(node, list):
             for n in node:
-                self.addNode(n)
+                self.addObject(n)
         else:
-            self.addNode(node)
+            self.addObject(node)
 
         return self
 
 
     ### Search methods
 
-    def findAll(self, type = None, cond = lambda x: True, **kwargs):
+    def findAll(self, type = None, validNode = lambda x: True, **kwargs):
         """This method returns a list of the objects of the given type in this graph for which
         the cond function returns True (or sth that evaluates to True).
         It will also only keep those objects that have properties which match the given keyword
@@ -217,22 +212,24 @@ class ObjectGraph(BasicGraph):
           g.findAll(Person, role_movie_title = 'The Dark Knight')
           g.findAll(Character, isCharacterOf_movie_title = 'Fear and loathing.*', regexp = True)
         """
-        # TODO: not really optimized, we could index on class type, etc...
-        result = []
+        return list(self._findAll(type, validNode, **kwargs))
 
-        if type:
-            validNode = cond
-            cond = lambda x: x.isinstance(type) and validNode(x)
 
-        for node in self.nodes():
-            if not cond(node):
+    def _findAll(self, type = None, validNode = lambda x: True, **kwargs):
+        """Implementation of findAll that returns a generator."""
+        for node in self.nodesFromClass(type) if type else self.nodes():
+            # TODO: should this go before or after the properties checking? Which is faster in general?
+            if not validNode(node):
                 continue
 
             valid = True
             for prop, value in kwargs.items():
                 try:
-                    #if node.get(prop) != value:
-                    if getChainedProperties(node, prop.split('_')) != value:
+                    # FIXME: this doesn't work with lists of objects
+                    if isinstance(value, BaseObject):
+                        value = value._node
+
+                    if node.getChainedProperties(prop.split('_')) != value:
                         valid = False
                         break
                 except AttributeError:
@@ -243,17 +240,20 @@ class ObjectGraph(BasicGraph):
                 continue
 
             if type:
-                result.append(type(node))
+                yield type(node)
             else:
-                result.append(node)
-
-        return result
+                yield node
 
 
-    def findOne(self, type = None, cond = lambda x: True, **kwargs):
-        """Returns 1 result. see findAll for description."""
-        # TODO: optimize me, we don't really need to find all of them
-        return self.findAll(type, cond, **kwargs)[0]
+    def findOne(self, type = None, validNode = lambda x: True, **kwargs):
+        """Returns a single result. see findAll for description.
+        Raises an exception of no result was found."""
+        # NB: as _findAll is a generator, this should be fairly optimized
+        result = self._findAll(type, validNode, **kwargs)
+        try:
+            return result.next()
+        except StopIteration:
+            raise ValueError('Could not find given %s with props %s' % (type, kwargs))
 
     def findOrCreate(self, type, **kwargs):
         '''This method returns the first object in this graph which has the specified type and
@@ -262,4 +262,7 @@ class ObjectGraph(BasicGraph):
         graph, and returns it.
 
         example: g.findOrCreate(Series, title = 'Arrested Development')'''
-        raise NotImplementedError
+        try:
+            return self.findOne(type, **kwargs)
+        except ValueError:
+            return type(graph = self, **kwargs)

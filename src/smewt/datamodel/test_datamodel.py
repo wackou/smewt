@@ -122,6 +122,9 @@ class TestObjectNode(unittest.TestCase):
             valid = [ 'series', 'season', 'episodeNumber' ]
             unique = valid
 
+            def __cmp__(self, other):
+                return (self.season - other.season) or (self.episodeNumber - other.episodeNumber)
+
         class Person(BaseObject):
             schema = Schema({ 'firstName': unicode,
                               'lastName': unicode,
@@ -250,8 +253,8 @@ class TestObjectNode(unittest.TestCase):
         n2 = g1.NiceGuy(friend = n1)
 
         # by default we use recurse = OnIdentity
-        # we could also have g2.addNode(n2, recurse = OnValue) or recurse = OnUnique
-        r2 = g2.addNode(n2)
+        # we could also have g2.addObject(n2, recurse = OnValue) or recurse = OnUnique
+        r2 = g2.addObject(n2)
         self.assert_(r2 in g2)
         # verify it also brought its friend
         self.assert_(r2.friend in g2)
@@ -261,37 +264,21 @@ class TestObjectNode(unittest.TestCase):
         # FIXME: the following fails, it surely hides a bug...
         # if we keep on adding by identity, we will end up with lots of friends with a=23
         #n3 = g1.BaseObject(name = u'other node', friend = n1)
-        #r3 = g2.addNode(n3)
+        #r3 = g2.addObject(n3)
         #self.assertEquals(len(g2.findAll(a = 23)), 2)
-
-        print '*'*100
-        print [ r2 ]
-        print tolist(r2._node.friend)
 
         # if we keep on adding by identity, we will end up with lots of friends with a=23
         n3 = g1.NiceGuy(name = u'other node', friend = n1)
-        r3 = g2.addNode(n3)
+        r3 = g2.addObject(n3)
         self.assertEquals(len(g2.findAll(a = 23)), 2)
-
-        print '*'*100
-        print [ r2, r3 ]
-        print tolist(r2.friend)
-        print tolist(r3.friend)
 
         # if we add and recurse on value, we shouldn't be adding the same node again and again
         n4 = g1.NiceGuy(name = u'3rd of its kind', friend = g1.BaseObject(a = 23))
 
-        r4 = g2.addNode(n4, recurse = Equal.OnValue)
+        r4 = g2.addObject(n4, recurse = Equal.OnValue)
 
         self.assertEquals(len(g2.findAll(a = 23)), 2) # no new node added with a = 23
         # reference should have been updated though, no trying to keep old friends
-        print '*'*100
-        print [ r2, r3, r4 ]
-        print tolist(r2.friend)
-        print tolist(r3.friend)
-        print tolist(r4.friend)
-        print r4.friend._node
-        print '*'*100
         self.assert_(r4.friend._node in [ r._node for r in tolist(r2.friend) ] or
                      r4.friend._node in [ r._node for r in tolist(r3.friend) ])
 
@@ -324,8 +311,6 @@ class TestObjectNode(unittest.TestCase):
         g.Movie(title = u'The Dark Knight', year = 2008)
 
         wire = g.Series(title = u'The Wire')
-        print '*'*100
-        print type(wire), wire
 
         g.Episode(series = wire,
                   season = 2,
@@ -338,10 +323,11 @@ class TestObjectNode(unittest.TestCase):
                   title = u'Collateral Damage')
 
 
-    def atestFindObjectsInGraph(self):
+    def testFindObjectsInGraph(self):
         self.registerMediaOntology()
 
         Movie = ontology.getClass('Movie')
+        Series = ontology.getClass('Series')
         Episode = ontology.getClass('Episode')
         Person = ontology.getClass('Person')
         Character = ontology.getClass('Character')
@@ -360,6 +346,8 @@ class TestObjectNode(unittest.TestCase):
         self.assertEqual(recentMovies[0].title, 'The Dark Knight')
 
         self.assertEqual(len(g.findAll(Episode, series_title = 'The Wire')), 2)
+        thewire = g.findOne(Series, title = 'The Wire')
+        self.assertEqual(len(g.findAll(Episode, series = thewire)), 2)
         '''
         g.findAll(Person, role_movie_title = 'The Dark Knight') # role == Role.isPersonOf
         g.findAll(Character, isCharacterOf_movie_title = 'Fear and Loathing in Las Vegas', regexp = True)
@@ -368,6 +356,35 @@ class TestObjectNode(unittest.TestCase):
         print c.is_character_of.movie.title
         '''
 
+    def testComplexGraph(self):
+        self.registerMediaOntology()
+
+        Movie = ontology.getClass('Movie')
+        Series = ontology.getClass('Series')
+        Episode = ontology.getClass('Episode')
+        Person = ontology.getClass('Person')
+        Character = ontology.getClass('Character')
+
+        g = MemoryObjectGraph()
+
+        e = g.Episode(series = g.Series(title = u'abc'), season = 1, episodeNumber = 23)
+        g.findOrCreate(Series, title = u'def')
+
+        self.assertEqual(len(g.findAll(Series)), 2)
+
+        e2 = g.Episode(series = g.findOrCreate(Series, title = u'abc'), season = 1, episodeNumber = 34)
+
+        s = g.findOne(Series, title = u'abc')
+        self.assertEqual(len(s.episodes), 2)
+
+        # test that methos on BaseObjects subclasses are correctly called. In our case: Episode.__cmp__
+        ep1 = g.Episode(series = s, season = 1, episodeNumber = 1)
+        ep2 = g.Episode(series = s, season = 1, episodeNumber = 2)
+        ep3 = g.Episode(series = s, season = 1, episodeNumber = 3)
+        ep4 = g.Episode(series = s, season = 1, episodeNumber = 4)
+        ep5 = g.Episode(series = s, season = 1, episodeNumber = 5)
+
+        self.assertEqual(sorted(s.episodes), [ ep1, ep2, ep3, ep4, ep5, e, e2 ])
 
 
     def atestNeo4j(self):
@@ -396,7 +413,7 @@ if __name__ == '__main__':
     import logging
     logging.getLogger('smewt').setLevel(logging.WARNING)
     logging.getLogger('smewt.datamodel.Ontology').setLevel(logging.ERROR)
-    logging.getLogger('smewt.datamodel.Neo4jObjectNode').setLevel(logging.DEBUG)
+    #logging.getLogger('smewt.datamodel.Neo4jObjectNode').setLevel(logging.DEBUG)
     #logging.getLogger('smewt.datamodel.ObjectNode').setLevel(logging.DEBUG)
 
     unittest.TextTestRunner(verbosity=2).run(suite)

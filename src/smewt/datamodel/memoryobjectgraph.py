@@ -50,6 +50,9 @@ class MemoryGraph(BasicGraph):
         for node in self._nodes:
             yield node
 
+    def nodesFromClass(self, cls):
+        return (node for node in self._nodes if node.isinstance(cls))
+
     def contains(self, node):
         """Return whether this graph contains the given node (identity)."""
         return node in self._nodes

@@ -33,6 +33,8 @@ def getNode(node):
         return node
     elif isinstance(node, BaseObject):
         return node._node
+    elif isinstance(node, list) and isinstance(node[0], BaseObject):
+        return [ n._node for n in node ]
     else:
         raise TypeError("Given object is not an ObjectNode or BaseObject instance")
 
@@ -92,6 +94,7 @@ class BaseObject(object):
     #_implicitSchema = {}
 
     def __init__(self, basenode = None, graph = None, **kwargs):
+        log.debug('BaseObject.__init__: basenode = %s, args = %s' % (basenode, kwargs))
         if graph is None and basenode is None:
             raise ValueError('You need to specify either a graph or a base node when instantiating a %s' % self.__class__.__name__)
 
@@ -106,9 +109,7 @@ class BaseObject(object):
 
         if basenode is None:
             # if no basenode is given, we need to create a new node
-            #print 'creating basenode'
             self._node = graph.createNode(reverseLookup(toNodes(kwargs), self.__class__))
-            #print 'creating basenode ok'
 
         else:
             basenode = getNode(basenode)
@@ -120,16 +121,14 @@ class BaseObject(object):
             else:
                 self._node = graph.createNode(reverseLookup(basenode, self.__class__)) # TODO: we should be able to construct directly from the other node
 
-            self.update(kwargs)
+            # optimization: avoid revalidating the classes all the time when creating a BaseObject from a pre-existing node
+            if kwargs:
+                self.update(kwargs)
 
-        print 'hep', self
-        print self._classes
         # make sure that the new instance we're creating is actually a valid one
         if not self._node.isinstance(self.__class__):
-            #print 'glou'
             raise TypeError("Cannot instantiate a valid instance of %s because:\n%s" %
                             (self.__class__.__name__, self._node.invalidProperties(self.__class__)))
-        #print 'glah'
 
 
     def __getattr__(self, name):

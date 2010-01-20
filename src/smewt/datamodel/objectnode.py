@@ -76,30 +76,23 @@ class ObjectNode(BasicNode):
     """
 
     def __init__(self, graph, props = []):
-        print 'ObjectNode.__init__'
         super(ObjectNode, self).__init__(graph, props)
+        log.debug('ObjectNode.__init__: props = %s' % str(props))
 
-        print 'setting', props
         for prop, value, reverseName in props:
             self.set(prop, value, reverseName, validate = False)
 
-        print 'update valid classes'
         self.updateValidClasses()
 
 
     def isValidInstance(self, cls):
-        # if graphType == 'DYNAMIC': return True # != 'STATIC'
         for prop in cls.valid:
             value = self.get(prop)
 
             if isinstance(value, types.GeneratorType):
                 value = list(value)
-                if value != [] and not value[0].isinstance(cls.schema[prop]):
-                    return False
-            # TODO: remove this elif
-            elif isinstance(value, BasicNode):
                 # TODO: we might need value.isValidInstance in some cases
-                if not value.isinstance(cls.schema[prop]):
+                if value != [] and not value[0].isinstance(cls.schema[prop]):
                     return False
             else:
                 # TODO: here we might want to check if value is None and allow it or not
@@ -128,7 +121,6 @@ class ObjectNode(BasicNode):
         for cls in ontology._classes.values():
             if self.isValidInstance(cls):
                 self.addClass(cls)
-        #self._classes = set([ cls for cls in ontology._classes.values() if self.isValidInstance(cls) ])
 
         log.debug('valid classes for %s:\n  %s' % (self.toString(), [ cls.__name__ for cls in self._classes ]))
 
@@ -178,15 +170,28 @@ class ObjectNode(BasicNode):
             return self.getLiteral(name)
         except:
             try:
-                return self.getLink(name) # TODO: this should return an iterator to the pointed nodes
+                return self.getLink(name) # this should be an iterable over the pointed nodes
             except:
                 return None
 
+    def getChainedProperties(self, propList):
+        """Given a list of successive chained properties, returns the final value.
+        e.g.: Movie('2001').getChainedProperties([ 'director', 'firstName' ]) == 'Stanley'
+
+        In case some property does not exist, it will raise an AttributeError."""
+        result = self
+        for prop in propList:
+            result = result.get(prop)
+            if isinstance(result, types.GeneratorType):
+                # FIXME: this will fail if it branches before the last property
+                result = toresult(list(result))
+
+        return result
 
     ### properties manipulation methods
 
     def __setattr__(self, name, value):
-        if name in [ '_graph', '_classes' ]:
+        if name in [ '_graph' ]:
             object.__setattr__(self, name, value)
         else:
             self.set(name, value)
@@ -198,6 +203,7 @@ class ObjectNode(BasicNode):
         name of the link when followed in the other direction.
         If reverseName is not given, a default of 'isNameOf' (using the given name) will be used."""
 
+        # FIXME: this doesn't work when given a list of ObjectNodes
         if isinstance(value, ObjectNode):
             if reverseName is None:
                 #raise ValueError('When setting a link between 2 nodes, you also need to give a reverseName for the link.')
@@ -214,6 +220,7 @@ class ObjectNode(BasicNode):
         # update the cache of valid classes
         if validate:
             self.updateValidClasses()
+
 
     def setLink(self, name, otherNode, reverseName):
         """Can assume that value is always an object node."""
