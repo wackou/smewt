@@ -19,7 +19,7 @@
 #
 
 from objectnode import ObjectNode
-from basicgraph import BasicGraph
+from abstractdirectedgraph import AbstractDirectedGraph
 from memoryobjectnode import MemoryNode, MemoryObjectNode
 from baseobject import BaseObject, getNode
 import ontology
@@ -30,7 +30,7 @@ import logging
 log = logging.getLogger('smewt.datamodel.MemoryObjectGraph')
 
 
-class MemoryGraph(BasicGraph):
+class MemoryGraph(AbstractDirectedGraph):
     _objectNodeClass = MemoryNode
 
     def __init__(self):

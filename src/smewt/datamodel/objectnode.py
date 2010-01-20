@@ -19,7 +19,7 @@
 #
 
 from smewt.base.textutils import toUtf8
-from basicgraph import BasicNode
+from abstractnode import AbstractNode
 from utils import tolist, toresult, isOf
 import ontology
 import types
@@ -29,7 +29,7 @@ log = logging.getLogger('smewt.datamodel.ObjectNode')
 
 
 
-class ObjectNode(BasicNode):
+class ObjectNode(AbstractNode):
     """An ObjectNode is a nice and useful mix between an OOP object and a node in a graph.
 
     An ObjectNode behaves in the following way:

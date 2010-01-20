@@ -19,14 +19,14 @@
 #
 
 from objectnode import ObjectNode
-from basicgraph import BasicNode
+from abstractnode import AbstractNode
 from utils import tolist, toresult, isLiteral, toIterator
 import ontology
 import logging
 
 log = logging.getLogger('smewt.datamodel.MemoryObjectNode')
 
-class MemoryNode(BasicNode):
+class MemoryNode(AbstractNode):
 
     def __init__(self, graph, props = []):
         # NB: this should go before super().__init__() because we need self._props to exist

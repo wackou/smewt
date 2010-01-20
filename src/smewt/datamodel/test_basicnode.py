@@ -26,13 +26,13 @@ from utils import tolist
 import ontology
 import unittest
 
-class TestBasicNode(unittest.TestCase):
+class TestAbstractNode(unittest.TestCase):
 
     def setUp(self):
         # FIXME: clear the previous ontology because the graphs do not get GC-ed properly
         ontology.clear()
 
-    def atestBasicNode(self, GraphClass = MemoryGraph):
+    def atestAbstractNode(self, GraphClass = MemoryGraph):
         g = GraphClass()
 
         n = g.createNode()
@@ -144,12 +144,12 @@ class TestBasicNode(unittest.TestCase):
         # TODO: also try adding n2 after n3 is created
 
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestBasicNode)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestAbstractNode)
 
     import logging
     logging.getLogger('smewt').setLevel(logging.WARNING)
     logging.getLogger('smewt.datamodel.Ontology').setLevel(logging.ERROR)
-    #logging.getLogger('smewt.datamodel.BasicGraph').setLevel(logging.DEBUG)
+    #logging.getLogger('smewt.datamodel.AbstractDirectedGraph').setLevel(logging.DEBUG)
     #logging.getLogger('smewt.datamodel.ObjectNode').setLevel(logging.DEBUG)
     #logging.getLogger('smewt.datamodel.MemoryObjectNode').setLevel(logging.DEBUG)
 

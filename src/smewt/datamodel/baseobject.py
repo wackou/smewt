@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from basicgraph import BasicNode
+from abstractnode import AbstractNode
 from objectnode import ObjectNode
 from ontology import Schema
 from utils import isOf, reverseLookup, toresult
@@ -29,7 +29,7 @@ log = logging.getLogger('smewt.datamodel.Ontology')
 
 
 def getNode(node):
-    if isinstance(node, BasicNode):
+    if isinstance(node, AbstractNode):
         return node
     elif isinstance(node, BaseObject):
         return node._node
@@ -140,8 +140,8 @@ class BaseObject(object):
             resultClass = self.__class__.schema.get(name) or BaseObject
             return toresult([ resultClass(basenode = n) for n in result ])
 
-        # FIXME: better test here (although if the graph is consistent it shouldn't be necessary)
-        #elif isinstance(result, list) and isinstance(result[0], BasicNode):
+        # FIXME: better test here (although if the graph is consistent (ie: always returns generators) it shouldn't be necessary)
+        #elif isinstance(result, list) and isinstance(result[0], AbstractNode):
         #    resultClass = self.__class__.schema.get(name) or BaseObject
         #    return [ resultClass(basenode = node) for node in result ]
 

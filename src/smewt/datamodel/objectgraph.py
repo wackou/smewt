@@ -19,7 +19,8 @@
 #
 
 from objectnode import ObjectNode
-from basicgraph import BasicGraph, BasicNode
+from abstractdirectedgraph import AbstractDirectedGraph
+from abstractnode import AbstractNode
 from baseobject import BaseObject, getNode
 from utils import reverseLookup, toresult
 import types
@@ -54,7 +55,7 @@ def unwrapNode(node):
 
 
 
-class ObjectGraph(BasicGraph):
+class ObjectGraph(AbstractDirectedGraph):
     """An ObjectGraph is a directed graph of nodes in which each node is actually an object,
     with a class type and any number of properties/attributes, which can be either literal
     values or other objects in the graph.
@@ -160,8 +161,8 @@ class ObjectGraph(BasicGraph):
         # first import any other node this node might depend on
         newprops = []
         for prop, value, reverseName in reverseLookup(node, nodeClass):
-            if (isinstance(value, BasicNode) or
-                (isinstance(value, list) and isinstance(value[0], BasicNode))):
+            if (isinstance(value, AbstractNode) or
+                (isinstance(value, list) and isinstance(value[0], AbstractNode))):
                 # use only the explicit properties here
                 if prop not in excludedProperties and value not in excludedDeps:
                     log.debug('Importing dependency %s: %s' % (prop, value))
