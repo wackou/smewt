@@ -18,12 +18,24 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import types
 import ontology
 
 def tolist(obj):
     if    obj is None: return []
     elif  isinstance(obj, list): return obj
     else: return [ obj ]
+
+
+def multiIsInstance(value, cls):
+    if isinstance(value, list):
+        return all(isinstance(v, cls) for v in value)
+    elif isinstance(value, types.GeneratorType):
+        # we can't touch the generator otherwise the values will be lost
+        return True # NB: this behaviour is debatable
+    else:
+        return isinstance(value, cls)
+
 
 
 def toresult(lst):

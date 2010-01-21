@@ -21,10 +21,7 @@
 from objectnode import ObjectNode
 from abstractdirectedgraph import AbstractDirectedGraph
 from memoryobjectnode import MemoryNode, MemoryObjectNode
-from baseobject import BaseObject, getNode
-import ontology
 from objectgraph import ObjectGraph
-from utils import tolist, toresult
 import logging
 
 log = logging.getLogger('smewt.datamodel.MemoryObjectGraph')
@@ -39,8 +36,12 @@ class MemoryGraph(AbstractDirectedGraph):
 
     def clear(self):
         """Delete all objects in this graph."""
-        ObjectGraph.clear()
+        AbstractDirectedGraph.clear()
         self._nodes.clear()
+
+    def createNode(self, props = []):
+       # FIXME: this might not work anymore (multiple inheritance)
+        return self.__class__._objectNodeClass(self, props)
 
     def deleteNode(self, node):
         raise NotImplementedError

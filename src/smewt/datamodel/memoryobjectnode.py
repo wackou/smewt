@@ -18,8 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from objectnode import ObjectNode
 from abstractnode import AbstractNode
+from objectnode import ObjectNode
 from utils import tolist, toresult, isLiteral, toIterator
 import ontology
 import logging
@@ -29,8 +29,8 @@ log = logging.getLogger('smewt.datamodel.MemoryObjectNode')
 class MemoryNode(AbstractNode):
 
     def __init__(self, graph, props = []):
-        # NB: this should go before super().__init__() because we need self._props to exist
-        #     before we can set attributes
+        # NB: this should go before super().__init__() because we need self._props and
+        #     self._classes to exist before we can set attributes
         self._props = {}
         self._classes = set()
         super(MemoryNode, self).__init__(graph, props)
@@ -45,6 +45,15 @@ class MemoryNode(AbstractNode):
     def __hash__(self):
         # TODO: verify me
         return id(self)
+
+    def __setattr__(self, name, value):
+        if name in [ '_props', '_classes' ]:
+            object.__setattr__(self, name, value)
+        else:
+            super(MemoryNode, self).__setattr__(name, value)
+
+
+    ### Ontology methods
 
     def addClass(self, cls):
         self._classes.add(cls)
@@ -63,7 +72,7 @@ class MemoryNode(AbstractNode):
 
 
 
-    ### Acessing properties methods
+    ### Accessing literal properties
 
     def getLiteral(self, name):
         # if name is not a literal, we need to throw an exception
@@ -72,51 +81,8 @@ class MemoryNode(AbstractNode):
             return result
         raise AttributeError
 
-    def getLink(self, name):
-        # if name is not an edge, we need to throw an exception
-        result = self._props[name]
-        if not isLiteral(result):
-            return toIterator(result)
-        raise AttributeError
-
-    def removeDirectedEdge(self, name, otherNode):
-        # otherNode should always be a valid node
-        nodeList = tolist(self._props.get(name))
-        nodeList.remove(otherNode)
-        self._props[name] = toresult(nodeList)
-
-        # TODO: we should have this, right?
-        if self._props[name] is None:
-            del node._props[name]
-
-    def addDirectedEdge(self, name, otherNode):
-        # otherNode should always be a valid node
-        nodeList = tolist(self._props.get(name))
-        nodeList.append(otherNode)
-        self._props[name] = toresult(nodeList)
-
-
-
-    def __setattr__(self, name, value):
-        if name in [ '_props', '_classes' ]:
-            object.__setattr__(self, name, value)
-        else:
-            super(MemoryNode, self).__setattr__(name, value)
-
-
     def setLiteral(self, name, value):
         self._props[name] = value
-
-    def outgoingEdgeEndpoints(self, name = None):
-        if name is not None:
-            for ep in tolist(self._props[name]):
-                yield ep
-        else:
-            for prop, eps in self.edgeItems():
-                for ep in eps:
-                    yield ep
-
-    ### Container methods
 
     def literalKeys(self):
         return (k for k, v in self._props.items() if isLiteral(v))
@@ -127,6 +93,44 @@ class MemoryNode(AbstractNode):
     def literalItems(self):
         return ((k, v) for k, v in self._props.items() if isLiteral(v))
 
+
+
+    ### Accessing edge properties
+
+    def addDirectedEdge(self, name, otherNode):
+        # otherNode should always be a valid node
+        nodeList = tolist(self._props.get(name))
+        nodeList.append(otherNode)
+        self._props[name] = toresult(nodeList)
+
+    def removeDirectedEdge(self, name, otherNode):
+        # otherNode should always be a valid node
+        nodeList = tolist(self._props.get(name))
+        nodeList.remove(otherNode)
+        self._props[name] = toresult(nodeList)
+
+        # TODO: we should have this, right?
+        if self._props[name] is None:
+            del self._props[name]
+
+
+    def outgoingEdgeEndpoints(self, name = None):
+        if name is None: return self._allOutgoingEdgeEndpoints()
+        else:            return self._outgoingEdgeEndpoints(name)
+
+    def _outgoingEdgeEndpoints(self, name):
+        # if name is not an edge, we need to throw an exception
+        result = self._props[name]
+        if not isLiteral(result):
+            return toIterator(result)
+        raise AttributeError
+
+    def _allOutgoingEdgeEndpoints(self):
+        for prop, eps in self.edgeItems():
+            for ep in eps:
+                yield ep
+
+
     def edgeKeys(self):
         return (k for k, v in self._props.items() if not isLiteral(v))
 
@@ -136,16 +140,23 @@ class MemoryNode(AbstractNode):
     def edgeItems(self):
         return ((k, toIterator(v)) for k, v in self._props.items() if not isLiteral(v))
 
-    # the next ones are overriden for efficiency
+
+    # The next methods are overriden for efficiency
+    # They should take precedence over their implementation in ObjectNode, as long as the order
+    # of inheritance is respected, ie:
+    #
+    #   class MemoryObjectNode(MemoryNode, ObjectNode): # GOOD
+    #   class MemoryObjectNode(ObjectNode, MemoryNode): # BAD
 
     def keys(self):
         return self._props.keys()
 
-    def values(self):
-        return self._props.values()
+    # FIXME: wrong implementation as the values for edges should be iterators
+    #def values(self):
+    #    return self._props.values()
 
-    def items(self):
-        return self._props.items()
+    #def items(self):
+    #    return self._props.items()
 
     def updateValidClasses(self):
         self._classes = set(cls for cls in ontology._classes.values() if self.isValidInstance(cls))

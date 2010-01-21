@@ -21,7 +21,7 @@
 from abstractnode import AbstractNode
 from objectnode import ObjectNode
 from ontology import Schema
-from utils import isOf, reverseLookup, toresult
+from utils import isOf, reverseLookup, toresult, multiIsInstance
 import types
 import logging
 
@@ -43,10 +43,12 @@ def toNodes(d):
     for k, v in d.items():
         if isinstance(v, BaseObject):
             result[k] = v._node
+        elif isinstance(v, list) and (v != [] and isinstance(v[0], BaseObject)):
+            result[k] = [ n._node for n in v ]
     return result
 
 def checkClass(name, value, schema):
-    if name in schema and type(value) != schema[name]:
+    if name in schema and not multiIsInstance(value, schema[name]):
         raise TypeError, "The '%s' attribute is of type '%s' but you tried to assign it a '%s'" % (name, schema[name], type(value))
 
 
@@ -123,7 +125,7 @@ class BaseObject(object):
 
             # optimization: avoid revalidating the classes all the time when creating a BaseObject from a pre-existing node
             if kwargs:
-                self.update(kwargs)
+                self.update(toNodes(kwargs))
 
         # make sure that the new instance we're creating is actually a valid one
         if not self._node.isinstance(self.__class__):
@@ -161,14 +163,20 @@ class BaseObject(object):
         if name in cls.schema._implicit:
             raise ValueError("Implicit properties are read-only (%s.%s)" % (cls.__name__, name))
 
+        # if mode == STRICT and name not in cls.schema:
+        #     raise ValueError("Unknown property in the class schema: (%s.%s)" % (cls.__name__, name))
+
         # objects are statically-typed here; graphType == 'STATIC'
         checkClass(name, value, cls.schema)
 
         # if we don't have a reverse lookup for this property, default to a reverse name of 'is%(Property)Of'
         reverseName = self.__class__.reverseLookup.get(name) or isOf(name)
 
+        # if there are any BaseObjects in there, unwrap them into ObjectNodes
         if isinstance(value, BaseObject):
             self._node.set(name, value._node, reverseName, validate)
+        elif isinstance(value, list) and (value == [] or isinstance(value[0], BaseObject)):
+            self._node.set(name, [ v._node for v in value ], reverseName, validate)
         else:
             self._node.set(name, value, reverseName, validate)
 
@@ -183,7 +191,10 @@ class BaseObject(object):
         return self.explicitItems() == other.explicitItems()
 
     def __str__(self):
-        return self._node.toString(cls = self.__class__).encode('utf-8')
+        return self._node.toString(cls = self.__class__, default = BaseObject).encode('utf-8')
+
+    def __repr__(self):
+        return self.__str__()
 
     def explicitItems(self):
         return [ x for x in self.items() if x[0] not in self.__class__.schema._implicit ]

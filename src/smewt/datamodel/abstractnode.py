@@ -25,11 +25,32 @@ log = logging.getLogger('smewt.datamodel.AbstractNode')
 
 
 class AbstractNode(object):
-    """This is the class one should inherit from when providing a specific implementation of a Node.
+    """This class describes a basic node in a directed graph, with the addition that it has a special
+    property "classes" which describe which class this node can "morph" into. This mechanism could be
+    built as another basic node property, but it is not for performance reasons.
 
-    You need only implement those methods which are necessary to be defined for a node that can have
-    literal properties and named edges to other nodes in a directed graph.
-    These are signaled in this interface by raising NotImplementedError."""
+    It can also have named directed edges to other nodes, ie: the edges are not "anonymous", but are
+    first-class citizens (in future versions, we might even want to add other properties to an edge).
+    A node can have any number of edges of the same type to other nodes (even multiples edges to the
+    same node), but it can't have edges to itself.
+
+    The AbstractNode class is the basic interface one needs to implement for providing
+    a backend storage of the data. It is complementary to the AbstractDirectedGraph interface.
+
+    You only need to provide the implementation for this interface, and then an ObjectNode can
+    be automatically built upon it.
+
+    The methods you need to implement fall into the following categories:
+     - add / remove / clear / check / get current valid classes
+     - get / set / iterate over literal properties
+     - add / remove / iterate over edges
+
+    Note: as ObjectNode reimplements the __setattr__ method, you have to do the same in your
+          subclass of AbstractNode to catch the instance attributes you need to be able to set.
+          Failure to do this will most certainly result in an infinite loop, ie: it looks like
+          everything is stuck very soon, or even a stack overflow due to infinite recursion.
+
+    """
 
     def __init__(self, graph, props = []):
         log.debug('AbstractNode.__init__: graph = %s' % str(graph))
@@ -37,8 +58,13 @@ class AbstractNode(object):
 
 
     def __eq__(self, other):
-        # This should implement identity of nodes, not properties equality (this should be done
-        # in the BaseObject instance)
+        """Return whether two nodes are equal.
+
+        This should implement identity of nodes, not properties equality (this should be done
+        in the BaseObject instance)."""
+        raise NotImplementedError
+
+    def __hash__(self):
         raise NotImplementedError
 
     ### Methods needed for storing the nodes ontology (caching)
@@ -66,7 +92,7 @@ class AbstractNode(object):
         raise NotImplementedError
 
 
-
+    ### Methods related to getting / setting literal properties
 
     def getLiteral(self, name):
         raise NotImplementedError
@@ -87,6 +113,8 @@ class AbstractNode(object):
         raise NotImplementedError
 
 
+    ### Methods related to getting / setting edges (edge properties that point to other nodes)
+
     def addDirectedEdge(self, name, otherNode):
         raise NotImplementedError
 
@@ -96,18 +124,25 @@ class AbstractNode(object):
     def outgoingEdgeEndpoints(self, name = None):
         """Return all the nodes which this node points to with the given edge type.
         If name is None, return all outgoing edge points."""
+        # Note: it is *imperative* that this function return a generator and not just any iterable over the values
         raise NotImplementedError
 
     def edgeKeys(self):
-        # TODO: should return an iterator
+        # NB: this should return an iterator
         raise NotImplementedError
 
     def edgeValues(self):
-        # TODO: should return an iterator of (iterator on AbstractNodes)
+        # NB: this should return an iterator
+        # Note: it is *imperative* that this function return a generator for each value and not just any iterable over the values
         raise NotImplementedError
 
     def edgeItems(self):
+        # NB: this should return an iterator
+        # Note: it is *imperative* that this function return a generator for each value and not just any iterable over the values
         raise NotImplementedError
+
+
+    ### Additional utility methods
 
     def sameProperties(self, other, exclude = []):
         # NB: sameValidProperties and sameUniqueProperties should be defined in BaseObject

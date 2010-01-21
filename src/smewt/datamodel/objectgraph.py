@@ -113,15 +113,16 @@ class ObjectGraph(AbstractDirectedGraph):
         """Return whether this graph contains the given node  or object (identity)."""
         return self.contains(getNode(node))
 
-    def removeLink(self, node, name, otherNode, reverseName):
-        # otherNode should always be a valid node
-        self.removeDirectedEdge(node, name, otherNode)
-        self.removeDirectedEdge(otherNode, reverseName, node)
 
     def addLink(self, node, name, otherNode, reverseName):
         # otherNode should always be a valid node
         self.addDirectedEdge(node, name, otherNode)
         self.addDirectedEdge(otherNode, reverseName, node)
+
+    def removeLink(self, node, name, otherNode, reverseName):
+        # otherNode should always be a valid node
+        self.removeDirectedEdge(node, name, otherNode)
+        self.removeDirectedEdge(otherNode, reverseName, node)
 
 
     def addNode(self, node, recurse = Equal.OnIdentity, excludedDeps = []):
@@ -161,13 +162,18 @@ class ObjectGraph(AbstractDirectedGraph):
         # first import any other node this node might depend on
         newprops = []
         for prop, value, reverseName in reverseLookup(node, nodeClass):
-            if (isinstance(value, AbstractNode) or
-                (isinstance(value, list) and isinstance(value[0], AbstractNode))):
+            #if (isinstance(value, AbstractNode) or
+            #    (isinstance(value, list) and isinstance(value[0], AbstractNode))):
+            if isinstance(value, types.GeneratorType):
                 # use only the explicit properties here
                 if prop not in excludedProperties and value not in excludedDeps:
-                    log.debug('Importing dependency %s: %s' % (prop, value))
-                    importedObject = self.addObject(wrapNode(value, nodeClass.schema[prop]), recurse, excludedDeps = excludedDeps + [node])
-                    newprops.append((prop, importedObject._node, reverseName))
+                    importedNodes = []
+                    for v in value:
+                        log.debug('Importing dependency %s: %s' % (prop, v))
+                        importedNodes.append(self.addObject(wrapNode(v, nodeClass.schema[prop]),
+                                                            recurse,
+                                                            excludedDeps = excludedDeps + [node])._node)
+                    newprops.append((prop, importedNodes, reverseName))
             else:
                 newprops.append((prop, value, reverseName))
 

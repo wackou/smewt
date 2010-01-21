@@ -282,7 +282,7 @@ class TestObjectNode(unittest.TestCase):
 
     def testReverseAttributeLookup(self):
         self.registerMediaOntology()
-        ontology.importClass([ 'Series', 'Episode' ])
+        ontology.importClasses([ 'Series', 'Episode' ])
 
         g = MemoryObjectGraph()
         self.createData(g)

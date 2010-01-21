@@ -33,15 +33,32 @@ class Equal:
 
 
 class AbstractDirectedGraph(object):
+    """This class describes a basic directed graph, with the addition that the nodes have a special
+    property "classes" which describe which class an node can "morph" into. This mechanism could be
+    built as another basic node property, but it is not for performance reasons.
+
+    The AbstractDirectedGraph class is the basic interface one needs to implement for providing
+    a backend storage of the data. It is complementary to the AbstractNode interface.
+
+    You only need to provide the implementation for this interface, and then an ObjectGraph can
+    be automatically built upon it.
+
+    The methods you need to implement fall into the following categories:
+     - create / delete node(s)
+     - get all nodes / only nodes from a given class
+     - check whether a node lives in a given graph
+     - find a node given a list of matching properties
+
+    """
     def clear(self):
         """Delete all nodes and links in this graph.
-        Should be called by subclasses."""
+
+        NB: This method should be called by subclasses that reimplement or extend it."""
         for n in self._nodes:
             n._graph = None
 
     def createNode(self, props = []):
-        # FIXME: this might not work anymore (multiple inheritance)
-        return self.__class__._objectNodeClass(self, props)
+         raise NotImplementedError
 
     def deleteNode(self, node):
         """Remove a given node.
@@ -78,6 +95,7 @@ class AbstractDirectedGraph(object):
 
     def __contains__(self, node):
         """Return whether this graph contains the given node (identity)."""
+        # TODO: remove this, as it should only be implemented in the ObjectGraph
         raise NotImplementedError
 
 
@@ -87,15 +105,16 @@ class AbstractDirectedGraph(object):
         Return None if not found."""
 
         if cmp == Equal.OnIdentity:
-            if node in self:
+            if self.contains(node):
                 log.info('%s already in graph %s (id)...' % (node, self))
                 return node
 
         elif cmp == Equal.OnValue:
-            for n in self._nodes:
+            for n in self.nodes():
                 if node.sameProperties(n, exclude = excludeProperties):
                     log.info('%s already in graph %s (value)...' % (node, self))
                     return n
+
         else:
             raise NotImplementedError
 

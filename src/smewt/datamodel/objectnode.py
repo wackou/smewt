@@ -20,7 +20,7 @@
 
 from smewt.base.textutils import toUtf8
 from abstractnode import AbstractNode
-from utils import tolist, toresult, isOf
+from utils import tolist, toresult, isOf, multiIsInstance
 import ontology
 import types
 import logging
@@ -34,10 +34,11 @@ class ObjectNode(AbstractNode):
 
     An ObjectNode behaves in the following way:
      - it can have any number of named properties, of any type (literal type or another ObjectNode)
+         If the property is a literal type, it is stored inside the node
+         If the property is another node(s), it means there are directed edges of the same name from this node to the other one(s)
      - it implements dotted attribute access.
      - it keeps a list of valid classes for this node. If a node has a certain class, we can then create a valid instance of
        that class (subclass of BaseObject) with the data from this node
-     - DEPRECATED(*): it has primary properties, which are used as primary key for identifying ObjectNodes or for indexing purposes
 
     ObjectNodes should implement different types of equalities:
       - identity: both refs point to the same node in the ObjectGraph
@@ -57,13 +58,12 @@ class ObjectNode(AbstractNode):
     As this doesn't fit exactly with python's way of doing things, class value should be tested
     using the ObjectNode.isinstance(class) method instead of the usual isinstance(obj, class) function.
 
-    TODO: deprecate: Classes which have been registered in the global ontology can also be tested with their basename
-    given as a string (ie: node.isinstance('Movie')) to avoid too many importing headaches.
-
     ---------------------------------------------------------------------------------------------------------
 
+    Not yet implemented / TODO:
+
     Accessing properties should return a "smart" iterator when accessing properties which are instances of
-    BaseObject, which also allows to call dotted attribute access on it, so that this becomes possible:
+    AbstractNode, which also allows to call dotted attribute access on it, so that this becomes possible:
 
     for f in Series.episodes.file.filename:
         do_sth()
@@ -84,6 +84,9 @@ class ObjectNode(AbstractNode):
 
 
     def isValidInstance(self, cls):
+        """Returns whether this node can be considered a valid instance of a class given its current properties.
+
+        This method doesn't use the cached value, but does the actual checking of whether there is a match."""
         for prop in cls.valid:
             value = self.get(prop)
 
@@ -115,6 +118,7 @@ class ObjectNode(AbstractNode):
 
 
     def updateValidClasses(self):
+        """Revalidate all the classes for this node."""
         self.clearClasses()
         for cls in ontology._classes.values():
             if self.isValidInstance(cls):
@@ -168,7 +172,7 @@ class ObjectNode(AbstractNode):
             return self.getLiteral(name)
         except:
             try:
-                return self.getLink(name) # this should be an iterable over the pointed nodes
+                return self.outgoingEdgeEndpoints(name) # this should be an iterable over the pointed nodes
             except:
                 return None
 
@@ -201,15 +205,14 @@ class ObjectNode(AbstractNode):
         name of the link when followed in the other direction.
         If reverseName is not given, a default of 'isNameOf' (using the given name) will be used."""
 
-        # FIXME: this doesn't work when given a list of ObjectNodes
-        if isinstance(value, ObjectNode):
+        if multiIsInstance(value, AbstractNode):
             if reverseName is None:
                 #raise ValueError('When setting a link between 2 nodes, you also need to give a reverseName for the link.')
                 reverseName = isOf(name)
 
             self.setLink(name, value, reverseName)
 
-        elif type(value) in ontology.validLiteralTypes or value is None:
+        elif type(value) in ontology.validLiteralTypes or value is None: # TODO: is None could be checked here for validity
             self.setLiteral(name, value)
 
         else:
@@ -221,22 +224,25 @@ class ObjectNode(AbstractNode):
 
 
     def setLink(self, name, otherNode, reverseName):
-        """Can assume that value is always an object node."""
-        # TODO: remove check later
-        if not isinstance(otherNode, ObjectNode):
-            raise TypeError('otherNode should be an ObjectNode, but is it a %s' % type(otherNode).__name__)
-
-        if self._graph != otherNode._graph:
-            raise ValueError('Both nodes do not live in the same graph, cannot link them together')
+        """Can assume that otherNode is always an object node or an iterable over them."""
+        # need to check for whether otherNode is an iterable
+        #if self._graph != otherNode._graph:
+        #    raise ValueError('Both nodes do not live in the same graph, cannot link them together')
 
         g = self._graph
 
         # first remove the old link(s)
-        for n in tolist(self.get(name)):
+        # Note: we need to wrap the generator into a list here because it looks like otherwise
+        # the removeLink() call messes up with it
+        for n in list(self.get(name) or []): # NB: 'or []' because is the property doesn't exist yet, self.get() returns None
             g.removeLink(self, name, n, reverseName)
 
-        # then add the new link
-        g.addLink(self, name, otherNode, reverseName)
+        # then add the new link(s)
+        if isinstance(otherNode, list) or isinstance(otherNode, types.GeneratorType):
+            for n in otherNode:
+                g.addLink(self, name, n, reverseName)
+        else:
+            g.addLink(self, name, otherNode, reverseName)
 
 
 
@@ -265,18 +271,30 @@ class ObjectNode(AbstractNode):
         return str(self)
 
 
-    def toString(self, cls = None):
+    def toString(self, cls = None, default = None):
         if cls is None:
             # most likely called from a node, but anyway we can't infer anything on the links so just display
             # them as anonymous ObjectNodes
             cls = self.__class__
-            props = [ (prop, cls.__name__) if isinstance(value, ObjectNode) else (prop, str(value)) for prop, value in self.items() ]
+            props = [ (prop, [ cls.__name__ ] * len(tolist(value))) if multiIsInstance(value, ObjectNode) else (prop, str(value)) for prop, value in self.items() ]
 
         else:
-            props = [ (prop, value.toString(cls = cls.schema[prop]))                        # call toString with the inferred class of a node
-                      if isinstance(value, ObjectNode) and prop in cls.schema               # if we have a node in our schema
-                      else (prop, str(value))                                               # or just convert to string
-                      for prop, value in self.items() if prop not in cls.schema._implicit ] # for all non-implicit properties
+            props = []
+            for prop, value in self.items():
+                if prop in cls.schema._implicit:
+                    continue
+                elif isinstance(value, ObjectNode):
+                    raise 42 # should be an iterator
+                    props.append((prop, value.toString(cls = cls.schema.get(prop) or BaseObject)))
+                elif isinstance(value, types.GeneratorType):
+                    props.append((prop, str(toresult([ v.toString(cls = cls.schema.get(prop) or default) for v in value ]))))
+                else:
+                    props.append((prop, str(value)))
+
+            #props = [ (prop, value.toString(cls = cls.schema[prop]))                        # call toString with the inferred class of a node
+            #          if isinstance(value, ObjectNode) and prop in cls.schema               # if we have a node in our schema
+            #          else (prop, str(value))                                               # or just convert to string
+            #          for prop, value in self.items() if prop not in cls.schema._implicit ] # for all non-implicit properties
 
         return u'%s(%s)' % (cls.__name__, ', '.join([ u'%s=%s' % (k, v) for k, v in props ]))
 

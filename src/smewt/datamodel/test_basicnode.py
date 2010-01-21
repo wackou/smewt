@@ -32,51 +32,6 @@ class TestAbstractNode(unittest.TestCase):
         # FIXME: clear the previous ontology because the graphs do not get GC-ed properly
         ontology.clear()
 
-    def atestAbstractNode(self, GraphClass = MemoryGraph):
-        g = GraphClass()
-
-        n = g.createNode()
-        n.setLiteral('title', u'abc')
-        self.assertEqual(n.getLiteral('title'), u'abc')
-        self.assertEqual(list(n.literalKeys()), [ 'title' ])
-        self.assertEqual(list(n.edgeKeys()), [])
-
-        n2 = g.createNode()
-        n.addDirectedEdge('friend', n2)
-        n2.addDirectedEdge('friend', n)
-        self.assertEqual(n.getLiteral('title'), u'abc')
-        self.assertEqual(list(n.literalKeys()), [ 'title' ])
-        self.assertEqual(list(n.edgeKeys()), [ 'friend' ])
-        self.assertEqual(list(n.outgoingEdgeEndpoints('friend')), [ n2 ])
-        self.assertEqual(list(n2.outgoingEdgeEndpoints('friend')), [ n ])
-
-        n3 = g.createNode()
-        n.addDirectedEdge('friend', n3)
-        n3.addDirectedEdge('friend', n)
-        self.assertEqual(len(list(n.outgoingEdgeEndpoints('friend'))), 2)
-        self.assertEqual(len(list(n.outgoingEdgeEndpoints())), 2)
-        self.assert_(n2 in n.outgoingEdgeEndpoints('friend'))
-        self.assert_(n3 in n.outgoingEdgeEndpoints('friend'))
-
-
-    def atestBasicObjectNode(self, ObjectGraphClass = MemoryObjectGraph):
-        g = ObjectGraphClass()
-
-        n = g.createNode()
-        n.title = u'abc'
-        self.assertEqual(n.getLiteral('title'), u'abc')
-        self.assertEqual(list(n.literalKeys()), [ 'title' ])
-        self.assertEqual(list(n.edgeKeys()), [])
-
-        n2 = g.createNode()
-        n.friend = n2
-        self.assertEqual(n.title, u'abc')
-        self.assertEqual(list(n.literalKeys()), [ 'title' ])
-        self.assertEqual(list(n.edgeKeys()), [ 'friend' ])
-        self.assertEqual(list(n.friend), [ n2 ])
-        self.assertEqual(list(n2.isFriendOf), [ n ])
-
-
     def testMRO(self):
         class A(object):
             def __init__(self):
@@ -112,6 +67,70 @@ class TestAbstractNode(unittest.TestCase):
         d = D()
         3 in d
 
+    def testAbstractNode(self, GraphClass = MemoryGraph):
+        g = GraphClass()
+
+        n = g.createNode()
+        n.setLiteral('title', u'abc')
+        self.assertEqual(n.getLiteral('title'), u'abc')
+        self.assertEqual(list(n.literalKeys()), [ 'title' ])
+        self.assertEqual(list(n.edgeKeys()), [])
+
+        n2 = g.createNode()
+        n.addDirectedEdge('friend', n2)
+        n2.addDirectedEdge('friend', n)
+        self.assertEqual(n.getLiteral('title'), u'abc')
+        self.assertEqual(list(n.literalKeys()), [ 'title' ])
+        self.assertEqual(list(n.edgeKeys()), [ 'friend' ])
+        self.assertEqual(list(n.outgoingEdgeEndpoints('friend')), [ n2 ])
+        self.assertEqual(list(n2.outgoingEdgeEndpoints('friend')), [ n ])
+
+        n3 = g.createNode()
+        n.addDirectedEdge('friend', n3)
+        n3.addDirectedEdge('friend', n)
+        self.assertEqual(len(list(n.outgoingEdgeEndpoints('friend'))), 2)
+        self.assertEqual(len(list(n.outgoingEdgeEndpoints())), 2)
+        self.assert_(n2 in n.outgoingEdgeEndpoints('friend'))
+        self.assert_(n3 in n.outgoingEdgeEndpoints('friend'))
+
+
+    def testBasicObjectNode(self, ObjectGraphClass = MemoryObjectGraph):
+        g = ObjectGraphClass()
+
+        n = g.createNode()
+        n.title = u'abc'
+        self.assertEqual(n.getLiteral('title'), u'abc')
+        self.assertEqual(list(n.literalKeys()), [ 'title' ])
+        self.assertEqual(list(n.edgeKeys()), [])
+
+        n2 = g.createNode()
+        n.friend = n2
+        self.assertEqual(n.title, u'abc')
+        self.assertEqual(list(n.literalKeys()), [ 'title' ])
+        self.assertEqual(list(n.edgeKeys()), [ 'friend' ])
+        self.assertEqual(list(n.friend), [ n2 ])
+        self.assertEqual(list(n2.isFriendOf), [ n ])
+
+        n3 = g.createNode()
+        n.friend = [ n2, n3 ]
+        self.assert_(n in n2.isFriendOf)
+        self.assert_(n in n3.isFriendOf)
+        self.assertEqual(tolist(n3.friend), [])
+
+        n4 = g.createNode()
+        n4.friend = n.friend
+        self.assert_(n in n2.isFriendOf)
+        self.assert_(n in n3.isFriendOf)
+        self.assert_(n4 in n2.isFriendOf)
+        self.assert_(n4 in n3.isFriendOf)
+
+        n.friend = []
+        self.assert_(n not in n2.isFriendOf)
+        self.assert_(n not in n3.isFriendOf)
+        self.assert_(n4 in n2.isFriendOf)
+        self.assert_(n4 in n3.isFriendOf)
+
+
     def testBaseObject(self, GraphClass = MemoryObjectGraph):
         class NiceGuy(BaseObject):
             schema = Schema({ 'friend': BaseObject })
@@ -133,15 +152,41 @@ class TestAbstractNode(unittest.TestCase):
         g1 = GraphClass()
         g2 = GraphClass()
 
-        n1 = g1.BaseObject(a = 23)
-        n2 = g1.NiceGuy(friend = n1)
+        n1 = g1.BaseObject(n = u'n1', a = 23)
+        n2 = g1.NiceGuy(n = u'n2', friend = n1)
+        self.assertEqual(n1.friendOf, n2)
 
         r2 = g2.addObject(n2)
+        r2.n = u'r2'
+        self.assertEqual(n1.friendOf, n2)
 
         n3 = g1.NiceGuy(name = u'other node', friend = n1)
         r3 = g2.addObject(n3)
 
         # TODO: also try adding n2 after n3 is created
+
+        o1 = g1.BaseObject(n = u'o1')
+        o2 = g1.BaseObject(n = u'o2')
+
+        old = n3.friend
+        n3.friend = [ o1, o2 ]
+        self.assertEqual(o1.friendOf, n3)
+        self.assertEqual(o2.friendOf, n3)
+        self.assertEqual(tolist(old.friendOf), [n2])
+        self.assertEqual(old.friendOf, n2)
+
+        n4 = g1.NiceGuy(n = u'n4', friend = n3.friend)
+        self.assert_(o1 in n4.friend)
+        self.assert_(o2 in n4.friend)
+        self.assert_(n3 in o1.friendOf)
+        self.assert_(n3 in o2.friendOf)
+        self.assert_(n4 in o1.friendOf)
+        self.assert_(n4 in o2.friendOf)
+
+        n3.friend = []
+        self.assertEqual(o1.friendOf, n4)
+        self.assertEqual(o2.friendOf, n4)
+
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestAbstractNode)
