@@ -81,6 +81,23 @@ class BaseObject(object):
     6- 'converters' (optional), which is a dictionary from property name to a pair of functions
                     that are able to serialize/deserialize this property to/from a unicode string.
 
+    A subclass of BaseObject can also define its own methods and they can be called normally on instances of it.
+    As an example, you might want to define:
+
+    class Actor:
+        def bestMovies(self):
+            maxRating = max(movie.rating for movie in self.roles.movie)
+            return [ movie for movie in self.roles.movie if movie.rating == maxRating ]
+
+
+    Note: at the moment, self.roles.movie wouldn't work, so one would have to do so:
+    class Actor:
+        def bestMovies(self):
+            maxRating = max(role.movie.rating for role in self.roles)
+            return [ role.movie for role in self.roles if role.movie.rating == maxRating ]
+
+    Which is slightly less intuitive because it forces us to iterate over the roles instead of over the movies,
+    which is what we're looking for in the first place.
     """
 
     # TODO: remove those variables which definition should be mandatory
