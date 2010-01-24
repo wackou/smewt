@@ -53,7 +53,15 @@ def checkClass(name, value, schema):
 
 
 class BaseObject(object):
-    """Derive from this class to define an ontology domain.
+    """A BaseObject is a statically-typed object which gets its data from an ObjectNode. In that sense, it
+    acts like a view of an ObjectNode, and all data assigned to a BaseObject is actually stored in the
+    ObjectNode.
+
+    It is possible and inexpensive to create any number of possibly different BaseObject "views" on an
+    ObjectNode, which means that you can dynamically interpret an ObjectNode as being an instance of a
+    given class (given that it matches the class schema).
+
+    You should derive from this class to define an ontology domain on ObjectGraphs and ObjectNodes.
 
     You should define the following class variables in derived classes:
 
@@ -81,7 +89,10 @@ class BaseObject(object):
     6- 'converters' (optional), which is a dictionary from property name to a pair of functions
                     that are able to serialize/deserialize this property to/from a unicode string.
 
-    A subclass of BaseObject can also define its own methods and they can be called normally on instances of it.
+
+    Apart from having to define the aforementioned class variables, a BaseObject behaves like a python object,
+    so that a subclass of BaseObject can also define its own methods and they can be called normally on instances
+    of it.
     As an example, you might want to define:
 
     class Actor:
@@ -96,8 +107,7 @@ class BaseObject(object):
             maxRating = max(role.movie.rating for role in self.roles)
             return [ role.movie for role in self.roles if role.movie.rating == maxRating ]
 
-    Which is slightly less intuitive because it forces us to iterate over the roles instead of over the movies,
-    which is what we're looking for in the first place.
+    Which is slightly less intuitive because it forces us to iterate over the roles instead of over the movies.
     """
 
     # TODO: remove those variables which definition should be mandatory

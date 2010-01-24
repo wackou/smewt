@@ -56,30 +56,27 @@ def unwrapNode(node):
 
 
 class ObjectGraph(AbstractDirectedGraph):
-    """An ObjectGraph is a directed graph of nodes in which each node is actually an object,
-    with a class type and any number of properties/attributes, which can be either literal
-    values or other objects in the graph.
+    """An ObjectGraph is an undirected graph of ObjectNodes.
+    An ObjectNode "looks like" an object, with a class type and any number of properties/attributes,
+    which can be either literal values or other objects in the graph. These properties are accessed
+    using dotted attribute notation.
 
-    The links in the graph are actually the properties of objects which are other objects
-    in the ObjectGraph instead of being literal values.
+    The ObjectGraph edges (links) are a bit special in that they are undirected but have a different
+    name depending on the direction in which they are followed, e.g.: if you have two nodes, one
+    which represent a series, and another one which represent an episode, the link will be named
+    "series" when going from the episode to the series, but will be named "episodes" when going from
+    the series to the episode.
 
-    Those objects class shall be the python one, even though they need to define a instance_of()
-    method, and their properties should be available using the dotted notation, ie:
-    movie.director.first_name = 'kubrick'.
-
-    Reverse attributes should be made automatically available using the "is_*_of" pattern.
+    When setting a link in the graph, you should define a name for the reverse name of the link, but if
+    you don't a default name of "is(%Property)Of" will be given to it.
     For instance, if we have movie.director == personX, we should also have
-    personX.is_director_or == movie (or at least "movie in personX.is_director_or").
-    This reverse-attribute lookup can only work when the Node has first been inserted into
-    a graph.
+    personX.isDirectorOf == movie (actually "movie in personX.isDirectorOf").
 
     The ObjectGraph class provides ways of querying objects in it using type information,
     properties matching filters, or just plain lambda functions that returns whether a node
     is acceptable or not.
 
     An ObjectGraph can be thought of as a context in which objects live.
-
-    Actually, they are not objects, but simply nodes which the graph knows how to wrap into objects.
 
     Even though the dotted attribute access makes this less visible, the links between ObjectNodes
     are first-class citizens also, and can themselves have attributes, such as confidence, etc...
@@ -215,7 +212,7 @@ class ObjectGraph(AbstractDirectedGraph):
         examples:
           g.findAll(type = Movie)
           g.findAll(Episode, lambda x: x.season = 2)
-          g.findall(Movie, lambda m: m.release_year > 2000)
+          g.findall(Movie, lambda m: m.releaseYear > 2000)
           g.findAll(Person, role_movie_title = 'The Dark Knight')
           g.findAll(Character, isCharacterOf_movie_title = 'Fear and loathing.*', regexp = True)
         """
@@ -273,3 +270,4 @@ class ObjectGraph(AbstractDirectedGraph):
             return self.findOne(type, **kwargs)
         except ValueError:
             return type(graph = self, **kwargs)
+
