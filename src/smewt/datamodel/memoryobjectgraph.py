@@ -36,7 +36,7 @@ class MemoryGraph(AbstractDirectedGraph):
 
     def clear(self):
         """Delete all objects in this graph."""
-        AbstractDirectedGraph.clear()
+        AbstractDirectedGraph.clear(self)
         self._nodes.clear()
 
     def createNode(self, props = []):

@@ -120,4 +120,47 @@ class AbstractDirectedGraph(object):
 
         return None
 
+    ### Methods related to a graph serialization
+
+    def toNodesAndEdges(self):
+        nodes = {}
+        rnodes = {}
+        edges = []
+
+        i = 0
+        for n in self.nodes():
+            nodes[i] = list(n.literalItems())
+            rnodes[id(n)] = i
+            i += 1
+
+        for n in self.nodes():
+            for prop, links in n.edgeItems():
+                for otherNode in links:
+                    edges.append((rnodes[id(n)], prop, rnodes[id(otherNode)]))
+
+        return nodes, edges
+
+
+    def save(self, filename):
+        """Saves the graph to the given filename."""
+        # FIXME: should also save the _classes attribute, so that the load() method wouldn't
+        #        have to revalidate explicitly all the objects.
+        import cPickle as pickle
+        pickle.dump(self.toNodesAndEdges(), open(filename, 'w'))
+
+    def load(self, filename):
+        import cPickle as pickle
+        nodes, edges = pickle.load(open(filename))
+
+        self.clear()
+        idmap = {}
+        for _id, node in nodes.items():
+            idmap[_id] = self.createNode((prop, value, None) for prop, value in node)
+
+        for node, name, otherNode in edges:
+            idmap[node].addDirectedEdge(name, idmap[otherNode])
+
+        # we need to revalidate explicitly, as setting directed edges directly didn't
+        self.revalidateObjects()
+
 

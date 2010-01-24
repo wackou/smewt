@@ -257,7 +257,7 @@ class ObjectGraph(AbstractDirectedGraph):
         try:
             return result.next()
         except StopIteration:
-            raise ValueError('Could not find given %s with props %s' % (type, kwargs))
+            raise ValueError('Could not find given %s with props %s' % (type.__name__, kwargs))
 
     def findOrCreate(self, type, **kwargs):
         '''This method returns the first object in this graph which has the specified type and

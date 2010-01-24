@@ -61,6 +61,9 @@ class BaseObject(object):
     ObjectNode, which means that you can dynamically interpret an ObjectNode as being an instance of a
     given class (given that it matches the class schema).
 
+    Equality comparison is done by comparing the properties of the nodes, not the identity of the nodes,
+    so two BaseObjects wrapping two different nodes in the graph would be equal if their properties are.
+
     You should derive from this class to define an ontology domain on ObjectGraphs and ObjectNodes.
 
     You should define the following class variables in derived classes:
