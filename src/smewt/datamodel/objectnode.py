@@ -38,7 +38,8 @@ class ObjectNode(AbstractNode):
          If the property is another node(s), it means there are directed edges of the same name from this node to the other one(s)
      - it implements dotted attribute access.
      - it keeps a list of valid classes for this node. If a node has a certain class, we can then create a valid instance of
-       that class (subclass of BaseObject) with the data from this node
+       that class (subclass of BaseObject) with the data from this node. The list of valid classes is actualized each time you
+       set a property.
 
     ObjectNodes should implement different types of equalities:
       - identity: both refs point to the same node in the ObjectGraph
