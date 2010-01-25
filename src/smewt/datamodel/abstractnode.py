@@ -154,3 +154,12 @@ class AbstractNode(object):
                 return False
 
         return True
+
+    def unlinkAll(self):
+        for name, nodes in self.edgeItems():
+            for n in nodes:
+                self.removeDirectedEdge(name, n)
+                for oname, onodes in n.edgeItems():
+                    for n2 in onodes:
+                        if n2 == self:
+                            n.removeDirectedEdge(oname, self)

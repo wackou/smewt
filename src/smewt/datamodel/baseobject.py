@@ -139,9 +139,11 @@ class BaseObject(object):
                 print isinstance(basenode, BaseObject)
                 raise ValueError('graph: %s - node: %s' % (type(graph), type(basenode)))
 
+        created = False
         if basenode is None:
             # if no basenode is given, we need to create a new node
             self._node = graph.createNode(reverseLookup(toNodes(kwargs), self.__class__))
+            created = True
 
         else:
             basenode = getNode(basenode)
@@ -152,6 +154,7 @@ class BaseObject(object):
                 self._node = basenode
             else:
                 self._node = graph.createNode(reverseLookup(basenode, self.__class__)) # TODO: we should be able to construct directly from the other node
+                created = True
 
             # optimization: avoid revalidating the classes all the time when creating a BaseObject from a pre-existing node
             if kwargs:
@@ -159,6 +162,10 @@ class BaseObject(object):
 
         # make sure that the new instance we're creating is actually a valid one
         if not self._node.isinstance(self.__class__):
+            # if we just created the node and it is invalid, we need to remove it
+            if created:
+                self._node._graph.deleteNode(self._node)
+
             raise TypeError("Cannot instantiate a valid instance of %s because:\n%s" %
                             (self.__class__.__name__, self._node.invalidProperties(self.__class__)))
 

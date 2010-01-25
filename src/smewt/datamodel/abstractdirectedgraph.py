@@ -124,6 +124,7 @@ class AbstractDirectedGraph(object):
 
     def toNodesAndEdges(self):
         nodes = {}
+        classes = {}
         rnodes = {}
         edges = []
 
@@ -131,6 +132,7 @@ class AbstractDirectedGraph(object):
         for n in self.nodes():
             nodes[i] = list(n.literalItems())
             rnodes[id(n)] = i
+            classes[i] = [ cls.__name__ for cls in n._classes ]
             i += 1
 
         for n in self.nodes():
@@ -138,7 +140,7 @@ class AbstractDirectedGraph(object):
                 for otherNode in links:
                     edges.append((rnodes[id(n)], prop, rnodes[id(otherNode)]))
 
-        return nodes, edges
+        return nodes, edges, classes
 
 
     def save(self, filename):
@@ -150,7 +152,7 @@ class AbstractDirectedGraph(object):
 
     def load(self, filename):
         import cPickle as pickle
-        nodes, edges = pickle.load(open(filename))
+        nodes, edges, classes = pickle.load(open(filename))
 
         self.clear()
         idmap = {}
@@ -164,3 +166,30 @@ class AbstractDirectedGraph(object):
         self.revalidateObjects()
 
 
+    ### Utility methods
+
+    def displayGraph(self):
+        import cPickle as pickle
+        import tempfile
+        import subprocess
+
+        nodes, edges, classes = self.toNodesAndEdges()
+        fid, filename = tempfile.mkstemp(suffix = '.png')
+
+        dg = []
+        dg += [ 'digraph G {' ]
+
+        for _id, n in nodes.items():
+            print _id, classes[_id]
+            label = '<FONT COLOR="grey">%s</FONT><BR/>' % ', '.join(cls for cls in classes[_id] if cls != 'BaseObject')
+            label += '<BR/>'.join([ '%s: %s' % p for p in n ])
+            dg += [ 'node_%d [shape=polygon,sides=4,label=<%s>];' % (_id, label) ]
+
+        for node, name, otherNode in edges:
+            dg += [ 'node_%d -> node_%d [label="%s"];' % (node, otherNode, name) ]
+
+        dg += [ '}' ]
+
+        subprocess.Popen([ 'dot', '-Tpng', '-o', filename ], stdin = subprocess.PIPE).communicate('\n'.join(dg))
+
+        subprocess.call([ 'gwenview', filename ])

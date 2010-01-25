@@ -111,7 +111,11 @@ class ObjectNode(AbstractNode):
                 invalid.append("property '%s' is missing" % prop)
                 continue
 
-            if type(getattr(self, prop)) != cls.schema[prop]:
+            # FIXME: link type checking doesn't work
+            if isinstance(getattr(self, prop), types.GeneratorType):
+                continue
+
+            if not multiIsInstance(getattr(self, prop), cls.schema[prop]):
                 invalid.append("property '%s' is of type '%s', but should be of type '%s'" %
                                (prop, type(getattr(self, prop)).__name__, cls.schema[prop].__name__))
 

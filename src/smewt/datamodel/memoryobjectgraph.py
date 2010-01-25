@@ -44,7 +44,11 @@ class MemoryGraph(AbstractDirectedGraph):
         return self.__class__._objectNodeClass(self, props)
 
     def deleteNode(self, node):
-        raise NotImplementedError
+        node.unlinkAll()
+        node._graph = None
+        self._nodes.remove(node)
+
+        # FIXME: we need to revalidate the touched nodes
 
 
     def nodes(self):
