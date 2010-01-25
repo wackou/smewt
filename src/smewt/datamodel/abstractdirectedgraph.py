@@ -180,7 +180,7 @@ class AbstractDirectedGraph(object):
         dg += [ 'digraph G {' ]
 
         for _id, n in nodes.items():
-            label = '<FONT COLOR="#884444">%s</FONT><BR/>' % ', '.join(cls for cls in classes[_id] if cls != 'BaseObject')
+            label = '<FONT COLOR="#884444">%s</FONT><BR/>' % (', '.join(cls for cls in classes[_id] if cls != 'BaseObject') or 'BaseObject')
             label += '<BR/>'.join([ '%s: %s' % p for p in n ])
             dg += [ 'node_%d [shape=polygon,sides=4,label=<%s>];' % (_id, label) ]
 
