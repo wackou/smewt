@@ -37,8 +37,12 @@ validLiteralTypes = [ unicode, int, long, float ] #, list ]
 
 def clear():
     global _classes, _graphs
-    _classes = { 'BaseObject': _classes['BaseObject'] }
-    # FIXME: this still leaks memory, as the nodes in a graph have a ref to itself
+
+    BaseObject = _classes['BaseObject']
+    BaseObject.clearClassVariables()
+
+    _classes = { 'BaseObject': BaseObject }
+    # FIXME: this still leaks memory, as the nodes in a graph have a ref to it
     _graphs = weakref.WeakValueDictionary()
 
 

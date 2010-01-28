@@ -170,6 +170,16 @@ class BaseObject(object):
                             (self.__class__.__name__, self._node.invalidProperties(self.__class__)))
 
 
+    # revert BaseObject to its original state
+    @classmethod
+    def clearClassVariables(cls):
+        cls.schema = Schema({})
+        cls.reverseLookup = {}
+        cls.valid = []
+        cls.unique = []
+        cls.order = []
+        cls.converters = {}
+
     def __getattr__(self, name):
         result = getattr(self._node, name)
 

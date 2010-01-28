@@ -77,6 +77,11 @@ class TestObjectNode(unittest.TestCase):
             schema = Schema({ 'e': int })
             unique = [ 'e' ]
 
+        class F(BaseObject):
+            schema = Schema({ 'friend': BaseObject })
+            reverseLookup = { 'friend': 'friend' }
+            valid = schema.keys()
+
         self.assertEqual(issubclass(A, BaseObject), True)
         self.assertEqual(issubclass(B, A), True)
         self.assertEqual(issubclass(A, A), True)
@@ -87,6 +92,8 @@ class TestObjectNode(unittest.TestCase):
 
         ontology.register(A, B, C)
         self.assertRaises(TypeError, ontology.register, E) # should inherit from BaseObject
+        # should not define the same reverseLookup name when other class is a superclass (or subclass) of our class
+        self.assertRaises(TypeError, ontology.register, F)
 
         self.assert_(ontology.getClass('A') is A)
         self.assertRaises(ValueError, ontology.getClass, 'D') # not registered
@@ -239,7 +246,7 @@ class TestObjectNode(unittest.TestCase):
         class NiceGuy(BaseObject):
             schema = Schema({ 'friend': BaseObject })
             valid = [ 'friend' ]
-            reverseLookup = { 'friend': 'friend' }
+            reverseLookup = { 'friend': 'friendOf' }
 
         ontology.register(NiceGuy)
 
