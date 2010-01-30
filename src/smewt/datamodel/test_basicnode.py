@@ -18,10 +18,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+
+import logging
+logging.getLogger('smewt').setLevel(logging.WARNING)
+logging.getLogger('smewt.datamodel.Ontology').setLevel(logging.ERROR)
+#logging.getLogger('smewt.datamodel.AbstractDirectedGraph').setLevel(logging.DEBUG)
+#logging.getLogger('smewt.datamodel.ObjectNode').setLevel(logging.DEBUG)
+#logging.getLogger('smewt.datamodel.MemoryObjectNode').setLevel(logging.DEBUG)
+
+
 from objectnode import ObjectNode
 from objectgraph import ObjectGraph, Equal
 from memoryobjectgraph import MemoryGraph, MemoryObjectGraph
-from baseobject import BaseObject, Schema
+from baseobject import BaseObject
 from utils import tolist
 import ontology
 import unittest
@@ -133,7 +142,7 @@ class TestAbstractNode(unittest.TestCase):
 
     def testBaseObject(self, GraphClass = MemoryObjectGraph):
         class NiceGuy(BaseObject):
-            schema = Schema({ 'friend': BaseObject })
+            schema = { 'friend': BaseObject }
             valid = [ 'friend' ]
             reverseLookup = { 'friend': 'friendOf' }
 
@@ -146,8 +155,6 @@ class TestAbstractNode(unittest.TestCase):
         #  - no reverseLookup where key == value
         #  - no 2 classes with the same link types to a third class
         # actually, no reverseLookup where the implicit property could override an already existing one
-
-        ontology.register(NiceGuy)
 
         g1 = GraphClass()
         g2 = GraphClass()
@@ -198,12 +205,5 @@ class TestAbstractNode(unittest.TestCase):
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestAbstractNode)
-
-    import logging
-    logging.getLogger('smewt').setLevel(logging.WARNING)
-    logging.getLogger('smewt.datamodel.Ontology').setLevel(logging.ERROR)
-    #logging.getLogger('smewt.datamodel.AbstractDirectedGraph').setLevel(logging.DEBUG)
-    #logging.getLogger('smewt.datamodel.ObjectNode').setLevel(logging.DEBUG)
-    #logging.getLogger('smewt.datamodel.MemoryObjectNode').setLevel(logging.DEBUG)
 
     unittest.TextTestRunner(verbosity=2).run(suite)

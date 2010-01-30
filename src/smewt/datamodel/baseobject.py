@@ -20,12 +20,12 @@
 
 from abstractnode import AbstractNode
 from objectnode import ObjectNode
-from ontology import Schema
+import ontology
 from utils import isOf, reverseLookup, toresult, multiIsInstance
 import types
 import logging
 
-log = logging.getLogger('smewt.datamodel.Ontology')
+log = logging.getLogger('smewt.datamodel.BaseObject')
 
 
 def getNode(node):
@@ -50,6 +50,20 @@ def toNodes(d):
 def checkClass(name, value, schema):
     if name in schema and not multiIsInstance(value, schema[name]):
         raise TypeError, "The '%s' attribute is of type '%s' but you tried to assign it a '%s'" % (name, schema[name], type(value))
+
+# Metaclass to be used for BaseObject so that they are automatically registered in the ontology
+class OntologyClass(type):
+    def __new__(cls, name, bases, attrs):
+        log.info('Creating class: %s' % name)
+        if len(bases) > 1:
+            raise TypeError('BaseObject does not allow multiple inheritance for class: %s' % name)
+        return type.__new__(cls, name, bases, attrs)
+
+    def __init__(cls, name, bases, attrs):
+        log.info('Initializing class: %s' % name)
+        super(OntologyClass, cls).__init__(name, bases, attrs)
+        ontology.register(cls, attrs)
+
 
 
 class BaseObject(object):
@@ -113,8 +127,10 @@ class BaseObject(object):
     Which is slightly less intuitive because it forces us to iterate over the roles instead of over the movies.
     """
 
+    __metaclass__ = OntologyClass
+
     # TODO: remove those variables which definition should be mandatory
-    schema = Schema({})
+    schema = ontology.Schema({})
     reverseLookup = {}
     valid = []
     unique = []
@@ -161,6 +177,8 @@ class BaseObject(object):
                 self.update(toNodes(kwargs))
 
         # make sure that the new instance we're creating is actually a valid one
+        # TODO: dynamic = False -> use "_node.isinstance()", dynamic = True -> use "_node.insinstance() or _node.isValidInstance()"
+        #       this way we have either static inheritance or dynamic type classes
         if not self._node.isinstance(self.__class__):
             # if we just created the node and it is invalid, we need to remove it
             if created:
@@ -173,7 +191,7 @@ class BaseObject(object):
     # revert BaseObject to its original state
     @classmethod
     def clearClassVariables(cls):
-        cls.schema = Schema({})
+        cls.schema = ontology.Schema({})
         cls.reverseLookup = {}
         cls.valid = []
         cls.unique = []
@@ -288,11 +306,3 @@ class BaseObject(object):
 
         return result + propertyNames
 
-
-
-
-
-# force-register BaseObject in the ontology classes (ie: do not use the ontology
-# validation stuff, because it needs the ObjectNode to be already registered)
-import ontology
-ontology._classes['BaseObject'] = BaseObject

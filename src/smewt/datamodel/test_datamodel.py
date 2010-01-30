@@ -18,10 +18,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+
+import logging
+logging.getLogger('smewt').setLevel(logging.WARNING)
+logging.getLogger('smewt.datamodel.Ontology').setLevel(logging.ERROR)
+#logging.getLogger('smewt.datamodel.Neo4jObjectNode').setLevel(logging.DEBUG)
+#logging.getLogger('smewt.datamodel.ObjectNode').setLevel(logging.DEBUG)
+
+
 from objectnode import ObjectNode
 from objectgraph import ObjectGraph, Equal
 from memoryobjectgraph import MemoryObjectGraph
-from baseobject import BaseObject, Schema
+from baseobject import BaseObject
 from utils import tolist
 import ontology
 import unittest
@@ -58,27 +66,31 @@ class TestObjectNode(unittest.TestCase):
 
     def testBasicOntology(self):
         class A(BaseObject):
-            schema = Schema({ 'title': unicode })
+            schema = { 'title': unicode }
             valid = schema.keys()
             unique = valid
 
         class B(A):
-            pass
+            schema = {}
+            #valid = [ 'title' ]
+            valid = A.valid
+            unique = [ 'title' ]
 
         class C(BaseObject):
-            schema = Schema({ 'c': int })
+            schema = { 'c': int }
             valid = schema.keys()
             unique = valid
 
         class D(BaseObject):
-            pass
+            schema = {}
+            valid = []
 
         class E:
-            schema = Schema({ 'e': int })
+            schema = { 'e': int }
             unique = [ 'e' ]
 
         class F(BaseObject):
-            schema = Schema({ 'friend': BaseObject })
+            schema = { 'friend': BaseObject }
             reverseLookup = { 'friend': 'friend' }
             valid = schema.keys()
 
@@ -90,7 +102,6 @@ class TestObjectNode(unittest.TestCase):
         self.assertEqual(issubclass(C, A), False)
         self.assertEqual(B.parentClass().className(), 'A')
 
-        ontology.register(A, B, C)
         self.assertRaises(TypeError, ontology.register, E) # should inherit from BaseObject
         # should not define the same reverseLookup name when other class is a superclass (or subclass) of our class
         self.assertRaises(TypeError, ontology.register, F)
@@ -110,20 +121,20 @@ class TestObjectNode(unittest.TestCase):
 
     def registerMediaOntology(self):
         class Series(BaseObject):
-            schema = Schema({ 'title': unicode,
-                              'rating': float
-                              })
+            schema = { 'title': unicode,
+                       'rating': float
+                       }
 
             valid = [ 'title' ]
             unique = valid
 
         class Episode(BaseObject):
-            schema = Schema({ 'series': Series,
-                              'season': int,
-                              'episodeNumber': int,
-                              'title': unicode,
-                              'synopsis': unicode
-                              })
+            schema = { 'series': Series,
+                       'season': int,
+                       'episodeNumber': int,
+                       'title': unicode,
+                       'synopsis': unicode
+                       }
 
             reverseLookup = { 'series': 'episodes' }
             valid = [ 'series', 'season', 'episodeNumber' ]
@@ -133,10 +144,10 @@ class TestObjectNode(unittest.TestCase):
                 return (self.season - other.season) or (self.episodeNumber - other.episodeNumber)
 
         class Person(BaseObject):
-            schema = Schema({ 'firstName': unicode,
-                              'lastName': unicode,
-                              'dateOfBirth': float, # TODO: should be datetime
-                              })
+            schema = { 'firstName': unicode,
+                       'lastName': unicode,
+                       'dateOfBirth': float, # TODO: should be datetime
+                       }
             valid = [ 'firstName', 'lastName' ]
 
             def name(self):
@@ -149,36 +160,31 @@ class TestObjectNode(unittest.TestCase):
 
 
         class Movie(BaseObject):
-            schema = Schema({ 'title': unicode,
-                              'year': int,
-                              'plot': unicode,
-                              'imdbRating': float,
-                              'director': Person,
-                              })
+            schema = { 'title': unicode,
+                       'year': int,
+                       'plot': unicode,
+                       'imdbRating': float,
+                       'director': Person,
+                       }
             reverseLookup = { 'director': 'filmography' }
             valid = [ 'title', 'year' ]
             unique = valid
 
         class Character(BaseObject):
-            schema = Schema({ 'name': unicode })
+            schema = { 'name': unicode }
             valid = schema.keys()
 
         class Role(BaseObject):
-            schema = Schema({ 'movie': Movie,
-                              'actor': Person,
-                              'character': Character
-                              })
+            schema = { 'movie': Movie,
+                       'actor': Person,
+                       'character': Character
+                       }
             reverseLookup = { 'movie': 'roles',
                               'actor': 'actingRoles',
                               'character': 'roles'
                               }
             valid = schema.keys()
             unique = valid
-
-        # register all these classes onto the global ontology
-        # until this is done automatically, we need to make sure they are registered in the same order as they are defined
-        # otherwise it might lead to subtle problems, such as reverse properties that can't be found.
-        ontology.register(Series, Episode, Person, Movie, Character, Role)
 
 
     def testMediaOntology(self):
@@ -244,11 +250,9 @@ class TestObjectNode(unittest.TestCase):
 
     def testGraphTransfer(self):
         class NiceGuy(BaseObject):
-            schema = Schema({ 'friend': BaseObject })
+            schema = { 'friend': BaseObject }
             valid = [ 'friend' ]
             reverseLookup = { 'friend': 'friendOf' }
-
-        ontology.register(NiceGuy)
 
         g1 = MemoryObjectGraph()
         g2 = MemoryObjectGraph()
@@ -401,11 +405,5 @@ class TestObjectNode(unittest.TestCase):
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestObjectNode)
-
-    import logging
-    logging.getLogger('smewt').setLevel(logging.WARNING)
-    logging.getLogger('smewt.datamodel.Ontology').setLevel(logging.ERROR)
-    #logging.getLogger('smewt.datamodel.Neo4jObjectNode').setLevel(logging.DEBUG)
-    #logging.getLogger('smewt.datamodel.ObjectNode').setLevel(logging.DEBUG)
 
     unittest.TextTestRunner(verbosity=2).run(suite)

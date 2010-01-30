@@ -52,85 +52,128 @@ class Schema(dict):
         self._implicit = set()
 
 
-def validateClassDefinition(cls):
+def subclasses(cls):
+    '''Returns the given class and all of its subclasses'''
+    return (c for c in _classes.values() if issubclass(c, cls))
+
+def validateClassDefinition(cls, attrs):
     BaseObject = _classes['BaseObject']
 
     validTypes = validLiteralTypes + [ BaseObject ]
 
     if not issubclass(cls, BaseObject):
-        raise TypeError, "'%s' needs to derive from ontology.BaseObject" % cls.__name__
+        raise TypeError, "'%s' needs to derive from ontology.BaseObject or one of its subclasses" % cls.__name__
+
+    parent = cls.parentClass()
 
     def checkPresent(cls, var, ctype, defaultValue = True):
+        if not isinstance(ctype, tuple):
+            ctype = (ctype,)
+
         try:
             value = getattr(cls, var)
         except AttributeError:
-            raise TypeError("Your subclass '%s' should define the '%s' class variable as a '%s'" % (cls.__name__, var, ctype.__name__))
+            raise TypeError("Your subclass '%s' should define the '%s' class variable as a %s" % (cls.__name__, var, ' or a '.join(c.__name__ for c in ctype)))
 
-        # FIXME: does not allow inheritance
-        if value is getattr(BaseObject, var):
+        #if not explicitAttribute(cls, var):
+        if var not in attrs:
             if defaultValue:
                 # if not explicitly in subclass definition, create a default one
-                setattr(cls, var, ctype())
+                setattr(cls, var, ctype[0]())
             else:
-                raise TypeError("Your subclass '%s' should define the '%s' class variable as a '%s'" % (cls.__name__, var, ctype.__name__))
+                raise TypeError("Your subclass '%s' should define explicitly the '%s' class variable as a %s" % (cls.__name__, var, ' or a '.join(c.__name__ for c in ctype)))
 
-        if type(value) != ctype:
-            raise TypeError("Your subclass '%s' defines the '%s' class variable as a '%s', but it should be of type '%s'" % (cls.__name__, var, type(value).__name__, ctype.__name__))
+
+        if type(value) not in ctype:
+            raise TypeError("Your subclass '%s' defines the '%s' class variable as a '%s', but it should be of type %s" % (cls.__name__, var, type(value).__name__, ' or '.join(c.__name__ for c in ctype)))
 
     def checkSchemaSubset(cls, var, defaultValue = True):
-        checkPresent(cls, var, list, defaultValue)
+        checkPresent(cls, var, (set, list), defaultValue)
         for prop in getattr(cls, var):
             if not prop in cls.schema:
                 raise TypeError("In '%s': when defining '%s', you used the '%s' variable, which is not defined in the schema" % (cls.__name__, var, prop))
 
+    def checkParentSuperset(cls, var):
+        if not set(getattr(cls, var)).issuperset(set(getattr(cls.parentClass(), var))):
+            raise TypeError("In '%s': the '%s' variable needs to be a superset of its class parent's one" % (cls.__name__, var))
+
+
     # validate that the schema is correctly defined
-    checkPresent(cls, 'schema', Schema, defaultValue =  False)
+    checkPresent(cls, 'schema', dict, defaultValue =  False)
+
+    # inherit schema from parent class
+    schema = Schema(parent.schema) # make a copy of parent's schema
+    schema.update(cls.schema) # make sure we don't overwrite (or do we want to allow overloading of variables?)
+    schema._implicit = set(parent.schema._implicit) # no need to get cls.schema._implicit as well, it's empty
+    cls.schema = schema
+
+    # validate attribute types as defined in schema
     for name, ctype in cls.schema.items():
         if not isinstance(name, str) or not any(issubclass(ctype, dtype) for dtype in validTypes):
             raise TypeError("In '%s': the schema should be a dict of 'str' to either one of those accepted types (or a subclass of them): %s'" % (cls.__name__, ', '.join("'%s'" % c.__name__ for c in validTypes)))
 
+
     # all the properties defined as subclasses of BaseObject need to have an
     # associated reverseLookup entry
     checkPresent(cls, 'reverseLookup', dict)
+    origReverseLookup = cls.reverseLookup
 
-    objectProps = [ name for name, ctype in cls.schema.items() if issubclass(ctype, BaseObject) ]
+    # inherit reverseLookup from parent
+    rlookup = dict(parent.reverseLookup)
+    rlookup.update(cls.reverseLookup)
+    cls.reverseLookup = rlookup
+
+    # check that we have reverseLookup names for all needed properties
+    objectProps = [ name for name, ctype in cls.schema.items() if issubclass(ctype, BaseObject) and name not in cls.schema._implicit ]
     reverseLookup = [ prop for prop in cls.reverseLookup.keys() if prop not in cls.schema._implicit ]
 
     diff = set(reverseLookup).symmetric_difference(set(objectProps))
     if diff:
         raise TypeError("In '%s': you should define exactly one reverseLookup name for each property in your schema that is a subclass of BaseObject, different ones: %s" % (cls.__name__, ', '.join("'%s'" % c for c in diff)))
 
+    # directly update the schema for other classes where needed
+    # TODO: make sure we don't overwrite anything (should have been done in the validateClassDefinition, right?)
+    for prop, rprop in origReverseLookup.items():
+        for c in subclasses(cls.schema[prop]):
+            c.schema._implicit.add(rprop)
+            c.schema[rprop] = cls
+            c.reverseLookup[rprop] = prop
+
+
+    # check that the other variables are correctly defined
     checkSchemaSubset(cls, 'valid', defaultValue = False)
+    checkParentSuperset(cls, 'valid')
+
     checkSchemaSubset(cls, 'unique')
+    checkParentSuperset(cls, 'unique')
+
     checkSchemaSubset(cls, 'order')
     # TODO: validate converters
 
 
-def register(*args):
-    # can only register classes which are subclasses of our BaseObject class.
-    for cls in args:
-        if cls.__name__ in _classes:
-            if cls == _classes[cls.__name__]:
-                log.info('Class %s already registered' % cls.__name__)
-                continue
+def register(cls, attrs):
+    # when registering BaseObject, skip the tests
+    if cls.__name__ == 'BaseObject':
+        _classes['BaseObject'] = cls
+        return
 
-            log.warning('Found previous definition of class %s. Ignoring new definition...' % cls.__name__)
-            continue
+    if cls.__name__ in _classes:
+        if cls == _classes[cls.__name__]:
+            log.info('Class %s already registered' % cls.__name__)
+            return
 
-        validateClassDefinition(cls)
+        log.warning('Found previous definition of class %s. Ignoring new definition...' % cls.__name__)
+        return
 
-        _classes[cls.__name__] = cls
+    validateClassDefinition(cls, attrs)
 
-        # directly update the schema for other classes where needed
-        # TODO: make sure we don't overwrite anything (should have been done in the validateClassDefinition, right?)
-        for prop, rprop in cls.reverseLookup.items():
-            cls.schema[prop].schema._implicit.add(rprop)
-            cls.schema[prop].schema[rprop] = cls
-            cls.schema[prop].reverseLookup[rprop] = prop
+    _classes[cls.__name__] = cls
+
 
     # revalidate all ObjectNodes in all registered Graphs
     for g in _graphs.values():
         g.revalidateObjects()
+
 
 def registerGraph(graph):
     _graphs[id(graph)] = graph
@@ -152,3 +195,5 @@ def importClasses(classes):
 
 def importAllClasses():
     importClasses(classNames())
+
+
