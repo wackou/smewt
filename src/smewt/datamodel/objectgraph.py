@@ -41,8 +41,6 @@ class Equal:
 
 def wrapNode(node, nodeClass = None):
     if nodeClass is not None:
-        result = nodeClass(basenode = node)
-
         return nodeClass(basenode = node)
 
     return node
@@ -86,8 +84,14 @@ class ObjectGraph(AbstractDirectedGraph):
     # in the corresponding derived ObjectGraph class
     _objectNodeClass = type(None)
 
-    def __init__(self):
+    def __init__(self, dynamic = False):
+        """Creates an ObjectGraph.
+
+        - if dynamic = True, we have static inheritance (valid classes need to be set explicitly)
+        - if dynamic = False, we have dynamic type classes (valid classes are automatically updated if the object has the correct properties)
+        """
         ontology.registerGraph(self)
+        self._dynamic = dynamic
 
     def revalidateObjects(self):
         log.info('revalidating objects in graph %s' % self)
@@ -175,7 +179,7 @@ class ObjectGraph(AbstractDirectedGraph):
                 newprops.append((prop, value, reverseName))
 
         # actually create the node
-        result = self.createNode(newprops)
+        result = self.createNode(newprops, _classes = node._classes)
 
         return wrapNode(result, nodeClass)
 

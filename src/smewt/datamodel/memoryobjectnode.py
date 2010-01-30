@@ -28,14 +28,14 @@ log = logging.getLogger('smewt.datamodel.MemoryObjectNode')
 
 class MemoryNode(AbstractNode):
 
-    def __init__(self, graph, props = []):
+    def __init__(self, graph, props = [], _classes = set()):
         # NB: this should go before super().__init__() because we need self._props and
         #     self._classes to exist before we can set attributes
         self._props = {}
-        self._classes = set()
+        self._classes = set(_classes)
         super(MemoryNode, self).__init__(graph, props)
 
-        log.debug('MemoryNode.__init__')
+        log.debug('MemoryNode.__init__: classes = %s' % list(self._classes))
         graph._nodes.add(self)
 
 
@@ -159,12 +159,16 @@ class MemoryNode(AbstractNode):
     #    return self._props.items()
 
     def updateValidClasses(self):
-        self._classes = set(cls for cls in ontology._classes.values() if self.isValidInstance(cls))
+        if self._graph._dynamic:
+            self._classes = set(cls for cls in ontology._classes.values() if self.isValidInstance(cls))
+        else:
+            # no need to do anything
+            pass
 
 
 # MemoryNode needs to come before ObjectNode, because we want it to be able to
 # override ObjectNode's methods (for optimization, for instance)
 class MemoryObjectNode(MemoryNode, ObjectNode):
-    def __init__(self, graph, props = []):
+    def __init__(self, graph, props = [], _classes = set()):
         log.debug('MemoryObjectNode.__init__: props = %s' % str(props))
-        super(MemoryObjectNode, self).__init__(graph, props)
+        super(MemoryObjectNode, self).__init__(graph, props, _classes)

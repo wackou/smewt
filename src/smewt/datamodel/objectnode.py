@@ -124,10 +124,14 @@ class ObjectNode(AbstractNode):
 
     def updateValidClasses(self):
         """Revalidate all the classes for this node."""
-        self.clearClasses()
-        for cls in ontology._classes.values():
-            if self.isValidInstance(cls):
-                self.addClass(cls)
+        if self._graph._dynamic:
+            self.clearClasses()
+            for cls in ontology._classes.values():
+                if self.isValidInstance(cls):
+                    self.addClass(cls)
+        else:
+            # if we have static inheritance, we don't want to do anything here
+            pass
 
         log.debug('valid classes for %s:\n  %s' % (self.toString(), [ cls.__name__ for cls in self._classes ]))
 

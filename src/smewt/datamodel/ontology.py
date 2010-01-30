@@ -56,6 +56,10 @@ def subclasses(cls):
     '''Returns the given class and all of its subclasses'''
     return (c for c in _classes.values() if issubclass(c, cls))
 
+def parentClasses(cls):
+    '''Returns the given class and all of its parent classes (BaseObject being the topmost class).'''
+    return (c for c in _classes.values() if issubclass(cls, c))
+
 def validateClassDefinition(cls, attrs):
     BaseObject = _classes['BaseObject']
 

@@ -22,6 +22,7 @@ import logging
 logging.getLogger('smewt').setLevel(logging.WARNING)
 
 from baseobject import BaseObject
+from memoryobjectgraph import MemoryObjectGraph
 import ontology
 import unittest
 
@@ -117,6 +118,23 @@ class TestInheritance(unittest.TestCase):
         self.assertEqual(D.reverseLookup, { 'friendOf': 'friend' })
         self.assertEqual(E.reverseLookup, { 'friendOf': 'friend' })
 
+
+    def testStaticInheritance(self):
+        class A(BaseObject):
+            schema = { 'a': int }
+            valid = []
+
+        class B(BaseObject):
+            schema = { 'b': float }
+            valid = []
+
+        g = MemoryObjectGraph(dynamic = True)
+        b = g.B()
+        self.assert_(A in b._node._classes)
+
+        g = MemoryObjectGraph(dynamic = False)
+        b = g.B()
+        self.assert_(A not in b._node._classes)
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestInheritance)

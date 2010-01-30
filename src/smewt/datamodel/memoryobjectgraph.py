@@ -30,8 +30,8 @@ log = logging.getLogger('smewt.datamodel.MemoryObjectGraph')
 class MemoryGraph(AbstractDirectedGraph):
     _objectNodeClass = MemoryNode
 
-    def __init__(self):
-        super(MemoryGraph, self).__init__()
+    def __init__(self, **kwargs):
+        super(MemoryGraph, self).__init__(**kwargs)
         self._nodes = set()
 
     def clear(self):
@@ -39,9 +39,8 @@ class MemoryGraph(AbstractDirectedGraph):
         AbstractDirectedGraph.clear(self)
         self._nodes.clear()
 
-    def createNode(self, props = []):
-       # FIXME: this might not work anymore (multiple inheritance)
-        return self.__class__._objectNodeClass(self, props)
+    def createNode(self, props = [], _classes = set()):
+        return self.__class__._objectNodeClass(self, props, _classes)
 
     def deleteNode(self, node):
         node.unlinkAll()

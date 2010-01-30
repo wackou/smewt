@@ -141,7 +141,7 @@ class BaseObject(object):
     # as a result of the reverseLookup names of other classes
     #_implicitSchema = {}
 
-    def __init__(self, basenode = None, graph = None, **kwargs):
+    def __init__(self, basenode = None, graph = None, dynamic = False, **kwargs):
         log.debug('BaseObject.__init__: basenode = %s, args = %s' % (basenode, kwargs))
         if graph is None and basenode is None:
             raise ValueError('You need to specify either a graph or a base node when instantiating a %s' % self.__class__.__name__)
@@ -150,15 +150,13 @@ class BaseObject(object):
         if (#(graph is not None and not isinstance(graph, ObjectGraph)) or
             (basenode is not None and not (isinstance(basenode, ObjectNode) or
                                            isinstance(basenode, BaseObject)))):
-                print BaseObject
-                print type(basenode)
-                print isinstance(basenode, BaseObject)
                 raise ValueError('Trying to build a BaseObject from a basenode, but you gave a \'%s\': %s' % (type(basenode).__name__, str(basenode)))
 
         created = False
         if basenode is None:
             # if no basenode is given, we need to create a new node
-            self._node = graph.createNode(reverseLookup(toNodes(kwargs), self.__class__))
+            self._node = graph.createNode(reverseLookup(toNodes(kwargs), self.__class__),
+                                          _classes = ontology.parentClasses(self.__class__))
             created = True
 
         else:
@@ -169,16 +167,25 @@ class BaseObject(object):
             if graph is None or graph is basenode._graph:
                 self._node = basenode
             else:
-                self._node = graph.createNode(reverseLookup(basenode, self.__class__)) # TODO: we should be able to construct directly from the other node
+                # TODO: we should be able to construct directly from the other node
+                self._node = graph.createNode(reverseLookup(basenode, self.__class__),
+                                              _classes = basenode._classes)
                 created = True
 
             # optimization: avoid revalidating the classes all the time when creating a BaseObject from a pre-existing node
             if kwargs:
                 self.update(toNodes(kwargs))
 
+        # if we just created a node and the graph is static, we gave it its valid classes without actually checking...
+        # if not a valid instance, remove it from the list of valid classes so that the next check will fail
+        if created and not self._node._graph._dynamic and not self._node.isValidInstance(self.__class__):
+            self._node.removeClass(self.__class__)
+
+
         # make sure that the new instance we're creating is actually a valid one
-        # TODO: dynamic = False -> use "_node.isinstance()", dynamic = True -> use "_node.insinstance() or _node.isValidInstance()"
-        #       this way we have either static inheritance or dynamic type classes
+        # Note: the following comment shouldn't be necessary if the list of valid classes is always up-to-date
+        #if not (self._node.isinstance(self.__class__) or
+        #        (self._node._graph._dynamic and self._node.isValidInstance(self.__class__))):
         if not self._node.isinstance(self.__class__):
             # if we just created the node and it is invalid, we need to remove it
             if created:
