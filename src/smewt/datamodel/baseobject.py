@@ -137,7 +137,7 @@ class BaseObject(object):
                 print BaseObject
                 print type(basenode)
                 print isinstance(basenode, BaseObject)
-                raise ValueError('graph: %s - node: %s' % (type(graph), type(basenode)))
+                raise ValueError('Trying to build a BaseObject from a basenode, but you gave a \'%s\': %s' % (type(basenode).__name__, str(basenode)))
 
         created = False
         if basenode is None:
@@ -261,7 +261,7 @@ class BaseObject(object):
     def uniqueKey(self):
         """Return a tuple containing an unique identifier (inside its class) for this instance.
         If some unique fields are not specified, None will be put instead."""
-        return tuple(self.get(k) for k in self._class.unique)
+        return tuple(self.get(k) for k in self.__class__.unique)
 
 
     def orderedProperties(self):

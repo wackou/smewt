@@ -20,7 +20,8 @@
 #
 
 from PyQt4.QtCore import SIGNAL, Qt, QObject, QThread
-from smewt.base import Media, Graph, Task
+from smewt.datamodel import MemoryObjectGraph
+from smewt.base import Media, Task
 from smewt.media.series import Episode
 from smewt.base.utils import GlobDirectoryWalker
 import logging
@@ -36,7 +37,7 @@ class ImportTask(QThread, Task):
         self.folder = folder
         self.tagger = tagger
         self.recursive = recursive
-        
+
     def total(self):
         return self.totalCount
 
@@ -65,7 +66,7 @@ class ImportTask(QThread, Task):
 
     def __del__(self):
         self.wait()
-    
+
     def importFinished(self, results):
         self.emit(SIGNAL('foundData'), results)
         self.emit(SIGNAL('taskFinished'), self)
@@ -85,7 +86,7 @@ class Worker(QObject):
         self.filetypes = filetypes
         self.taggingQueue = []
         self.taggers = {}
-        self.results = Graph()
+        self.results = MemoryObjectGraph()
         self.tagCount = 0
         self.state = 'stopped'
         self.recursive = recursive
@@ -94,7 +95,7 @@ class Worker(QObject):
             mediaObject = Media(filename)
             self.taggingQueue.append(( tagger, mediaObject ))
             self.tagCount += 1
-            
+
     def begin(self):
         if self.state != 'running':
             self.state = 'running'
@@ -105,22 +106,22 @@ class Worker(QObject):
         if self.taggingQueue:
             tagger, next = self.taggingQueue.pop()
             self.emit(SIGNAL('progressChanged'), self.tagCount - len(self.taggingQueue),  self.tagCount)
-            
+
             if tagger not in self.taggers:
                 self.taggers[tagger] = tagger()
                 self.connect(self.taggers[tagger], SIGNAL('tagFinished'), self.tagged)
 
             self.taggers[tagger].tag(next)
-                  
+
         else:
             self.state = 'stopped'
             self.tagCount = 0
             self.emit(SIGNAL('progressChanged'), self.tagCount - len(self.taggingQueue),  self.tagCount)
             self.emit(SIGNAL('foundData'), self.results)
             self.emit(SIGNAL('importFinished'), self.results)
-            self.results = Graph()
+            self.results = MemoryObjectGraph()
 
     def tagged(self, taggedMedia, send = False):
         log.info('Media tagged: %s' % taggedMedia)
-        self.results += taggedMedia            
+        self.results += taggedMedia
         self.tagNext()

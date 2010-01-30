@@ -19,7 +19,8 @@
 #
 
 from Cheetah.Template import Template
-from smewt.base import SmewtException, Graph, Media
+from smewt.datamodel import MemoryObjectGraph
+from smewt.base import SmewtException, Media
 from movieobject import Movie
 from smewt.base.utils import smewtDirectory
 
@@ -31,7 +32,7 @@ def render(url, collection):
     if url.viewType == 'single':
         # creates a new graph with all the media related to the given movie
         movieMD = collection.findOne(type = Movie, title = url.args['title'])
-        metadata = Graph()
+        metadata = MemoryObjectGraph()
         for f in collection.findAll(type = Media,
                                     select = lambda x: x.metadata[0] == movieMD):
             metadata += f

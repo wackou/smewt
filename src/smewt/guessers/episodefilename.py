@@ -55,12 +55,13 @@ class EpisodeFilename(Guesser):
 
         for n in name:
             for match in textutils.matchAllRegexp(n, rexps):
-                result = Episode()
-                result.confidence = 1.0
-                for key, value in match.items():
-                    log.debug('Found MD: %s: %s = %s', media.filename, key, value)
-                    result[key] = value
-                query += result
+                result = query.Episode(confidence = 1.0, **match)
+                #result = Episode()
+                #result.confidence = 1.0
+                #for key, value in match.items():
+                #    log.debug('Found MD: %s: %s = %s', media.filename, key, value)
+                #    result[key] = value
+                #query += result
 
         # cleanup a bit by removing unlikely eps numbers which are probably numbers in the title
         # or even dates in the filename, etc...

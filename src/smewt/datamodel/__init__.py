@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Ricard Marxer <email@ricardmarxer.com>
+# Copyright (c) 2010 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from base import SmewtDict, ValidatingSmewtDict, SmewtException, SmewtUrl, SolvingChain, BlockingChain, cachedmethod, EventServer, utils, textutils
-from base.mediaobject import Media, Metadata
-
-import logging
-logging.basicConfig(level = logging.DEBUG,
-                    format = '%(levelname)-8s %(module)s:%(funcName)s -- %(message)s')
+from memoryobjectgraph import MemoryObjectGraph
+from baseobject import BaseObject, Schema
+import ontology

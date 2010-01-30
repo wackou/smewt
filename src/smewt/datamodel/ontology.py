@@ -145,3 +145,6 @@ def importClasses(classes):
     """Import the given classes in the caller's global variables namespace."""
     for cls in classes:
         sys._getframe(1).f_globals[cls] = getClass(cls)
+
+def importAllClasses():
+    importClasses(classNames())

@@ -21,7 +21,8 @@
 
 from __future__ import with_statement
 from PyQt4.QtCore import SIGNAL, Qt, QObject, QThread
-from smewt.base import Media, Graph, Task, SmewtException, textutils
+from smewt.base import Media, Task, SmewtException, textutils
+from smewt.datamodel import MemoryObjectGraph
 from smewt.media import Subtitle, SubtitleNotFoundError
 import os.path
 
@@ -38,7 +39,7 @@ class SubtitleTask(QThread, Task):
         self.collection = collection
         self.provider = provider
         validTitle = provider.titleFilter(title)
-        self.objects = collection.findAll(select = lambda x: provider.canHandle(x) and validTitle(x))
+        self.objects = collection.findAll(validNode = lambda x: provider.canHandle(x) and validTitle(x))
         self.language = language
 
     def total(self):
@@ -93,7 +94,7 @@ class Worker(QObject):
 
         # find objects which don't have yet a subtitle of the desired language
         currentSubs = self.collection.findAll(type = Subtitle,
-                                              select = lambda x: x['metadata'] in self.objects,
+                                              validNode = lambda x: x.metadata in self.objects,
                                               language = self.language)
 
         alreadyGood = set([ s['metadata'] for s in currentSubs ])
@@ -102,14 +103,15 @@ class Worker(QObject):
         if not videos:
             log.info('All videos already have subtitles')
 
-        subs = Graph()
+        subs = MemoryObjectGraph()
         self.emit(SIGNAL('progressChanged'), 0, len(videos))
 
         index = 0
         for video in videos:
             try:
                 videoFilename = self.collection.findOne(type = Media,
-                                                        select = lambda x: x.metadata[0] == video).filename
+                                                        # the following assumes we always have a single metadata object for this file
+                                                        select = lambda x: x.metadata == video).filename
 
                 subFilename = os.path.splitext(videoFilename)[0] + '.%s.srt' % languageMap[self.language]
 
@@ -141,9 +143,8 @@ class Worker(QObject):
                     log.warning('\'%s\' already exists. Not overwriting it...' % subFilename)
 
                 # update the found subs with this one
-                sub = Subtitle({ 'metadata': video, 'language': self.language })
-                subfile = Media(subFilename)
-                subfile.metadata = [ sub ]
+                sub = Subtitle(metadata = video, language = self.language)
+                subfile = Media(filename = subFilename, metadata = sub)
 
                 subs += subfile
 

@@ -24,7 +24,6 @@ from smewturl import SmewtUrl
 from solvingchain import SolvingChain, BlockingChain
 from cache import cachedmethod
 from eventserver import EventServer
-from graph import Graph
 from mediaobject import Media, Metadata
 from taskmanager import Task
 from importer import Importer

@@ -18,26 +18,28 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import Metadata
+from smewt.datamodel import Schema, ontology
 
+ontology.importAllClasses()
 
 class Series(Metadata):
 
-    typename = 'Series'
+    #typename = 'Series'
 
-    schema = { 'title': unicode,
-               'numberSeasons': int,
-               'episodeList': list
-               }
+    schema = Schema({ 'title': unicode,
+                      'numberSeasons': int,
+                      #'episodeList': list
+                      })
 
+    valid = [ 'title' ]
     unique = [ 'title' ]
 
-    converters = { 'episodeList': lambda x:x } #parseEpisodeList }
+    #converters = { 'episodeList': lambda x:x } #parseEpisodeList }
 
 
 class Episode(Metadata):
 
-    typename = 'Episode'
+    #typename = 'Episode'
 
     schema = { 'series': Series,
                'season': int,
@@ -45,9 +47,13 @@ class Episode(Metadata):
                'title': unicode
                }
 
-    order = [ 'series', 'season', 'episodeNumber',  'title' ]
+    valid = [ 'series', 'season', 'episodeNumber' ]
+    reverseLookup = { 'series': 'episodes' }
+    #order = [ 'series', 'season', 'episodeNumber',  'title' ]
 
     unique = [ 'series', 'season', 'episodeNumber' ]
 
     converters = {}
 
+
+ontology.register(Series, Episode)

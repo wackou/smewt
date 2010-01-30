@@ -23,7 +23,8 @@ from smewt.guessers import *
 from smewt.solvers import *
 from PyQt4.QtCore import SIGNAL
 
-from smewt.base import Graph, SolvingChain, Media, Metadata
+from smewt.datamodel import MemoryObjectGraph
+from smewt.base import SolvingChain, Media, Metadata
 from smewt.media import Movie
 import logging
 
@@ -57,7 +58,7 @@ class MovieTagger(Tagger):
     def tag(self, media):
         if media.type() in [ 'video', 'subtitle' ]:
             if media.filename:
-                query = Graph()
+                query = MemoryObjectGraph()
                 query += media
                 self.chain1.start(query)
                 return

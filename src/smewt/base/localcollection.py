@@ -26,13 +26,13 @@ from PyQt4.QtCore import QObject, SIGNAL, QVariant
 
 from smewt.base import Media, Metadata
 from smewt.base import ImportTask, SubtitleTask
-from smewt.base import Graph
+from smewt.datamodel import MemoryObjectGraph
 from smewt.base.utils import GlobDirectoryWalker
 from smewt.taggers import EpisodeTagger, MovieTagger
 
 log = logging.getLogger('smewt.base.localcollection')
 
-class LocalCollection(Graph):
+class LocalCollection(MemoryObjectGraph):
     '''This class represents a collection of resources in a local machine.  The collection
     is specified by a set of folders.
     This collection also keeps a last scanned datetime for each of the folders.

@@ -21,7 +21,7 @@
 
 from PyQt4.QtCore import SIGNAL, Qt, QObject, QThread
 from mediaobject import Media
-from graph import Graph
+from smewt.datamodel import MemoryObjectGraph
 from utils import GlobDirectoryWalker
 import logging
 
@@ -61,7 +61,7 @@ class Worker(QObject):
         self.filetypes = filetypes
         self.taggingQueue = []
         self.taggers = {}
-        self.results = Graph()
+        self.results = MemoryObjectGraph()
         self.tagCount = 0
         self.state = 'stopped'
 

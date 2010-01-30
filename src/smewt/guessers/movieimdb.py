@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import cachedmethod, utils, SmewtException, Graph, Media
+from smewt.base import cachedmethod, utils, SmewtException, Media
 from smewt.guessers.guesser import Guesser
 from smewt.media import Movie
 
@@ -56,7 +56,7 @@ class MovieIMDB(Guesser):
 
         media = self.query.findOne(type = Media)
         media.metadata = [ guess ]
-        result = Graph()
+        result = MemoryObjectGraph()
         result += media
 
         self.emit(SIGNAL('finished'), result)

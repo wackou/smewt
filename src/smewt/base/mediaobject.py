@@ -22,6 +22,7 @@
 from smewtdict import SmewtDict, ValidatingSmewtDict
 from smewtexception import SmewtException
 from textutils import toUtf8
+from smewt.datamodel import ontology, BaseObject, Schema
 
 # This file contains the 2 base MediaObject types used in Smewt:
 #  - Media: is the type used to represent physical files on the hard disk.
@@ -35,6 +36,42 @@ from textutils import toUtf8
 # The job of a guesser is to map a MediaObject to its corresponding AbstractMediaObject
 
 
+class Metadata(BaseObject):
+    schema = Schema({ 'confidence': float,
+                      'watched': bool
+                      })
+
+    valid = []
+
+
+class Media(BaseObject):
+    schema = Schema({ 'filename': unicode,
+                      'sha1': unicode,
+                      'metadata': Metadata,
+                      'watched': bool # TODO: or is the one from Metadata sufficient?
+                      })
+
+    valid = [ 'filename' ]
+    reverseLookup = { 'metadata': 'files' }
+
+    types = { 'video': [ 'avi', 'ogm', 'mkv', 'mpg', 'mpeg' ],
+              'subtitle': [ 'sub', 'srt' ]
+              }
+
+
+    def ext(self):
+        return self.filename.split('.')[-1]
+
+    def type(self):
+        ext = self.ext()
+        for name, exts in Media.types.items():
+            if ext in exts:
+                return name
+        return 'unknown type'
+
+ontology.register(Metadata, Media)
+
+"""
 class Media(object):
 
     typename = 'Media' # useful for printing sometimes when mixed with Metadata objs
@@ -56,10 +93,11 @@ class Media(object):
         return "Media('%s')" % self.filename.encode('utf-8')
 
     def __eq__(self, other):
-        # FIXME: why do we need that try/except?
+        # why do we need that try/except?
         try:
             return isinstance(other, Media) and self.filename == other.filename
         except AttributeError:
+
             return hash(None)
 
     def __ne__(self, other):
@@ -311,3 +349,4 @@ class Metadata(object):
     def fromRow(self, headers, row):
         self.readFromRow(headers, row)
         return self
+"""
