@@ -151,13 +151,17 @@ class AbstractDirectedGraph(object):
         pickle.dump(self.toNodesAndEdges(), open(filename, 'w'))
 
     def load(self, filename):
+        import ontology
         import cPickle as pickle
         nodes, edges, classes = pickle.load(open(filename))
 
         self.clear()
         idmap = {}
         for _id, node in nodes.items():
-            idmap[_id] = self.createNode((prop, value, None) for prop, value in node)
+            n = self.createNode((prop, value, None) for prop, value in node)
+            for cls in classes[_id]:
+                n.addClass(ontology.getClass(cls))
+            idmap[_id] = n
 
         for node, name, otherNode in edges:
             idmap[node].addDirectedEdge(name, idmap[otherNode])
