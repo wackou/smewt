@@ -19,5 +19,6 @@
 #
 
 from memoryobjectgraph import MemoryObjectGraph
-from baseobject import BaseObject, Schema
+from objectgraph import Equal
+from baseobject import BaseObject
 import ontology

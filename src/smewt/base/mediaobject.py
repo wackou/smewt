@@ -22,7 +22,7 @@
 from smewtdict import SmewtDict, ValidatingSmewtDict
 from smewtexception import SmewtException
 from textutils import toUtf8
-from smewt.datamodel import ontology, BaseObject, Schema
+from smewt.datamodel import BaseObject
 
 # This file contains the 2 base MediaObject types used in Smewt:
 #  - Media: is the type used to represent physical files on the hard disk.
@@ -37,22 +37,26 @@ from smewt.datamodel import ontology, BaseObject, Schema
 
 
 class Metadata(BaseObject):
-    schema = Schema({ 'confidence': float,
-                      'watched': bool
-                      })
+    schema = { 'confidence': float,
+               'watched': bool
+               }
 
     valid = []
 
 
 class Media(BaseObject):
-    schema = Schema({ 'filename': unicode,
-                      'sha1': unicode,
-                      'metadata': Metadata,
-                      'watched': bool # TODO: or is the one from Metadata sufficient?
-                      })
+    schema = { 'filename': unicode,
+               'sha1': unicode,
+               'metadata': Metadata,
+               'watched': bool, # TODO: or is the one from Metadata sufficient?
+
+               # used by guessers and solvers
+               'matches': Metadata
+               }
 
     valid = [ 'filename' ]
-    reverseLookup = { 'metadata': 'files' }
+    reverseLookup = { 'metadata': 'files',
+                      'matches': 'query' }
 
     types = { 'video': [ 'avi', 'ogm', 'mkv', 'mpg', 'mpeg' ],
               'subtitle': [ 'sub', 'srt' ]
@@ -69,7 +73,6 @@ class Media(BaseObject):
                 return name
         return 'unknown type'
 
-ontology.register(Metadata, Media)
 
 """
 class Media(object):

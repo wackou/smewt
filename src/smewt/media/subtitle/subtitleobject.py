@@ -31,7 +31,11 @@ class Subtitle(Metadata):
     typename = 'Subtitle'
 
     schema = { 'metadata': Metadata,
-               'language': str }
+               'language': unicode }
+
+    valid = [ 'metadata' ]
+
+    reverseLookup = { 'metadata': 'subtitles' }
 
     order = [ 'metadata', 'language' ]
 

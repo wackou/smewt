@@ -29,6 +29,7 @@ import logging
 log = logging.getLogger('smewt.guessers.episodefilename')
 
 from smewt.base import Media, Metadata
+from smewt.base.utils import tolist
 from smewt.media import Episode, Series
 
 class EpisodeFilename(Guesser):
@@ -55,44 +56,40 @@ class EpisodeFilename(Guesser):
 
         for n in name:
             for match in textutils.matchAllRegexp(n, rexps):
-                result = query.Episode(confidence = 1.0, **match)
-                #result = Episode()
-                #result.confidence = 1.0
-                #for key, value in match.items():
-                #    log.debug('Found MD: %s: %s = %s', media.filename, key, value)
-                #    result[key] = value
-                #query += result
+                ep = query.Episode(confidence = 1.0, allowIncomplete = True, **match)
+                media.append('matches', ep)
 
         # cleanup a bit by removing unlikely eps numbers which are probably numbers in the title
         # or even dates in the filename, etc...
         niceGuess = None
-        for md in query.findAll(type = Episode):
-            if 'episodeNumber' in md.properties and 'season' in md.properties:
+        for md in tolist(media.matches):
+            if 'episodeNumber' in md and 'season' in md:
                 niceGuess = md
-            if 'episodeNumber' in md.properties and 'season' not in md.properties and md['episodeNumber'] > 1000:
+            if 'episodeNumber' in md and 'season' not in md and md.episodeNumber > 1000:
                 log.debug('Removing unlikely %s', str(md))
                 query.nodes.remove(md)
         # if we have season+epnumber, remove single epnumber guesses
         if niceGuess:
             for md in query.findAll(type = Episode):
-                if 'episodeNumber' in md.properties and 'season' not in md.properties:
+                if 'episodeNumber' in md and 'season' not in md:
                     log.debug('Removing %s because %s looks better' % (md, niceGuess))
                     query.nodes.remove(md)
 
 
         # heuristic 2: try to guess the serie title from the parent directory!
-        result = Episode()
+        result = query.Episode(allowIncomplete = True)
         if textutils.matchAnyRegexp(name[1], [ 'season (?P<season>[0-9]+)',
                                                # TODO: need to find a better way to have language packs for regexps
                                                'saison (?P<season>[0-9]+)' ]):
             s = query.findOrCreate(Series, title = name[2])
-            result['series'] = s
+            result.series = s
             result.confidence = 0.8
         else:
             s = query.findOrCreate(Series, title = name[1])
-            result['series'] = s
+            result.series = s
             result.confidence = 0.4
-        query += result
+
+        media.append('matches', result)
 
         # post-processing
         # we could already clean a bit the data here by solving it and comparing it to
@@ -100,12 +97,12 @@ class EpisodeFilename(Guesser):
         # such as 72 if some other valid episode number has been found, etc...
 
         # if the episode number is higher than 100, we assume it is season*100+epnumber
-        for md in query.findAll(type = Episode, select = lambda x: x['episodeNumber'] > 100):
-            num = md['episodeNumber']
+        for md in query.findAll(type = Episode, validNode = lambda x: x.episodeNumber > 100):
+            num = md.episodeNumber
             # it's the only guess we have, make it look like it's an episode
-            # maybe we should check if we have an estimate for the season number?
-            query.update(md, 'season', num // 100)
-            query.update(md, 'episodeNumber', num % 100)
+            # FIXME: maybe we should check if we already have an estimate for the season number?
+            md.season = num // 100
+            md.episodeNumber = num % 100
 
 
         self.emit(SIGNAL('finished'), query)

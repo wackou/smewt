@@ -141,8 +141,8 @@ class BaseObject(object):
     # as a result of the reverseLookup names of other classes
     #_implicitSchema = {}
 
-    def __init__(self, basenode = None, graph = None, dynamic = False, **kwargs):
-        log.debug('BaseObject.__init__: basenode = %s, args = %s' % (basenode, kwargs))
+    def __init__(self, basenode = None, graph = None, allowIncomplete = False, **kwargs):
+        log.debug('%s.__init__: basenode = %s, args = %s' % (self.__class__.__name__, basenode, kwargs))
         if graph is None and basenode is None:
             raise ValueError('You need to specify either a graph or a base node when instantiating a %s' % self.__class__.__name__)
 
@@ -178,8 +178,11 @@ class BaseObject(object):
 
         # if we just created a node and the graph is static, we gave it its valid classes without actually checking...
         # if not a valid instance, remove it from the list of valid classes so that the next check will fail
-        if created and not self._node._graph._dynamic and not self._node.isValidInstance(self.__class__):
-            self._node.removeClass(self.__class__)
+        if created and not self._node._graph._dynamic:
+            if allowIncomplete and not self._node.hasValidProperties(self.__class__, self.__class__.valid.intersection(set(self._node.keys()))):
+                self._node.removeClass(self.__class__)
+            if not allowIncomplete and not self._node.isValidInstance(self.__class__):
+                self._node.removeClass(self.__class__)
 
 
         # make sure that the new instance we're creating is actually a valid one
@@ -205,6 +208,9 @@ class BaseObject(object):
         cls.order = []
         cls.converters = {}
 
+    def __contains__(self, prop):
+        return prop in self._node
+
     def __getattr__(self, name):
         result = getattr(self._node, name)
 
@@ -229,8 +235,7 @@ class BaseObject(object):
         else:
             self.set(name, value)
 
-    def set(self, name, value, validate = True):
-        """Sets the given value to the named property."""
+    def _applyMulti(self, func, name, value, validate):
         cls = self.__class__
         if name in cls.schema._implicit:
             raise ValueError("Implicit properties are read-only (%s.%s)" % (cls.__name__, name))
@@ -246,12 +251,18 @@ class BaseObject(object):
 
         # if there are any BaseObjects in there, unwrap them into ObjectNodes
         if isinstance(value, BaseObject):
-            self._node.set(name, value._node, reverseName, validate)
+            func(name, value._node, reverseName, validate)
         elif isinstance(value, list) and (value == [] or isinstance(value[0], BaseObject)):
-            self._node.set(name, [ v._node for v in value ], reverseName, validate)
+            func(name, [ v._node for v in value ], reverseName, validate)
         else:
-            self._node.set(name, value, reverseName, validate)
+            func(name, value, reverseName, validate)
 
+    def set(self, name, value, validate = True):
+        """Sets the given value to the named property."""
+        self._applyMulti(self._node.set, name, value, validate)
+
+    def append(self, name, value, validate = True):
+        self._applyMulti(self._node.append, name, value, validate)
 
     def __eq__(self, other):
         # TODO: should allow comparing a BaseObject with an ObjectNode?

@@ -87,9 +87,12 @@ def validateClassDefinition(cls, attrs):
             else:
                 raise TypeError("Your subclass '%s' should define explicitly the '%s' class variable as a %s" % (cls.__name__, var, ' or a '.join(c.__name__ for c in ctype)))
 
-
         if type(value) not in ctype:
             raise TypeError("Your subclass '%s' defines the '%s' class variable as a '%s', but it should be of type %s" % (cls.__name__, var, type(value).__name__, ' or '.join(c.__name__ for c in ctype)))
+
+        # convert to our preferred type (first of the possible types)
+        setattr(cls, var, ctype[0](value))
+
 
     def checkSchemaSubset(cls, var, defaultValue = True):
         checkPresent(cls, var, (set, list), defaultValue)

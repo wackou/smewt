@@ -40,10 +40,9 @@ class Equal:
 
 
 def wrapNode(node, nodeClass = None):
-    if nodeClass is not None:
-        return nodeClass(basenode = node)
-
-    return node
+    if nodeClass is None:
+        nodeClass = BaseObject
+    return nodeClass(basenode = node)
 
 def unwrapNode(node):
     nodeClass = node.__class__ if isinstance(node, BaseObject) else None
@@ -94,6 +93,9 @@ class ObjectGraph(AbstractDirectedGraph):
         self._dynamic = dynamic
 
     def revalidateObjects(self):
+        if not self._dynamic:
+            return
+
         log.info('revalidating objects in graph %s' % self)
         for node in self.nodes():
             node.updateValidClasses()
@@ -171,7 +173,7 @@ class ObjectGraph(AbstractDirectedGraph):
                     importedNodes = []
                     for v in value:
                         log.debug('Importing dependency %s: %s' % (prop, v))
-                        importedNodes.append(self.addObject(wrapNode(v, nodeClass.schema[prop]),
+                        importedNodes.append(self.addObject(wrapNode(v, nodeClass.schema.get(prop)),
                                                             recurse,
                                                             excludedDeps = excludedDeps + [node])._node)
                     newprops.append((prop, importedNodes, reverseName))

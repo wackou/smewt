@@ -25,6 +25,7 @@ import sys, os, os.path, fnmatch
 import pycurl
 from PyQt4.QtCore import QSettings, QVariant
 import smewt
+from smewt.datamodel.utils import tolist, toresult
 
 def currentPath():
     '''Returns the path in which the calling file is located.'''

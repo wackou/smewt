@@ -52,8 +52,16 @@ class SolvingChain(QObject):
         it when done.'''
         self.chain[0].start(query)
 
+    def checkValidResult(self, result):
+        """Checks that all objects in the graph are actually valid instances, ie: there are no more incomplete objects."""
+        for n in result.nodes():
+            for cls in n._classes:
+                if not n.isValidInstance(cls):
+                    raise TypeError('SolvingChain: final result contains incomplete object: %s' % n.toString(cls))
+
     def finished(self, result):
         self.result = result
+        self.checkValidResult(result)
         media = result.findOne(type = Media)
         if media.metadata:
             log.info('Solving chain for file %s found metadata: %s', toUtf8(media), toUtf8(media.metadata))

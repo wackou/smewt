@@ -145,8 +145,6 @@ class AbstractDirectedGraph(object):
 
     def save(self, filename):
         """Saves the graph to the given filename."""
-        # FIXME: should also save the _classes attribute, so that the load() method wouldn't
-        #        have to revalidate explicitly all the objects.
         import cPickle as pickle
         pickle.dump(self.toNodesAndEdges(), open(filename, 'w'))
 
@@ -158,16 +156,16 @@ class AbstractDirectedGraph(object):
         self.clear()
         idmap = {}
         for _id, node in nodes.items():
-            n = self.createNode((prop, value, None) for prop, value in node)
-            for cls in classes[_id]:
-                n.addClass(ontology.getClass(cls))
-            idmap[_id] = n
+            idmap[_id] = self.createNode(props = ((prop, value, None) for prop, value in node),
+                                         _classes = (ontology.getClass(cls) for cls in classes[_id]))
 
         for node, name, otherNode in edges:
             idmap[node].addDirectedEdge(name, idmap[otherNode])
 
-        # we need to revalidate explicitly, as setting directed edges directly didn't
-        self.revalidateObjects()
+        # TODO: we need to make sure that the current ontology is the saem as when we saved this graph, otherwise
+        #       previously set classes might not be valid anymore, or some subclasses won't be correctly set
+        # we need to revalidate explicitly, as we might have classes in our ontolo
+        #self.revalidateObjects()
 
 
     ### Utility methods

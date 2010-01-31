@@ -30,6 +30,8 @@ class Movie(Metadata):
                # more to come
                }
 
+    valid = [ 'title' ]
+
     unique = [ 'title', 'year' ]
 
     order = [ 'title', 'year' ]

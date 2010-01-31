@@ -61,8 +61,7 @@ class SimpleSolver(Solver):
     '''
 
     def __init__(self, type):
-        super(SimpleSolver, self).__init__()
-        self.type = type
+        super(SimpleSolver, self).__init__(type)
 
     def start(self, query):
         self.checkValid(query)

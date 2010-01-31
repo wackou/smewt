@@ -88,7 +88,10 @@ class ObjectNode(AbstractNode):
         """Returns whether this node can be considered a valid instance of a class given its current properties.
 
         This method doesn't use the cached value, but does the actual checking of whether there is a match."""
-        for prop in cls.valid:
+        return self.hasValidProperties(cls, cls.valid)
+
+    def hasValidProperties(self, cls, props):
+        for prop in props:
             value = self.get(prop)
 
             if isinstance(value, types.GeneratorType):
@@ -156,6 +159,9 @@ class ObjectNode(AbstractNode):
         for i in self.edgeItems():
             yield i
 
+    def __contains__(self, name):
+        return name in self.keys()
+
     def __iter__(self):
         for prop in self.keys():
             yield prop
@@ -216,7 +222,6 @@ class ObjectNode(AbstractNode):
 
         if multiIsInstance(value, AbstractNode):
             if reverseName is None:
-                #raise ValueError('When setting a link between 2 nodes, you also need to give a reverseName for the link.')
                 reverseName = isOf(name)
 
             self.setLink(name, value, reverseName)
@@ -232,6 +237,32 @@ class ObjectNode(AbstractNode):
             self.updateValidClasses()
 
 
+
+    def append(self, name, value, reverseName = None, validate = True):
+        if multiIsInstance(value, AbstractNode):
+            if reverseName is None:
+                reverseName = isOf(name)
+
+            self.addLink(name, value, reverseName)
+
+        else:
+            raise TypeError("Trying to append to property '%s' of %s: '%s', but it is not of a supported type (literal or object node): %s" % (name, self, value, type(value).__name__))
+
+        # update the cache of valid classes
+        if validate:
+            self.updateValidClasses()
+
+
+    def addLink(self, name, otherNode, reverseName):
+        g = self._graph
+
+        if isinstance(otherNode, list) or isinstance(otherNode, types.GeneratorType):
+            for n in otherNode:
+                g.addLink(self, name, n, reverseName)
+        else:
+            g.addLink(self, name, otherNode, reverseName)
+
+
     def setLink(self, name, otherNode, reverseName):
         """Can assume that otherNode is always an object node or an iterable over them."""
         # need to check for whether otherNode is an iterable
@@ -243,15 +274,11 @@ class ObjectNode(AbstractNode):
         # first remove the old link(s)
         # Note: we need to wrap the generator into a list here because it looks like otherwise
         # the removeLink() call messes up with it
-        for n in list(self.get(name) or []): # NB: 'or []' because is the property doesn't exist yet, self.get() returns None
+        for n in list(self.get(name) or []): # NB: 'or []' because if the property doesn't exist yet, self.get() returns None
             g.removeLink(self, name, n, reverseName)
 
         # then add the new link(s)
-        if isinstance(otherNode, list) or isinstance(otherNode, types.GeneratorType):
-            for n in otherNode:
-                g.addLink(self, name, n, reverseName)
-        else:
-            g.addLink(self, name, otherNode, reverseName)
+        self.addLink(name, otherNode, reverseName)
 
 
 

@@ -20,7 +20,7 @@
 #
 
 from PyQt4.QtCore import SIGNAL, QObject
-from smewt.datamodel import MemoryObjectGraph
+from smewt.datamodel import MemoryObjectGraph, Equal
 from smewt.base import Media, Metadata
 import logging
 
@@ -36,6 +36,10 @@ class Solver(QObject):
     corresponding to the best solution or None in case no solution is available.
     """
 
+    def __init__(self, type):
+        super(Solver, self).__init__()
+        self.type = type
+
     def checkValid(self, query):
         '''Checks that we have only one object in Collection.media list and that
         its type is supported by our guesser'''
@@ -50,11 +54,17 @@ class Solver(QObject):
         log.debug(self.__class__.__name__ + ' Solver: trying to solve %s', query)
 
     def found(self, query, result):
+        query.displayGraph()
         # TODO: check that result is valid
+
         solved = MemoryObjectGraph()
+        md = solved.addObject(result)
+
+        # remove the stale 'matches' link before adding the media to the resulting graph
         media = query.findOne(type = Media)
-        media.metadata = [ result ]
-        solved += media # no need to add metadata explicitly because media links to it
+        media.matches = []
+        solved.addObject(media).metadata = md
+        solved.displayGraph()
 
         log.debug('Solver: found for %s: %s', media, result)
 
