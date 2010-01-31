@@ -21,7 +21,7 @@
 from abstractnode import AbstractNode
 from objectnode import ObjectNode
 import ontology
-from utils import isOf, reverseLookup, toresult, multiIsInstance
+from utils import isOf, reverseLookup, toresult, multiIsInstance, checkClass
 import types
 import logging
 
@@ -47,9 +47,6 @@ def toNodes(d):
             result[k] = [ n._node for n in v ]
     return result
 
-def checkClass(name, value, schema):
-    if name in schema and not multiIsInstance(value, schema[name]):
-        raise TypeError, "The '%s' attribute is of type '%s' but you tried to assign it a '%s'" % (name, schema[name], type(value))
 
 # Metaclass to be used for BaseObject so that they are automatically registered in the ontology
 class OntologyClass(type):
@@ -155,7 +152,7 @@ class BaseObject(object):
         created = False
         if basenode is None:
             # if no basenode is given, we need to create a new node
-            self._node = graph.createNode(reverseLookup(toNodes(kwargs), self.__class__),
+            self._node = graph.createNode(reverseLookup(kwargs, self.__class__),
                                           _classes = ontology.parentClasses(self.__class__))
             created = True
 
@@ -244,18 +241,14 @@ class BaseObject(object):
         #     raise ValueError("Unknown property in the class schema: (%s.%s)" % (cls.__name__, name))
 
         # objects are statically-typed here; graphType == 'STATIC'
-        checkClass(name, value, cls.schema)
+        # this also converts value to the correct type if an autoconverter was given in the class definition
+        # and replaces BaseObjects with their underlying nodes.
+        value = checkClass(name, value, cls.schema)
 
         # if we don't have a reverse lookup for this property, default to a reverse name of 'is%(Property)Of'
         reverseName = self.__class__.reverseLookup.get(name) or isOf(name)
 
-        # if there are any BaseObjects in there, unwrap them into ObjectNodes
-        if isinstance(value, BaseObject):
-            func(name, value._node, reverseName, validate)
-        elif isinstance(value, list) and (value == [] or isinstance(value[0], BaseObject)):
-            func(name, [ v._node for v in value ], reverseName, validate)
-        else:
-            func(name, value, reverseName, validate)
+        func(name, value, reverseName, validate)
 
     def set(self, name, value, validate = True):
         """Sets the given value to the named property."""

@@ -107,9 +107,15 @@ class TestInheritance(unittest.TestCase):
             valid = [ 'b' ]
             reverseLookup = { 'friend': 'friendOf' }
 
+        self.assertEqual(C.schema['friend'], A)
+        self.assert_('friend' not in C.schema._implicit)
+
         class D(A):
             schema = {}
             valid = [ 'a' ]
+
+        self.assertEqual(C.schema['friend'], A)
+        self.assert_('friend' not in C.schema._implicit)
 
         self.assertEqual(D.schema['friendOf'], C)
         self.assertEqual(E.schema['friendOf'], C)
@@ -135,6 +141,7 @@ class TestInheritance(unittest.TestCase):
         g = MemoryObjectGraph(dynamic = False)
         b = g.B()
         self.assert_(A not in b._node._classes)
+
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestInheritance)

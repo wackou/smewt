@@ -123,7 +123,7 @@ def validateClassDefinition(cls, attrs):
     # all the properties defined as subclasses of BaseObject need to have an
     # associated reverseLookup entry
     checkPresent(cls, 'reverseLookup', dict)
-    origReverseLookup = cls.reverseLookup
+    origReverseLookup = cls.reverseLookup if 'reverseLookup' in attrs else {}
 
     # inherit reverseLookup from parent
     rlookup = dict(parent.reverseLookup)
@@ -158,6 +158,48 @@ def validateClassDefinition(cls, attrs):
     # TODO: validate converters
 
 
+def printClass(cls):
+    print '*'*100
+    print 'class: %s' % cls.__name__
+    print 'parent: %s' % cls.parentClass().__name__
+    print 'schema', cls.schema
+    print 'implicit', cls.schema._implicit
+    print 'rlookup', cls.reverseLookup
+    print '*'*100
+
+
+def displayOntology():
+    import cPickle as pickle
+    import tempfile
+    import subprocess
+
+    fid, filename = tempfile.mkstemp(suffix = '.png')
+
+    dg = []
+    dg += [ 'digraph G {' ]
+
+    #for _id, n in nodes.items():
+    for cname, cls in _classes.items():
+        label = '<FONT COLOR="#884444">%s</FONT><BR/>' % cname
+        attrs = []
+        for name, type in cls.schema.items():
+            if name in cls.schema._implicit: continue
+            attrs += [ '%s: %s' % (name, type.__name__) ]
+        for name in cls.schema._implicit:
+            attrs += [ '<FONT COLOR="#666666">%s: %s</FONT>' % (name, cls.schema[name].__name__) ]
+
+        label += '<BR/>'.join(attrs)
+        dg += [ 'node_%s [shape=polygon,sides=4,label=<%s>];' % (cname, label) ]
+
+        dg += [ 'node_%s -> node_%s;' % (cname, cls.parentClass().__name__) ]
+
+
+    dg += [ '}' ]
+
+    subprocess.Popen([ 'dot', '-Tpng', '-o', filename ], stdin = subprocess.PIPE).communicate('\n'.join(dg))
+
+    subprocess.Popen([ 'gwenview', filename ], stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
+
 def register(cls, attrs):
     # when registering BaseObject, skip the tests
     if cls.__name__ == 'BaseObject':
@@ -181,6 +223,8 @@ def register(cls, attrs):
     for g in _graphs.values():
         g.revalidateObjects()
 
+    #displayOntology()
+
 
 def registerGraph(graph):
     _graphs[id(graph)] = graph
@@ -194,6 +238,9 @@ def getClass(className):
 
 def classNames():
     return _classes.keys()
+
+def importClass(cls):
+    sys._getframe(1).f_globals[cls] = getClass(cls)
 
 def importClasses(classes):
     """Import the given classes in the caller's global variables namespace."""

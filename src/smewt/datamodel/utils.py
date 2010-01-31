@@ -57,5 +57,40 @@ def isOf(name):
 def isLiteral(value):
     return type(value) in ontology.validLiteralTypes
 
+
+def checkClass(name, value, schema, converters = {}):
+    """This function also converts BaseObjects to nodes after having checked their class."""
+    def tonodes(v):
+        ontology.importClass('BaseObject')
+        if isinstance(v, BaseObject):
+            return v._node
+        elif isinstance(v, list) and v != [] and isinstance(v[0], BaseObject):
+            return (n._node for n in v)
+        else:
+            return v
+
+    if name not in schema or multiIsInstance(value, schema[name]):
+        return tonodes(value)
+
+    # try to autoconvert a string to int or float
+    if isinstance(value, unicode) and schema[name] in [ int, float ]:
+        try:
+            result = schema[name](value)
+            return tonodes(result)
+        except ValueError:
+            pass
+
+    # TODO: use specified converters, when available
+
+    raise TypeError, "The '%s' attribute is of type '%s' but you tried to assign it a '%s'" % (name, schema[name], type(value))
+
+
 def reverseLookup(d, cls):
-    return [ (name, value, cls.reverseLookup.get(name) or isOf(name)) for name, value in d.items() ]
+    """Returns a list of tuples used mostly for node creation, where BaseObjects have been replaced with their nodes.
+    They are triples of (name, literal value or node generator, reverseName).
+    This also checks for type validity and converts the values if they have type converters.
+    string -> int  and  string -> float  are done automatically."""
+    return [ (name,
+              checkClass(name, value, cls.schema, cls.converters),
+              cls.reverseLookup.get(name) or isOf(name))
+             for name, value in d.items() ]
