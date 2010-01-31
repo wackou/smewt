@@ -26,16 +26,19 @@ logging.getLogger('smewt.datamodel.Ontology').setLevel(logging.ERROR)
 #logging.getLogger('smewt.datamodel.ObjectNode').setLevel(logging.DEBUG)
 #logging.getLogger('smewt.datamodel.MemoryObjectNode').setLevel(logging.DEBUG)
 
-
+'''
 from objectnode import ObjectNode
 from objectgraph import ObjectGraph, Equal
 from memoryobjectgraph import MemoryGraph, MemoryObjectGraph
 from baseobject import BaseObject
 from utils import tolist
-import ontology
+#import ontology
 import unittest
+'''
 
-class TestAbstractNode(unittest.TestCase):
+from smewttest import *
+
+class TestAbstractNode(TestCase):
 
     def setUp(self):
         # FIXME: clear the previous ontology because the graphs do not get GC-ed properly
@@ -202,6 +205,8 @@ class TestAbstractNode(unittest.TestCase):
         self.assertEqual(g3.findOne(NiceGuy, n = 'n2').friend.a, 23)
         self.assertEqual(g3.findOne(NiceGuy, n = 'n2').friend._node, g3.findOne(BaseObject, n = 'n1')._node)
 
+
+suite = allTests(TestAbstractNode)
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestAbstractNode)

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2010 Nicolas Wack <wackou@gmail.com>
+# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,8 +18,21 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from memoryobjectgraph import MemoryGraph, MemoryObjectGraph
-from objectgraph import Equal
-from baseobject import BaseObject
-from utils import tolist, toresult
-import ontology
+from smewttest import *
+import glob
+
+def importTest(name):
+    cmd = 'import test_%s; setattr(sys.modules[__name__], \'%s\', test_%s.suite)' % (name, name, name)
+    exec(cmd)
+
+listTests = [ basename(filename)[5:-3] for filename in glob.glob(join(currentPath(), 'test_*.py')) ]
+
+for test in listTests:
+    importTest(test)
+
+testObjectsList = [ getattr(sys.modules[__name__], name) for name in listTests ]
+
+suite = TestSuite(testObjectsList)
+
+if __name__ == '__main__':
+    TextTestRunner(verbosity=2).run(suite)

@@ -21,10 +21,8 @@
 import logging
 logging.getLogger('smewt').setLevel(logging.WARNING)
 
-from baseobject import BaseObject
-from memoryobjectgraph import MemoryObjectGraph
-import ontology
-import unittest
+from smewttest import *
+
 
 def printClass(cls):
     print 'class: %s' % cls.__name__
@@ -33,7 +31,7 @@ def printClass(cls):
     print 'implicit', cls.schema._implicit
     print 'rlookup', cls.reverseLookup
 
-class TestInheritance(unittest.TestCase):
+class TestInheritance(TestCase):
 
     def setUp(self):
         # FIXME: clear the previous ontology because the graphs do not get GC-ed properly
@@ -142,6 +140,8 @@ class TestInheritance(unittest.TestCase):
         b = g.B()
         self.assert_(A not in b._node._classes)
 
+
+suite = allTests(TestInheritance)
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestInheritance)

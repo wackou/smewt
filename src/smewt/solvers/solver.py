@@ -54,7 +54,7 @@ class Solver(QObject):
         log.debug(self.__class__.__name__ + ' Solver: trying to solve %s', query)
 
     def found(self, query, result):
-        query.displayGraph()
+        #query.displayGraph()
         # TODO: check that result is valid
 
         solved = MemoryObjectGraph()
@@ -64,7 +64,7 @@ class Solver(QObject):
         media = query.findOne(type = Media)
         media.matches = []
         solved.addObject(media).metadata = md
-        solved.displayGraph()
+        #solved.displayGraph()
 
         log.debug('Solver: found for %s: %s', media, result)
 
