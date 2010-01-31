@@ -21,20 +21,6 @@
 
 import logging
 logging.getLogger('smewt').setLevel(logging.WARNING)
-logging.getLogger('smewt.datamodel.Ontology').setLevel(logging.ERROR)
-#logging.getLogger('smewt.datamodel.AbstractDirectedGraph').setLevel(logging.DEBUG)
-#logging.getLogger('smewt.datamodel.ObjectNode').setLevel(logging.DEBUG)
-#logging.getLogger('smewt.datamodel.MemoryObjectNode').setLevel(logging.DEBUG)
-
-'''
-from objectnode import ObjectNode
-from objectgraph import ObjectGraph, Equal
-from memoryobjectgraph import MemoryGraph, MemoryObjectGraph
-from baseobject import BaseObject
-from utils import tolist
-#import ontology
-import unittest
-'''
 
 from smewttest import *
 
@@ -209,6 +195,4 @@ class TestAbstractNode(TestCase):
 suite = allTests(TestAbstractNode)
 
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestAbstractNode)
-
     unittest.TextTestRunner(verbosity=2).run(suite)

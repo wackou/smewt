@@ -251,3 +251,12 @@ def importAllClasses():
     importClasses(classNames())
 
 
+
+_savedOntology = {}
+
+def saveCurrentOntology():
+    _savedOntology = _classes
+
+def reloadSavedOntology():
+    # FIXME: this won't work as BaseObject has been tampered with
+    _classes = _savedOntology
