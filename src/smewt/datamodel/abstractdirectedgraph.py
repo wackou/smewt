@@ -50,12 +50,10 @@ class AbstractDirectedGraph(object):
      - find a node given a list of matching properties
 
     """
-    def clear(self):
-        """Delete all nodes and links in this graph.
 
-        NB: This method should be called by subclasses that reimplement or extend it."""
-        for n in self._nodes:
-            n._graph = None
+    def clear():
+        """Delete all nodes and links in this graph."""
+        raise NotImplementedError
 
     def createNode(self, props = []):
          raise NotImplementedError

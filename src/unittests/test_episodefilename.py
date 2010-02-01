@@ -27,12 +27,12 @@ import glob
 
 
 tests = '''
-/data/Series/Black Adder/Black_Adder_-_1x01_-_The_Foretelling.digitaldistractions.[www.the-realworld.de].avi:
+/data/Series/Black Adder/Black_Adder_-_1x01_-_The_Foretelling.avi:
     series     : Black Adder
     season     : 1
     episodeNumber : 1
 
-/data/Series/Black Adder/Black_Adder_-_1x02_-_Born_To_Be_King.digitaldistractions.[www.the-realworld.de].avi:
+/data/Series/Black Adder/Black_Adder_-_1x02_-_Born_To_Be_King.avi:
     series     : Black Adder
     season     : 1
     episodeNumber : 2
@@ -43,15 +43,11 @@ tests = '''
     episodeNumber : 2
 '''
 
-def printClass(cls):
-    print 'class: %s' % cls.__name__
-    print 'parent: %s' % cls.parentClass().__name__
-    print 'schema', cls.schema
-    print 'implicit', cls.schema._implicit
-    print 'rlookup', cls.reverseLookup
-
 
 class TestEpisodeFilename(TestCase):
+
+    def setUp(self):
+        ontology.reloadSavedOntology('media')
 
     def withSolver(self, solver):
         data = yaml.load(tests)

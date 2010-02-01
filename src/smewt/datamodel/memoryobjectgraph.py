@@ -35,8 +35,6 @@ class MemoryGraph(AbstractDirectedGraph):
         self._nodes = set()
 
     def clear(self):
-        """Delete all objects in this graph."""
-        AbstractDirectedGraph.clear(self)
         self._nodes.clear()
 
     def createNode(self, props = [], _classes = set()):
@@ -44,7 +42,7 @@ class MemoryGraph(AbstractDirectedGraph):
 
     def deleteNode(self, node):
         node.unlinkAll()
-        node._graph = None
+        node.graph = None
         self._nodes.remove(node)
 
         # FIXME: we need to revalidate the touched nodes

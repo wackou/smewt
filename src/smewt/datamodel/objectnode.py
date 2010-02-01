@@ -23,6 +23,7 @@ from abstractnode import AbstractNode
 from utils import tolist, toresult, isOf, multiIsInstance
 import ontology
 import types
+import weakref
 import logging
 
 log = logging.getLogger('smewt.datamodel.ObjectNode')
@@ -78,6 +79,8 @@ class ObjectNode(AbstractNode):
         super(ObjectNode, self).__init__(graph, props)
         log.debug('ObjectNode.__init__: props = %s' % str(props))
 
+        self.graph = weakref.ref(graph)
+
         for prop, value, reverseName in props:
             self.set(prop, value, reverseName, validate = False)
 
@@ -127,7 +130,7 @@ class ObjectNode(AbstractNode):
 
     def updateValidClasses(self):
         """Revalidate all the classes for this node."""
-        if self._graph._dynamic:
+        if self.graph()._dynamic:
             self.clearClasses()
             for cls in ontology._classes.values():
                 if self.isValidInstance(cls):
@@ -208,7 +211,7 @@ class ObjectNode(AbstractNode):
     ### properties manipulation methods
 
     def __setattr__(self, name, value):
-        if name in [ '_graph' ]:
+        if name in [ 'graph' ]:
             object.__setattr__(self, name, value)
         else:
             self.set(name, value)
@@ -254,7 +257,7 @@ class ObjectNode(AbstractNode):
 
 
     def addLink(self, name, otherNode, reverseName):
-        g = self._graph
+        g = self.graph()
 
         if isinstance(otherNode, list) or isinstance(otherNode, types.GeneratorType):
             for n in otherNode:
@@ -269,7 +272,7 @@ class ObjectNode(AbstractNode):
         #if self._graph != otherNode._graph:
         #    raise ValueError('Both nodes do not live in the same graph, cannot link them together')
 
-        g = self._graph
+        g = self.graph()
 
         # first remove the old link(s)
         # Note: we need to wrap the generator into a list here because it looks like otherwise

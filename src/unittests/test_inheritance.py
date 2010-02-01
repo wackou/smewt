@@ -34,7 +34,6 @@ def printClass(cls):
 class TestInheritance(TestCase):
 
     def setUp(self):
-        # FIXME: clear the previous ontology because the graphs do not get GC-ed properly
         ontology.clear()
 
     def testSchema(self):
@@ -144,4 +143,4 @@ class TestInheritance(TestCase):
 suite = allTests(TestInheritance)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    TextTestRunner(verbosity=2).run(suite)

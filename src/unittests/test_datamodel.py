@@ -27,7 +27,6 @@ from smewttest import *
 class TestObjectNode(TestCase):
 
     def setUp(self):
-        # FIXME: clear the previous ontology because the graphs do not get GC-ed properly
         ontology.clear()
 
     def testBasicObjectNode(self):
@@ -407,4 +406,4 @@ class TestObjectNode(TestCase):
 suite = allTests(TestObjectNode)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    TextTestRunner(verbosity=2).run(suite)

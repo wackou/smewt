@@ -54,7 +54,6 @@ class AbstractNode(object):
 
     def __init__(self, graph, props = []):
         log.debug('AbstractNode.__init__: graph = %s' % str(graph))
-        self._graph = graph
 
 
     def __eq__(self, other):

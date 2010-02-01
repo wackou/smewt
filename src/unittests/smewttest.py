@@ -43,6 +43,8 @@ from smewt.solvers import *
 from smewt.guessers import *
 from smewt.media import *
 
+# before starting any tests, save smewt's default ontology in case we mess with it and need it again later
+ontology.saveCurrentOntology('media')
 
 def allTests(testClass):
     return TestLoader().loadTestsFromTestCase(testClass)

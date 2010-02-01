@@ -28,28 +28,52 @@ log = logging.getLogger('smewt.datamodel.Ontology')
 _classes = {}
 _graphs = weakref.WeakValueDictionary()
 
-
 # Note: voluntarily omit to put str as allowed types, unicode is much better
 #       and it will save us a *lot* of trouble
 # Note: list should only be list of literal values
 # TODO: add datetime
 validLiteralTypes = [ unicode, int, long, float ] #, list ]
 
-def clear():
-    global _classes, _graphs
 
-    BaseObject = _classes['BaseObject']
-    BaseObject.clearClassVariables()
 
-    _classes = { 'BaseObject': BaseObject }
-    # FIXME: this still leaks memory, as the nodes in a graph have a ref to it
-    _graphs = weakref.WeakValueDictionary()
 
 
 class Schema(dict):
     def __init__(self, *args, **kwargs):
         dict.__init__(self, *args, **kwargs)
-        self._implicit = set()
+        self._implicit = set(args[0]._implicit) if args and isinstance(args[0], Schema) else set()
+
+# dict of name to ontologies
+# ontologies are (_classes, class variables)
+_savedOntologies = {}
+
+def revalidateGraphs():
+    """revalidate all ObjectNodes in all registered Graphs."""
+    for g in _graphs.values():
+        g.revalidateObjects()
+
+def saveCurrentOntology(name):
+    # we need to make a copy of the elements here, and of the properties explicitly
+    # as when we change the ontology, we modify references to always the same class,
+    # not a copy of it
+    classes = dict(_classes)
+    classvars = [ (cls, cls.classVariables()) for cls in _classes.values() ]
+    _savedOntologies[name] = (classes, classvars)
+
+def reloadSavedOntology(name):
+    global _classes
+
+    classes, classvars = _savedOntologies[name]
+    _classes = dict(classes)
+    for cls, cvars in classvars:
+        cls.setClassVariables(cvars)
+
+    revalidateGraphs()
+
+def clear():
+    reloadSavedOntology('origin')
+    # FIXME: this still leaks memory, as the nodes in a graph have a ref to it
+    #_graphs = weakref.WeakValueDictionary()
 
 
 def subclasses(cls):
@@ -204,6 +228,8 @@ def register(cls, attrs):
     # when registering BaseObject, skip the tests
     if cls.__name__ == 'BaseObject':
         _classes['BaseObject'] = cls
+        # save this as a default ontology, it might be useful
+        saveCurrentOntology('origin')
         return
 
     if cls.__name__ in _classes:
@@ -218,10 +244,7 @@ def register(cls, attrs):
 
     _classes[cls.__name__] = cls
 
-
-    # revalidate all ObjectNodes in all registered Graphs
-    for g in _graphs.values():
-        g.revalidateObjects()
+    revalidateGraphs()
 
     #displayOntology()
 
@@ -252,11 +275,3 @@ def importAllClasses():
 
 
 
-_savedOntology = {}
-
-def saveCurrentOntology():
-    _savedOntology = _classes
-
-def reloadSavedOntology():
-    # FIXME: this won't work as BaseObject has been tampered with
-    _classes = _savedOntology

@@ -159,7 +159,7 @@ class MemoryNode(AbstractNode):
     #    return self._props.items()
 
     def updateValidClasses(self):
-        if self._graph._dynamic:
+        if self.graph()._dynamic:
             self._classes = set(cls for cls in ontology._classes.values() if self.isValidInstance(cls))
         else:
             # no need to do anything

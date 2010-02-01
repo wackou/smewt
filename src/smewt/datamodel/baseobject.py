@@ -62,6 +62,23 @@ class OntologyClass(type):
         ontology.register(cls, attrs)
 
 
+    def classVariables(cls):
+        # need to return a copy here (we're already messing enough with all those mutable objects around...)
+        return (ontology.Schema(cls.schema),
+                dict(cls.reverseLookup),
+                set(cls.valid),
+                set(cls.unique),
+                list(cls.order),
+                dict(cls.converters))
+
+    def setClassVariables(cls, vars):
+        cls.schema = ontology.Schema(vars[0])
+        cls.reverseLookup = dict(vars[1])
+        cls.valid = set(vars[2])
+        cls.unique = set(vars[3])
+        cls.order = set(vars[4])
+        cls.converters = set(vars[5])
+
 
 class BaseObject(object):
     """A BaseObject is a statically-typed object which gets its data from an ObjectNode. In that sense, it
@@ -161,7 +178,7 @@ class BaseObject(object):
 
             # if basenode is already in this graph, no need to make a copy of it
             # if graph is None, we might just be making a new instance of a node, so it's in the same graph as well
-            if graph is None or graph is basenode._graph:
+            if graph is None or graph is basenode.graph():
                 self._node = basenode
             else:
                 # TODO: we should be able to construct directly from the other node
@@ -175,7 +192,7 @@ class BaseObject(object):
 
         # if we just created a node and the graph is static, we gave it its valid classes without actually checking...
         # if not a valid instance, remove it from the list of valid classes so that the next check will fail
-        if created and not self._node._graph._dynamic:
+        if created and not self._node.graph()._dynamic:
             if allowIncomplete and not self._node.hasValidProperties(self.__class__, self.__class__.valid.intersection(set(self._node.keys()))):
                 self._node.removeClass(self.__class__)
             if not allowIncomplete and not self._node.isValidInstance(self.__class__):
@@ -189,21 +206,12 @@ class BaseObject(object):
         if not self._node.isinstance(self.__class__):
             # if we just created the node and it is invalid, we need to remove it
             if created:
-                self._node._graph.deleteNode(self._node)
+                self._node.graph().deleteNode(self._node)
 
             raise TypeError("Cannot instantiate a valid instance of %s because:\n%s" %
                             (self.__class__.__name__, self._node.invalidProperties(self.__class__)))
 
 
-    # revert BaseObject to its original state
-    @classmethod
-    def clearClassVariables(cls):
-        cls.schema = ontology.Schema({})
-        cls.reverseLookup = {}
-        cls.valid = []
-        cls.unique = []
-        cls.order = []
-        cls.converters = {}
 
     def __contains__(self, prop):
         return prop in self._node

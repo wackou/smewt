@@ -27,7 +27,6 @@ from smewttest import *
 class TestAbstractNode(TestCase):
 
     def setUp(self):
-        # FIXME: clear the previous ontology because the graphs do not get GC-ed properly
         ontology.clear()
 
     def testMRO(self):
@@ -195,4 +194,4 @@ class TestAbstractNode(TestCase):
 suite = allTests(TestAbstractNode)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    TextTestRunner(verbosity=2).run(suite)
