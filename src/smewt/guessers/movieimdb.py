@@ -41,6 +41,8 @@ class MovieIMDB(Guesser):
         self.checkValid(query)
         self.query = query
 
+        #query.displayGraph()
+
         log.debug('MovieImdb: finding more info on %s' % query.findAll(type = Media))
         movie = query.findOne(type = Movie)
         # if valid movie
@@ -49,13 +51,14 @@ class MovieIMDB(Guesser):
         self.connect(self.mdprovider, SIGNAL('finished'),
                      self.queryFinished)
 
-        self.mdprovider.startMovie(movie['title'])
+        self.mdprovider.startMovie(movie.title)
 
     def queryFinished(self, guess):
         del self.mdprovider # why is that useful again?
 
         media = self.query.findOne(type = Media)
-        media.metadata = [ guess ]
+        print 'guess', guess
+        media.metadata = guess
         result = MemoryObjectGraph()
         result += media
 

@@ -20,7 +20,7 @@
 
 from smewt.base.textutils import toUtf8
 from abstractnode import AbstractNode
-from utils import tolist, toresult, isOf, multiIsInstance
+from utils import tolist, toresult, isOf, multiIsInstance, isLiteral
 import ontology
 import types
 import weakref
@@ -229,7 +229,7 @@ class ObjectNode(AbstractNode):
 
             self.setLink(name, value, reverseName)
 
-        elif type(value) in ontology.validLiteralTypes or value is None: # TODO: is None could be checked here for validity
+        elif isLiteral(value):
             self.setLiteral(name, value)
 
         else:
@@ -315,7 +315,7 @@ class ObjectNode(AbstractNode):
             # most likely called from a node, but anyway we can't infer anything on the links so just display
             # them as anonymous ObjectNodes
             cls = self.__class__
-            props = [ (prop, [ cls.__name__ ] * len(tolist(value))) if multiIsInstance(value, ObjectNode) else (prop, str(value)) for prop, value in self.items() ]
+            props = [ (prop, [ cls.__name__ ] * len(tolist(value))) if multiIsInstance(value, ObjectNode) else (prop, unicode(value)) for prop, value in self.items() ]
 
         else:
             props = []

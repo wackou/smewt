@@ -228,5 +228,5 @@ class MovieFilename(Guesser):
 
         movie = cleanMovieFilename(media.filename)
 
-        query += Movie(dictionary = movie)
+        media.matches = query.Movie(**movie)
         self.emit(SIGNAL('finished'), query)

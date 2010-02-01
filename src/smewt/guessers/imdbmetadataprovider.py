@@ -23,6 +23,7 @@ from smewt.guessers.guesser import Guesser
 from smewt.media import Episode, Series, Movie
 from smewt.base import textutils
 from smewt.base.utils import smewtDirectory, smewtUserDirectory
+from smewt.datamodel import MemoryObjectGraph
 
 from PyQt4.QtCore import SIGNAL, QObject, QUrl
 from PyQt4.QtWebKit import QWebView
@@ -43,13 +44,13 @@ class Getter:
         if not fromName:
             fromName = name
         try:
-            self.md[name] = self.d[fromName]
+            self.md.set(name, self.d[fromName])
         except KeyError:
             pass
 
     def getMultiUnicode(self, name):
         try:
-            self.md[name] = [ unicode(s) for s in self.d[name] ]
+            self.md.set(name, [ unicode(s) for s in self.d[name] ])
         except KeyError:
             pass
 
@@ -85,8 +86,8 @@ class IMDBMetadataProvider(QObject):
             for epNumber, episode in series['episodes'][season].items():
                 ep = Episode({ 'series': smewtSeries })
                 try:
-                    ep['season'] = season
-                    ep['episodeNumber'] = epNumber
+                    ep.season = season
+                    ep.episodeNumber = epNumber
                 except:
                     # episode could not be entirely identified, what to do?
                     # can happen with 'unaired pilot', for instance, which has episodeNumber = 'unknown'
@@ -113,9 +114,10 @@ class IMDBMetadataProvider(QObject):
     @cachedmethod
     def getMovieData(self, movieImdb):
         self.imdb.update(movieImdb)
-        movie = Movie({ 'title': movieImdb['title'],
-                        'year': movieImdb['year']
-                        })
+        result = MemoryObjectGraph()
+        movie = result.Movie(title = movieImdb['title'],
+                             year = movieImdb['year'])
+
         g = Getter(movie, movieImdb)
         g.get('rating')
         g.get('plot')
@@ -124,12 +126,14 @@ class IMDBMetadataProvider(QObject):
         g.getMultiUnicode('director')
         g.getMultiUnicode('genres')
 
-        try:
-            movie['cast'] = [ (unicode(p), unicode(p.currentRole)) for p in movieImdb['cast'][:15] ]
-        except:
-            movie['cast'] = []
+        result.displayGraph()
 
-        return movie
+        try:
+            movie.cast = [ (unicode(p), unicode(p.currentRole)) for p in movieImdb['cast'][:15] ]
+        except KeyError:
+            movie.cast = []
+
+        return result
 
 
     @cachedmethod
@@ -194,6 +198,7 @@ class IMDBMetadataProvider(QObject):
         try:
             movieImdb = self.getMovie(movieName)
             movie = self.getMovieData(movieImdb)
+            movie.displayGraph()
             lores, hires = self.getPoster(movieImdb.movieID)
             movie['loresImage'] = lores
             movie['hiresImage'] = hires
@@ -201,6 +206,7 @@ class IMDBMetadataProvider(QObject):
             self.emit(SIGNAL('finished'), movie)
 
         except Exception, e:
+            raise
             log.warning(str(e) + ' -- ' + textutils.toUtf8(movieName))
-            self.emit(SIGNAL('finished'), movieName, [])
+            self.emit(SIGNAL('finished'), MemoryObjectGraph())
 
