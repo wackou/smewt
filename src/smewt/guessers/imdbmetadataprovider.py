@@ -126,10 +126,8 @@ class IMDBMetadataProvider(QObject):
         g.getMultiUnicode('director')
         g.getMultiUnicode('genres')
 
-        result.displayGraph()
-
         try:
-            movie.cast = [ (unicode(p), unicode(p.currentRole)) for p in movieImdb['cast'][:15] ]
+            movie.cast = [ unicode(p) + ' -- ' + unicode(p.currentRole) for p in movieImdb['cast'][:15] ]
         except KeyError:
             movie.cast = []
 
@@ -197,13 +195,15 @@ class IMDBMetadataProvider(QObject):
     def startMovie(self, movieName):
         try:
             movieImdb = self.getMovie(movieName)
-            movie = self.getMovieData(movieImdb)
-            movie.displayGraph()
-            lores, hires = self.getPoster(movieImdb.movieID)
-            movie['loresImage'] = lores
-            movie['hiresImage'] = hires
+            result = self.getMovieData(movieImdb)
 
-            self.emit(SIGNAL('finished'), movie)
+            movie = result.findOne('Movie')
+            lores, hires = self.getPoster(movieImdb.movieID)
+            movie.loresImage = lores
+            movie.hiresImage = hires
+
+            #result.displayGraph()
+            self.emit(SIGNAL('finished'), result)
 
         except Exception, e:
             raise

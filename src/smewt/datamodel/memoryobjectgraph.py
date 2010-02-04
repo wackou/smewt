@@ -59,6 +59,10 @@ class MemoryGraph(AbstractDirectedGraph):
         """Return whether this graph contains the given node (identity)."""
         return node in self._nodes
 
+    # __getstate__ and __setstate__ are needed for the cache to be able to work
+    def __setstate__(self, state):
+        self._nodes = set()
+        super(MemoryGraph, self).__setstate__(state)
 
 class MemoryObjectGraph(MemoryGraph, ObjectGraph):
     _objectNodeClass = MemoryObjectNode

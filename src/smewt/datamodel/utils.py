@@ -20,6 +20,7 @@
 
 import types
 import ontology
+from abstractnode import AbstractNode
 
 def tolist(obj):
     if    obj is None: return []
@@ -28,11 +29,13 @@ def tolist(obj):
 
 
 def multiIsInstance(value, cls):
+    # FIXME: we might be calling this function a little bit too much...
+    #print 'multiIsInstance', cls
     if isinstance(value, list):
         return all(isinstance(v, cls) for v in value)
     elif isinstance(value, types.GeneratorType):
         # we can't touch the generator otherwise the values will be lost
-        return True # NB: this behaviour is debatable
+        return issubclass(cls, AbstractNode) or issubclass(cls, BaseObject) # NB: this behaviour is debatable
     else:
         return isinstance(value, cls)
 
@@ -62,6 +65,14 @@ def isLiteral(value):
 
 def checkClass(name, value, schema, converters = {}):
     """This function also converts BaseObjects to nodes after having checked their class."""
+
+    # always try to autoconvert a string to a unicode
+    if isinstance(value, str):
+        value = value.decode('utf-8')
+    elif multiIsInstance(value, str):
+        value = [ v.decode('utf-8') for v in value ]
+
+
     def tonodes(v):
         ontology.importClass('BaseObject')
         if isinstance(v, BaseObject):
@@ -75,18 +86,12 @@ def checkClass(name, value, schema, converters = {}):
         return tonodes(value)
 
     # try to autoconvert a string to int or float
-    if (isinstance(value, unicode) or isinstance(value, str)) and schema[name] in [ int, float ]:
+    if isinstance(value, basestring) and schema[name] in [ int, float ]:
         try:
             return schema[name](value)
         except ValueError:
             pass
 
-    # try to autoconvert a string to a unicode
-    if isinstance(value, str) and schema[name] in [ unicode ]:
-        try:
-            return unicode(value)
-        except ValueError:
-            pass
 
     # TODO: use specified converters, when available
 

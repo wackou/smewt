@@ -36,7 +36,7 @@ def smewtDirectory(*args):
 
 def smewtUserDirectory(*args):
     settings = QSettings()
-    t = settings.value('user_dir').toString()
+    t = unicode(settings.value('user_dir').toString())
     if t == '':
         t = os.path.join(os.path.dirname(unicode(settings.fileName())), *args)
         # FIXME: this is not portable...

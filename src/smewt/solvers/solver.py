@@ -22,6 +22,7 @@
 from PyQt4.QtCore import SIGNAL, QObject
 from smewt.datamodel import MemoryObjectGraph, Equal
 from smewt.base import Media, Metadata
+from smewt.base.mediaobject import foundMetadata
 import logging
 
 log = logging.getLogger('smewt.solvers.solver')
@@ -54,20 +55,9 @@ class Solver(QObject):
         log.debug(self.__class__.__name__ + ' Solver: trying to solve %s', query)
 
     def found(self, query, result):
-        #query.displayGraph()
-        # TODO: check that result is valid
+        log.debug('%s: found for %s: %s' % (self.__class__.__name__, query, result))
 
-        solved = MemoryObjectGraph()
-        md = solved.addObject(result)
-
-        # remove the stale 'matches' link before adding the media to the resulting graph
-        media = query.findOne(type = Media)
-        media.matches = []
-        solved.addObject(media).metadata = md
-        #solved.displayGraph()
-
-        log.debug('Solver: found for %s: %s', media, result)
-
+        solved = foundMetadata(query, result)
         self.emit(SIGNAL('finished'), solved)
 
     def start(self, query):

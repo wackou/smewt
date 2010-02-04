@@ -30,6 +30,7 @@ from urllib import urlopen,  urlencode
 import imdb
 from smewt.base import textutils
 from imdbmetadataprovider import IMDBMetadataProvider
+from smewt.base.mediaobject import foundMetadata
 
 log = logging.getLogger('smewt.guessers.movieimdb')
 
@@ -56,10 +57,5 @@ class MovieIMDB(Guesser):
     def queryFinished(self, guess):
         del self.mdprovider # why is that useful again?
 
-        media = self.query.findOne(type = Media)
-        print 'guess', guess
-        media.metadata = guess
-        result = MemoryObjectGraph()
-        result += media
-
+        result = foundMetadata(self.query, guess.findOne(Movie))
         self.emit(SIGNAL('finished'), result)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2010-01-31, 13:53:21 -->
+<!-- Saved: 2010-02-01, 04:21:41 -->
 <!-- Copyright (C) 2010 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -96,6 +96,8 @@
     <Source>unittests/test_basicnode.py</Source>
     <Source>unittests/test_datamodel.py</Source>
     <Source>unittests/test_inheritance.py</Source>
+    <Source>unittests/test_memory.py</Source>
+    <Source>unittests/test_movieimdb.py</Source>
   </Sources>
   <Forms>
   </Forms>

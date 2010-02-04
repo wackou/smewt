@@ -227,6 +227,9 @@ class ObjectGraph(AbstractDirectedGraph):
 
     def _findAll(self, type = None, validNode = lambda x: True, **kwargs):
         """Implementation of findAll that returns a generator."""
+        if isinstance(type, basestring):
+            type = ontology.getClass(type)
+
         for node in self.nodesFromClass(type) if type else self.nodes():
             # TODO: should this go before or after the properties checking? Which is faster in general?
             if not validNode(node):

@@ -326,9 +326,9 @@ class ObjectNode(AbstractNode):
                     raise 42 # should be an iterator
                     props.append((prop, value.toString(cls = cls.schema.get(prop) or BaseObject)))
                 elif isinstance(value, types.GeneratorType):
-                    props.append((prop, str(toresult([ v.toString(cls = cls.schema.get(prop) or default) for v in value ]))))
+                    props.append((prop, unicode(toresult([ v.toString(cls = cls.schema.get(prop) or default) for v in value ]))))
                 else:
-                    props.append((prop, str(value)))
+                    props.append((prop, unicode(value)))
 
             #props = [ (prop, value.toString(cls = cls.schema[prop]))                        # call toString with the inferred class of a node
             #          if isinstance(value, ObjectNode) and prop in cls.schema               # if we have a node in our schema

@@ -21,7 +21,7 @@
 from smewttest import *
 import glob
 
-logging.getLogger('smewt').setLevel(logging.INFO)
+logging.getLogger('smewt').setLevel(logging.WARNING)
 
 
 tests = '''
@@ -154,17 +154,18 @@ class TestMovieIMDB(TestCase):
             result = result[0]
 
             for key, value in md.items():
-                self.assertEqual(result[key], value)
-            print 'testing ok', filename
+                self.assertEqual(result.get(key), value)
 
-
+            from smewt.base import cache
+            #cache.save('/tmp/smewt.cache')
 
 
 
 suite = allTests(TestMovieIMDB)
 
+from smewt.base import cache
+cache.load('/tmp/smewt.cache')
+
 if __name__ == '__main__':
-    from smewt.base import cache
-    cache.load('/tmp/cache.smewt')
     TextTestRunner(verbosity=2).run(suite)
-    cache.save('/tmp/cache.smewt')
+    cache.save('/tmp/smewt.cache')

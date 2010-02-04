@@ -140,16 +140,8 @@ class AbstractDirectedGraph(object):
 
         return nodes, edges, classes
 
-
-    def save(self, filename):
-        """Saves the graph to the given filename."""
-        import cPickle as pickle
-        pickle.dump(self.toNodesAndEdges(), open(filename, 'w'))
-
-    def load(self, filename):
+    def fromNodesAndEdges(self, nodes, edges, classes):
         import ontology
-        import cPickle as pickle
-        nodes, edges, classes = pickle.load(open(filename))
 
         self.clear()
         idmap = {}
@@ -166,6 +158,26 @@ class AbstractDirectedGraph(object):
         #self.revalidateObjects()
 
 
+    def save(self, filename):
+        """Saves the graph to the given filename."""
+        import cPickle as pickle
+        pickle.dump(self.toNodesAndEdges(), open(filename, 'w'))
+
+    def load(self, filename):
+        import cPickle as pickle
+        self.fromNodesAndEdges(*pickle.load(open(filename)))
+
+    # __getstate__ and __setstate__ are needed for the cache to be able to work
+    def __getstate__(self):
+        return self.toNodesAndEdges()
+
+    def __setstate__(self, state):
+        # FIXME: this doesn't belong here...
+        self._dynamic = False
+
+        self.fromNodesAndEdges(*state)
+
+
     ### Utility methods
 
     def displayGraph(self):
@@ -179,9 +191,15 @@ class AbstractDirectedGraph(object):
         dg = []
         dg += [ 'digraph G {' ]
 
+        def tostring(prop):
+            if isinstance(prop, list):
+                return u', '.join([ unicode(p) for p in prop ])
+            else:
+                return unicode(prop)
+
         for _id, n in nodes.items():
             label = '<FONT COLOR="#884444">%s</FONT><BR/>' % (', '.join(cls for cls in classes[_id] if cls != 'BaseObject') or 'BaseObject')
-            label += '<BR/>'.join([ '%s: %s' % (name, unicode(prop)[:40].encode('utf-8')) for name, prop in n ])
+            label += '<BR/>'.join([ '%s: %s' % (name, tostring(prop)[:60].encode('utf-8')) for name, prop in n ])
             dg += [ 'node_%d [shape=polygon,sides=4,label=<%s>];' % (_id, label) ]
 
         for node, name, otherNode in edges:
@@ -189,6 +207,6 @@ class AbstractDirectedGraph(object):
 
         dg += [ '}' ]
 
-        subprocess.Popen([ 'dot', '-Tpng', '-o', filename ], stdin = subprocess.PIPE).communicate('\n'.join(dg).encode('utf-8'))
+        subprocess.Popen([ 'dot', '-Tpng', '-o', filename ], stdin = subprocess.PIPE).communicate('\n'.join(dg))
 
         subprocess.Popen([ 'gwenview', filename ], stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
