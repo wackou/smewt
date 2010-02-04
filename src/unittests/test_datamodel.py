@@ -192,7 +192,7 @@ class TestObjectNode(TestCase):
         # Series needs only 'title', so it should be a fit if the graph is dynamic
         self.assertEqual(ep._node, Series(ep)._node)
 
-        s = g.findOne(Series)
+        s = g.findOne(Series, title = 'The Wire')
         self.assertRaises(TypeError, Episode, s)
 
 
