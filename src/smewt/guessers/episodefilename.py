@@ -67,13 +67,13 @@ class EpisodeFilename(Guesser):
                 niceGuess = md
             if 'episodeNumber' in md and 'season' not in md and md.episodeNumber > 1000:
                 log.debug('Removing unlikely %s', str(md))
-                query.nodes.remove(md)
+                query.deleteNode(md._node)
         # if we have season+epnumber, remove single epnumber guesses
         if niceGuess:
             for md in query.findAll(type = Episode):
                 if 'episodeNumber' in md and 'season' not in md:
                     log.debug('Removing %s because %s looks better' % (md, niceGuess))
-                    query.nodes.remove(md)
+                    query.deleteNode(md._node)
 
 
         # heuristic 2: try to guess the serie title from the parent directory!

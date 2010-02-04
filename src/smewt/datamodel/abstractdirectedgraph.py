@@ -29,6 +29,7 @@ class Equal:
     OnValue = 2
     OnValidValue = 3
     OnUniqueValue = 4
+    OnLiterals = 5
 
 
 
@@ -113,6 +114,12 @@ class AbstractDirectedGraph(object):
                     log.info('%s already in graph %s (value)...' % (node, self))
                     return n
 
+        elif cmp == Equal.OnLiterals:
+            for n in self.nodes():
+                if node.sameProperties(n, exclude = excludeProperties):
+                    log.info('%s already in graph %s (literals)...' % (node, self))
+                    return n
+
         else:
             raise NotImplementedError
 
@@ -193,13 +200,18 @@ class AbstractDirectedGraph(object):
 
         def tostring(prop):
             if isinstance(prop, list):
-                return u', '.join([ unicode(p) for p in prop ])
+                result = u', '.join([ unicode(p) for p in prop ])
             else:
-                return unicode(prop)
+                result = unicode(prop)
+
+            # appply html chars transformation
+            result = result.replace('&', '&amp;')
+
+            return result
 
         for _id, n in nodes.items():
             label = '<FONT COLOR="#884444">%s</FONT><BR/>' % (', '.join(cls for cls in classes[_id] if cls != 'BaseObject') or 'BaseObject')
-            label += '<BR/>'.join([ '%s: %s' % (name, tostring(prop)[:60].encode('utf-8')) for name, prop in n ])
+            label += '<BR/>'.join([ '%s: %s' % (name, tostring(prop)[:40].encode('utf-8')) for name, prop in n ])
             dg += [ 'node_%d [shape=polygon,sides=4,label=<%s>];' % (_id, label) ]
 
         for node, name, otherNode in edges:

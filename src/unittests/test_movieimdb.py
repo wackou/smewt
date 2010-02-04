@@ -138,6 +138,9 @@ Chat noir, chat blanc (1998)/Chat noir, Chat blanc - Emir Kusturica (VO - VF - s
 
 class TestMovieIMDB(TestCase):
 
+    def setUp(self):
+        ontology.reloadSavedOntology('media')
+
     def testSimple(self):
         data = yaml.load(tests)
 
@@ -157,7 +160,7 @@ class TestMovieIMDB(TestCase):
                 self.assertEqual(result.get(key), value)
 
             from smewt.base import cache
-            #cache.save('/tmp/smewt.cache')
+            cache.save('/tmp/smewt.cache')
 
 
 

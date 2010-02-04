@@ -22,7 +22,7 @@
 from smewtdict import SmewtDict, ValidatingSmewtDict
 from smewtexception import SmewtException
 from textutils import toUtf8
-from smewt.datamodel import BaseObject, MemoryObjectGraph
+from smewt.datamodel import BaseObject, MemoryObjectGraph, Equal
 
 # This file contains the 2 base MediaObject types used in Smewt:
 #  - Media: is the type used to represent physical files on the hard disk.
@@ -74,7 +74,7 @@ class Media(BaseObject):
         return 'unknown type'
 
 
-def foundMetadata(query, result):
+def foundMetadata(query, result, link = True):
     """Return a graph that contains:
      - the only Media object found in the query graph
      - the result object linked as metadata to the previous media object
@@ -84,12 +84,26 @@ def foundMetadata(query, result):
     """
     # TODO: check that result is valid
     solved = MemoryObjectGraph()
-    result = solved.addObject(result)
 
     # remove the stale 'matches' link before adding the media to the resulting graph
+    #query.displayGraph()
     media = query.findOne(Media)
     media.matches = []
-    solved.addObject(media).metadata = result
+    media.metadata = []
+    m = solved.addObject(media)
+
+    if result is None:
+        return solved
+
+    if isinstance(result, list):
+        result = [ solved.addObject(n, recurse = Equal.OnLiterals) for n in result ]
+    else:
+        result = solved.addObject(result, recurse = Equal.OnLiterals)
+
+    #solved.displayGraph()
+    if link:
+        m.metadata = result
+
     return solved
 
 

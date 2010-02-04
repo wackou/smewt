@@ -73,24 +73,27 @@ class IMDBMetadataProvider(QObject):
     @cachedmethod
     def getEpisodes(self, series):
         self.imdb.update(series, 'episodes')
-        eps = []
+
+        # TODO: debug to see if this is the correct way to access the series' title
+        result = MemoryObjectGraph()
+        smewtSeries = result.Series(title = series['title'])
+
         # FIXME: find a better way to know whether there are episodes or not
         try:
             series['episodes']
         except:
-            return []
+            return result
 
-        # TODO: debug to see if this is the correct way to access the series' title
-        smewtSeries = Series({ 'title': series['title'] })
         for season in series['episodes']:
             for epNumber, episode in series['episodes'][season].items():
-                ep = Episode({ 'series': smewtSeries })
                 try:
-                    ep.season = season
-                    ep.episodeNumber = epNumber
+                    ep = result.Episode(series = smewtSeries,
+                                        season = season,
+                                        episodeNumber = epNumber)
                 except:
                     # episode could not be entirely identified, what to do?
                     # can happen with 'unaired pilot', for instance, which has episodeNumber = 'unknown'
+                    log.warning('invalid season/epnumber pair: %s / %s' % (season, epNumber))
                     continue # just ignore this episode for now
 
                 g = Getter(ep, episode)
@@ -98,9 +101,7 @@ class IMDBMetadataProvider(QObject):
                 g.get('synopsis', 'plot')
                 g.get('originalAirDate', 'original air date')
 
-                eps.append(ep)
-
-        return eps
+        return result
 
     @cachedmethod
     def getMovie(self, name):
@@ -167,24 +168,21 @@ class IMDBMetadataProvider(QObject):
 
 
     def startEpisode(self, episode):
-        if not episode['series']:
+        if episode.get('series') is None:
             raise SmewtException("IMDBMetadataProvider: Episode doesn't contain 'series' field: %s", md)
 
-        name = episode['series']['title']
+        name = episode.series.title
         try:
             series = self.getSeries(name)
+            from smewt.base import cache
+            #cache.save('/tmp/smewt.cache')
             eps = self.getEpisodes(series)
+            #cache.save('/tmp/smewt.cache')
 
             lores, hires = self.getPoster(series.movieID)
 
-            # if we found some episodes, then we need to update the new Series object with the poster,
-            # otherwise we have the update the one we got from the filename
-            if eps:
-                eps[0]['series']['loresImage'] = lores
-                eps[0]['series']['hiresImage'] = hires
-            else:
-                episode['series']['loresImage'] = lores
-                episode['series']['hiresImage'] = hires
+            eps.findOne(Series).update({ 'loresImage': lores,
+                                         'hiresImage': hires })
 
             self.emit(SIGNAL('finished'), episode, eps)
 

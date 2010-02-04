@@ -21,6 +21,8 @@
 from smewt.base import cachedmethod, utils, SmewtException, Media
 from smewt.guessers.guesser import Guesser
 from smewt.media.series import Episode, Series
+from smewt.base.mediaobject import foundMetadata
+from smewt.datamodel import Equal
 
 from PyQt4.QtCore import SIGNAL, QObject, QUrl
 from PyQt4.QtWebKit import QWebView
@@ -44,26 +46,30 @@ class EpisodeIMDB(Guesser):
 
         log.debug('EpisodeImdb: finding more info on %s' % query.findAll(type = Episode))
         ep = query.findOne(type = Episode)
-        if ep['series']:
-            # little hack: if we have no season number, add 1 as default season number
-            # (helps for series which have only 1 season)
-            if not ep['season']:
-                query.update(ep, 'season', 1)
 
-            self.mdprovider = IMDBMetadataProvider()
-            self.connect(self.mdprovider, SIGNAL('finished'),
-                         self.queryFinished)
-
-            self.mdprovider.startEpisode(ep)
-
-        else:
+        if ep.get('series') is None:
             log.warning("EpisodeIMDB: Episode doesn't contain 'series' field: %s", ep)
             self.emit(SIGNAL('finished'), self.query)
+            return
+
+        # little hack: if we have no season number, add 1 as default season number
+        # (helps for series which have only 1 season)
+        if ep.get('season') is None:
+            ep.season = 1
+
+        self.mdprovider = IMDBMetadataProvider()
+        self.connect(self.mdprovider, SIGNAL('finished'),
+                     self.queryFinished)
+
+        self.mdprovider.startEpisode(ep)
 
 
     def queryFinished(self, ep, guesses):
         del self.mdprovider # why is that useful again?
 
-        self.query += guesses
+        result = self.query
+        for ep in guesses.findAll(Episode):
+            result.addObject(ep, recurse = Equal.OnLiterals)
 
-        self.emit(SIGNAL('finished'), self.query)
+        #result.displayGraph()
+        self.emit(SIGNAL('finished'), result)

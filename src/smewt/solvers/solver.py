@@ -58,6 +58,7 @@ class Solver(QObject):
         log.debug('%s: found for %s: %s' % (self.__class__.__name__, query, result))
 
         solved = foundMetadata(query, result)
+        #solved.displayGraph()
         self.emit(SIGNAL('finished'), solved)
 
     def start(self, query):

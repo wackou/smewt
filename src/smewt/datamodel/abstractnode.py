@@ -143,10 +143,15 @@ class AbstractNode(object):
 
     ### Additional utility methods
 
-    def sameProperties(self, other, exclude = []):
+    def sameProperties(self, other, props = None, exclude = []):
         # NB: sameValidProperties and sameUniqueProperties should be defined in BaseObject
         # TODO: this can surely be optimized
-        for name, value in other.items():
+        if props is None:
+            props = other.items()
+        else:
+            props = [ (p, other.get(p)) for p in props ]
+
+        for name, value in props:
             if name in exclude:
                 continue
             if self.get(name) != value:

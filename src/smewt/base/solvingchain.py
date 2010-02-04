@@ -63,7 +63,7 @@ class SolvingChain(QObject):
         self.result = result
         self.checkValidResult(result)
         media = result.findOne(type = Media)
-        if media.metadata:
+        if media.get('metadata') is not None:
             log.info('Solving chain for file %s found metadata: %s', toUtf8(media), toUtf8(media.metadata))
         else:
             log.info('Solving chain for file %s didn\'t find any metadata...', toUtf8(media))

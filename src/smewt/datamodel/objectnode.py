@@ -169,9 +169,6 @@ class ObjectNode(AbstractNode):
         for prop in self.keys():
             yield prop
 
-    def __getattr__(self, name):
-        return self.get(name)
-
     def __ne__(self, other):
         return not (self == other)
 
@@ -182,17 +179,23 @@ class ObjectNode(AbstractNode):
 
     ### Acessing properties methods
 
-    def get(self, name):
-        """Returns the given property or None if not found.
-        This can return either a literal value, or an iterator through other nodes if
-        the given property actually was a link relation."""
+    def __getattr__(self, name):
         try:
             return self.getLiteral(name)
         except:
             try:
                 return self.outgoingEdgeEndpoints(name) # this should be an iterable over the pointed nodes
             except:
-                return None
+                raise AttributeError(name)
+
+    def get(self, name):
+        """Returns the given property or None if not found.
+        This can return either a literal value, or an iterator through other nodes if
+        the given property actually was a link relation."""
+        try:
+            return self.__getattr__(name)
+        except AttributeError:
+            return None
 
     def getChainedProperties(self, propList):
         """Given a list of successive chained properties, returns the final value.

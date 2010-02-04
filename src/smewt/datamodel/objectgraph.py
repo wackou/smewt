@@ -19,7 +19,7 @@
 #
 
 from objectnode import ObjectNode
-from abstractdirectedgraph import AbstractDirectedGraph
+from abstractdirectedgraph import AbstractDirectedGraph, Equal
 from abstractnode import AbstractNode
 from baseobject import BaseObject, getNode
 from utils import reverseLookup, toresult
@@ -28,14 +28,6 @@ import ontology
 import logging
 
 log = logging.getLogger('smewt.datamodel.ObjectGraph')
-
-
-class Equal:
-    # some constants
-    OnIdentity = 1
-    OnValue = 2
-    OnValidValue = 3
-    OnUniqueValue = 4
 
 
 
@@ -130,6 +122,7 @@ class ObjectGraph(AbstractDirectedGraph):
 
     def addNode(self, node, recurse = Equal.OnIdentity, excludedDeps = []):
         return self.addObject(BaseObject(node), recurse, excludedDeps)
+
 
     def addObject(self, node, recurse = Equal.OnIdentity, excludedDeps = []):
         """Add an object and its underlying node and its links recursively into the graph.
@@ -232,7 +225,10 @@ class ObjectGraph(AbstractDirectedGraph):
 
         for node in self.nodesFromClass(type) if type else self.nodes():
             # TODO: should this go before or after the properties checking? Which is faster in general?
-            if not validNode(node):
+            try:
+                if not validNode(node):
+                    continue
+            except:
                 continue
 
             valid = True

@@ -21,7 +21,6 @@
 from smewt.base import Media, Metadata
 from smewt.solvers.solver import Solver
 from smewt.base.textutils import levenshtein
-import copy
 
 
 def exactMatch(baseGuess, md):
@@ -66,26 +65,27 @@ class SimpleSolver(Solver):
     def start(self, query):
         self.checkValid(query)
 
+        #query.displayGraph()
+
         baseGuess = None
         metadata = query.findAll(type = self.type)
 
         for md in metadata:
-            if md.isUnique() and md.confidence >= 0.9:
-                baseGuess = copy.copy(md)
-                orig = md
+            if md.isUnique() and md.get('confidence') >= 0.9:
+                baseGuess = md
                 break
 
-        if not baseGuess:
+        if baseGuess is None:
             self.found(query, None)
             return
 
         for md in metadata:
             # do not inadvertently overwrite some data we could have found from another instance
-            if md is orig:
+            if md is baseGuess:
                 continue
 
             # if there is a match, merge the data
             if fuzzyMatch2(baseGuess, md):
-                baseGuess.merge(md)
+                baseGuess.update(dict(md.items()))
 
         self.found(query, baseGuess)

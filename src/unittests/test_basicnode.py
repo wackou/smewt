@@ -112,7 +112,7 @@ class TestAbstractNode(TestCase):
         n.friend = [ n2, n3 ]
         self.assert_(n in n2.isFriendOf)
         self.assert_(n in n3.isFriendOf)
-        self.assertEqual(tolist(n3.friend), [])
+        self.assertEqual(tolist(n3.get('friend')), [])
 
         n4 = g.createNode()
         n4.friend = n.friend

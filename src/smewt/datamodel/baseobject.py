@@ -188,7 +188,7 @@ class BaseObject(object):
 
             # optimization: avoid revalidating the classes all the time when creating a BaseObject from a pre-existing node
             if kwargs:
-                self.update(toNodes(kwargs))
+                self.update(kwargs)
 
         # if we just created a node and the graph is static, we gave it its valid classes without actually checking...
         # if not a valid instance, remove it from the list of valid classes so that the next check will fail
@@ -215,6 +215,12 @@ class BaseObject(object):
 
     def __contains__(self, prop):
         return prop in self._node
+
+    def get(self, name):
+        try:
+            return getattr(self, name)
+        except:
+            return None
 
     def __getattr__(self, name):
         result = getattr(self._node, name)
@@ -292,6 +298,7 @@ class BaseObject(object):
         return cls.__mro__[1]
 
     def update(self, props):
+        props = toNodes(props)
         for name, value in props.items():
             self.set(name, value, validate = False)
         self._node.updateValidClasses()
