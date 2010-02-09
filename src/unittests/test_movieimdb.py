@@ -150,7 +150,7 @@ class TestMovieIMDB(TestCase):
             query = MemoryObjectGraph()
             query.Media(filename = unicode(filename))
 
-            schain = BlockingChain(MovieFilename(), MovieIMDB())
+            schain = SolvingChain(MovieFilename(), MovieIMDB())
             result = schain.solve(query).findAll(Movie)
 
             self.assertEqual(len(result), 1, 'Solver coudn\'t solve anything...')

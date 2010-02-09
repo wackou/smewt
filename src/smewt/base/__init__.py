@@ -26,8 +26,8 @@ from cache import cachedmethod
 from eventserver import EventServer
 from mediaobject import Media, Metadata
 from taskmanager import Task
-from importer import Importer
 from importtask import ImportTask
 from subtitletask import SubtitleTask
-from localcollection import LocalCollection
 from actionfactory import ActionFactory
+from graphaction import GraphAction
+from localcollection import LocalCollection

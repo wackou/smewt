@@ -18,18 +18,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from smewt.base import GraphAction, Media, Metadata
+from smewt.media import Movie
 from smewt.guessers.guesser import Guesser
 from smewt.base import utils, textutils
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-import sys
 import re
 import logging
 
 log = logging.getLogger('smewt.guessers.moviefilename')
 
-from smewt.base import Media, Metadata
-from smewt.media import Movie
 
 def validYear(year):
     try:
@@ -215,18 +212,22 @@ def cleanMovieFilename(filename):
     return md
 
 
-class MovieFilename(Guesser):
+class MovieFilename(GraphAction):
 
     supportedTypes = [ 'video', 'subtitle' ]
 
     def __init__(self):
         super(MovieFilename, self).__init__()
 
-    def start(self, query):
+    def canHandle(self, query):
+        if query.findOne(Media).type() not in [ 'video', 'subtitle' ]:
+            raise SmewtException("%s: can only handle video or subtitle media objects" % self.__class__.__name__)
+
+    def perform(self, query):
         self.checkValid(query)
         media = query.findOne(type = Media)
 
         movie = cleanMovieFilename(media.filename)
 
         media.matches = query.Movie(**movie)
-        self.emit(SIGNAL('finished'), query)
+        return query

@@ -211,7 +211,7 @@ class AbstractDirectedGraph(object):
 
         for _id, n in nodes.items():
             label = '<FONT COLOR="#884444">%s</FONT><BR/>' % (', '.join(cls for cls in classes[_id] if cls != 'BaseObject') or 'BaseObject')
-            label += '<BR/>'.join([ '%s: %s' % (name, tostring(prop)[:40].encode('utf-8')) for name, prop in n ])
+            label += '<BR/>'.join([ '%s: %s' % (name, tostring(prop)[:32].encode('utf-8')) for name, prop in n ])
             dg += [ 'node_%d [shape=polygon,sides=4,label=<%s>];' % (_id, label) ]
 
         for node, name, otherNode in edges:

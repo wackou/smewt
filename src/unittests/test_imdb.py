@@ -33,7 +33,7 @@ class TestIMDB(TestCase):
 
     def runtestEpisodeIMDB(self, filename):
         query = MemoryObjectGraph()
-        chain = BlockingChain(EpisodeFilename(), MergeSolver(Episode), EpisodeIMDB(), SimpleSolver(Episode))
+        chain = SolvingChain(EpisodeFilename(), MergeSolver(Episode), EpisodeIMDB(), SimpleSolver(Episode))
 
         testcases = yaml.load(open(filename).read())
 

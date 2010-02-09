@@ -21,13 +21,29 @@
 
 from PyQt4.QtCore import SIGNAL, Qt, QObject, QThread
 
+class Task:
+    def __init__(self):
+        pass
 
+    def perform(taskData):
+        """All tasks should implement this function, which should perform the actual task.
+
+        Data is passed to this method using the opaque 'taskData' variable, its type and contents depending
+        on the type of task being performed.
+
+        This method shouldn't return anything on success, and raise an exception in case of failure.
+        It can have side effects, such as updating the global collection, though. In this case, the
+        collection needs to be passed through the 'taskData' input variable."""
+        raise NotImplementedError
+
+
+'''
 class Task:
     def __init__(self):
         self.name = 'Unnamed task'
         self.totalCount = 0
         self.progressedCount = 0
-        
+
     def total(self):
         return self.totalCount
 
@@ -36,9 +52,11 @@ class Task:
 
     def abort(self):
         pass
-    
+
     def update(self):
         pass
+'''
+
 
 class TaskManager(QObject, Task):
     def __init__(self):
@@ -53,10 +71,10 @@ class TaskManager(QObject, Task):
         self.connect(task, SIGNAL('progressChanged'), self.progressChanged)
         self.connect(task, SIGNAL('taskFinished'), self.taskFinished)
         self.progressChanged()
-        
+
     def remove(self, task):
         assert task in self.tasks, "The task is not registered to the task manager."
-        
+
         self.tasks.remove( task )
 
         del task

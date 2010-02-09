@@ -42,6 +42,7 @@ class EpisodeTagger(Tagger):
         self.connect(self.chain2, SIGNAL('finished'), self.solved)
 
     def gotFilenameMetadata(self, result):
+        self.filenameGraph = result
         self.filenameMetadata = result.findOne(type = Episode)
         self.chain2.start(result)
 
@@ -59,14 +60,14 @@ class EpisodeTagger(Tagger):
             mdprovider = IMDBMetadataProvider()
 
             try:
-                series = mdprovider.getSeries(media.metadata[0]['series']['title'])
-                result += media.metadata[0]
-                result.update(media.metadata[0], 'series', Series({ 'title': series }))
-                result.update(media.metadata[0], 'episodeNumber', -1)
+                series = mdprovider.getSeries(media.metadata.series.title)
+                result += media.metadata
+                media.metadata.series = Series(title = series)
+                media.metadata.episodeNumber = -1
 
                 lores, hires = mdprovider.getPoster(series.movieID)
-                media.metadata[0]['series']['loresImage'] = lores
-                media.metadata[0]['series']['hiresImage'] = hires
+                media.metadata.series.loresImage = lores
+                media.metadata.series.hiresImage = hires
 
             except SmewtException:
                 log.warning('Could not even find a probable series name for: %s' % media)
@@ -77,9 +78,8 @@ class EpisodeTagger(Tagger):
             # represent a .sub for 3 different languages...
             subs = []
             for language in utils.guessCountryCode(media.filename):
-                subs += [ Subtitle({ 'metadata': media.metadata[0],
-                                     'language': language
-                                     }) ]
+                subs += [ Subtitle(metadata = media.metadata,
+                                   language = language) ]
             media.metadata = subs
 
 

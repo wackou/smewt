@@ -19,16 +19,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import Media, Metadata
+from smewt.base import GraphAction, Media, Metadata
 from smewt.solvers.solver import Solver
 
 
 class MergeSolver(Solver):
 
     def __init__(self, type):
-        super(MergeSolver, self).__init__(type)
+        super(MergeSolver, self).__init__()
+        self.type = type
 
-    def start(self, query):
+    def perform(self, query):
         self.checkValid(query)
 
         results = sorted(query.findAll(type = self.type), key = lambda x: -x.confidence)
@@ -40,4 +41,4 @@ class MergeSolver(Solver):
                 if k == 'confidence': continue
                 result.set(k, v)
 
-        self.found(query, result)
+        return self.found(query, result)

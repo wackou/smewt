@@ -18,44 +18,42 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import cachedmethod, utils, SmewtException, Media
+from smewt.base import GraphAction, cachedmethod, utils, textutils, SmewtException, Media
+from smewt.base.mediaobject import foundMetadata
 from smewt.guessers.guesser import Guesser
 from smewt.media import Movie
-
-from PyQt4.QtCore import SIGNAL, QObject, QUrl
-from PyQt4.QtWebKit import QWebView
-
-import sys, re, logging
 from urllib import urlopen,  urlencode
-import imdb
-from smewt.base import textutils
 from imdbmetadataprovider import IMDBMetadataProvider
-from smewt.base.mediaobject import foundMetadata
+import imdb
+import logging
 
 log = logging.getLogger('smewt.guessers.movieimdb')
 
-class MovieIMDB(Guesser):
+class MovieIMDB(GraphAction):
 
     supportedTypes = [ 'video', 'subtitle' ]
 
-    def start(self, query):
-        self.checkValid(query)
-        self.query = query
+    def canHandle(self, query):
+        return True
 
+    def perform(self, query):
+        self.checkValid(query)
         #query.displayGraph()
 
         log.debug('MovieImdb: finding more info on %s' % query.findAll(type = Media))
-        movie = query.findOne(type = Movie)
+        movie = query.findOne(Movie)
         # if valid movie
 
-        self.mdprovider = IMDBMetadataProvider()
-        self.connect(self.mdprovider, SIGNAL('finished'),
-                     self.queryFinished)
+        mdprovider = IMDBMetadataProvider()
+        result = mdprovider.startMovie(movie.title)
 
-        self.mdprovider.startMovie(movie.title)
+        result = foundMetadata(query, result.findOne(Movie))
+        return result
 
+    '''
     def queryFinished(self, guess):
         del self.mdprovider # why is that useful again?
 
         result = foundMetadata(self.query, guess.findOne(Movie))
         self.emit(SIGNAL('finished'), result)
+    '''

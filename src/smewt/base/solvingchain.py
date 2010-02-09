@@ -34,7 +34,14 @@ class SolvingChain(QObject):
         if not args:
             raise SmewtException('Tried to build an empty solving chain')
 
-        self.connectChain(Qt.QueuedConnection)
+        #self.connectChain(Qt.QueuedConnection)
+
+    def solve(self, query):
+        result = query
+        for action in self.chain:
+            log.debug("SolvingChain: performing action %s" % action.__class__.__name__)
+            result = action.perform(result)
+        return result
 
     def connectChain(self, connectionType):
         # connect each element (guesser, solver) to the next

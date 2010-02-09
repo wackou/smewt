@@ -19,30 +19,30 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.guessers.guesser import Guesser
-from smewt.base import utils, textutils
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-import sys
+from smewt.base import GraphAction, utils, textutils
+from smewt.base import Media, Metadata
+from smewt.base.utils import tolist
+from smewt.media import Episode, Series
 import logging
 
 log = logging.getLogger('smewt.guessers.episodefilename')
 
-from smewt.base import Media, Metadata
-from smewt.base.utils import tolist
-from smewt.media import Episode, Series
 
-class EpisodeFilename(Guesser):
+class EpisodeFilename(GraphAction):
 
     supportedTypes = [ 'video', 'subtitle' ]
 
     def __init__(self):
         super(EpisodeFilename, self).__init__()
 
-    def start(self, query):
+    def canHandle(self, query):
+        if query.findOne(Media).type() not in [ 'video', 'subtitle' ]:
+            raise SmewtException("%s: can only handle video or subtitle media objects" % self.__class__.__name__)
+
+    def perform(self, query):
         self.checkValid(query)
 
-        media = query.findOne(type = Media)
+        media = query.findOne(Media)
 
         name = utils.splitFilename(media.filename)
 
@@ -105,4 +105,4 @@ class EpisodeFilename(Guesser):
             md.episodeNumber = num % 100
 
 
-        self.emit(SIGNAL('finished'), query)
+        return query

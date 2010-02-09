@@ -26,7 +26,6 @@ from smewt.base.utils import smewtDirectory, smewtUserDirectory
 from smewt.datamodel import MemoryObjectGraph
 
 from PyQt4.QtCore import SIGNAL, QObject, QUrl
-from PyQt4.QtWebKit import QWebView
 
 import sys, re, logging
 from urllib import urlopen,  urlencode
@@ -55,7 +54,7 @@ class Getter:
             pass
 
 
-class IMDBMetadataProvider(QObject):
+class IMDBMetadataProvider(object):
     def __init__(self):
         super(IMDBMetadataProvider, self).__init__()
 
@@ -63,6 +62,7 @@ class IMDBMetadataProvider(QObject):
 
     @cachedmethod
     def getSeries(self, name):
+        """Get the IMDBPy series object given its name."""
         results = self.imdb.search_movie(name)
         for r in results:
             if r['kind'] == 'tv series' or r['kind'] == 'tv mini series':
@@ -72,6 +72,8 @@ class IMDBMetadataProvider(QObject):
 
     @cachedmethod
     def getEpisodes(self, series):
+        """From a given IMDBPy series object, return a graph containing its information
+        as well as its episodes nodes."""
         self.imdb.update(series, 'episodes')
 
         # TODO: debug to see if this is the correct way to access the series' title
@@ -105,6 +107,7 @@ class IMDBMetadataProvider(QObject):
 
     @cachedmethod
     def getMovie(self, name):
+        """Get the IMDBPy movie object given its name."""
         log.debug('MovieIMDB: looking for movie %s', name)
         results = self.imdb.search_movie(name)
         for r in results:
@@ -114,6 +117,7 @@ class IMDBMetadataProvider(QObject):
 
     @cachedmethod
     def getMovieData(self, movieImdb):
+        """From a given IMDBPy movie object, return a graph containing its information."""
         self.imdb.update(movieImdb)
         result = MemoryObjectGraph()
         movie = result.Movie(title = movieImdb['title'],
@@ -137,6 +141,7 @@ class IMDBMetadataProvider(QObject):
 
     @cachedmethod
     def getPoster(self, imdbID):
+        """Return the low- and high-resolution posters (if available) of an imdb object."""
         imageDir = smewtUserDirectory('images')
         noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
 
@@ -184,11 +189,11 @@ class IMDBMetadataProvider(QObject):
             eps.findOne(Series).update({ 'loresImage': lores,
                                          'hiresImage': hires })
 
-            self.emit(SIGNAL('finished'), episode, eps)
+            return eps
 
         except Exception, e:
             log.warning(str(e) + ' -- ' + str(textutils.toUtf8(episode)))
-            self.emit(SIGNAL('finished'), episode, [])
+            return MemoryObjectGraph()
 
     def startMovie(self, movieName):
         try:
@@ -201,10 +206,10 @@ class IMDBMetadataProvider(QObject):
             movie.hiresImage = hires
 
             #result.displayGraph()
-            self.emit(SIGNAL('finished'), result)
+            return result
 
-        except Exception, e:
+        except SmewtException, e:
             raise
             log.warning(str(e) + ' -- ' + textutils.toUtf8(movieName))
-            self.emit(SIGNAL('finished'), MemoryObjectGraph())
+            return MemoryObjectGraph()
 

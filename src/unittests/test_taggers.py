@@ -18,66 +18,51 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import logging
-logging.getLogger('smewt').setLevel(logging.WARNING)
-
-
 from smewttest import *
 import glob
 
-
-tests = '''
-/data/Series/Black Adder/Black_Adder_-_1x01_-_The_Foretelling.avi:
-    series     : Black Adder
-    season     : 1
-    episodeNumber : 1
-
-/data/Series/Black Adder/Black_Adder_-_1x02_-_Born_To_Be_King.avi:
-    series     : Black Adder
-    season     : 1
-    episodeNumber : 2
-
-/data/Series/Northern Exposure/Northern Exposure - S01E02 - Brains Know-How and Native Intelligence.avi:
-    series     : Northern Exposure
-    season     : 1
-    episodeNumber : 2
-'''
+logging.getLogger('smewt').setLevel(logging.WARNING)
 
 
-class TestEpisodeFilename(TestCase):
+
+class TestTaggers(TestCase):
 
     def setUp(self):
         ontology.reloadSavedOntology('media')
 
-    def withSolver(self, solver):
+    def testMovieTagger(self):
+        #data = yaml.load(movietests)
+        pass
+
+    '''
+    def testSimple(self):
         data = yaml.load(tests)
 
+        #print data.items()
         for filename, md in data.items():
+            print 'testing', filename
             query = MemoryObjectGraph()
             query.Media(filename = unicode(filename))
 
-            schain = SolvingChain(EpisodeFilename(), solver)
-            result = schain.solve(query).findAll(Episode)
+            schain = BlockingChain(MovieFilename(), MovieIMDB())
+            result = schain.solve(query).findAll(Movie)
 
             self.assertEqual(len(result), 1, 'Solver coudn\'t solve anything...')
             result = result[0]
 
             for key, value in md.items():
-                if key == 'series':
-                    self.assertEqual(result.series.title, value)
-                else:
-                    self.assertEqual(result.get(key), value)
+                self.assertEqual(result.get(key), value)
+
+            from smewt.base import cache
+            cache.save('/tmp/smewt.cache')
+    '''
 
 
-    def testMergeSolver(self):
-        self.withSolver(MergeSolver(Episode))
+suite = allTests(TestTaggers)
 
-    #def testNaiveSolver(self):
-    #    self.withSolver(NaiveSolver(Episode))
-
-
-
-suite = allTests(TestEpisodeFilename)
+from smewt.base import cache
+cache.load('/tmp/smewt.cache')
 
 if __name__ == '__main__':
     TextTestRunner(verbosity=2).run(suite)
+    cache.save('/tmp/smewt.cache')

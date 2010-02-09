@@ -28,7 +28,7 @@ def exactMatch(baseGuess, md):
 
 def fuzzyMatch(baseGuess, md):
     for p1, p2 in zip(baseGuess.uniqueKey(), md.uniqueKey()):
-        if type(p1) == str or type(p1) == unicode:
+        if isinstance(p1, basestring):
             if p1 not in p2:
                 return False
         else:
@@ -60,9 +60,10 @@ class SimpleSolver(Solver):
     '''
 
     def __init__(self, type):
-        super(SimpleSolver, self).__init__(type)
+        super(SimpleSolver, self).__init__()
+        self.type = type
 
-    def start(self, query):
+    def perform(self, query):
         self.checkValid(query)
 
         #query.displayGraph()
@@ -76,8 +77,7 @@ class SimpleSolver(Solver):
                 break
 
         if baseGuess is None:
-            self.found(query, None)
-            return
+            return self.found(query, None)
 
         for md in metadata:
             # do not inadvertently overwrite some data we could have found from another instance
@@ -88,4 +88,4 @@ class SimpleSolver(Solver):
             if fuzzyMatch2(baseGuess, md):
                 baseGuess.update(dict(md.items()))
 
-        self.found(query, baseGuess)
+        return self.found(query, baseGuess)
