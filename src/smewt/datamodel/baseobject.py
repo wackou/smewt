@@ -19,7 +19,6 @@
 #
 
 from abstractnode import AbstractNode
-from objectnode import ObjectNode
 import ontology
 from utils import isOf, reverseLookup, toresult, multiIsInstance, checkClass
 import types
@@ -156,13 +155,13 @@ class BaseObject(object):
     #_implicitSchema = {}
 
     def __init__(self, basenode = None, graph = None, allowIncomplete = False, **kwargs):
-        log.debug('%s.__init__: basenode = %s, args = %s' % (self.__class__.__name__, basenode, kwargs))
+        #log.debug('%s.__init__: basenode = %s, args = %s' % (self.__class__.__name__, basenode, kwargs))
         if graph is None and basenode is None:
             raise ValueError('You need to specify either a graph or a base node when instantiating a %s' % self.__class__.__name__)
 
         # just to make sure, while developing. This should probably be removed in a stable version
         if (#(graph is not None and not isinstance(graph, ObjectGraph)) or
-            (basenode is not None and not (isinstance(basenode, ObjectNode) or
+            (basenode is not None and not (isinstance(basenode, AbstractNode) or
                                            isinstance(basenode, BaseObject)))):
                 raise ValueError('Trying to build a BaseObject from a basenode, but you gave a \'%s\': %s' % (type(basenode).__name__, str(basenode)))
 
@@ -280,11 +279,17 @@ class BaseObject(object):
         # FIXME: this could lead to cycles or very long chained __eq__ calling on properties
         return self.explicitItems() == other.explicitItems()
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __str__(self):
         return self._node.toString(cls = self.__class__, default = BaseObject).encode('utf-8')
 
     def __repr__(self):
         return self.__str__()
+
+    def explicitKeys(self):
+        return [ x for x in self.keys() if x not in self.__class__.schema._implicit ]
 
     def explicitItems(self):
         return [ x for x in self.items() if x[0] not in self.__class__.schema._implicit ]
@@ -296,6 +301,10 @@ class BaseObject(object):
     @classmethod
     def parentClass(cls):
         return cls.__mro__[1]
+
+    def virtual(self):
+        """Return an instance of the most specialized class that this node is an instance of."""
+        return self._node.virtual()
 
     def update(self, props):
         props = toNodes(props)

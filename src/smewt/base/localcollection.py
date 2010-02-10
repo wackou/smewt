@@ -201,6 +201,11 @@ class LocalCollection(MemoryObjectGraph):
 
         filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]
 
+        '''
+        for filename in GlobDirectoryWalker(folder, self.filetypes, recursive = self.recursive):
+            mediaObject = Media(filename)
+            self.taggingQueue.append(( tagger, mediaObject ))
+        '''
         importTask = ImportTask(folder, EpisodeTagger, filetypes = filetypes,
                                 recursive = self.seriesRecursive)
         self.connect(importTask, SIGNAL('foundData'), self.mergeCollection)
@@ -219,6 +224,11 @@ class LocalCollection(MemoryObjectGraph):
 
         filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]
 
+        '''
+        for filename in GlobDirectoryWalker(folder, self.filetypes, recursive = self.recursive):
+            mediaObject = Media(filename)
+            self.taggingQueue.append(( tagger, mediaObject ))
+        '''
         importTask = ImportTask(folder, MovieTagger, filetypes = filetypes,
                                 recursive = self.moviesRecursive)
         self.connect(importTask, SIGNAL('foundData'), self.mergeCollection)

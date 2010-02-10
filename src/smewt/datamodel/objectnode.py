@@ -20,6 +20,7 @@
 
 from smewt.base.textutils import toUtf8
 from abstractnode import AbstractNode
+from baseobject import BaseObject
 from utils import tolist, toresult, isOf, multiIsInstance, isLiteral
 import ontology
 import types
@@ -141,6 +142,17 @@ class ObjectNode(AbstractNode):
 
         log.debug('valid classes for %s:\n  %s' % (self.toString(), [ cls.__name__ for cls in self._classes ]))
 
+    def virtualClass(self):
+        """Return the most specialized class that this node is an instance of."""
+        cls = BaseObject
+        for c in self.classes():
+            if issubclass(c, cls):
+                cls = c
+        return cls
+
+    def virtual(self):
+        """Return an instance of the most specialized class that this node is an instance of."""
+        return self.virtualClass()(self)
 
     ### Container methods
 
@@ -314,6 +326,9 @@ class ObjectNode(AbstractNode):
 
 
     def toString(self, cls = None, default = None):
+        # TODO: smarter stringize that guesses the class, should it always be there?
+        cls = self.virtualClass()
+
         if cls is None:
             # most likely called from a node, but anyway we can't infer anything on the links so just display
             # them as anonymous ObjectNodes
@@ -325,34 +340,10 @@ class ObjectNode(AbstractNode):
             for prop, value in self.items():
                 if prop in cls.schema._implicit:
                     continue
-                elif isinstance(value, ObjectNode):
-                    raise 42 # should be an iterator
-                    props.append((prop, value.toString(cls = cls.schema.get(prop) or BaseObject)))
                 elif isinstance(value, types.GeneratorType):
                     props.append((prop, unicode(toresult([ v.toString(cls = cls.schema.get(prop) or default) for v in value ]))))
                 else:
                     props.append((prop, unicode(value)))
 
-            #props = [ (prop, value.toString(cls = cls.schema[prop]))                        # call toString with the inferred class of a node
-            #          if isinstance(value, ObjectNode) and prop in cls.schema               # if we have a node in our schema
-            #          else (prop, str(value))                                               # or just convert to string
-            #          for prop, value in self.items() if prop not in cls.schema._implicit ] # for all non-implicit properties
-
         return u'%s(%s)' % (cls.__name__, ', '.join([ u'%s=%s' % (k, v) for k, v in props ]))
 
-    '''
-    def toFullString(self, tabs = 0):
-        tabstr = 4 * tabs * ' '
-        tabstr1 = 4 * (tabs+1) * ' '
-        result = ('valid ' if self.isValid() else 'invalid ') + self._class.__name__ + ' : {\n'
-
-        schema = self._class.schema
-        for propname in self.orderedProperties():
-            if propname in schema and isinstance(self._props[propname], ObjectNode):
-                s = self._props[propname].toString(tabs = tabs+1)
-            else:
-                s = toUtf8(self._props[propname])
-            result += tabstr1 + '%-20s : %s\n' % (propname, s)
-
-        return result + tabstr + '}'
-    '''

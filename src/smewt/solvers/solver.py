@@ -19,9 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import SIGNAL, QObject
-from smewt.datamodel import MemoryObjectGraph, Equal
-from smewt.base import GraphAction, Media, Metadata
+from smewt.base import GraphAction, Metadata
 from smewt.base.mediaobject import foundMetadata
 import logging
 

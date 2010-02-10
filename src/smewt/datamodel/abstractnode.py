@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import types
 import logging
 
 log = logging.getLogger('smewt.datamodel.AbstractNode')
@@ -154,8 +155,19 @@ class AbstractNode(object):
         for name, value in props:
             if name in exclude:
                 continue
-            if self.get(name) != value:
-                return False
+            if isinstance(value, types.GeneratorType):
+                svalue = list(self.get(name))
+                value = list(value)
+
+                # FIXME: v1.virtual() should not be used here...
+                result = (len(svalue) == len(value) and
+                          all(v1.virtual() == v2.virtual() for v1, v2 in zip(svalue, value)))
+
+                if result is False:
+                    return False
+            else:
+                if self.get(name) != value:
+                    return False
 
         return True
 

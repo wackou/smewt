@@ -144,7 +144,6 @@ class TestMovieIMDB(TestCase):
     def testSimple(self):
         data = yaml.load(tests)
 
-        #print data.items()
         for filename, md in data.items():
             print 'testing', filename
             query = MemoryObjectGraph()

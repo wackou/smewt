@@ -28,7 +28,7 @@ class Equal:
     OnIdentity = 1
     OnValue = 2
     OnValidValue = 3
-    OnUniqueValue = 4
+    OnUnique = 4
     OnLiterals = 5
 
 
@@ -97,33 +97,6 @@ class AbstractDirectedGraph(object):
         # TODO: remove this, as it should only be implemented in the ObjectGraph
         raise NotImplementedError
 
-
-    def findNode(self, node, cmp = Equal.OnIdentity, excludeProperties = []):
-        """Return a node in the graph that is equal to the given one using the specified comparison type.
-
-        Return None if not found."""
-
-        if cmp == Equal.OnIdentity:
-            if self.contains(node):
-                log.info('%s already in graph %s (id)...' % (node, self))
-                return node
-
-        elif cmp == Equal.OnValue:
-            for n in self.nodes():
-                if node.sameProperties(n, exclude = excludeProperties):
-                    log.info('%s already in graph %s (value)...' % (node, self))
-                    return n
-
-        elif cmp == Equal.OnLiterals:
-            for n in self.nodes():
-                if node.sameProperties(n, exclude = excludeProperties):
-                    log.info('%s already in graph %s (literals)...' % (node, self))
-                    return n
-
-        else:
-            raise NotImplementedError
-
-        return None
 
     ### Methods related to a graph serialization
 

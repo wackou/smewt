@@ -190,6 +190,29 @@ class TestAbstractNode(TestCase):
         self.assertEqual(g3.findOne(NiceGuy, n = 'n2').friend.a, 23)
         self.assertEqual(g3.findOne(NiceGuy, n = 'n2').friend._node, g3.findOne(BaseObject, n = 'n1')._node)
 
+    def testAddObject(self):
+        ontology.reloadSavedOntology('media')
+
+        g = MemoryObjectGraph()
+
+        g1 = MemoryObjectGraph()
+        m1 = g1.Media(filename = 'a.avi',
+                      metadata = g1.Episode(series = g1.Series(title = 'A'),
+                                            season = 1,
+                                            episodeNumber = 1))
+        g.addObject(m1, recurse = Equal.OnUnique)
+
+        g2 = MemoryObjectGraph()
+        m2 = g2.Media(filename = 'a.srt',
+                      metadata = g2.Subtitle(language = 'en',
+                                             metadata = g2.Episode(series = g2.Series(title = 'A'),
+                                                                   season = 1,
+                                                                   episodeNumber = 1)))
+
+        g.addObject(m2, recurse = Equal.OnUnique)
+
+        self.assertEqual(len(g.findAll(Episode)), 1)
+
 
 suite = allTests(TestAbstractNode)
 

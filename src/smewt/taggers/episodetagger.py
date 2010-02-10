@@ -19,36 +19,24 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from smewt.base import SmewtException, SolvingChain, Media, utils
+from smewt.media import Episode, Series, Subtitle
 from smewt.taggers.tagger import Tagger
 from smewt.guessers import *
 from smewt.solvers import *
-from PyQt4.QtCore import SIGNAL
-
-from smewt.base import SmewtException, SolvingChain, Media, Metadata, utils
-from smewt.media import Episode, Series, Subtitle
 import logging
 
 log = logging.getLogger('smewt.taggers.episodetagger')
 
 class EpisodeTagger(Tagger):
-    def __init__(self):
-        super(EpisodeTagger, self).__init__()
 
-        self.chain1 = SolvingChain(EpisodeFilename(), MergeSolver(Episode))
-        self.chain2 = SolvingChain(EpisodeIMDB(), SimpleSolver(Episode))
+    def perform(self, query):
+        filenameMetadata = SolvingChain(EpisodeFilename(), MergeSolver(Episode)).solve(query)
+        result = SolvingChain(EpisodeIMDB(), SimpleSolver(Episode)).solve(filenameMetadata)
 
-        # Connect the chains to our slots
-        self.connect(self.chain1, SIGNAL('finished'), self.gotFilenameMetadata)
-        self.connect(self.chain2, SIGNAL('finished'), self.solved)
+        media = result.findOne(Media)
 
-    def gotFilenameMetadata(self, result):
-        self.filenameGraph = result
-        self.filenameMetadata = result.findOne(type = Episode)
-        self.chain2.start(result)
-
-    def solved(self, result):
-        media = result.findOne(type = Media)
-        log.debug('Finished tagging: %s', media)
+        # TODO: useless now?
         if not media.metadata:
             log.warning('Could not find any tag for: %s' % media)
 
@@ -78,25 +66,13 @@ class EpisodeTagger(Tagger):
             # represent a .sub for 3 different languages...
             subs = []
             for language in utils.guessCountryCode(media.filename):
-                subs += [ Subtitle(metadata = media.metadata,
-                                   language = language) ]
-            media.metadata = subs
+                subs += [ result.Subtitle(metadata = media.metadata,
+                                          language = language) ]
 
+                media.metadata = subs
 
-        self.emit(SIGNAL('tagFinished'), media)
+        self.cleanup(result)
+        #result.displayGraph()
+        log.debug('Finished tagging: %s' % media)
+        return result
 
-
-    def tag(self, media):
-        if media.type() in [ 'video', 'subtitle'] :
-            if media.filename:
-                query = MemoryObjectGraph()
-                query += media
-                self.chain1.start(query)
-                return
-            else:
-                log.warning('filename hasn\'t been set on Media object.')
-        else:
-            log.warning('Not a video media. Cannot tag. Filename = \'%s\'' % media.filename)
-
-        # default tagger strategy if none other was applicable
-        return super(EpisodeTagger, self).tag(media)

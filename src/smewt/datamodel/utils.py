@@ -30,7 +30,6 @@ def tolist(obj):
 
 def multiIsInstance(value, cls):
     # FIXME: we might be calling this function a little bit too much...
-    #print 'multiIsInstance', cls
     if isinstance(value, list):
         return all(isinstance(v, cls) for v in value)
     elif isinstance(value, types.GeneratorType):

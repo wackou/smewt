@@ -19,109 +19,28 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import SIGNAL, Qt, QObject, QThread
-from smewt.datamodel import MemoryObjectGraph
+from smewt.datamodel import MemoryObjectGraph, Equal
 from smewt.base import Media, Task
-from smewt.media.series import Episode
-from smewt.base.utils import GlobDirectoryWalker
 import logging
 
 log = logging.getLogger('smewt.importtask')
 
-class ImportTask(QThread, Task):
-    def __init__(self, folder, tagger, filetypes, recursive = True):
+class ImportTask(Task):
+    def __init__(self, collection, taggerType, filename):
         super(ImportTask, self).__init__()
-        self.filetypes = filetypes
-        self.totalCount = 0
-        self.progressedCount = 0
-        self.folder = folder
-        self.tagger = tagger
-        self.recursive = recursive
+        self.collection = collection
+        self.taggerType = taggerType
+        self.filename = filename
 
-    def total(self):
-        return self.totalCount
+    def perform(self):
+        query = MemoryObjectGraph()
+        query.Media(filename = self.filename)
+        result = self.taggerType().perform(query)
 
-    def progressed(self):
-        return self.progressedCount
+        # TODO: check that we actually found something useful
+        #result.displayGraph()
 
-    def abort(self):
-        self.terminate()
-        self.wait()
+        # import the data into our collection
+        self.collection.addObject(result.findOne(Media),
+                                  recurse = Equal.OnUnique)
 
-    def run(self):
-        self.worker = Worker(self.folder, self.tagger, self.filetypes, recursive = self.recursive)
-
-        self.connect(self.worker, SIGNAL('progressChanged'),
-                     self.progressChanged)
-
-        self.connect(self.worker, SIGNAL('foundData'),
-                     self.foundData)
-
-        self.connect(self.worker, SIGNAL('importFinished'),
-                     self.importFinished)
-
-        self.worker.begin()
-
-        self.exec_()
-
-    def __del__(self):
-        self.wait()
-
-    def importFinished(self, results):
-        self.emit(SIGNAL('foundData'), results)
-        self.emit(SIGNAL('taskFinished'), self)
-
-    def progressChanged(self, current, total):
-        self.progressedCount = current
-        self.totalCount = total
-        self.emit(SIGNAL('progressChanged'))
-
-    def foundData(self, md):
-        self.emit(SIGNAL('foundData'), md)
-
-
-class Worker(QObject):
-    def __init__(self, folder, tagger, filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ], recursive = True):
-        super(Worker, self).__init__()
-        self.filetypes = filetypes
-        self.taggingQueue = []
-        self.taggers = {}
-        self.results = MemoryObjectGraph()
-        self.tagCount = 0
-        self.state = 'stopped'
-        self.recursive = recursive
-
-        for filename in GlobDirectoryWalker(folder, self.filetypes, recursive = self.recursive):
-            mediaObject = Media(filename)
-            self.taggingQueue.append(( tagger, mediaObject ))
-            self.tagCount += 1
-
-    def begin(self):
-        if self.state != 'running':
-            self.state = 'running'
-            self.tagNext()
-
-
-    def tagNext(self):
-        if self.taggingQueue:
-            tagger, next = self.taggingQueue.pop()
-            self.emit(SIGNAL('progressChanged'), self.tagCount - len(self.taggingQueue),  self.tagCount)
-
-            if tagger not in self.taggers:
-                self.taggers[tagger] = tagger()
-                self.connect(self.taggers[tagger], SIGNAL('tagFinished'), self.tagged)
-
-            self.taggers[tagger].tag(next)
-
-        else:
-            self.state = 'stopped'
-            self.tagCount = 0
-            self.emit(SIGNAL('progressChanged'), self.tagCount - len(self.taggingQueue),  self.tagCount)
-            self.emit(SIGNAL('foundData'), self.results)
-            self.emit(SIGNAL('importFinished'), self.results)
-            self.results = MemoryObjectGraph()
-
-    def tagged(self, taggedMedia, send = False):
-        log.info('Media tagged: %s' % taggedMedia)
-        self.results += taggedMedia
-        self.tagNext()

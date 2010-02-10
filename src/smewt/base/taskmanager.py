@@ -21,19 +21,18 @@
 
 from PyQt4.QtCore import SIGNAL, Qt, QObject, QThread
 
-class Task:
-    def __init__(self):
-        pass
+class Task(object):
+    def __init__(self, priority = 5):
+        self.priority = priority
 
-    def perform(taskData):
+    def perform(self):
         """All tasks should implement this function, which should perform the actual task.
 
-        Data is passed to this method using the opaque 'taskData' variable, its type and contents depending
-        on the type of task being performed.
+        No data is passed to this method. All the necessary task data should be given in the constructor.
 
         This method shouldn't return anything on success, and raise an exception in case of failure.
-        It can have side effects, such as updating the global collection, though. In this case, the
-        collection needs to be passed through the 'taskData' input variable."""
+        It can have side effects though, such as updating the global collection for instance. In this case,
+        the collection needs to be passed as argument to the constructor."""
         raise NotImplementedError
 
 
