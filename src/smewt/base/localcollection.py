@@ -22,7 +22,7 @@
 import logging
 import time, os
 
-from PyQt4.QtCore import QObject, SIGNAL, QVariant
+from PyQt4.QtCore import QObject, SIGNAL, QVariant, QSettings
 
 from smewt.base import Media, Metadata
 from smewt.base import ImportTask, SubtitleTask
@@ -38,7 +38,7 @@ class LocalCollection(MemoryObjectGraph):
     This collection also keeps a last scanned datetime for each of the folders.
     '''
 
-    def __init__(self, seriesFolders = [], moviesFolders = [], taskManager = None, settings = None):
+    def __init__(self, taskManager, seriesFolders = [], moviesFolders = []):
         super(LocalCollection, self).__init__()
 
         self.taskManager = taskManager
@@ -52,41 +52,38 @@ class LocalCollection(MemoryObjectGraph):
         self.seriesFolderTimes = {}
         self.moviesFolderTimes = {}
 
-        self.settings = settings
         self.loadSettings()
 
+
     def loadSettings(self):
-        if self.settings is None:
-            return
+        settings = QSettings()
+        self.seriesFolders, self.seriesRecursive = self.loadSettingsByType('series', settings)
+        self.moviesFolders, self.moviesRecursive = self.loadSettingsByType('movies', settings)
 
-        self.seriesFolders, self.seriesRecursive = self.loadSettingsByType(typeName = 'series')
-        self.moviesFolders, self.moviesRecursive = self.loadSettingsByType(typeName = 'movies')
+    def loadSettingsByType(self, typeName, settings):
+        folders = [ os.path.abspath(f) for f in unicode(settings.value('local_collection_%s_folders' % typeName).toString()).split(';')
+                    if f != '']
 
-    def loadSettingsByType(self, typeName = 'series'):
-        folders = [os.path.abspath(f) for f in unicode(self.settings.value('local_collection_%s_folders' % typeName).toString()).split(';')
-                   if f != '']
-
-        times = [float(t) if t != 'None' else None for t in str(self.settings.value('local_collection_%s_folders_times' % typeName).toString()).split(';') if t != '']
+        times = [ float(t) if t != 'None' else None for t in str(settings.value('local_collection_%s_folders_times' % typeName).toString()).split(';')
+                  if t != '' ]
 
         if len(folders) != len(times):
             # All or some scan times are missing
-            times = [None for folder in folders]
+            times = [ None ] * len(folders)
 
         folders = dict([(folder, time) for folder, time in zip(folders, times)])
-        recursive = self.settings.value('local_collection_%s_folders_recursive' % typeName, QVariant(True)).toBool()
+        recursive = settings.value('local_collection_%s_folders_recursive' % typeName, QVariant(True)).toBool()
 
         return folders, recursive
 
     def saveSettings(self):
-        if self.settings is None:
-            return
-
-        self.saveSettingsByType(self.seriesFolders, self.seriesRecursive, typeName = 'series')
-        self.saveSettingsByType(self.moviesFolders, self.moviesRecursive, typeName = 'movies')
+        settings = QSettings()
+        self.saveSettingsByType('series', self.seriesFolders, self.seriesRecursive, settings)
+        self.saveSettingsByType('movies', self.moviesFolders, self.moviesRecursive, settings)
 
 
-    def saveSettingsByType(self, foldersDict, recursive, typeName = 'series'):
-        if len(foldersDict) == 0:
+    def saveSettingsByType(self, typeName, foldersDict, recursive, settings):
+        if not foldersDict:
             return
 
         folders, times = zip(*(foldersDict.items()))
@@ -96,7 +93,14 @@ class LocalCollection(MemoryObjectGraph):
                                                                                                   for t in times])))
         self.settings.setValue('local_collection_%s_folders_recursive' % typeName, QVariant(recursive))
 
-        return
+
+    def __iadd__(self, obj):
+        super(LocalCollection, self).__iadd__(obj)
+        #self.emit updated
+
+    def addObject(self, obj):
+        super(LocalCollection, self).addObject(obj)
+        #self.emit updated
 
     def removeNotPresent(self):
         # Remove the nodes that are not in one of the folders anymore
@@ -201,20 +205,12 @@ class LocalCollection(MemoryObjectGraph):
 
         filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]
 
-        '''
-        for filename in GlobDirectoryWalker(folder, self.filetypes, recursive = self.recursive):
-            mediaObject = Media(filename)
-            self.taggingQueue.append(( tagger, mediaObject ))
-        '''
-        importTask = ImportTask(folder, EpisodeTagger, filetypes = filetypes,
-                                recursive = self.seriesRecursive)
-        self.connect(importTask, SIGNAL('foundData'), self.mergeCollection)
-        self.connect(importTask, SIGNAL('taskFinished'), self.seriesTaskFinished)
+        for filename in GlobDirectoryWalker(folder, filetypes, recursive = self.recursive):
+            importTask = ImportTask(self, EpisodeTagger, filename)
+            #self.connect(importTask, SIGNAL('taskFinished'), self.seriesTaskFinished)
 
-        if self.taskManager is not None:
-            self.taskManager.add( importTask )
+            self.taskManager.add(importTask)
 
-        importTask.start()
 
     def importMoviesFolder(self, folder):
         # Set now as the last time the folder was scanned
@@ -224,20 +220,12 @@ class LocalCollection(MemoryObjectGraph):
 
         filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]
 
-        '''
-        for filename in GlobDirectoryWalker(folder, self.filetypes, recursive = self.recursive):
-            mediaObject = Media(filename)
-            self.taggingQueue.append(( tagger, mediaObject ))
-        '''
-        importTask = ImportTask(folder, MovieTagger, filetypes = filetypes,
-                                recursive = self.moviesRecursive)
-        self.connect(importTask, SIGNAL('foundData'), self.mergeCollection)
-        self.connect(importTask, SIGNAL('taskFinished'), self.moviesTaskFinished)
+        for filename in GlobDirectoryWalker(folder, filetypes, recursive = self.recursive):
+            importTask = ImportTask(folder, MovieTagger, filename)
+            #self.connect(importTask, SIGNAL('taskFinished'), self.moviesTaskFinished)
 
-        if self.taskManager is not None:
-            self.taskManager.add( importTask )
+            self.taskManager.add(importTask)
 
-        importTask.start()
 
     def seriesTaskFinished(self, task):
         # Since the task may have been of a subfolder we must find

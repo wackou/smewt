@@ -44,9 +44,9 @@ class MainWidget(QWidget):
         super(MainWidget, self).__init__()
 
         self.taskManager = TaskManager()
-        self.connect(self.taskManager, SIGNAL('importFinished'), self.mergeCollection)
+        #self.connect(self.taskManager, SIGNAL('importFinished'), self.mergeCollection)
         self.connect(self.taskManager, SIGNAL('progressChanged'), self.progressChanged)
-        self.connect(self.taskManager, SIGNAL('foundData'), self.mergeCollection)
+        #self.connect(self.taskManager, SIGNAL('foundData'), self.mergeCollection)
 
         self.collectionView = QWebView()
         self.collectionView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
