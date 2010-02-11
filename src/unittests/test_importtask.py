@@ -19,6 +19,7 @@
 #
 
 from smewttest import *
+from smewt.base import TaskManager
 from smewt.base.importtask import ImportTask
 from smewt.taggers import *
 import glob
@@ -33,13 +34,27 @@ class TestImportTask(TestCase):
     def setUp(self):
         ontology.reloadSavedOntology('media')
 
-    def testImportEpisodes(self):
-        #data = yaml.load(movietests)
-        collection = MemoryObjectGraph()
+    def createTasks(self, collection):
         t1 = ImportTask(collection, EpisodeTagger, 'Monk/Monk.2x05.Mr.Monk.And.The.Very,.Very.Old.Man.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].avi')
         t2 = ImportTask(collection, EpisodeTagger, 'Monk/Monk.2x05.Mr.Monk.And.The.Very,.Very.Old.Man.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].English.srt')
         t3 = ImportTask(collection, EpisodeTagger, 'Monk/Monk.2x06.Mr.Monk.Goes.To.The.Theater.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].avi')
         t4 = ImportTask(collection, EpisodeTagger, 'Monk/Monk.2x06.Mr.Monk.Goes.To.The.Theater.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].English.srt')
+
+        return t1, t2, t3, t4
+
+    def collectionTest(self, collection):
+        series = collection.findAll(Series)
+        eps = collection.findAll(Episode)
+        subs = collection.findAll(Subtitle)
+
+        self.assertEqual(len(series), 1)
+        self.assertEqual(len(eps), 2)
+        self.assertEqual(len(subs), 2)
+
+    def testImportEpisodes(self):
+        collection = MemoryObjectGraph()
+
+        t1, t2, t3, t4 = self.createTasks(collection)
 
         t1.perform()
         #collection.displayGraph()
@@ -50,14 +65,27 @@ class TestImportTask(TestCase):
         t4.perform()
         #collection.displayGraph()
 
-        series = collection.findAll(Series)
-        eps = collection.findAll(Episode)
-        subs = collection.findAll(Subtitle)
+        self.collectionTest(collection)
 
-        self.assertEqual(len(series), 1)
-        self.assertEqual(len(eps), 2)
-        self.assertEqual(len(subs), 2)
+    def testTaskManager(self):
+        collection = MemoryObjectGraph()
 
+        tm = TaskManager()
+        for task in self.createTasks(collection):
+            tm.add(task)
+
+        # the TaskManager might already have started to process a task, in which case the queue size is 3
+        self.assert_(tm.qsize() >= 3)
+        self.assert_(tm.total == 4)
+
+        tm.join()
+
+        self.assert_(tm.empty())
+        self.assertEqual(tm.total, 0)
+
+        #collection.displayGraph()
+
+        self.collectionTest(collection)
 
 suite = allTests(TestImportTask)
 

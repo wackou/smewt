@@ -25,7 +25,7 @@ from solvingchain import SolvingChain
 from cache import cachedmethod
 from eventserver import EventServer
 from mediaobject import Media, Metadata
-from taskmanager import Task
+from taskmanager import Task, TaskManager
 from importtask import ImportTask
 from subtitletask import SubtitleTask
 from actionfactory import ActionFactory

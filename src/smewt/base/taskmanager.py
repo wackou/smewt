@@ -19,7 +19,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import SIGNAL, Qt, QObject, QThread
+from __future__ import with_statement
+#from PyQt4.QtCore import QObject, SIGNAL
+from Queue import Queue
+from threading import Thread, Lock
+import time
 
 class Task(object):
     def __init__(self, priority = 5):
@@ -36,71 +40,54 @@ class Task(object):
         raise NotImplementedError
 
 
-'''
-class Task:
-    def __init__(self):
-        self.name = 'Unnamed task'
-        self.totalCount = 0
-        self.progressedCount = 0
-
-    def total(self):
-        return self.totalCount
-
-    def progressed(self):
-        return self.progressedCount
-
-    def abort(self):
-        pass
-
-    def update(self):
-        pass
-'''
+def worker(queue):
+    while True:
+        (_, _), task = queue.get()
+        try:
+            # TODO: need to have timeout on the tasks, eg: 5 seconds
+            task.perform()
+        except SmewtException, e:
+            log.warning('TaskManager: task failed with error: %s' % e)
+        finally:
+            queue.task_done()
 
 
-class TaskManager(QObject, Task):
+# FIXME: switch me to PriorityQueue when we have python2.6
+class TaskManager(Queue, object):
+    """The TaskManager is a stable priority queue of tasks. It takes them one by one, the
+    one with the highest priority first, and call its perform() method, then repeat until no tasks are left.
+
+    If two or more tasks have the same priority, it will take the one that was added first to the queue.
+
+    The TaskManager can be controlled asynchronously, as it runs the tasks in a separate thread."""
+
     def __init__(self):
         super(TaskManager, self).__init__()
 
-        self.tasks = []
-        self.totalCount = 0
-        self.progressedCount = 0
+        self.total = 0
+        self.totalLock = Lock()
+
+        t = Thread(target = worker, args = (self,))
+        # FIXME: for python2.6
+        #t.daemon = True
+        t.setDaemon(True)
+        t.start()
 
     def add(self, task):
-        self.tasks.append( task )
-        self.connect(task, SIGNAL('progressChanged'), self.progressChanged)
-        self.connect(task, SIGNAL('taskFinished'), self.taskFinished)
-        self.progressChanged()
+        # -task.priority because it always gets the lowest one first
+        # we need to put the time as well, because Queue uses heap sort which is not stable, so we
+        # had to find a way to make it look stable ;-)
+        with self.totalLock:
+            self.total += 1
+            self.put(( (-task.priority, time.time()), task ))
 
-    def remove(self, task):
-        assert task in self.tasks, "The task is not registered to the task manager."
 
-        self.tasks.remove( task )
+    def task_done(self):
+        with self.totalLock:
+            #self.emit(SIGNAL('progressChanged'), self.total - self.qsize(), self.total)
 
-        del task
-        self.progressChanged()
+            # if we finished all the tasks, reset the current total
+            if self.empty():
+                self.total = 0
 
-    def update(self):
-        # Get the total and progressed of the task
-        self.totalCount = 0
-        self.progressedCount = 0
-        for task in self.tasks:
-            task.update()
-            self.totalCount += task.total()
-            self.progressedCount += task.progressed()
-
-    def taskFinished(self, task):
-        self.progressChanged()
-
-    def progressChanged(self):
-        self.update()
-        self.emit(SIGNAL('progressChanged'), self.progressed(), self.total())
-
-    def abortAll(self):
-        for task in self.tasks:
-            task.abort()
-
-    def total(self):
-        return self.totalCount
-
-    def progressed(self):
-        return self.progressedCount
+        super(TaskManager, self).task_done()

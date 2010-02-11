@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2010-02-10, 00:37:53 -->
+<!-- Saved: 2010-02-10, 03:29:26 -->
 <!-- Copyright (C) 2010 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -98,8 +98,8 @@
     <Source>unittests/test_memory.py</Source>
     <Source>unittests/test_movieimdb.py</Source>
     <Source>unittests/test_imdb.py</Source>
-    <Source>unittests/test_taggers.py</Source>
     <Source>smewt/base/graphaction.py</Source>
+    <Source>unittests/test_importtask.py</Source>
   </Sources>
   <Forms>
   </Forms>
