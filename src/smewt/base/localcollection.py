@@ -26,9 +26,10 @@ from PyQt4.QtCore import QObject, SIGNAL, QVariant, QSettings
 
 from smewt.base import Media, Metadata
 from smewt.base import ImportTask, SubtitleTask
-from smewt.datamodel import MemoryObjectGraph
+from smewt.datamodel import MemoryObjectGraph, ontology
 from smewt.base.utils import GlobDirectoryWalker
 from smewt.taggers import EpisodeTagger, MovieTagger
+import cPickle as pickle
 
 log = logging.getLogger('smewt.base.localcollection')
 
@@ -38,73 +39,41 @@ class LocalCollection(MemoryObjectGraph):
     This collection also keeps a last scanned datetime for each of the folders.
     '''
 
-    def __init__(self, taskManager, seriesFolders = [], moviesFolders = []):
+    def __init__(self, taskManager, settingsFile, seriesFolders = [], moviesFolders = []):
         super(LocalCollection, self).__init__()
 
         self.taskManager = taskManager
+        self.settingsFile = settingsFile
 
         self.seriesFolders = dict([(folder, None) for folder in seriesFolders])
         self.seriesRecursive = True
+        self.seriesFolderTimes = {}
 
         self.moviesFolders = dict([(folder, None) for folder in moviesFolders])
         self.moviesRecursive = True
-
-        self.seriesFolderTimes = {}
         self.moviesFolderTimes = {}
 
         self.loadSettings()
 
 
     def loadSettings(self):
-        settings = QSettings()
-        self.seriesFolders, self.seriesRecursive = self.loadSettingsByType('series', settings)
-        self.moviesFolders, self.moviesRecursive = self.loadSettingsByType('movies', settings)
-
-    def loadSettingsByType(self, typeName, settings):
-        folders = [ os.path.abspath(f) for f in unicode(settings.value('local_collection_%s_folders' % typeName).toString()).split(';')
-                    if f != '']
-
-        times = [ float(t) if t != 'None' else None for t in str(settings.value('local_collection_%s_folders_times' % typeName).toString()).split(';')
-                  if t != '' ]
-
-        if len(folders) != len(times):
-            # All or some scan times are missing
-            times = [ None ] * len(folders)
-
-        folders = dict([(folder, time) for folder, time in zip(folders, times)])
-        recursive = settings.value('local_collection_%s_folders_recursive' % typeName, QVariant(True)).toBool()
-
-        return folders, recursive
+        try:
+            self.seriesFolders, self.seriesRecursive, self.moviesFolders, self.moviesRecursive = pickle.load(open(self.settingsFile))
+        except IOError, e:
+            log.warning(e)
 
     def saveSettings(self):
-        settings = QSettings()
-        self.saveSettingsByType('series', self.seriesFolders, self.seriesRecursive, settings)
-        self.saveSettingsByType('movies', self.moviesFolders, self.moviesRecursive, settings)
+        pickle.dump((self.seriesFolders, self.seriesRecursive, self.moviesFolders, self.moviesRecursive), open(self.settingsFile, 'w'))
 
-
-    def saveSettingsByType(self, typeName, foldersDict, recursive, settings):
-        if not foldersDict:
-            return
-
-        folders, times = zip(*(foldersDict.items()))
-
-        self.settings.setValue('local_collection_%s_folders' % typeName, QVariant(';'.join(folders)))
-        self.settings.setValue('local_collection_%s_folders_times' % typeName, QVariant(';'.join([str(t)
-                                                                                                  for t in times])))
-        self.settings.setValue('local_collection_%s_folders_recursive' % typeName, QVariant(recursive))
-
-
-    def __iadd__(self, obj):
-        super(LocalCollection, self).__iadd__(obj)
-        #self.emit updated
-
-    def addObject(self, obj):
-        super(LocalCollection, self).addObject(obj)
-        #self.emit updated
+    def addObject(self, *args, **kwargs):
+        obj = args[0]
+        if isinstance(obj, Media):
+            self.updateLastScannedTimes([ obj ])
+        return super(LocalCollection, self).addObject(*args, **kwargs)
 
     def removeNotPresent(self):
         # Remove the nodes that are not in one of the folders anymore
-        def mediasOfUnselectedFolders( media, folders, recursive ):
+        def mediasOfUnselectedFolders(media, folders, recursive):
             for folder in folders:
                 if recursive:
                     if os.path.abspath(media.filename).startswith(folder):
@@ -122,11 +91,11 @@ class LocalCollection(MemoryObjectGraph):
         mediasNotInMovies = self.findAll(type = Media,
                                          select = lambda x: mediasOfUnselectedFolders(x, self.moviesFolders.keys(), self.moviesRecursive))
 
-        self.nodes -= (set(mediasNotInSeries) & set(mediasNotInMovies))
+        # FIXME: implement me
+        #self.nodes -= (set(mediasNotInSeries) & set(mediasNotInMovies))
 
     def modifiedFolders(self, folder, lastScanned, recursive):
-        """Return the folders that have been modified since lastScanned.
-        """
+        """Return the folders that have been modified since lastScanned."""
         result = []
 
         if lastScanned is None or lastScanned < os.path.getmtime(folder):
@@ -140,7 +109,7 @@ class LocalCollection(MemoryObjectGraph):
         return result
 
 
-    def reimportFolders(self, rescan = False):
+    def reimportFolders(self, rescan):
         # Import those folders whose modified time
         # is larger than the last scan time
         for folder, lastScanned in self.seriesFolders.items():
@@ -160,8 +129,7 @@ class LocalCollection(MemoryObjectGraph):
         # Import those folders whose modified time
         # is larger than the last scan time
         for folder, lastScanned in self.moviesFolders.items():
-            # It's very possible that
-            # it is a removeable drive
+            # It's very possible that it is a removeable drive
             if not os.path.isdir(folder):
                 continue
 
@@ -174,82 +142,68 @@ class LocalCollection(MemoryObjectGraph):
                     self.importMoviesFolder(modifiedFolder)
 
     def rescan(self):
-        # Reload settings in case they have changed
-        self.loadSettings()
-
         # Remove those media that are not in one of the selected folders
         self.removeNotPresent()
 
         # Reimport all the folders
-        self.reimportFolders( rescan = True )
-
-        # We save the settings of the folders we have imported
-        self.saveSettings()
+        self.reimportFolders(rescan = True)
 
     def update(self):
-        # Reload settings in case they have changed
-        self.loadSettings()
-
         # Remove those media that are not in one of the selected folders
         self.removeNotPresent()
 
         # Reimport only the folders that have changed
-        self.reimportFolders( rescan = False )
-
-        # We save the settings of the folders we have imported
-        self.saveSettings()
+        self.reimportFolders(rescan = False)
 
     def importSeriesFolder(self, folder):
-        # Set the last time the folder was scanned
         self.seriesFolderTimes[folder] = time.mktime(time.localtime())
-
-        filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]
-
-        for filename in GlobDirectoryWalker(folder, filetypes, recursive = self.recursive):
-            importTask = ImportTask(self, EpisodeTagger, filename)
-            #self.connect(importTask, SIGNAL('taskFinished'), self.seriesTaskFinished)
-
-            self.taskManager.add(importTask)
-
+        self.importMediaFolder(folder, EpisodeTagger, self.seriesRecursive)
 
     def importMoviesFolder(self, folder):
-        # Set now as the last time the folder was scanned
-        # we set it in a different dictionary in case the task
-        # does not finish
         self.moviesFolderTimes[folder] = time.mktime(time.localtime())
+        self.importMediaFolder(folder, MovieTagger, self.moviesRecursive)
 
+    def importMediaFolder(self, folder, taggerType, recursive):
         filetypes = [ '*.avi',  '*.ogm',  '*.mkv', '*.sub', '*.srt' ]
 
-        for filename in GlobDirectoryWalker(folder, filetypes, recursive = self.recursive):
-            importTask = ImportTask(folder, MovieTagger, filename)
-            #self.connect(importTask, SIGNAL('taskFinished'), self.moviesTaskFinished)
-
+        for filename in GlobDirectoryWalker(folder, filetypes, recursive):
+            importTask = ImportTask(self, taggerType, filename)
             self.taskManager.add(importTask)
 
+    def updateLastScannedTimes(self, mediaList):
+        """Given a list of media that just got inserted into this collection, update the timestamps
+        on the containing folders."""
+        modified = False
+        ontology.importClasses([ 'Movie', 'Series', 'Episode', 'Subtitle' ])
 
-    def seriesTaskFinished(self, task):
-        # Since the task may have been of a subfolder we must find
-        # the selected folder to which it belonged
-        selectedFolder = [folder for folder in self.seriesFolders if task.folder.startswith(folder)]
-        selectedFolder.sort(key = lambda x: len(x))
+        for media in mediaList:
+            if (media.metadata._node.isinstance(Movie) or
+                (media.metadata._node.isinstance(Subtitle) and media.metadata.metadata._node.isinstance(Movie))):
+                mediaFolders = self.moviesFolders
+                folderTimes = self.moviesFolderTimes
+            elif (media.metadata._node.isinstance(Episode) or
+                  (media.metadata._node.isinstance(Subtitle) and media.metadata.metadata._node.isinstance(Episode))):
+                mediaFolders = self.seriesFolders
+                folderTimes = self.seriesFolderTimes
+            else:
+                log.warning("Can't update folder times for media: %s" % media)
+                return
 
-        # Set the last time the folder was scanned
-        self.seriesFolders[selectedFolder[0]] = self.seriesFolderTimes[task.folder]
+            # Since the media may have been of a subfolder we must find
+            # the selected folder to which it belonged
+            selectedFolder = [ folder for folder in mediaFolders if media.filename.startswith(folder) ]
+            selectedFolder = sorted(selectedFolder, key = lambda x: len(x))[0] # sort by path length to get the deepest subdirectory
 
-        # We save the settings of the folders we have imported
-        self.saveSettings()
+            # Set the last time the folder was scanned
+            try:
+                if mediaFolders[selectedFolder] != folderTimes[selectedFolder]:
+                    mediaFolders[selectedFolder] = folderTimes[selectedFolder]
+                    modified = True
 
-    def moviesTaskFinished(self, task):
-        # Since the task may have been of a subfolder we must find
-        # the selected folder to which it belonged
-        selectedFolder = [folder for folder in self.moviesFolders if task.folder.startswith(folder)]
-        selectedFolder.sort(key = lambda x: len(x))
+            except KeyError:
+                mediaFolders[selectedFolder] = time.mktime(time.localtime())
+                modified = True
 
-        # Set the last time the folder was scanned
-        self.moviesFolders[selectedFolder[0]] = self.moviesFolderTimes[task.folder]
+        if modified:
+            self.saveSettings()
 
-        # We save the settings of the folders we have imported
-        self.saveSettings()
-
-    def mergeCollection(self, newData):
-        self += newData

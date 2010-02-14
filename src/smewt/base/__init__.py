@@ -31,3 +31,4 @@ from subtitletask import SubtitleTask
 from actionfactory import ActionFactory
 from graphaction import GraphAction
 from localcollection import LocalCollection
+from smewtdaemon import SmewtDaemon

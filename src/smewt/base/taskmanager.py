@@ -20,10 +20,13 @@
 #
 
 from __future__ import with_statement
-#from PyQt4.QtCore import QObject, SIGNAL
+from smewtexception import SmewtException
 from Queue import Queue
 from threading import Thread, Lock
 import time
+import logging
+
+log = logging.getLogger('smewt.base.taskmanager')
 
 class Task(object):
     def __init__(self, priority = 5):
@@ -42,12 +45,18 @@ class Task(object):
 
 def worker(queue):
     while True:
-        (_, _), task = queue.get()
         try:
+            (_, _), task = queue.get()
             # TODO: need to have timeout on the tasks, eg: 5 seconds
             task.perform()
         except SmewtException, e:
             log.warning('TaskManager: task failed with error: %s' % e)
+        except TypeError, e:
+            # to avoid errors when the program exits and the queue has been deleted
+            # FIXME: catches way too much, we need to somehow tell the thread to stop when the TaskManager gets deleted
+            log.warning('TaskManager: task failed with type error: %s' % e)
+            raise
+            pass
         finally:
             queue.task_done()
 
@@ -83,6 +92,7 @@ class TaskManager(Queue, object):
 
 
     def task_done(self):
+        log.info('Task completed!')
         with self.totalLock:
             #self.emit(SIGNAL('progressChanged'), self.total - self.qsize(), self.total)
 

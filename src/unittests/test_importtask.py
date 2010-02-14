@@ -19,7 +19,7 @@
 #
 
 from smewttest import *
-from smewt.base import TaskManager
+from smewt.base import TaskManager, SmewtDaemon
 from smewt.base.importtask import ImportTask
 from smewt.taggers import *
 import glob
@@ -86,6 +86,30 @@ class TestImportTask(TestCase):
         #collection.displayGraph()
 
         self.collectionTest(collection)
+
+    def testSmewtDaemon(self):
+        smewtd = SmewtDaemon()
+
+        # small hack: do not use user's values here, but temp files ones
+        smewtd.collection.settingsFile = '/tmp/smewt_collection_settings' # avoid overwriting user's collection
+        # create fake collection
+        cmds = '''mkdir -p /tmp/smewt_test_daemon/Monk
+        touch /tmp/smewt_test_daemon/Monk/Monk.2x05.Mr.Monk.And.The.Very,.Very.Old.Man.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].avi
+        touch /tmp/smewt_test_daemon/Monk/Monk.2x05.Mr.Monk.And.The.Very,.Very.Old.Man.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].English.srt
+        touch /tmp/smewt_test_daemon/Monk/Monk.2x06.Mr.Monk.Goes.To.The.Theater.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].avi
+        touch /tmp/smewt_test_daemon/Monk/Monk.2x06.Mr.Monk.Goes.To.The.Theater.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].English.srt
+        '''
+        for cmd in cmds.split('\n'):
+            os.system(cmd.strip())
+
+        smewtd.collection.seriesFolders = { '/tmp/smewt_test_daemon': None }
+        smewtd.collection.rescan()
+
+        smewtd.taskManager.join() # wait for all import tasks to finish
+
+        #smewtd.collection.displayGraph()
+        self.collectionTest(smewtd.collection)
+
 
 suite = allTests(TestImportTask)
 

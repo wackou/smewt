@@ -18,13 +18,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt import SmewtException, SmewtUrl, Graph, Media, Metadata
+from PyQt4.QtCore import QSettings, QVariant
 from smewt.media import Series, Episode, Movie
-from smewt.base import ImportTask, SubtitleTask, LocalCollection, ActionFactory
+from smewt.base import LocalCollection
 from smewt.base.taskmanager import Task, TaskManager
-import logging
 from os.path import join, dirname, splitext
 from smewt.taggers import EpisodeTagger, MovieTagger
+import logging
 
 log = logging.getLogger('smewt.base.smewtdaemon')
 
@@ -36,23 +36,27 @@ class SmewtDaemon(object):
         self.taskManager = TaskManager()
 
         settings = QSettings()
-        t = settings.value('collection_file').toString()
-        if t == '':
-            t = join(dirname(unicode(settings.fileName())),  'Smewg.collection')
-            settings.setValue('collection_file',  QVariant(t))
+        cfile = unicode(settings.value('collection_file').toString())
+        if cfile == '':
+            cfile = join(dirname(unicode(settings.fileName())),  'Smewt.collection')
+            settings.setValue('collection_file',  QVariant(cfile))
+
+        csettings = unicode(settings.value('collection_settings').toString())
+        if csettings == '':
+            csettings = join(dirname(unicode(settings.fileName())),  'Smewt.collection_settings')
+            settings.setValue('collection_settings', QVariant(csettings))
 
 
-        self.collection = LocalCollection(taskManager = self.taskManager)
+        self.collection = LocalCollection(taskManager = self.taskManager, settingsFile = csettings)
         #self.connect(self.collection, SIGNAL('updated'),
         #             self.refreshCollectionView)
         #self.connect(self.collection, SIGNAL('updated'),
         #             self.saveCollection)
 
         try:
-            self.collection.load(t)
+            self.collection.load(cfile)
         except:
-            log.warning('Could not load collection %s', t)
-            raise
+            log.warning('Could not load collection %s', cfile)
 
 
     def shutdown(self):

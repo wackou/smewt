@@ -102,7 +102,7 @@ class ObjectGraph(AbstractDirectedGraph):
 
             return inst
 
-        raise AttributeError
+        raise AttributeError, name
 
     def __contains__(self, node):
         """Return whether this graph contains the given node  or object (identity)."""
