@@ -33,7 +33,14 @@ class SmewtDaemon(object):
     def __init__(self, progressCallback = None):
         super(SmewtDaemon, self).__init__()
 
-        self.taskManager = TaskManager(progressCallback = progressCallback)
+        # FIXME: this is a lame hack to save the collection when we can...
+        def callback(current, total):
+            if total == 0:
+                self.saveCollection()
+            if progressCallback is not None:
+                progressCallback(current, total)
+
+        self.taskManager = TaskManager(progressCallback = callback)
 
         settings = QSettings()
         cfile = unicode(settings.value('collection_file').toString())
@@ -58,6 +65,9 @@ class SmewtDaemon(object):
         except:
             log.warning('Could not load collection %s', cfile)
 
+    def saveCollection(self):
+        cfile = unicode(QSettings().value('collection_file').toString())
+        self.collection.save(cfile)
 
     def shutdown(self):
         self.saveCollection()

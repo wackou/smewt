@@ -3,9 +3,9 @@
 <%
 from smewt import SmewtUrl
 
-series = sorted([ { 'title': s['title'],
-                    'url': SmewtUrl('media', 'series/single', { 'title': s['title'] }),
-                    'poster': s['loresImage'] } for s in allseries ], key = lambda x: x['title'])
+series = sorted([ { 'title': s.title,
+                    'url': SmewtUrl('media', 'series/single', { 'title': s.title }),
+                    'poster': s.get('loresImage') } for s in allseries ], key = lambda x: x['title'])
 
 from smewt.base.utils import smewtDirectory
 import_dir = smewtDirectory('smewt', 'media', 'series')

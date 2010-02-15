@@ -32,23 +32,24 @@ def render(url, collection):
 
     if url.viewType == 'single':
         # creates a new graph with all the media related to the given series
-        episodes = set(collection.findAll(type = Episode, series = Series(url.args)))
-        episodes |= set(collection.findAll(type = Subtitle, select = lambda x: x['metadata'] in episodes))
-        medias = MemoryObjectGraph()
-        medias += collection.findAll(type = Media, select = lambda x: x.metadata[0] in episodes)
+        #episodes = set(collection.findAll(type = Episode, series = Series(url.args)))
+        #episodes |= set(collection.findAll(type = Subtitle, select = lambda x: x['metadata'] in episodes))
+        #medias = MemoryObjectGraph()
+        #medias += collection.findAll(type = Media, select = lambda x: x.metadata[0] in episodes)
 
+        print '--------- series', url.args
         t = Template(file = smewtDirectory('smewt', 'media', 'series', 'view_episodes_by_season.tmpl'),
-                     searchList = { 'episodes': medias })
+                     searchList = { 'series': collection.findOne(Series, title = url.args['title']) })
 
     elif url.viewType == 'all':
         # Select only the series with that have a video media
-        series = set([])
-        for media in collection.findAll(type = Media,
-                                        select = lambda x: x.type() == 'video' and isinstance(x.metadata[0], Episode)):
-            series |= set([media.metadata[0]['series']])
+        #series = set([])
+        #for media in collection.findAll(type = Media,
+        #                                select = lambda x: x.type() == 'video' and isinstance(x.metadata[0], Episode)):
+        #    series |= set([media.metadata[0]['series']])
 
         t = Template(file = smewtDirectory('smewt', 'media', 'series', 'view_all_series.tmpl'),
-                     searchList = { 'series': series })
+                     searchList = { 'series': collection.findAll(Series) })
 
     else:
         raise SmewtException('Invalid view type: %s' % url.viewType)

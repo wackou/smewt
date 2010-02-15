@@ -19,10 +19,11 @@
 #
 
 from Cheetah.Template import Template
-from smewt.datamodel import MemoryObjectGraph
+from smewt.datamodel import MemoryObjectGraph, ontology
 from smewt.base import SmewtException, Media
 from movieobject import Movie
 from smewt.base.utils import smewtDirectory
+ontology.importClass('Movie')
 
 def render(url, collection):
     '''This function always receive an URL and a full graph of all the collection as metadata input.
@@ -31,23 +32,24 @@ def render(url, collection):
 
     if url.viewType == 'single':
         # creates a new graph with all the media related to the given movie
-        movieMD = collection.findOne(type = Movie, title = url.args['title'])
-        metadata = MemoryObjectGraph()
-        for f in collection.findAll(type = Media,
-                                    select = lambda x: x.metadata[0] == movieMD):
-            metadata += f
+        #movieMD = collection.findOne(type = Movie, title = url.args['title'])
+        #metadata = MemoryObjectGraph()
+        #for f in collection.findAll(type = Media,
+        #                            select = lambda x: x.metadata[0] == movieMD):
+        #    metadata += f
 
         t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_movie.tmpl'),
-                     searchList = { 'movie': metadata })
+                     searchList = { 'movie': collection.findOne(Movie, title = url.args['title']) })
 
     elif url.viewType == 'all':
-        movies = set([])
-        for media in collection.findAll(type = Media,
-                                        select = lambda x: x.type() == 'video' and isinstance(x.metadata[0], Movie)):
-            movies |= set(media.metadata)
+        #collection.displayGraph()
+        #movies = set([])
+        #for media in collection.findAll(type = Media,
+        #                                select = lambda x: x.type() == 'video' and isinstance(x.metadata[0], Movie)):
+        #    movies |= set(media.metadata)
 
         t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_all_movies.tmpl'),
-                     searchList = { 'movies': movies })
+                     searchList = { 'movies': collection.findAll(Movie) })
 
     elif url.viewType == 'spreadsheet':
         t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_movies_spreadsheet.tmpl'),

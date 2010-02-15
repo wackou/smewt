@@ -1,4 +1,4 @@
-#set movieData = $movie
+#set movie = $movie
 
 <%
 from collections import defaultdict
@@ -10,12 +10,12 @@ import datetime
 
 flags_dir = smewtDirectory('smewt', 'media', 'common', 'images', 'flags')
 
-movie = movieData.findOne(type = Movie)
-movieName = movie['title']
-poster = movie['loresImage']
+#movie = movieData.findOne(type = Movie)
+movieName = movie.title
+poster = movie.loresImage
 
 def getAll(prop):
-    return ', '.join(movie[prop] or [])
+    return ', '.join(movie.get(prop) or [])
 
 director = getAll('director')
 writer = getAll('writer')
@@ -29,11 +29,13 @@ subtitles = []
 
 languageFiles = defaultdict(lambda: [])
 
-for media in movieData.findAll(type = Media):
+for media in movie.files:
     if media.type() == 'video':
         files.append(media.filename)
 
     elif media.type() == 'subtitle':
+        # FIXME: make this work
+        continue
         langs = guessCountryCode(media.filename)
 
         try:
@@ -71,9 +73,10 @@ def getComments(md):
 
     return sorted(results, key = lambda x: x[1])
 
-comments = getComments(movie)
+#comments = getComments(movie)
+comments = []
 
-qtitle = movie['title'].replace('\'', '\\\'')
+qtitle = movie.title.replace('\'', '\\\'')
 
 nfile = 1
 args = {}
@@ -149,8 +152,8 @@ import_dir = smewtDirectory('smewt', 'media')
 
   <div class="tabbertab">
     <h2>Cast</h2>
-    #for person, role in $movie.cast
-      <p>$person  ---  $role</p>
+    #for person_role in $movie.cast
+      <p>$person_role</p>
     #end for
     <p></p>
   </div>

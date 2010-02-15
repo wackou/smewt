@@ -137,15 +137,19 @@ class MainWidget(QWidget):
         self.refreshCollectionView()
 
     def quit(self):
-        self.taskManager.abortAll()
+        #self.taskManager.abortAll()
+        pass
 
     def loadCollection(self):
         filename = str(QFileDialog.getOpenFileName(self, 'Select file to load the collection'))
         self.collection.load(filename)
 
     def saveCollection(self):
-        filename = unicode(QSettings().value('collection_file').toString())
-        self.collection.save(filename)
+        #filename = unicode(QSettings().value('collection_file').toString())
+        #self.collection.save(filename)
+
+        # FIXME: should not be necessary anymore...
+        self.smewtd.saveCollection()
 
     def updateCollectionSettings(self, result):
         if result == 1:

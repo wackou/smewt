@@ -1,9 +1,9 @@
-#set eps = $episodes
+#set series = $series
 
 <%
 from itertools import groupby
 from collections import defaultdict
-from smewt import SmewtUrl, Media, Graph
+from smewt import SmewtUrl, Media
 from smewt.media import Episode, Series, Subtitle
 from smewt.base.utils import smewtDirectory, guessCountryCode
 from smewt.base import SmewtException
@@ -12,13 +12,13 @@ import os, os.path
 flags_dir = smewtDirectory('smewt', 'media', 'common', 'images', 'flags')
 seasons = defaultdict(lambda: [])
 
-allseries = eps.findAll(type = Series)
-if len(allseries) == 0:
-    return '<html><body><h1>No media could be found for this media.  Check that the folder where these medias live is accessible.</h1></body></html>'
+#allseries = eps.findAll(type = Series)
+#if len(allseries) == 0:
+#    return '<html><body><h1>No media could be found for this media.  Check that the folder where these medias live is accessible.</h1></body></html>'
 
-series = allseries[0]
-seriesName = series['title']
-poster = series['loresImage']
+#series = allseries[0]
+seriesName = series.title
+poster = series.get('loresImage')
 englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'en' })
 frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'fr' })
 spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'es' })
@@ -26,6 +26,7 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'lan
 # First prepare the episodes
 episodes = {}
 
+'''
 # HACK: we should really have a good schema so that I could do
 # episode.media.filename becuase currently I sort the medias by
 # type so that we first process the videos and then the subtitles
@@ -66,6 +67,20 @@ for md in episodes.values():
 
 for season, eps in seasons.items():
     seasons[ season ] = sorted(eps, key = lambda x: x['episodeNumber'])
+'''
+
+for ep in series.episodes:
+    md = dict(ep.literalItems())
+    md['filename'] = ep.files.filename
+    md['url'] = SmewtUrl('action', 'play', { 'filename1': md['filename'] })
+    episodes[(ep.season, ep.episodeNumber)] = md
+
+for md in episodes.values():
+    seasons[ md['season'] ].append( md )
+
+for season, eps in seasons.items():
+    seasons[season] = sorted(eps, key = lambda x: x['episodeNumber'])
+
 
 import_dir = smewtDirectory('smewt', 'media')
 %>
