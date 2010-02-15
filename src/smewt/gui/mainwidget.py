@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt import SmewtException, SmewtUrl, Graph, Media, Metadata
+from smewt import SmewtException, SmewtUrl, Media, Metadata
 from smewt.gui.collectionfolderspage import CollectionFoldersPage
 from smewt.media import Series, Episode, Movie
 from smewt.base import ImportTask, SubtitleTask, LocalCollection, ActionFactory
@@ -32,6 +32,7 @@ import logging
 import time
 from os.path import join, dirname, splitext
 from smewt.taggers import EpisodeTagger, MovieTagger
+from smewt.base import SmewtDaemon
 
 log = logging.getLogger('smewt.gui.mainwidget')
 
@@ -43,15 +44,16 @@ class MainWidget(QWidget):
     def __init__(self):
         super(MainWidget, self).__init__()
 
-        self.taskManager = TaskManager()
-        #self.connect(self.taskManager, SIGNAL('importFinished'), self.mergeCollection)
-        self.connect(self.taskManager, SIGNAL('progressChanged'), self.progressChanged)
-        #self.connect(self.taskManager, SIGNAL('foundData'), self.mergeCollection)
+        def progressCallback(current, total):
+            print 'progress callback: %d out of %d' % (current, total)
+            self.progressChanged(current, total)
+        # FIXME: uncomment me
+        #self.connect(self.taskManager, SIGNAL('progressChanged'), self.progressChanged)
 
         self.collectionView = QWebView()
         self.collectionView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
-        self.setZoomFactor( QSettings().value('zoom_factor', QVariant(1.0)).toDouble()[0] )
         #self.collectionView.page().setLinkDelegationPolicy(QWebPage.DelegateExternalLinks)
+        self.setZoomFactor(QSettings().value('zoom_factor', QVariant(1.0)).toDouble()[0])
         self.connect(self.collectionView,  SIGNAL('linkClicked(const QUrl&)'),
                      self.linkClicked)
 
@@ -65,17 +67,18 @@ class MainWidget(QWidget):
             settings.setValue('collection_file',  QVariant(t))
 
 
-        self.collection = LocalCollection( taskManager = self.taskManager, settings = QSettings() )
-        self.connect(self.collection, SIGNAL('updated'),
-                     self.refreshCollectionView)
-        self.connect(self.collection, SIGNAL('updated'),
-                     self.saveCollection)
+        self.smewtd = SmewtDaemon(progressCallback = progressCallback)
+        #self.collection = LocalCollection( taskManager = self.taskManager, settings = QSettings() )
+        #self.connect(self.collection, SIGNAL('updated'),
+        #             self.refreshCollectionView)
+        #self.connect(self.collection, SIGNAL('updated'),
+        #             self.saveCollection)
 
-        try:
-            self.collection.load(t)
-        except:
-            log.warning('Could not load collection %s', t)
-            raise
+        #try:
+        #    self.collection.load(t)
+        #except:
+        #    log.warning('Could not load collection %s', t)
+        #    raise
 
         self.setLayout(layout)
 
@@ -149,35 +152,27 @@ class MainWidget(QWidget):
             self.updateCollection()
 
     def updateCollection(self):
-        self.collection.update()
+        self.smewtd.collection.update()
 
     def rescanCollection(self):
         self.collection.rescan()
 
     def selectSeriesFolders(self):
         d = CollectionFoldersPage(self,
-                                  settings = QSettings(),
-                                  settingKeyFolders = 'local_collection_series_folders',
-                                  settingKeyRecursive = 'local_collection_series_folders_recursive',
-                                  description = 'Select the folders where your series are.')
-
-        self.connect(d, SIGNAL('finished(int)'), self.updateCollectionSettings)
-
+                                  type = 'series',
+                                  description = 'Select the folders where your series are.',
+                                  collection = self.smewtd.collection)
         d.exec_()
 
     def selectMoviesFolders(self):
         d = CollectionFoldersPage(self,
-                                  settings = QSettings(),
-                                  settingKeyFolders = 'local_collection_movies_folders',
-                                  settingKeyRecursive = 'local_collection_movies_folders_recursive',
-                                  description = 'Select the folders where your movies are.')
-
-        self.connect(d, SIGNAL('finished(int)'), self.updateCollectionSettings)
-
+                                  type = 'movies',
+                                  description = 'Select the folders where your movies are.',
+                                  collection = self.smewtd.collection)
         d.exec_()
 
 
-    def progressChanged(self,  tagged,  total):
+    def progressChanged(self, tagged, total):
         self.emit(SIGNAL('progressChanged'),  tagged,  total)
 
     def mergeCollection(self, result):
@@ -187,17 +182,17 @@ class MainWidget(QWidget):
         surl = self.smewtUrl
 
         if surl.mediaType == 'speeddial':
-            html = speeddial.view.render(surl, self.collection)
+            html = speeddial.view.render(surl, self.smewtd.collection)
             self.collectionView.page().mainFrame().setHtml(html)
 
         elif surl.mediaType == 'series':
-            html = series.view.render(surl, self.collection)
+            html = series.view.render(surl, self.smewtd.collection)
             #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
             #print html[:4000]
             self.collectionView.page().mainFrame().setHtml(html)
 
         elif surl.mediaType == 'movie':
-            html = movie.view.render(surl,  self.collection)
+            html = movie.view.render(surl,  self.smewtd.collection)
             #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
             self.collectionView.page().mainFrame().setHtml(html)
             # insert listener object for checkboxes inside the JS environment

@@ -30,10 +30,10 @@ log = logging.getLogger('smewt.base.smewtdaemon')
 
 
 class SmewtDaemon(object):
-    def __init__(self):
+    def __init__(self, progressCallback = None):
         super(SmewtDaemon, self).__init__()
 
-        self.taskManager = TaskManager()
+        self.taskManager = TaskManager(progressCallback = progressCallback)
 
         settings = QSettings()
         cfile = unicode(settings.value('collection_file').toString())

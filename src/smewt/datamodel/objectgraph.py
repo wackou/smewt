@@ -202,19 +202,19 @@ class ObjectGraph(AbstractDirectedGraph):
 
         if cmp == Equal.OnIdentity:
             if self.contains(node):
-                log.info('%s already in graph %s (id)...' % (node, self))
+                log.debug('%s already in graph %s (id)...' % (node, self))
                 return node
 
         elif cmp == Equal.OnValue:
             for n in self.nodes():
                 if node.sameProperties(n, exclude = excludeProperties):
-                    log.info('%s already in graph %s (value)...' % (node, self))
+                    log.debug('%s already in graph %s (value)...' % (node, self))
                     return n
 
         elif cmp == Equal.OnLiterals:
             for n in self.nodes():
                 if node.sameProperties(n, n.literalKeys(), exclude = excludeProperties):
-                    log.info('%s already in graph %s (literals)...' % (node, self))
+                    log.debug('%s already in graph %s (literals)...' % (node, self))
                     return n
 
         elif cmp == Equal.OnUnique:
@@ -222,7 +222,7 @@ class ObjectGraph(AbstractDirectedGraph):
             props = list(set(obj.explicitKeys()) - set(excludeProperties))
             for n in self.nodes():
                 if node.sameProperties(n, props):
-                    log.info('%s already in graph %s (unique)...' % (node, self))
+                    log.debug('%s already in graph %s (unique)...' % (node, self))
                     return n
 
         else:

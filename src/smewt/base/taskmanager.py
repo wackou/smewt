@@ -70,8 +70,10 @@ class TaskManager(Queue, object):
 
     The TaskManager can be controlled asynchronously, as it runs the tasks in a separate thread."""
 
-    def __init__(self):
+    def __init__(self, progressCallback = None):
         super(TaskManager, self).__init__()
+
+        self.progressCallback = progressCallback
 
         self.total = 0
         self.totalLock = Lock()
@@ -99,5 +101,10 @@ class TaskManager(Queue, object):
             # if we finished all the tasks, reset the current total
             if self.empty():
                 self.total = 0
+
+            if self.progressCallback:
+                self.progressCallback(self.total - self.qsize(), self.total)
+            else:
+                print 'No progressCallback set...'
 
         super(TaskManager, self).task_done()

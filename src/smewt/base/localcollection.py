@@ -39,17 +39,17 @@ class LocalCollection(MemoryObjectGraph):
     This collection also keeps a last scanned datetime for each of the folders.
     '''
 
-    def __init__(self, taskManager, settingsFile, seriesFolders = [], moviesFolders = []):
+    def __init__(self, taskManager, settingsFile):
         super(LocalCollection, self).__init__()
 
         self.taskManager = taskManager
         self.settingsFile = settingsFile
 
-        self.seriesFolders = dict([(folder, None) for folder in seriesFolders])
+        self.seriesFolders = {}
         self.seriesRecursive = True
         self.seriesFolderTimes = {}
 
-        self.moviesFolders = dict([(folder, None) for folder in moviesFolders])
+        self.moviesFolders = {}
         self.moviesRecursive = True
         self.moviesFolderTimes = {}
 
@@ -64,6 +64,32 @@ class LocalCollection(MemoryObjectGraph):
 
     def saveSettings(self):
         pickle.dump((self.seriesFolders, self.seriesRecursive, self.moviesFolders, self.moviesRecursive), open(self.settingsFile, 'w'))
+
+    def getMoviesSettings(self):
+        return self.moviesFolders.keys(), self.moviesRecursive
+
+    def setMoviesFolders(self, folders, recursive):
+        newfolders = {}
+        for folder in folders:
+            # try to keep the last scanned time (if any)
+            newfolders[folder] = self.moviesFolders[folder] if folder in self.moviesFolders else None
+        self.moviesFolders = newfolders
+        self.moviesRecursive = recursive
+        self.saveSettings()
+        self.update()
+
+    def getSeriesSettings(self):
+        return self.seriesFolders.keys(), self.seriesRecursive
+
+    def setSeriesFolders(self, folders, recursive):
+        newfolders = {}
+        for folder in folders:
+            # try to keep the last scanned time (if any)
+            newfolders[folder] = self.seriesFolders[folder] if folder in self.seriesFolders else None
+        self.seriesFolders = newfolders
+        self.seriesRecursive = recursive
+        self.saveSettings()
+        self.update()
 
     def addObject(self, *args, **kwargs):
         obj = args[0]
@@ -156,10 +182,12 @@ class LocalCollection(MemoryObjectGraph):
         self.reimportFolders(rescan = False)
 
     def importSeriesFolder(self, folder):
+        print 'Importing series folder:', folder
         self.seriesFolderTimes[folder] = time.mktime(time.localtime())
         self.importMediaFolder(folder, EpisodeTagger, self.seriesRecursive)
 
     def importMoviesFolder(self, folder):
+        print 'Importing movies folder:', folder
         self.moviesFolderTimes[folder] = time.mktime(time.localtime())
         self.importMediaFolder(folder, MovieTagger, self.moviesRecursive)
 
