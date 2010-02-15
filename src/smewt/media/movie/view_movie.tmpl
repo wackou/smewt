@@ -4,7 +4,7 @@
 from collections import defaultdict
 from smewt import SmewtUrl, Media
 from smewt.media import Movie
-from smewt.base.utils import smewtDirectory, guessCountryCode
+from smewt.base.utils import smewtDirectory, guessCountryCode, tolist
 from smewt.base import SmewtException
 import datetime
 
@@ -29,25 +29,17 @@ subtitles = []
 
 languageFiles = defaultdict(lambda: [])
 
-for media in movie.files:
-    if media.type() == 'video':
-        files.append(media.filename)
+for media in tolist(movie.files):
+    files.append(media.filename)
 
-    elif media.type() == 'subtitle':
-        # FIXME: make this work
-        continue
-        langs = guessCountryCode(media.filename)
+for subtitle in tolist(movie.get('subtitles')):
+    for subfile in tolist(subtitle.files):
+        subtitleFilename = subfile.filename
+        mediaFilename = [ filename for filename in files if subtitleFilename.startswith(os.path.splitext(filename)[0]) ]
+        mediaFilename = mediaFilename[0] # FIXME: check len == 1 all the time
 
-        try:
-            mediaFilename = movieData.findOne(type = Media,
-                                              select = lambda x: x.type()=='video' and media.filename.startswith(os.path.splitext(x.filename)[0])).filename
-            subtitleFilename = media.filename
+        languageFiles[subtitle.language] += [ (mediaFilename, subtitleFilename) ]
 
-            for lang in langs:
-                languageFiles[lang] += [ (mediaFilename, subtitleFilename) ]
-
-        except SmewtException:
-            pass
 
 for lang, files in languageFiles.items():
     nfile = 1

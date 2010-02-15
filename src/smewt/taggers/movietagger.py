@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import Media
+from smewt.base import Media, utils
 from smewt.taggers.tagger import Tagger
 from smewt.guessers import *
 import logging
@@ -31,11 +31,24 @@ class MovieTagger(Tagger):
         result = MovieIMDB().perform(filenameMetadata)
 
         media = result.findOne(Media)
-        log.debug('Finished tagging: %s' % media)
         if not media.metadata:
             log.warning('Could not find any tag for: %s' % media)
 
+
+        # import subtitles correctly
+        if media.type() == 'subtitle':
+            # FIXME: problem for vobsubs: as a media points to a single metadata object, we cannot
+            # represent a .sub for 3 different languages...
+            subs = []
+            for language in utils.guessCountryCode(media.filename):
+                subs += [ result.Subtitle(metadata = media.metadata,
+                                          language = language) ]
+
+                media.metadata = subs
+
+
         self.cleanup(result)
+        log.debug('Finished tagging: %s' % media)
 
         return result
 
