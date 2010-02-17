@@ -160,7 +160,7 @@ class AbstractDirectedGraph(object):
 
     ### Utility methods
 
-    def displayGraph(self):
+    def displayGraph(self, title = ''):
         import cPickle as pickle
         import tempfile
         import subprocess
@@ -170,6 +170,7 @@ class AbstractDirectedGraph(object):
 
         dg = []
         dg += [ 'digraph G {' ]
+        dg += [ '  label="%s"' % title ]
 
         def tostring(prop):
             if isinstance(prop, list):
