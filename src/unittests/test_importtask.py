@@ -88,10 +88,16 @@ class TestImportTask(TestCase):
         self.collectionTest(collection)
 
     def testSmewtDaemon(self):
-        smewtd = SmewtDaemon()
+        # we need to remove traces of previous test runs
+        os.system('rm -f /tmp/smewt_collection_settings')
+        os.system('rm -f ~/.config/Unknown\\ Organization.conf')
+        os.system('rm -f ~/.config/Smewt.collection')
 
-        # small hack: do not use user's values here, but temp files ones
-        smewtd.collection.settingsFile = '/tmp/smewt_collection_settings' # avoid overwriting user's collection
+        # FIXME: this creates ~/.config/Unknown\ Organization.conf and ~/.config/Smewt.collection
+        smewtd = SmewtDaemon()
+        # small hack: do not use user's values here, but temp files ones; this avoids overwriting user's collection
+        smewtd.collection.settingsFile = '/tmp/smewt_collection_settings'
+
         # create fake collection
         cmds = '''mkdir -p /tmp/smewt_test_daemon/Monk
         touch /tmp/smewt_test_daemon/Monk/Monk.2x05.Mr.Monk.And.The.Very,.Very.Old.Man.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].avi
@@ -103,6 +109,10 @@ class TestImportTask(TestCase):
             os.system(cmd.strip())
 
         smewtd.collection.seriesFolders = { '/tmp/smewt_test_daemon': None }
+
+        # make sure we don't have a residual collection from previous test runs
+        self.assertEqual(len(list(smewtd.collection.nodes())), 0)
+
         smewtd.collection.rescan()
 
         smewtd.taskManager.join() # wait for all import tasks to finish

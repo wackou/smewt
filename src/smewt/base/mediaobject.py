@@ -106,22 +106,3 @@ def foundMetadata(query, result, link = True):
 
     return solved
 
-
-def foundAllMetadata(query, result):
-    """Return a graph that contains:
-     - the only Media object found in the query graph
-     - all the Media found in the result graph, linked as metadata to the media object
-
-    WARNING: this functions messes with the data in the query graph, do not reuse it after
-    calling this function.
-    """
-    # TODO: check that result is valid
-    solved = MemoryObjectGraph()
-    solved += result.findAll(Metadata)
-
-    # remove the stale 'matches' link before adding the media to the resulting graph
-    media = query.findOne(Media)
-    media.matches = []
-    solved.addObject(media).metadata = solved.findAll(Metadata)
-    return solved
-

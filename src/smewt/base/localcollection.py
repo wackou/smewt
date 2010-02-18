@@ -182,12 +182,10 @@ class LocalCollection(MemoryObjectGraph):
         self.reimportFolders(rescan = False)
 
     def importSeriesFolder(self, folder):
-        print 'Importing series folder:', folder
         self.seriesFolderTimes[folder] = time.mktime(time.localtime())
         self.importMediaFolder(folder, EpisodeTagger, self.seriesRecursive)
 
     def importMoviesFolder(self, folder):
-        print 'Importing movies folder:', folder
         self.moviesFolderTimes[folder] = time.mktime(time.localtime())
         self.importMediaFolder(folder, MovieTagger, self.moviesRecursive)
 

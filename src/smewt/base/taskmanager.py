@@ -96,15 +96,11 @@ class TaskManager(Queue, object):
     def task_done(self):
         log.info('Task completed!')
         with self.totalLock:
-            #self.emit(SIGNAL('progressChanged'), self.total - self.qsize(), self.total)
-
             # if we finished all the tasks, reset the current total
             if self.empty():
                 self.total = 0
 
             if self.progressCallback:
                 self.progressCallback(self.total - self.qsize(), self.total)
-            else:
-                print 'No progressCallback set...'
 
         super(TaskManager, self).task_done()

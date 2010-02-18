@@ -55,8 +55,14 @@ class EpisodeIMDB(GraphAction):
         mdprovider = IMDBMetadataProvider()
         result = mdprovider.startEpisode(ep)
 
+        # first, change the current series object by the one we found on the web
+        oldseries = ep.series
+        ep.series = query.addObject(result.findOne(Series))
+        # and remove the stale series node
+        query.deleteNode(oldseries._node)
+
+        # then add all the potential episodes
         for ep in result.findAll(Episode):
             query.addObject(ep, recurse = Equal.OnLiterals)
 
-        #query.displayGraph()
         return query

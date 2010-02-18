@@ -50,10 +50,3 @@ class MovieIMDB(GraphAction):
         result = foundMetadata(query, result.findOne(Movie))
         return result
 
-    '''
-    def queryFinished(self, guess):
-        del self.mdprovider # why is that useful again?
-
-        result = foundMetadata(self.query, guess.findOne(Movie))
-        self.emit(SIGNAL('finished'), result)
-    '''
