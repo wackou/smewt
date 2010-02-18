@@ -2,20 +2,20 @@
 
 <%
 from smewt import SmewtUrl
+from smewt.base.utils import tolist
 from smewt.base.textutils import toUtf8
 import datetime
 
 def getComments(md):
     results = []
 
-    for comment in [ p for p in md.properties if p.startswith('comment/') ]:
-        comment = comment[8:]
-        idx = comment.index('/')
-        results += [ (comment[idx+1:],
-                      datetime.datetime.fromtimestamp(int(comment[:idx])).ctime(),
-                      md['comment/'+comment]) ]
+    for comment in tolist(md.comments):
+        results += [ (comment.author,
+                      datetime.datetime.fromtimestamp(comment.date).ctime(),
+                      comment.text) ]
 
     return sorted(results, key = lambda x: x[1])
+
 
 def lastViewedString(m):
     lastViewed = datetime.datetime.fromtimestamp(m.lastViewed).date()
@@ -39,7 +39,7 @@ movies = sorted([ { 'title': m.title,
                     'lastViewed': m.lastViewed,
                     'lastViewedString': lastViewedString(m),
                     'watched': 'checked' if m.get('watched') else '',
-                    'comments': [], #getComments(m),
+                    'comments': getComments(m),
                     'url': SmewtUrl('media', 'movie/single', { 'title': m.title }),
                     'poster': m.loresImage } for m in allmovies ], key = lambda x: -x['lastViewed'])
 

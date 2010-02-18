@@ -18,7 +18,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from smewt.datamodel import BaseObject
 from smewt.base import Metadata
+
 
 
 class Movie(Metadata):
@@ -38,3 +40,15 @@ class Movie(Metadata):
 
     converters = {}
 
+
+class Comment(BaseObject):
+    schema = { 'metadata': Metadata,
+               'author': unicode,
+               'text': unicode,
+               'date': int
+               }
+
+    reverseLookup = { 'metadata': 'comments' }
+
+    valid = [ 'metadata', 'author', 'date' ]
+    unique = [ 'metadata', 'author', 'date' ]

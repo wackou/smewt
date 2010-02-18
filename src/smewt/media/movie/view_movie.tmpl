@@ -70,17 +70,14 @@ subtitles.sort(key = lambda x: x['languageImage'])
 def getComments(md):
     results = []
 
-    for comment in [ p for p in md.properties if p.startswith('comment/') ]:
-        comment = comment[8:]
-        idx = comment.index('/')
-        results += [ (comment[idx+1:],
-                      datetime.datetime.fromtimestamp(int(comment[:idx])).ctime(),
-                      md['comment/'+comment]) ]
+    for comment in tolist(md.comments):
+        results += [ (comment.author,
+                      datetime.datetime.fromtimestamp(comment.date).ctime(),
+                      comment.text) ]
 
     return sorted(results, key = lambda x: x[1])
 
-#comments = getComments(movie)
-comments = []
+comments = getComments(movie)
 
 qtitle = movie.title.replace('\'', '\\\'')
 

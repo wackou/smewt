@@ -215,7 +215,12 @@ class MainWidget(QWidget):
 
     @pyqtSignature("QString, QString, QString")
     def addComment(self, title, author, comment):
-        self.collection.findOne(type = Movie, title = unicode(title))['comment/%d/%s' % (int(time.time()), unicode(author))] = unicode(comment)
+        g = self.smewtd.collection
+        movie = g.findOne(Movie, title = unicode(title))
+        commentObj = g.Comment(metadata = movie,
+                               author = unicode(author),
+                               date = int(time.time()),
+                               text = unicode(comment))
 
         self.refreshCollectionView()
 
