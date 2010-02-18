@@ -76,7 +76,7 @@ class ActionFactory(Singleton):
             language = surl.args['language']
 
             for provider in self.subtitleProviders:
-                subTask = SubtitleTask(mainWidget.collection, provider, title, language)
+                subTask = SubtitleTask(mainWidget.smewtd.collection, provider, title, language)
                 QObject.connect(subTask, SIGNAL('foundData'), mainWidget.mergeCollection)
                 mainWidget.taskManager.add( subTask )
                 subTask.start()

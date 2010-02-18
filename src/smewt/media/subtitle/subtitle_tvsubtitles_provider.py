@@ -21,10 +21,11 @@
 import re, logging
 from urllib import urlopen, urlencode
 from smewt.base import utils, SmewtException, cachedmethod
+from smewt.datamodel import ontology
 from smewt.base.textutils import simpleMatch, between, levenshtein
-from smewt.media import Episode, Series
 from subtitleobject import Subtitle
 from lxml import etree
+ontology.importClasses([ 'Movie', 'Series', 'Episode' ])
 
 log = logging.getLogger('TVSubtitlesProvider')
 
@@ -49,6 +50,7 @@ class TVSubtitlesProvider:
                 idx = title.find('(') - 1
                 title = title[:idx]
             except: pass
+
             result.append({ 'title': title, 'url': seriesUrl })
 
         if not matches:
@@ -128,7 +130,7 @@ class TVSubtitlesProvider:
         return isinstance(metadata, Episode)
 
     def titleFilter(self, title):
-        return lambda x: x['series'] == Series({ 'title': title })
+        return lambda x: x.series.title == title
 
     def getAvailableSubtitles(self, metadata):
         try:

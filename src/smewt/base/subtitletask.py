@@ -34,62 +34,16 @@ log = logging.getLogger('smewt.subtitletask')
 class SubtitleTask(QThread, Task):
     def __init__(self, collection, provider, title, language):
         super(SubtitleTask, self).__init__()
-        self.totalCount = 0
-        self.progressedCount = 0
         self.collection = collection
         self.provider = provider
         validTitle = provider.titleFilter(title)
         self.objects = collection.findAll(validNode = lambda x: provider.canHandle(x) and validTitle(x))
         self.language = language
 
-    def total(self):
-        return self.totalCount
-
-    def progressed(self):
-        return self.progressedCount
-
-    def run(self):
-        self.worker = Worker(self.collection, self.provider, self.objects, self.language)
-
-        self.connect(self.worker, SIGNAL('progressChanged'),
-                     self.progressChanged)
-
-        self.connect(self.worker, SIGNAL('foundData'),
-                     self.foundData)
-
-        self.connect(self.worker, SIGNAL('importFinished'),
-                     self.importFinished)
-
-        self.worker.begin()
-
-        self.exec_()
+        log.info('Creating SubtitleTask for file: %s' % self.objects)
 
 
-    def __del__(self):
-        self.wait()
-
-    def importFinished(self):
-        self.emit(SIGNAL('taskFinished'), self)
-
-    def progressChanged(self, current, total):
-        self.progressedCount = current
-        self.totalCount = total
-        self.emit(SIGNAL('progressChanged'))
-
-    def foundData(self, results):
-        self.emit(SIGNAL('foundData'), results)
-
-
-class Worker(QObject):
-    def __init__(self, collection, provider, objects, language):
-        super(Worker, self).__init__()
-
-        self.collection = collection
-        self.provider = provider
-        self.objects = objects
-        self.language = language
-
-    def begin(self):
+    def perform(self):
         languageMap = { 'en': u'English', 'fr': u'Fran\xe7ais', 'es': u'Espa\xf1ol' }
 
         # find objects which don't have yet a subtitle of the desired language
@@ -159,6 +113,3 @@ class Worker(QObject):
 
 
         log.debug('SubtitleTask: all done!')
-        self.emit(SIGNAL('foundData'), subs)
-        self.emit(SIGNAL('progressChanged'), 0, 0)
-        self.emit(SIGNAL('importFinished'))

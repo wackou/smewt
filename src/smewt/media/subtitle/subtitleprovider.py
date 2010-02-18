@@ -57,6 +57,7 @@ class SubtitleProvider:
         For movies, as we want to filter by movie['title'], we can use the default implementation.
         For series, we might rather want to filter by episode['series'] == Series({ 'title': title })
         '''
+        # FIXME: this is useless, remove it...
         return lambda x: x['title'] == title
 
     def getAvailableSubtitles(self, metadata):
