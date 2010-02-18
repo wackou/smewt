@@ -41,6 +41,18 @@ for subtitle in tolist(movie.get('subtitles')):
         languageFiles[subtitle.language] += [ (mediaFilename, subtitleFilename) ]
 
 
+# prepare link for playing movie without subtitles
+nfile = 1
+args = {}
+for f in sorted(files):
+    args['filename%d' % nfile] = f
+    nfile += 1
+
+if args:
+    playLink = SmewtUrl('action', 'play', args)
+
+
+# prepare links for playing movie with subtitles
 for lang, files in languageFiles.items():
     nfile = 1
     args = {}
@@ -52,6 +64,8 @@ for lang, files in languageFiles.items():
 
     subtitles.append( {'languageImage': flags_dir + '/%s.png' % (lang,),
                         'url': SmewtUrl('action', 'play', args)} )
+
+subtitles.sort(key = lambda x: x['languageImage'])
 
 def getComments(md):
     results = []
@@ -70,16 +84,6 @@ comments = []
 
 qtitle = movie.title.replace('\'', '\\\'')
 
-nfile = 1
-args = {}
-for f in sorted(files):
-    args['filename%d' % nfile] = f
-    nfile += 1
-
-if args:
-    playLink = SmewtUrl('action', 'play', args)
-
-subtitles.sort(key = lambda x: x['languageImage'])
 
 from smewt.base.utils import smewtDirectory
 import_dir = smewtDirectory('smewt', 'media')

@@ -3,14 +3,14 @@
 <%
 from smewt import SmewtUrl
 
-movies = sorted([ { 'title': m['title'],
-                    'qtitle': m['title'].replace('\'', '\\\''),
-                    'year': m['year'],
-                    'rating': m['rating'] or '-',
-                    'genres': ', '.join(m['genres'] or []) or '-',
-                    'watched': 'checked' if m.watched else '',
-                    'url': SmewtUrl('media', 'movie/single', { 'title': m['title'] }),
-                    'poster': m['loresImage'] } for m in allmovies ], key = lambda x: x['title'])
+movies = sorted([ { 'title': m.title,
+                    'qtitle': m.title.replace('\'', '\\\''),
+                    'year': m.year,
+                    'rating': m.get('rating') or '-',
+                    'genres': ', '.join(m.get('genres') or []) or '-',
+                    'watched': 'checked' if m.get('watched') else '',
+                    'url': SmewtUrl('media', 'movie/single', { 'title': m.title }),
+                    'poster': m.loresImage } for m in allmovies ], key = lambda x: x['title'])
 
 from smewt.base.utils import smewtDirectory
 import_dir = smewtDirectory('smewt', 'media')

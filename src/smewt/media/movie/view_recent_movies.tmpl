@@ -18,7 +18,7 @@ def getComments(md):
     return sorted(results, key = lambda x: x[1])
 
 def lastViewedString(m):
-    lastViewed = datetime.datetime.fromtimestamp(m['lastViewed']).date()
+    lastViewed = datetime.datetime.fromtimestamp(m.lastViewed).date()
     daysago = (datetime.date.today() - lastViewed).days
     datestr = lastViewed.isoformat()
 
@@ -31,17 +31,17 @@ def lastViewedString(m):
 
     return 'on ' + datestr
 
-movies = sorted([ { 'title': m['title'],
-                    'qtitle': m['title'].replace('\'', '\\\''),
-                    'year': m['year'],
-                    'rating': m['rating'] or '-',
-                    'genres': ', '.join(m['genres'] or []) or '-',
-                    'lastViewed': m['lastViewed'],
+movies = sorted([ { 'title': m.title,
+                    'qtitle': m.title.replace('\'', '\\\''),
+                    'year': m.year,
+                    'rating': m.get('rating') or '-',
+                    'genres': ', '.join(m.get('genres') or []) or '-',
+                    'lastViewed': m.lastViewed,
                     'lastViewedString': lastViewedString(m),
-                    'watched': 'checked' if m.watched else '',
-                    'comments': getComments(m),
-                    'url': SmewtUrl('media', 'movie/single', { 'title': m['title'] }),
-                    'poster': m['loresImage'] } for m in allmovies ], key = lambda x: -x['lastViewed'])
+                    'watched': 'checked' if m.get('watched') else '',
+                    'comments': [], #getComments(m),
+                    'url': SmewtUrl('media', 'movie/single', { 'title': m.title }),
+                    'poster': m.loresImage } for m in allmovies ], key = lambda x: -x['lastViewed'])
 
 # keep only the 4 most recent movies
 movies = movies[:4]
