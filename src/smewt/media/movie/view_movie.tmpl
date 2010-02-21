@@ -70,7 +70,7 @@ subtitles.sort(key = lambda x: x['languageImage'])
 def getComments(md):
     results = []
 
-    for comment in tolist(md.comments):
+    for comment in tolist(md.get('comments')):
         results += [ (comment.author,
                       datetime.datetime.fromtimestamp(comment.date).ctime(),
                       comment.text) ]
