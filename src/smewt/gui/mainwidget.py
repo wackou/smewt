@@ -159,7 +159,7 @@ class MainWidget(QWidget):
         self.smewtd.collection.update()
 
     def rescanCollection(self):
-        self.collection.rescan()
+        self.smewtd.collection.rescan()
 
     def selectSeriesFolders(self):
         d = CollectionFoldersPage(self,
