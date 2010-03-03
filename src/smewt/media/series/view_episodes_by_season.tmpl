@@ -26,7 +26,7 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'lan
 # First prepare the episodes
 episodes = {}
 
-for ep in series.episodes:
+for ep in tolist(series.episodes):
     md = dict(ep.literalItems())
     md['filename'] = ep.files.filename
     md['url'] = SmewtUrl('action', 'play', { 'filename1': md['filename'] })
@@ -38,7 +38,6 @@ for ep in series.episodes:
     for subtitle in tolist(ep.get('subtitles')):
         for subfile in tolist(subtitle.files):
             subtitleFilename = subfile.filename
-            print 'ep.files', tolist(ep.files)
             mediaFilename = [ f.filename for f in tolist(ep.files) if subtitleFilename.startswith(os.path.splitext(f.filename)[0]) ]
             mediaFilename = mediaFilename[0] # FIXME: check len == 1 all the time
 
