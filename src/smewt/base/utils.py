@@ -139,5 +139,7 @@ class CurlDownloader:
         c.setopt(c.FOLLOWLOCATION, 1)
         c.perform()
 
+        return self.contents
+
     def __del__(self):
         self.c.close()

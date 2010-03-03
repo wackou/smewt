@@ -29,6 +29,8 @@ from PyQt4.QtCore import SIGNAL, QObject, QUrl
 
 import sys, re, logging
 from urllib import urlopen,  urlencode
+from smewt.base.utils import CurlDownloader
+from lxml import etree
 import imdb
 
 log = logging.getLogger('smewt.guessers.imdbmetadataprovider')
@@ -145,25 +147,26 @@ class IMDBMetadataProvider(object):
         imageDir = smewtUserDirectory('images')
         noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
 
+        c = CurlDownloader()
         loresFilename, hiresFilename = None, None
 
         try:
             movieUrl = 'http://www.imdb.com/title/tt' + imdbID
-            html = urlopen(movieUrl).read()
-            rexp = '<a name="poster" href="(?P<hiresUrl>[^"]*)".*?src="(?P<loresImg>[^"]*)"'
-            poster = textutils.matchRegexp(html, rexp)
+            html = etree.HTML(c.get(movieUrl))
+            poster = html.find(".//div[@class='photo']")
+            loresURL = poster.find('.//img').get('src')
             loresFilename = imageDir + '/%s_lores.jpg' % imdbID
-            open(loresFilename, 'w').write(urlopen(poster['loresImg']).read())
+            open(loresFilename, 'w').write(urlopen(loresURL).read())
         except SmewtException:
             log.warning('Could not find poster for imdb ID %s' % imdbID)
             return (noposter, noposter)
 
         try:
-            html = urlopen('http://www.imdb.com' + poster['hiresUrl']).read()
-            rexp = '<table id="principal">.*?src="(?P<hiresImg>[^"]*)"'
-            poster = textutils.matchRegexp(html, rexp)
+            hiresHtmlURL = 'http://www.imdb.com' + poster.find('.//a').get('href')
+            html = etree.HTML(c.get(hiresHtmlURL))
+            hiresURL = html.find(".//div[@class='primary']").find('.//img').get('src')
             hiresFilename = imageDir + '/%s_hires.jpg' % imdbID
-            open(hiresFilename, 'w').write(urlopen(poster['hiresImg']).read())
+            open(hiresFilename, 'w').write(urlopen(hiresURL).read())
         except SmewtException:
             log.warning('Could not find hires poster for imdb ID %s' % imdbID)
             hiresFilename = noposter
