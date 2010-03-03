@@ -22,15 +22,20 @@ import logging
 
 log = logging.getLogger('smewt.datamodel.AbstractDirectedGraph')
 
+# Nice & clean enum implementation by Gabriel Genellina, MIT licensed
+# as found at http://code.activestate.com/recipes/577024-yet-another-enum-for-python/
+def enum(typename, field_names):
+    "Create a new enumeration type"
 
-class Equal:
-    # some constants
-    OnIdentity = 1
-    OnValue = 2
-    OnValidValue = 3
-    OnUnique = 4
-    OnLiterals = 5
+    if isinstance(field_names, str):
+        field_names = field_names.replace(',', ' ').split()
+    d = dict((reversed(nv) for nv in enumerate(field_names)), __slots__ = ())
+    return type(typename, (object,), d)()
 
+
+
+Equal = enum('Equal',
+             'OnIdentity, OnValue, OnValidValue, OnUnique, OnLiterals')
 
 
 class AbstractDirectedGraph(object):
