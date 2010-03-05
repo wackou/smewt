@@ -131,7 +131,7 @@ class CurlDownloader:
         self.contents.append(buf)
 
     def get(self, url):
-        self.contents = ''
+        self.contents = []
         c = self.c
         c.setopt(c.URL, url)
         c.setopt(c.WRITEFUNCTION, self.callback)

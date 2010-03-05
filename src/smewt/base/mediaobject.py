@@ -55,6 +55,7 @@ class Media(BaseObject):
                }
 
     valid = [ 'filename' ]
+    unique = [ 'filename' ]
     reverseLookup = { 'metadata': 'files',
                       'matches': 'query' }
 
