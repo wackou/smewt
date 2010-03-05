@@ -41,28 +41,28 @@ class SubtitleNotFoundError(SmewtException):
 
 
 class SubtitleProvider:
-    '''This class represents the interface that needs to be implemented by a plugin which downloads
-    subtitles for movies or series.'''
+    """This class represents the interface that needs to be implemented by a plugin which downloads
+    subtitles for movies or series."""
 
     def canHandle(self, metadata):
-        '''This method returns whether this subtitle provider is able to handle the given object.
+        """This method returns whether this subtitle provider is able to handle the given object.
 
-        Only objects which fulfill this condition should be given to the getAvailableSubtitles
-        method.'''
+        Only objects which fulfill this condition should be handed to the getAvailableSubtitles
+        method."""
 
         raise NotImplementedError
 
     def titleFilter(self, title):
-        '''This returns a lambda function that filters the object by title.
+        """This returns a lambda function that filters the object by title.
         For movies, as we want to filter by movie['title'], we can use the default implementation.
         For series, we might rather want to filter by episode['series'] == Series({ 'title': title })
-        '''
+        """
         # FIXME: this is useless, remove it...
         return lambda x: x['title'] == title
 
     def getAvailableSubtitles(self, metadata):
-        '''This method should return a graph of all available Subtitle metadata objects for
-        the given Metadata (Movie, Episode) object.
+        """This method should return a graph of all available Subtitle metadata objects for
+        the given Metadata (Movie, Episode, ...) object.
 
         If no subtitle could be found, this method should return an empty graph.
 
@@ -70,16 +70,16 @@ class SubtitleProvider:
 
         NB: This graph can contain multiple versions of the subtitle (different languages,
         different rips, ...) for the same object.
-        The subtitles may also span multiple files (if the object (movie) is split in the same way).'''
+        The subtitles may also span multiple files (if the object (movie) is split in the same way)."""
 
         raise NotImplementedError
 
 
     def getSubtitle(self, subtitle):
-        '''This method should return the contents of the given subtitle as a string.
+        """This method should return the contents of the given subtitle as a string.
         The Subtitle object should be picked among the ones returned by the getAvailableSubtitles
         method.
 
-        If the subtitle could not be found, a SubtitleNotFoundError exception should be raised.'''
+        If the subtitle could not be found, a SubtitleNotFoundError exception should be raised."""
 
         raise NotImplementedError

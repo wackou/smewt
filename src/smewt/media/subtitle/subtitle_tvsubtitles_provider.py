@@ -21,7 +21,8 @@
 import re, logging
 from urllib import urlopen, urlencode
 from smewt.base import utils, SmewtException, cachedmethod
-from smewt.datamodel import ontology
+from smewt.datamodel import ontology, MemoryObjectGraph
+from smewt.base.utils import curlget
 from smewt.base.textutils import simpleMatch, between, levenshtein
 from subtitleobject import Subtitle
 from lxml import etree
@@ -77,21 +78,26 @@ class TVSubtitlesProvider:
             raise SmewtException("Season %d Episode %d unavailable for series '%s'" % (season, number, series))
         return int(simpleMatch(episodeRowHtml, 'episode-(.*?).html'))
 
-    @cachedmethod
-    def getAvailableSubtitlesID(self, series, season, number):
-        episodeID = self.getEpisodeID(series, season, number)
-        episodeHtml = urlopen(self.baseUrl + '/episode-%d.html' % episodeID).read()
+    #@cachedmethod
+    # cachedmethod doesn't work because of weakrefs in the graph...
+    def getAvailableSubtitlesID(self, episode):
+        episodeID = self.getEpisodeID(episode.series.title, episode.season, episode.episodeNumber)
+        episodeHtml = curlget(self.baseUrl + '/episode-%d.html' % episodeID)
         subtitlesHtml = between(episodeHtml, 'Subtitles for this episode', 'Back to')
 
-        result = [ { 'tvsubid': int(between(sub.get('href'), '-', '.')),
-                     'language': simpleMatch(sub.find('.//img').get('src'), 'flags/(.*?).gif'),
-                     'title': (sub.find('.//h5').find('img').tail or '').strip(),
-                     'source': (sub.find(".//p[@title='rip']").find('img').tail or '').strip(),
-                     'release': (sub.find(".//p[@title='release']").find('img').tail or '').strip(), }
-                   for sub in etree.HTML(episodeHtml).findall(".//div[@class='subtitlen']")
-                   ]
+        result = MemoryObjectGraph()
+        ep = result.Episode(episode)
+
+        for sub in etree.HTML(episodeHtml).findall(".//div[@class='subtitlen']"):
+            result.Subtitle(metadata = ep,
+                            language = simpleMatch(sub.find('.//img').get('src'), 'flags/(.*?).gif'),
+                            tvsubid = int(between(sub.get('href'), '-', '.')),
+                            title = (sub.find('.//h5').find('img').tail or '').strip(),
+                            source = (sub.find(".//p[@title='rip']").find('img').tail or '').strip(),
+                            release = (sub.find(".//p[@title='release']").find('img').tail or '').strip())
 
         return result
+
 
     def downloadSubtitle(self, basename, series, season, episode, language, videoFilename = None):
         """videoFilename is just used a hint when we find multiple subtitles"""
@@ -129,22 +135,20 @@ class TVSubtitlesProvider:
     def canHandle(self, metadata):
         return isinstance(metadata, Episode)
 
-    def titleFilter(self, title):
-        return lambda x: x.series.title == title
+    #def titleFilter(self, title):
+    #    return lambda x: x.series.title == title
 
     def getAvailableSubtitles(self, metadata):
         try:
-            if not metadata['season']:
-                raise SmewtException('\'season\' attribute not in object')
-            if not metadata['episodeNumber']:
-                raise SmewtException('\'episodeNumber\' attribute not in object')
+            if metadata.get('season') is None:
+                raise SmewtException("'season' attribute not in object")
+            if metadata.get('episodeNumber') is None:
+                raise SmewtException("'episodeNumber' attribute not in object")
         except SmewtException, e:
             log.warning('TVSubtitlesProvider: %s' % str(e))
             return []
 
-        return self.getAvailableSubtitlesID(metadata['series']['title'],
-                                            metadata['season'],
-                                            metadata['episodeNumber'])
+        return self.getAvailableSubtitlesID(metadata)
 
 
     def getSubtitle(self, subtitle):
@@ -157,9 +161,9 @@ class TVSubtitlesProvider:
 
         cd = utils.CurlDownloader()
         # first get this page to get session cookies...
-        cd.get(self.baseUrl + '/subtitle-%d.html' % subtitle['tvsubid'])
+        cd.get(self.baseUrl + '/subtitle-%d.html' % subtitle.tvsubid)
         # ...then grab the sub file
-        cd.get(self.baseUrl + '/download-%d.html' % subtitle['tvsubid'])
+        cd.get(self.baseUrl + '/download-%d.html' % subtitle.tvsubid)
 
         zf = zipfile.ZipFile(cStringIO.StringIO(cd.contents))
         filename = zf.infolist()[0].filename
