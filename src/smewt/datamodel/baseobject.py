@@ -180,10 +180,15 @@ class BaseObject(object):
             if graph is None or graph is basenode.graph():
                 self._node = basenode
             else:
+                if basenode.edgeKeys():
+                    # we have links, we can't just create the node without adding the dependencies...
+                    raise SmewtException("sorry, can't do that right now...")
+
                 # TODO: we should be able to construct directly from the other node
                 self._node = graph.createNode(reverseLookup(basenode, self.__class__),
                                               _classes = basenode._classes)
                 created = True
+
 
             # optimization: avoid revalidating the classes all the time when creating a BaseObject from a pre-existing node
             if kwargs:

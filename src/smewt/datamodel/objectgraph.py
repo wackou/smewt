@@ -98,6 +98,11 @@ class ObjectGraph(AbstractDirectedGraph):
         # such an object in this graph
         if name[0].isupper() and name in ontology.classNames():
             def inst(basenode = None, **kwargs):
+                # if we're copying a node from a different graph, we need to intercept it here to
+                # add it correctly with its dependencies instead of creating from scratch
+                if basenode is not None and basenode._node.graph() != self:
+                    return self.addObject(basenode)
+
                 return ontology.getClass(name)(basenode = basenode, graph = self, **kwargs)
 
             return inst
