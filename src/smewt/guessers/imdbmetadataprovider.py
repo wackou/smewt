@@ -29,7 +29,7 @@ from PyQt4.QtCore import SIGNAL, QObject, QUrl
 
 import sys, re, logging
 from urllib import urlopen,  urlencode
-from smewt.base.utils import CurlDownloader
+from smewt.base.utils import curlget
 from lxml import etree
 import imdb
 
@@ -147,26 +147,25 @@ class IMDBMetadataProvider(object):
         imageDir = smewtUserDirectory('images')
         noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
 
-        c = CurlDownloader()
         loresFilename, hiresFilename = None, None
 
         try:
             movieUrl = 'http://www.imdb.com/title/tt' + imdbID
-            html = etree.HTML(c.get(movieUrl))
+            html = etree.HTML(curlget(movieUrl))
             poster = html.find(".//div[@class='photo']")
             loresURL = poster.find('.//img').get('src')
             loresFilename = imageDir + '/%s_lores.jpg' % imdbID
-            open(loresFilename, 'w').write(urlopen(loresURL).read())
+            open(loresFilename, 'w').write(curlget(loresURL))
         except SmewtException:
             log.warning('Could not find poster for imdb ID %s' % imdbID)
             return (noposter, noposter)
 
         try:
             hiresHtmlURL = 'http://www.imdb.com' + poster.find('.//a').get('href')
-            html = etree.HTML(c.get(hiresHtmlURL))
+            html = etree.HTML(curlget(hiresHtmlURL))
             hiresURL = html.find(".//div[@class='primary']").find('.//img').get('src')
             hiresFilename = imageDir + '/%s_hires.jpg' % imdbID
-            open(hiresFilename, 'w').write(urlopen(hiresURL).read())
+            open(hiresFilename, 'w').write(curlget(hiresURL))
         except SmewtException:
             log.warning('Could not find hires poster for imdb ID %s' % imdbID)
             hiresFilename = noposter
