@@ -25,8 +25,8 @@ from smewt.gui import MainWidget, FeedWatchWidget
 from smewt.base.utils import smewtDirectory
 
 log = logging.getLogger('smewg')
-DEFAULT_WIDTH = 874
-DEFAULT_HEIGHT = 500
+DEFAULT_WIDTH = 900
+DEFAULT_HEIGHT = 740
 
 class StatusWidget(QWidget):
     def __init__(self):
@@ -277,6 +277,8 @@ if __name__ == '__main__':
 
     #from smewt.base import cache
     #cache.load('/tmp/smewt.cache')
+
+    print 'smewt directory:',  smewtDirectory('smewt', 'media', 'speeddial')
 
     sgui = SmewtGui()
 
