@@ -52,13 +52,6 @@ class SubtitleProvider:
 
         raise NotImplementedError
 
-    def titleFilter(self, title):
-        """This returns a lambda function that filters the object by title.
-        For movies, as we want to filter by movie['title'], we can use the default implementation.
-        For series, we might rather want to filter by episode['series'] == Series({ 'title': title })
-        """
-        # FIXME: this is useless, remove it...
-        return lambda x: x['title'] == title
 
     def getAvailableSubtitles(self, metadata):
         """This method should return a graph of all available Subtitle metadata objects for

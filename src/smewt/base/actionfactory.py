@@ -77,9 +77,7 @@ class ActionFactory(Singleton):
 
             for provider in self.subtitleProviders:
                 subTask = SubtitleTask(mainWidget.smewtd.collection, provider, title, language)
-                QObject.connect(subTask, SIGNAL('foundData'), mainWidget.mergeCollection)
-                mainWidget.taskManager.add( subTask )
-                subTask.start()
+                mainWidget.smewtd.taskManager.add(subTask)
 
         else:
             raise SmewtException('Unknown action type: %s' % surl.actionType)
