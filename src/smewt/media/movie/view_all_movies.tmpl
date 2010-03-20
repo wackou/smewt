@@ -6,8 +6,8 @@ movies = sorted([ { 'title': m.title,
                     'url': SmewtUrl('media', 'movie/single', { 'title': m.title }),
                     'poster': m.loresImage } for m in allmovies ], key = lambda x: x['title'])
 
-from smewt.base.utils import smewtDirectory
-import_dir = smewtDirectory('smewt', 'media', 'movie')
+from smewt.base.utils import smewtDirectoryUrl
+import_dir = smewtDirectoryUrl('smewt', 'media', 'movie')
 %>
 
 <html>

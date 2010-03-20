@@ -21,7 +21,7 @@
 
 
 # filename- and network-related functions
-import sys, os, os.path, fnmatch
+import sys, os, os.path, fnmatch,  errno
 import pycurl
 from PyQt4.QtCore import QSettings, QVariant
 import smewt
@@ -34,13 +34,27 @@ def currentPath():
 def smewtDirectory(*args):
     return os.path.join(currentPath(), '..', '..', *args)
 
+def smewtDirectoryUrl(*args):
+    sdir = smewtDirectory(*args)
+    result = 'localhost/%s:/%s' % (sdir[0],  sdir[3:])
+    print '-----sdir url:',  result
+    return result
+
+def makedir(path):
+    try:
+        os.makedirs(path)
+    except OSError as e:
+        if e.errno == errno.EEXIST:
+            pass
+        else: raise
+
 def smewtUserDirectory(*args):
     settings = QSettings()
     t = unicode(settings.value('user_dir').toString())
     if t == '':
         t = os.path.join(os.path.dirname(unicode(settings.fileName())), *args)
         # FIXME: this is not portable...
-        os.system('mkdir -p "%s"' % t)
+        makedir(t)
         settings.setValue('user_dir',  QVariant(t))
 
     return t
@@ -49,8 +63,7 @@ def smewtUserDirectory(*args):
 def splitFilename(filename):
     root, path = os.path.split(filename)
     result = [ path ]
-    # FIXME: this is a hack... How do we know we're at the root node?
-    while len(root) > 1:
+    while path:
         root, path = os.path.split(root)
         result.append(unicode(path))
     return result

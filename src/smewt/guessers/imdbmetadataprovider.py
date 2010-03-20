@@ -155,7 +155,7 @@ class IMDBMetadataProvider(object):
             poster = html.find(".//div[@class='photo']")
             loresURL = poster.find('.//img').get('src')
             loresFilename = imageDir + '/%s_lores.jpg' % imdbID
-            open(loresFilename, 'w').write(curlget(loresURL))
+            open(loresFilename, 'wb').write(curlget(loresURL))
         except SmewtException:
             log.warning('Could not find poster for imdb ID %s' % imdbID)
             return (noposter, noposter)
@@ -165,7 +165,7 @@ class IMDBMetadataProvider(object):
             html = etree.HTML(curlget(hiresHtmlURL))
             hiresURL = html.find(".//div[@class='primary']").find('.//img').get('src')
             hiresFilename = imageDir + '/%s_hires.jpg' % imdbID
-            open(hiresFilename, 'w').write(curlget(hiresURL))
+            open(hiresFilename, 'wb').write(curlget(hiresURL))
         except SmewtException:
             log.warning('Could not find hires poster for imdb ID %s' % imdbID)
             hiresFilename = noposter

@@ -5,11 +5,12 @@ from itertools import groupby
 from collections import defaultdict
 from smewt import SmewtUrl, Media
 from smewt.media import Episode, Series, Subtitle
-from smewt.base.utils import smewtDirectory, guessCountryCode, tolist
+from smewt.base.utils import smewtDirectoryUrl, guessCountryCode, tolist
 from smewt.base import SmewtException
 
 import os, os.path
-flags_dir = smewtDirectory('smewt', 'media', 'common', 'images', 'flags')
+import_dir = smewtDirectoryUrl('smewt', 'media')
+flags_dir = smewtDirectoryUrl('smewt', 'media', 'common', 'images', 'flags')
 seasons = defaultdict(lambda: [])
 
 #allseries = eps.findAll(type = Series)
@@ -68,8 +69,6 @@ for md in episodes.values():
 for season, eps in seasons.items():
     seasons[season] = sorted(eps, key = lambda x: x['episodeNumber'])
 
-
-import_dir = smewtDirectory('smewt', 'media')
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
