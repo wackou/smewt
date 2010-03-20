@@ -4,7 +4,7 @@
 from collections import defaultdict
 from smewt import SmewtUrl, Media
 from smewt.media import Movie
-from smewt.base.utils import smewtDirectoryUrl, guessCountryCode, tolist
+from smewt.base.utils import pathToUrl, smewtDirectoryUrl, guessCountryCode, tolist
 from smewt.base import SmewtException
 import datetime
 
@@ -13,7 +13,7 @@ flags_dir = smewtDirectoryUrl('smewt', 'media', 'common', 'images', 'flags')
 
 #movie = movieData.findOne(type = Movie)
 movieName = movie.title
-poster = movie.loresImage
+poster = pathToUrl(movie.loresImage)
 
 def getAll(prop):
     return ', '.join(movie.get(prop) or [])

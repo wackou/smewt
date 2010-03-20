@@ -31,15 +31,6 @@ def currentPath():
     '''Returns the path in which the calling file is located.'''
     return os.path.dirname(os.path.join(os.getcwd(), sys._getframe(1).f_globals['__file__']))
 
-def smewtDirectory(*args):
-    return os.path.join(currentPath(), '..', '..', *args)
-
-def smewtDirectoryUrl(*args):
-    sdir = smewtDirectory(*args)
-    result = 'localhost/%s:/%s' % (sdir[0],  sdir[3:])
-    print '-----sdir url:',  result
-    return result
-
 def makedir(path):
     try:
         os.makedirs(path)
@@ -48,16 +39,37 @@ def makedir(path):
             pass
         else: raise
 
+def pathToUrl(path):
+    if sys.platform == 'win32':
+        # perform some drive letter trickery
+        return 'localhost/%s:/%s' % (path[0], path[3:])
+
+    return path
+
+def smewtDirectory(*args):
+    return os.path.join(currentPath(), '..', '..', *args)
+
+def smewtDirectoryUrl(*args):
+    return pathToUrl(smewtDirectory(*args))
+
 def smewtUserDirectory(*args):
     settings = QSettings()
-    t = unicode(settings.value('user_dir').toString())
-    if t == '':
-        t = os.path.join(os.path.dirname(unicode(settings.fileName())), *args)
-        # FIXME: this is not portable...
-        makedir(t)
-        settings.setValue('user_dir',  QVariant(t))
+    userdir = unicode(settings.value('user_dir').toString())
+    if not userdir:
+        if sys.platform == 'win32':
+            userdir = os.path.join(os.environ['USERPROFILE'], 'Application Data', 'Smewt')
+        else:
+            userdir = os.path.dirname(unicode(settings.fileName()))
 
-    return t
+        settings.setValue('user_dir',  QVariant(userdir))
+
+    userdir = os.path.join(userdir, *args)
+    makedir(userdir) # make sure directory exists
+
+    return userdir
+
+def smewtUserDirectoryUrl(*args):
+    return pathToUrl(smewtUserDirectory(*args))
 
 
 def splitFilename(filename):

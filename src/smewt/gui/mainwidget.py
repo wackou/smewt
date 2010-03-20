@@ -60,13 +60,6 @@ class MainWidget(QWidget):
         layout = QVBoxLayout()
         layout.addWidget(self.collectionView)
 
-        settings = QSettings()
-        t = settings.value('collection_file').toString()
-        if t == '':
-            t = join(dirname(unicode(settings.fileName())),  'Smewg.collection')
-            settings.setValue('collection_file',  QVariant(t))
-
-
         self.smewtd = SmewtDaemon(progressCallback = progressCallback)
         #self.collection = LocalCollection( taskManager = self.taskManager, settings = QSettings() )
         #self.connect(self.collection, SIGNAL('updated'),

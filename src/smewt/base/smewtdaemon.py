@@ -22,6 +22,7 @@ from PyQt4.QtCore import QSettings, QVariant
 from smewt.media import Series, Episode, Movie
 from smewt.base import LocalCollection
 from smewt.base.taskmanager import Task, TaskManager
+from smewt.base.utils import smewtUserDirectory
 from os.path import join, dirname, splitext
 from smewt.taggers import EpisodeTagger, MovieTagger
 import logging
@@ -44,13 +45,16 @@ class SmewtDaemon(object):
 
         settings = QSettings()
         cfile = unicode(settings.value('collection_file').toString())
-        if cfile == '':
-            cfile = join(dirname(unicode(settings.fileName())),  'Smewt.collection')
-            settings.setValue('collection_file',  QVariant(cfile))
+        if not cfile:
+            cfile = join(smewtUserDirectory(), 'Smewt.collection')
+            settings.setValue('collection_file', QVariant(cfile))
+            print '--cfile not ok:', cfile
+        else:
+            print '-- cfileok', cfile
 
         csettings = unicode(settings.value('collection_settings').toString())
-        if csettings == '':
-            csettings = join(dirname(unicode(settings.fileName())),  'Smewt.collection_settings')
+        if not csettings:
+            csettings = join(smewtUserDirectory(), 'Smewt.collection_settings')
             settings.setValue('collection_settings', QVariant(csettings))
 
 

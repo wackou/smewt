@@ -2,12 +2,12 @@
 
 <%
 from smewt import SmewtUrl
+from smewt.base.utils import pathToUrl, smewtDirectoryUrl
 
 series = sorted([ { 'title': s.title,
                     'url': SmewtUrl('media', 'series/single', { 'title': s.title }),
-                    'poster': s.get('loresImage') } for s in allseries ], key = lambda x: x['title'])
+                    'poster': pathToUrl(s.get('loresImage')) } for s in allseries ], key = lambda x: x['title'])
 
-from smewt.base.utils import smewtDirectoryUrl
 import_dir = smewtDirectoryUrl('smewt', 'media', 'series')
 
 %>
@@ -21,12 +21,12 @@ import_dir = smewtDirectoryUrl('smewt', 'media', 'series')
 <body>
 
 <div id="wrapper">
-	<div id="header">
-		ALL SERIES
-	</div>
-	<div id="container">
+    <div id="header">
+        ALL SERIES
+    </div>
+    <div id="container">
 
-		<div id="left-side">
+        <div id="left-side">
       #for s in series[::2]
         <div class="series">
           <img src="file://$s.poster" />

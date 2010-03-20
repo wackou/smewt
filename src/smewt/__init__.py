@@ -22,7 +22,8 @@ from base import SmewtDict, ValidatingSmewtDict, SmewtException, SmewtUrl, Solvi
 from base.mediaobject import Media, Metadata
 
 import logging
-logging.basicConfig(level = logging.DEBUG,
+logging.basicConfig(level = logging.INFO,
                     format = '%(levelname)-8s %(module)s:%(funcName)s -- %(message)s')
 
+# we most likely never want this to be on debug mode, as it spits out way too much information
 logging.getLogger('smewt.datamodel').setLevel(logging.INFO)

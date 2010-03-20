@@ -27,7 +27,7 @@ from smewt.datamodel import MemoryObjectGraph
 
 from PyQt4.QtCore import SIGNAL, QObject, QUrl
 
-import sys, re, logging
+import os, sys, re, logging
 from urllib import urlopen,  urlencode
 from smewt.base.utils import curlget
 from lxml import etree
@@ -154,7 +154,7 @@ class IMDBMetadataProvider(object):
             html = etree.HTML(curlget(movieUrl))
             poster = html.find(".//div[@class='photo']")
             loresURL = poster.find('.//img').get('src')
-            loresFilename = imageDir + '/%s_lores.jpg' % imdbID
+            loresFilename = os.path.join(imageDir, '%s_lores.jpg' % imdbID)
             open(loresFilename, 'wb').write(curlget(loresURL))
         except SmewtException:
             log.warning('Could not find poster for imdb ID %s' % imdbID)
@@ -164,7 +164,7 @@ class IMDBMetadataProvider(object):
             hiresHtmlURL = 'http://www.imdb.com' + poster.find('.//a').get('href')
             html = etree.HTML(curlget(hiresHtmlURL))
             hiresURL = html.find(".//div[@class='primary']").find('.//img').get('src')
-            hiresFilename = imageDir + '/%s_hires.jpg' % imdbID
+            hiresFilename = os.path.join(imageDir, '%s_hires.jpg' % imdbID)
             open(hiresFilename, 'wb').write(curlget(hiresURL))
         except SmewtException:
             log.warning('Could not find hires poster for imdb ID %s' % imdbID)
