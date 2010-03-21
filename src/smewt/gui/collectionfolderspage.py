@@ -103,7 +103,6 @@ class CollectionFoldersPage(QDialog):
         self.done(1)
 
     def apply(self):
-        print 'setting folders =', self.getFolders()
         if self.type == 'series':
             self.collection.setSeriesFolders(*self.getFolders())
         elif self.type == 'movies':

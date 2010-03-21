@@ -46,8 +46,6 @@ class EpisodeFilename(GraphAction):
 
         name = utils.splitFilename(media.filename)
 
-        print '--',  name
-
         # heuristic 1: try to guess the season & epnumber using S01E02 and 1x02 patterns
         sep = '[ \._-]'
         rexps = [ 'season (?P<season>[0-9]+)',

@@ -61,7 +61,7 @@ def currentPath():
 def makedir(path):
     try:
         os.makedirs(path)
-    except OSError as e:
+    except OSError, e:
         if e.errno == errno.EEXIST:
             pass
         else: raise

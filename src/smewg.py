@@ -28,6 +28,7 @@ log = logging.getLogger('smewg')
 DEFAULT_WIDTH = 900
 DEFAULT_HEIGHT = 740
 
+
 class StatusWidget(QWidget):
     def __init__(self):
         super(QWidget,  self).__init__()
@@ -262,7 +263,7 @@ class SmewtGui(QMainWindow):
         QMessageBox.about(self, 'About Smewt',
 '''Smewt - a smart media manager
 
-(c) 2008, 2009 Nicolas Wack, Ricard Marxer
+(c) 2008-2010 Nicolas Wack, Ricard Marxer
 GPLv3 licensed''')
 
     def aboutQt(self):
@@ -270,10 +271,11 @@ GPLv3 licensed''')
 
 
 if __name__ == '__main__':
+    import smewt
     app = QApplication(sys.argv)
-    app.setOrganizationName("DigitalGaia")
-    app.setOrganizationDomain("smewt.com")
-    app.setApplicationName("Smewg")
+    app.setOrganizationName('DigitalGaia')
+    app.setOrganizationDomain('smewt.com')
+    app.setApplicationName(smewt.APP_NAME)
 
     #from smewt.base import cache
     #cache.load('/tmp/smewt.cache')
