@@ -27,6 +27,33 @@ from PyQt4.QtCore import QSettings, QVariant
 import smewt
 from smewt.datamodel.utils import tolist, toresult
 
+class MethodID(object):
+    def __init__(self, filename, module, className, methodName):
+        self.filename = filename
+        self.module = module
+        self.className = className
+        self.methodName = methodName
+
+    def __str__(self):
+        return 'module: %s - class: %s - func: %s' % (self.module, self.className, self.methodName)
+
+def callerid():
+    f = sys._getframe(1)
+
+    filename = f.f_code.co_filename
+    module = ''
+    className = ''
+
+    try:
+        module = f.f_locals['self'].__class__.__module__
+        className = f.f_locals['self'].__class__.__name__
+    except:
+        pass
+
+    methodName = f.f_code.co_name
+
+    return MethodID(filename, module, className, methodName)
+
 def currentPath():
     '''Returns the path in which the calling file is located.'''
     return os.path.dirname(os.path.join(os.getcwd(), sys._getframe(1).f_globals['__file__']))
