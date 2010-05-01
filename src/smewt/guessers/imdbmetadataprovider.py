@@ -161,7 +161,10 @@ class IMDBMetadataProvider(object):
             return (noposter, noposter)
 
         try:
-            hiresHtmlURL = 'http://www.imdb.com' + poster.find('.//a').get('href')
+            hiresLink = poster.find('.//a')
+            if hiresLink.get('title') == 'Poster Not Submitted':
+                raise SmewtException('Poster not available')
+            hiresHtmlURL = 'http://www.imdb.com' + hiresLink.get('href')
             html = etree.HTML(curlget(hiresHtmlURL))
             hiresURL = html.find(".//div[@class='primary']").find('.//img').get('src')
             hiresFilename = os.path.join(imageDir, '%s_hires.jpg' % imdbID)
