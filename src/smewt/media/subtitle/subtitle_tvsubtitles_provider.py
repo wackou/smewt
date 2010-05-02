@@ -81,17 +81,23 @@ class TVSubtitlesProvider:
     #@cachedmethod
     # cachedmethod doesn't work because of weakrefs in the graph...
     def getAvailableSubtitlesID(self, episode):
+        log.debug('Getting subtitles id for %s %dx%2d' % (episode.series.title, episode.season, episode.episodeNumber))
         episodeID = self.getEpisodeID(episode.series.title, episode.season, episode.episodeNumber)
-        episodeHtml = curlget(self.baseUrl + '/episode-%d.html' % episodeID)
+        episodeURL = self.baseUrl + '/episode-%d.html' % episodeID
+        episodeHtml = curlget(episodeURL)
         subtitlesHtml = between(episodeHtml, 'Subtitles for this episode', 'Back to')
 
         result = MemoryObjectGraph()
         ep = result.Episode(episode)
 
-        for sub in etree.HTML(episodeHtml).findall(".//div[@class='subtitlen']"):
+        episodeHtml = between(episodeHtml, '<b>Subtitles for this episode:</b>', '<br clear=all>')
+        ehtml = etree.HTML(episodeHtml)
+
+        for slink, sub in zip(ehtml.findall('.//a'),
+                              ehtml.findall(".//div[@class='subtitlen']")):
             result.Subtitle(metadata = ep,
                             language = simpleMatch(sub.find('.//img').get('src'), 'flags/(.*?).gif'),
-                            tvsubid = int(between(sub.get('href'), '-', '.')),
+                            tvsubid = int(between(slink.get('href'), '-', '.')),
                             title = (sub.find('.//h5').find('img').tail or '').strip(),
                             source = (sub.find(".//p[@title='rip']").find('img').tail or '').strip(),
                             release = (sub.find(".//p[@title='release']").find('img').tail or '').strip())

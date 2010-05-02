@@ -23,6 +23,7 @@ from smewt.media.subtitle.subtitle_tvsubtitles_provider import TVSubtitlesProvid
 
 import logging
 logging.getLogger('smewt').setLevel(logging.WARNING)
+logging.getLogger('TVSubtitlesProvider').setLevel(logging.INFO)
 #logging.getLogger('smewt.datamodel').setLevel(logging.WARNING)
 #logging.getLogger('smewt.datamodel.ObjectGraph').setLevel(logging.DEBUG)
 
@@ -53,7 +54,7 @@ class TestEpisodeSubtitle(TestCase):
             self.assert_(len(available) >= 1)
 
             sub = subprovider.getSubtitle(available[0])
-            self.assertEqual(open('test_episodesubtitle/' + resultFile).read(), sub)
+            self.assertEqual(open('test_episodesubtitle/' + resultFile).read(), sub.replace('\r\n', '\n'))
 
 
 
