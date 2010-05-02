@@ -88,15 +88,25 @@ class TestImportTask(TestCase):
         self.collectionTest(collection)
 
     def testSmewtDaemon(self):
-        # we need to remove traces of previous test runs
-        os.system('rm -f /tmp/smewt_collection_settings')
-        os.system('rm -f ~/.config/Unknown\\ Organization.conf')
-        os.system('rm -f ~/.config/Smewt.collection')
+        # we need to remove traces of previous test runs, even though we're supposed to have cleaned it after the test,
+        # a previous run of the test that failed might not have done that
+        os.system('rm -fr ~/.config/DigitalGaia_tmp')
+        os.system('rm -fr /tmp/smewt_test_daemon')
 
-        # FIXME: this creates ~/.config/Unknown\ Organization.conf and ~/.config/Smewt.collection
+        import smewt
+        orgname = smewt.ORG_NAME
+        appname = smewt.APP_NAME
+
+        smewt.ORG_NAME = 'DigitalGaia_tmp'
+        smewt.APP_NAME = 'Smewt_tmp'
+
+        from PyQt4.QtCore import QCoreApplication
+        app = QCoreApplication([])
+        app.setOrganizationName(smewt.ORG_NAME)
+        app.setOrganizationDomain('smewt.com')
+        app.setApplicationName(smewt.APP_NAME)
+
         smewtd = SmewtDaemon()
-        # small hack: do not use user's values here, but temp files ones; this avoids overwriting user's collection
-        smewtd.collection.settingsFile = '/tmp/smewt_collection_settings'
 
         # create fake collection
         cmds = '''mkdir -p /tmp/smewt_test_daemon/Monk
@@ -113,12 +123,26 @@ class TestImportTask(TestCase):
         # make sure we don't have a residual collection from previous test runs
         self.assertEqual(len(list(smewtd.collection.nodes())), 0)
 
+        # initial import of the collection
         smewtd.collection.rescan()
-
         smewtd.taskManager.join() # wait for all import tasks to finish
 
         #smewtd.collection.displayGraph()
         self.collectionTest(smewtd.collection)
+
+        # update collection, as we haven't changed anything it should be the same
+        smewtd.collection.rescan()
+        smewtd.taskManager.join() # wait for all import tasks to finish
+
+        #smewtd.collection.displayGraph()
+        self.collectionTest(smewtd.collection)
+
+        # clean up our mess before we exit
+        os.system('rm -fr ~/.config/DigitalGaia_tmp')
+        os.system('rm -fr /tmp/smewt_test_daemon')
+
+        smewt.ORG_NAME = orgname
+        smewt.APP_NAME = appname
 
 
 suite = allTests(TestImportTask)
