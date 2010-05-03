@@ -27,7 +27,9 @@ logging.basicConfig(level = logging.INFO,
 
 # we most likely never want this to be on debug mode, as it spits out way too much information
 logging.getLogger('smewt.datamodel').setLevel(logging.INFO)
+logging.getLogger('imdbpy').setLevel(logging.INFO)
 
 # used to be able to store settings for different versions of Smewt installed on the same computer, ie: a stable
 # and a development version
+ORG_NAME = 'DigitalGaia'
 APP_NAME = 'Smewt-dev'

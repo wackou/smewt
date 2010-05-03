@@ -131,6 +131,13 @@ class TestImportTask(TestCase):
         self.collectionTest(smewtd.collection)
 
         # update collection, as we haven't changed anything it should be the same
+        smewtd.collection.update()
+        smewtd.taskManager.join() # wait for all import tasks to finish
+
+        #smewtd.collection.displayGraph()
+        self.collectionTest(smewtd.collection)
+
+        # fully rescan collection, should still be the same
         smewtd.collection.rescan()
         smewtd.taskManager.join() # wait for all import tasks to finish
 

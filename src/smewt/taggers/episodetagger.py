@@ -37,7 +37,7 @@ class EpisodeTagger(Tagger):
         media = result.findOne(Media)
 
         # TODO: useless now?
-        if not media.metadata:
+        if not media.get('metadata'):
             log.warning('Could not find any tag for: %s' % media)
 
             # we didn't find any info outside of what the filename told us
