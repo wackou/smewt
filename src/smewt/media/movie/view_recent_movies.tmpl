@@ -9,7 +9,7 @@ import datetime
 def getComments(md):
     results = []
 
-    for comment in tolist(md.comments):
+    for comment in tolist(md.get('comments')):
         results += [ (comment.author,
                       datetime.datetime.fromtimestamp(comment.date).ctime(),
                       comment.text) ]
@@ -56,7 +56,7 @@ import_dir = smewtDirectory('smewt', 'media')
   <title>Recent movies view</title>
   <link rel="stylesheet" href="file://$(import_dir)/movie/movies.css">
 
-  <script type="text/javascript" language="javascript" src="file://$(import_dir)/thirdparty/dataTables/media/js/jquery.js"></script>
+  <script type="text/javascript" language="javascript" src="file://$(import_dir)/3rdparty/dataTables/media/js/jquery.js"></script>
 
   <script type="text/javascript" charset="utf-8">
   #raw
@@ -73,12 +73,12 @@ import_dir = smewtDirectory('smewt', 'media')
 <body>
 
 <div id="wrapper">
-	<div id="header">
-		RECENTLY WATCHED MOVIES
-	</div>
-	<div id="container"><form>
+    <div id="header">
+        RECENTLY WATCHED MOVIES
+    </div>
+    <div id="container"><form>
 
-		<div id="left-side">
+        <div id="left-side">
       #for i, m in enumerate(movies)
       #if i % 2 == 0
         <div class="commentbox">
