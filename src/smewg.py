@@ -66,7 +66,8 @@ class SmewtGui(QMainWindow):
         importMenu.addAction(self.selectSeriesFoldersAction)
         importMenu.addSeparator()
         importMenu.addAction(self.updateCollectionAction)
-        importMenu.addAction(self.rescanCollectionAction)
+        # temporarily hide as it creates more problems than it solves
+        #importMenu.addAction(self.rescanCollectionAction)
 
         helpMenu = self.menuBar().addMenu('Help')
         helpMenu.addAction(self.aboutAction)
