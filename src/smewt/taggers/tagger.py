@@ -19,18 +19,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4 import QtCore
-import logging
+from smewt.base import Media
 
-log = logging.getLogger('smewt.taggers.tagger')
-
-class Tagger(QtCore.QObject):
-    """Abstract class from which all Solvers must inherit.  Solvers are objects that implement a slot called solve(self, guesses) that returns immediately, and begins the process of solving the merge of mediaObjects.
-    When a merge (the most probable mediaObject) has been found it emits a signal called finished(mediaObject) which passes as argument a mediaObject corresponding to the best solution or None in case no solution is available.
-    """
+class Tagger(object):
     def __init__(self):
         super(Tagger, self).__init__()
 
-    def tag(self, mediaObject):
-        #log.warning('emiting an empty tagFinished signal')
-        self.emit(QtCore.SIGNAL('tagFinished'), None)
+    def cleanup(self, result):
+        for o in result.findAll(Media):
+            o.matches = []

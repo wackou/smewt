@@ -21,35 +21,88 @@
 
 
 # filename- and network-related functions
-import sys, os, os.path, fnmatch
+import sys, os, os.path, fnmatch,  errno
 import pycurl
 from PyQt4.QtCore import QSettings, QVariant
 import smewt
+from smewt.datamodel.utils import tolist, toresult
+
+class MethodID(object):
+    def __init__(self, filename, module, className, methodName):
+        self.filename = filename
+        self.module = module
+        self.className = className
+        self.methodName = methodName
+
+    def __str__(self):
+        return 'module: %s - class: %s - func: %s' % (self.module, self.className, self.methodName)
+
+def callerid():
+    f = sys._getframe(1)
+
+    filename = f.f_code.co_filename
+    module = ''
+    className = ''
+
+    try:
+        module = f.f_locals['self'].__class__.__module__
+        className = f.f_locals['self'].__class__.__name__
+    except:
+        pass
+
+    methodName = f.f_code.co_name
+
+    return MethodID(filename, module, className, methodName)
 
 def currentPath():
     '''Returns the path in which the calling file is located.'''
     return os.path.dirname(os.path.join(os.getcwd(), sys._getframe(1).f_globals['__file__']))
 
+def makedir(path):
+    try:
+        os.makedirs(path)
+    except OSError, e:
+        if e.errno == errno.EEXIST:
+            pass
+        else: raise
+
+def pathToUrl(path):
+    if sys.platform == 'win32':
+        # perform some drive letter trickery
+        return 'localhost/%s:/%s' % (path[0], path[3:])
+
+    return path
+
 def smewtDirectory(*args):
     return os.path.join(currentPath(), '..', '..', *args)
 
+def smewtDirectoryUrl(*args):
+    return pathToUrl(smewtDirectory(*args))
+
 def smewtUserDirectory(*args):
     settings = QSettings()
-    t = settings.value('user_dir').toString()
-    if t == '':
-        t = os.path.join(os.path.dirname(unicode(settings.fileName())), *args)
-        # FIXME: this is not portable...
-        os.system('mkdir -p "%s"' % t)
-        settings.setValue('user_dir',  QVariant(t))
+    userdir = unicode(settings.value('user_dir').toString())
+    if not userdir:
+        if sys.platform == 'win32':
+            userdir = os.path.join(os.environ['USERPROFILE'], 'Application Data', 'Smewt')
+        else:
+            userdir = os.path.dirname(unicode(settings.fileName()))
 
-    return t
+        settings.setValue('user_dir',  QVariant(userdir))
+
+    userdir = os.path.join(userdir, *args)
+    makedir(userdir) # make sure directory exists
+
+    return userdir
+
+def smewtUserDirectoryUrl(*args):
+    return pathToUrl(smewtUserDirectory(*args))
 
 
 def splitFilename(filename):
     root, path = os.path.split(filename)
     result = [ path ]
-    # FIXME: this is a hack... How do we know we're at the root node?
-    while len(root) > 1:
+    while path:
         root, path = os.path.split(root)
         result.append(unicode(path))
     return result
@@ -123,14 +176,14 @@ class GlobDirectoryWalker:
 
 class CurlDownloader:
     def __init__(self):
-        self.contents = ''
+        self.contents = []
         self.c = pycurl.Curl()
 
     def callback(self, buf):
-        self.contents += buf
+        self.contents.append(buf)
 
     def get(self, url):
-        self.contents = ''
+        self.contents = []
         c = self.c
         c.setopt(c.URL, url)
         c.setopt(c.WRITEFUNCTION, self.callback)
@@ -138,5 +191,13 @@ class CurlDownloader:
         c.setopt(c.FOLLOWLOCATION, 1)
         c.perform()
 
+        self.contents = ''.join(self.contents)
+
+        return self.contents
+
     def __del__(self):
         self.c.close()
+
+def curlget(url):
+    c = CurlDownloader()
+    return c.get(url)

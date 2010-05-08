@@ -19,45 +19,27 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import SIGNAL, QObject
-from smewt.base import Graph, Media, Metadata
+from smewt.base import GraphAction, Metadata
+from smewt.base.mediaobject import foundMetadata
 import logging
 
 log = logging.getLogger('smewt.solvers.solver')
 
-class Solver(QObject):
-    """Abstract class from which all Solvers must inherit.  Solvers are objects
-    that implement a slot called start(self, query) that returns immediately,
-    and begins the process of solving the merge of mediaObjects.
+class Solver(GraphAction):
+    def __init__(self):
+        super(Solver, self).__init__()
 
-    When a merge (the most probable mediaObject) has been found it emits a signal
-    called finished(mediaObject) which passes as argument a mediaObject
-    corresponding to the best solution or None in case no solution is available.
-    """
-
-    def checkValid(self, query):
-        '''Checks that we have only one object in Collection.media list and that
-        its type is supported by our guesser'''
-        if len(query.findAll(type = Media)) != 1:
-            raise SmewtException('Solver: your query should contain exactly 1 Media object')
-
+    def canHandle(self, query):
         try:
-            query.findOne(type = Metadata)
+            query.findOne(Metadata)
         except:
-            raise SmewtException('Solver: not solving anything...')
+            raise SmewtException('%s: not solving anything...' % self.__class__.__name__)
 
-        log.debug(self.__class__.__name__ + ' Solver: trying to solve %s', query)
+        log.debug('%s: trying to solve %s' % (self.__class__.__name__, query))
 
     def found(self, query, result):
-        # TODO: check that result is valid
-        solved = Graph()
-        media = query.findOne(type = Media)
-        media.metadata = [ result ]
-        solved += media # no need to add metadata explicitly because media links to it
+        log.debug('%s: found for %s: %s' % (self.__class__.__name__, query, result))
 
-        log.debug('Solver: found for %s: %s', media, result)
-
-        self.emit(SIGNAL('finished'), solved)
-
-    def start(self, query):
-        self.emit(SIGNAL('finished'), None)
+        solved = foundMetadata(query, result)
+        #solved.displayGraph()
+        return solved

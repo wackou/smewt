@@ -18,17 +18,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import cachedmethod, utils, SmewtException, Graph, Media
+from smewt.base import cachedmethod, utils, SmewtException, Media
 from smewt.guessers.guesser import Guesser
 from smewt.media import Episode, Series, Movie
 from smewt.base import textutils
 from smewt.base.utils import smewtDirectory, smewtUserDirectory
+from smewt.datamodel import MemoryObjectGraph
 
 from PyQt4.QtCore import SIGNAL, QObject, QUrl
-from PyQt4.QtWebKit import QWebView
 
-import sys, re, logging
+import os, sys, re, logging
 from urllib import urlopen,  urlencode
+from smewt.base.utils import curlget
+from lxml import etree
 import imdb
 
 log = logging.getLogger('smewt.guessers.imdbmetadataprovider')
@@ -43,18 +45,18 @@ class Getter:
         if not fromName:
             fromName = name
         try:
-            self.md[name] = self.d[fromName]
+            self.md.set(name, self.d[fromName])
         except KeyError:
             pass
 
     def getMultiUnicode(self, name):
         try:
-            self.md[name] = [ unicode(s) for s in self.d[name] ]
+            self.md.set(name, [ unicode(s) for s in self.d[name] ])
         except KeyError:
             pass
 
 
-class IMDBMetadataProvider(QObject):
+class IMDBMetadataProvider(object):
     def __init__(self):
         super(IMDBMetadataProvider, self).__init__()
 
@@ -62,6 +64,7 @@ class IMDBMetadataProvider(QObject):
 
     @cachedmethod
     def getSeries(self, name):
+        """Get the IMDBPy series object given its name."""
         results = self.imdb.search_movie(name)
         for r in results:
             if r['kind'] == 'tv series' or r['kind'] == 'tv mini series':
@@ -71,25 +74,30 @@ class IMDBMetadataProvider(QObject):
 
     @cachedmethod
     def getEpisodes(self, series):
+        """From a given IMDBPy series object, return a graph containing its information
+        as well as its episodes nodes."""
         self.imdb.update(series, 'episodes')
-        eps = []
+
+        # TODO: debug to see if this is the correct way to access the series' title
+        result = MemoryObjectGraph()
+        smewtSeries = result.Series(title = series['title'])
+
         # FIXME: find a better way to know whether there are episodes or not
         try:
             series['episodes']
         except:
-            return []
+            return result
 
-        # TODO: debug to see if this is the correct way to access the series' title
-        smewtSeries = Series({ 'title': series['title'] })
         for season in series['episodes']:
             for epNumber, episode in series['episodes'][season].items():
-                ep = Episode({ 'series': smewtSeries })
                 try:
-                    ep['season'] = season
-                    ep['episodeNumber'] = epNumber
+                    ep = result.Episode(series = smewtSeries,
+                                        season = season,
+                                        episodeNumber = epNumber)
                 except:
                     # episode could not be entirely identified, what to do?
                     # can happen with 'unaired pilot', for instance, which has episodeNumber = 'unknown'
+                    log.warning('invalid season/epnumber pair: %s / %s' % (season, epNumber))
                     continue # just ignore this episode for now
 
                 g = Getter(ep, episode)
@@ -97,12 +105,11 @@ class IMDBMetadataProvider(QObject):
                 g.get('synopsis', 'plot')
                 g.get('originalAirDate', 'original air date')
 
-                eps.append(ep)
-
-        return eps
+        return result
 
     @cachedmethod
     def getMovie(self, name):
+        """Get the IMDBPy movie object given its name."""
         log.debug('MovieIMDB: looking for movie %s', name)
         results = self.imdb.search_movie(name)
         for r in results:
@@ -112,10 +119,12 @@ class IMDBMetadataProvider(QObject):
 
     @cachedmethod
     def getMovieData(self, movieImdb):
+        """From a given IMDBPy movie object, return a graph containing its information."""
         self.imdb.update(movieImdb)
-        movie = Movie({ 'title': movieImdb['title'],
-                        'year': movieImdb['year']
-                        })
+        result = MemoryObjectGraph()
+        movie = result.Movie(title = movieImdb['title'],
+                             year = movieImdb['year'])
+
         g = Getter(movie, movieImdb)
         g.get('rating')
         g.get('plot')
@@ -125,15 +134,16 @@ class IMDBMetadataProvider(QObject):
         g.getMultiUnicode('genres')
 
         try:
-            movie['cast'] = [ (unicode(p), unicode(p.currentRole)) for p in movieImdb['cast'][:15] ]
-        except:
-            movie['cast'] = []
+            movie.cast = [ unicode(p) + ' -- ' + unicode(p.currentRole) for p in movieImdb['cast'][:15] ]
+        except KeyError:
+            movie.cast = []
 
-        return movie
+        return result
 
 
     @cachedmethod
     def getPoster(self, imdbID):
+        """Return the low- and high-resolution posters (if available) of an imdb object."""
         imageDir = smewtUserDirectory('images')
         noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
 
@@ -141,21 +151,24 @@ class IMDBMetadataProvider(QObject):
 
         try:
             movieUrl = 'http://www.imdb.com/title/tt' + imdbID
-            html = urlopen(movieUrl).read()
-            rexp = '<a name="poster" href="(?P<hiresUrl>[^"]*)".*?src="(?P<loresImg>[^"]*)"'
-            poster = textutils.matchRegexp(html, rexp)
-            loresFilename = imageDir + '/%s_lores.jpg' % imdbID
-            open(loresFilename, 'w').write(urlopen(poster['loresImg']).read())
+            html = etree.HTML(curlget(movieUrl))
+            poster = html.find(".//div[@class='photo']")
+            loresURL = poster.find('.//img').get('src')
+            loresFilename = os.path.join(imageDir, '%s_lores.jpg' % imdbID)
+            open(loresFilename, 'wb').write(curlget(loresURL))
         except SmewtException:
             log.warning('Could not find poster for imdb ID %s' % imdbID)
             return (noposter, noposter)
 
         try:
-            html = urlopen('http://www.imdb.com' + poster['hiresUrl']).read()
-            rexp = '<table id="principal">.*?src="(?P<hiresImg>[^"]*)"'
-            poster = textutils.matchRegexp(html, rexp)
-            hiresFilename = imageDir + '/%s_hires.jpg' % imdbID
-            open(hiresFilename, 'w').write(urlopen(poster['hiresImg']).read())
+            hiresLink = poster.find('.//a')
+            if hiresLink.get('title') == 'Poster Not Submitted':
+                raise SmewtException('Poster not available')
+            hiresHtmlURL = 'http://www.imdb.com' + hiresLink.get('href')
+            html = etree.HTML(curlget(hiresHtmlURL))
+            hiresURL = html.find(".//div[@class='primary']").find('.//img').get('src')
+            hiresFilename = os.path.join(imageDir, '%s_hires.jpg' % imdbID)
+            open(hiresFilename, 'wb').write(curlget(hiresURL))
         except SmewtException:
             log.warning('Could not find hires poster for imdb ID %s' % imdbID)
             hiresFilename = noposter
@@ -165,42 +178,43 @@ class IMDBMetadataProvider(QObject):
 
 
     def startEpisode(self, episode):
-        if not episode['series']:
+        if episode.get('series') is None:
             raise SmewtException("IMDBMetadataProvider: Episode doesn't contain 'series' field: %s", md)
 
-        name = episode['series']['title']
+        name = episode.series.title
         try:
             series = self.getSeries(name)
+            from smewt.base import cache
+            #cache.save('/tmp/smewt.cache')
             eps = self.getEpisodes(series)
+            #cache.save('/tmp/smewt.cache')
 
             lores, hires = self.getPoster(series.movieID)
 
-            # if we found some episodes, then we need to update the new Series object with the poster,
-            # otherwise we have the update the one we got from the filename
-            if eps:
-                eps[0]['series']['loresImage'] = lores
-                eps[0]['series']['hiresImage'] = hires
-            else:
-                episode['series']['loresImage'] = lores
-                episode['series']['hiresImage'] = hires
+            eps.findOne(Series).update({ 'loresImage': lores,
+                                         'hiresImage': hires })
 
-            self.emit(SIGNAL('finished'), episode, eps)
+            return eps
 
         except Exception, e:
             log.warning(str(e) + ' -- ' + str(textutils.toUtf8(episode)))
-            self.emit(SIGNAL('finished'), episode, [])
+            return MemoryObjectGraph()
 
     def startMovie(self, movieName):
         try:
             movieImdb = self.getMovie(movieName)
-            movie = self.getMovieData(movieImdb)
+            result = self.getMovieData(movieImdb)
+
+            movie = result.findOne('Movie')
             lores, hires = self.getPoster(movieImdb.movieID)
-            movie['loresImage'] = lores
-            movie['hiresImage'] = hires
+            movie.loresImage = lores
+            movie.hiresImage = hires
 
-            self.emit(SIGNAL('finished'), movie)
+            #result.displayGraph()
+            return result
 
-        except Exception, e:
+        except SmewtException, e:
+            raise
             log.warning(str(e) + ' -- ' + textutils.toUtf8(movieName))
-            self.emit(SIGNAL('finished'), movieName, [])
+            return MemoryObjectGraph()
 

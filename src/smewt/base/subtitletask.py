@@ -20,9 +20,11 @@
 #
 
 from __future__ import with_statement
-from PyQt4.QtCore import SIGNAL, Qt, QObject, QThread
-from smewt.base import Media, Graph, Task, SmewtException, textutils
-from smewt.media import Subtitle, SubtitleNotFoundError
+from PyQt4.QtCore import SIGNAL, Qt, QObject
+from smewt.base import Media, Task, SmewtException, textutils
+from smewt.base.utils import tolist
+from smewt.datamodel import MemoryObjectGraph
+from smewt.media import Series, Subtitle, SubtitleNotFoundError
 import os.path
 
 import itertools
@@ -30,92 +32,44 @@ import logging
 
 log = logging.getLogger('smewt.subtitletask')
 
-class SubtitleTask(QThread, Task):
+# TODO: should be renamed SeriesSubtitleTask
+class SubtitleTask(Task):
     def __init__(self, collection, provider, title, language):
         super(SubtitleTask, self).__init__()
-        self.totalCount = 0
-        self.progressedCount = 0
         self.collection = collection
         self.provider = provider
-        validTitle = provider.titleFilter(title)
-        self.objects = collection.findAll(select = lambda x: provider.canHandle(x) and validTitle(x))
+        self.series = collection.findOne(Series, title = title)
         self.language = language
 
-    def total(self):
-        return self.totalCount
-
-    def progressed(self):
-        return self.progressedCount
-
-    def run(self):
-        self.worker = Worker(self.collection, self.provider, self.objects, self.language)
-
-        self.connect(self.worker, SIGNAL('progressChanged'),
-                     self.progressChanged)
-
-        self.connect(self.worker, SIGNAL('foundData'),
-                     self.foundData)
-
-        self.connect(self.worker, SIGNAL('importFinished'),
-                     self.importFinished)
-
-        self.worker.begin()
-
-        self.exec_()
+        log.info('Creating SubtitleTask for all files from series: %s' % self.series.title)
 
 
-    def __del__(self):
-        self.wait()
-
-    def importFinished(self):
-        self.emit(SIGNAL('taskFinished'), self)
-
-    def progressChanged(self, current, total):
-        self.progressedCount = current
-        self.totalCount = total
-        self.emit(SIGNAL('progressChanged'))
-
-    def foundData(self, results):
-        self.emit(SIGNAL('foundData'), results)
-
-
-class Worker(QObject):
-    def __init__(self, collection, provider, objects, language):
-        super(Worker, self).__init__()
-
-        self.collection = collection
-        self.provider = provider
-        self.objects = objects
-        self.language = language
-
-    def begin(self):
+    def perform(self):
         languageMap = { 'en': u'English', 'fr': u'Fran\xe7ais', 'es': u'Espa\xf1ol' }
 
         # find objects which don't have yet a subtitle of the desired language
+        seriesEpisodes = set(tolist(self.series.episodes))
         currentSubs = self.collection.findAll(type = Subtitle,
-                                              select = lambda x: x['metadata'] in self.objects,
+                                              validNode = lambda x: x.metadata in seriesEpisodes,
                                               language = self.language)
 
-        alreadyGood = set([ s['metadata'] for s in currentSubs ])
+        alreadyGood = set([ s.metadata for s in currentSubs ])
 
-        videos = [ obj for obj in self.objects if obj not in alreadyGood ]
-        if not videos:
-            log.info('All videos already have subtitles')
+        episodes = [ ep for ep in seriesEpisodes if ep not in alreadyGood ]
+        if not episodes:
+            log.info('All videos already have subtitles!')
 
-        subs = Graph()
-        self.emit(SIGNAL('progressChanged'), 0, len(videos))
+        subs = MemoryObjectGraph()
 
-        index = 0
-        for video in videos:
+        for ep in episodes:
             try:
-                videoFilename = self.collection.findOne(type = Media,
-                                                        select = lambda x: x.metadata[0] == video).filename
-
+                # the following assumes we always have a single metadata object for this file
+                videoFilename = ep.files.filename
                 subFilename = os.path.splitext(videoFilename)[0] + '.%s.srt' % languageMap[self.language]
 
                 # if file doesn't exist yet, try to download it
                 if not os.path.isfile(subFilename):
-                    possibleSubs = [ s for s in self.provider.getAvailableSubtitles(video) if s['language'] == self.language ]
+                    possibleSubs = self.provider.getAvailableSubtitles(ep).findAll(language = self.language)
                     if not possibleSubs:
                         raise SubtitleNotFoundError('didn\'t find any possible subs...')
 
@@ -123,11 +77,11 @@ class Worker(QObject):
                     candidate = possibleSubs[0]
                     if len(possibleSubs) > 1:
                         log.warning('More than 1 possible subtitle found: %s', str(possibleSubs))
-                        dists = [ (textutils.levenshtein(videoFilename, sub['title']), sub) for sub in possibleSubs ]
-                        sub = sorted(dists)[0][1]
-                        log.warning('Choosing %s' % sub)
+                        dists = [ (textutils.levenshtein(videoFilename, sub.title), sub) for sub in possibleSubs ]
+                        candidate = sorted(dists)[0][1]
+                        log.warning('Choosing %s' % candidate)
 
-                    log.info('Trying to download subs for %s' % video)
+                    log.info('Trying to download subs for %s' % ep.files.filename)
                     subtext = self.provider.getSubtitle(candidate)
 
                     # write the subtitle in the appropriate file
@@ -135,17 +89,14 @@ class Worker(QObject):
                     # spanning multiple CDs, etc...)
                     with open(subFilename, 'w') as f:
                         f.write(subtext)
-                    log.info('Found subtitle for %s' % video)
+                    log.info('Found subtitle for %s' % ep.files.filename)
 
                 else:
                     log.warning('\'%s\' already exists. Not overwriting it...' % subFilename)
 
                 # update the found subs with this one
-                sub = Subtitle({ 'metadata': video, 'language': self.language })
-                subfile = Media(subFilename)
-                subfile.metadata = [ sub ]
-
-                subs += subfile
+                sub = self.collection.Subtitle(metadata = ep, language = self.language)
+                subfile = self.collection.Media(filename = subFilename, metadata = sub)
 
             except SubtitleNotFoundError, e:
                 log.warning('subno: did not found any subtitle for %s: %s', str(video), str(e))
@@ -153,11 +104,5 @@ class Worker(QObject):
             except SmewtException, e:
                 log.warning('se: did not found any subtitle for %s: %s' % (str(video), str(e)))
 
-            self.emit(SIGNAL('progressChanged'), index + 1, len(videos))
-            index += 1
-
 
         log.debug('SubtitleTask: all done!')
-        self.emit(SIGNAL('foundData'), subs)
-        self.emit(SIGNAL('progressChanged'), 0, 0)
-        self.emit(SIGNAL('importFinished'))

@@ -29,28 +29,33 @@ DEFAULT_WIDTH, DEFAULT_HEIGHT = 500, 600
 
 class CollectionFoldersPage(QDialog):
     def __init__(self,
-                 parent = 0,
-                 folders = [],
-                 recursiveSelection = True,
-                 settings = None,
-                 settingKeyFolders = 'collection_folders',
-                 settingKeyRecursive = 'collection_folders_recursive',
-                 description = 'Select the folders where your series are.'):
+                 parent,
+                 type, # should be 'series' or 'movies'
+                 description,
+                 collection,
+                 #settingKeyFolders = 'collection_folders',
+                 #settingKeyRecursive = 'collection_folders_recursive',
+                 ):
 
         QDialog.__init__(self, parent)
 
-        self.settingsChanged = 0
+        #self.settingsChanged = 0
 
-        self.settings = settings
-        self.settingKeyFolders = settingKeyFolders
-        self.settingKeyRecursive = settingKeyRecursive
+        #self.settingKeyFolders = settingKeyFolders
+        #self.settingKeyRecursive = settingKeyRecursive
 
+        self.type = type
+        self.collection = collection
 
-        if self.settings is not None:
-            self.getSettings()
-        else:
-            self.folders = folders
-            self.recursiveSelection = recursiveSelection
+        self.applyAnyway = False
+
+        #if self.settings is not None:
+        #    self.getSettings()
+        #else:
+        if type == 'series':
+            self.folders, self.recursiveSelection = collection.getSeriesSettings()
+        elif type == 'movies':
+            self.folders, self.recursiveSelection = collection.getMoviesSettings()
 
         # remove directories which don't exist to avoid a segfault later
         self.folders = [ folder for folder in self.folders if os.path.isdir(folder) ]
@@ -60,7 +65,7 @@ class CollectionFoldersPage(QDialog):
 
         self.instructions_label = QLabel(description)
         self.layout.addWidget(self.instructions_label)
-        self.dirselector = DirSelector( folders = self.folders, recursiveSelection = self.recursiveSelection )
+        self.dirselector = DirSelector(folders = self.folders, recursiveSelection = self.recursiveSelection)
         self.connect(self.dirselector, SIGNAL('selectionChanged'), self.selectionChanged)
         self.layout.addWidget(self.dirselector)
 
@@ -87,19 +92,28 @@ class CollectionFoldersPage(QDialog):
         size = QSize(DEFAULT_WIDTH, DEFAULT_HEIGHT)
         self.resize(size)
 
+    def getFolders(self):
+        folders = [ str(f) for f in self.dirselector.selectedFolders() ]
+        recursiveSelection = self.dirselector.recursiveSelection()
+
+        return (folders, recursiveSelection)
+
     def ok(self):
         self.apply()
-        self.done(self.settingsChanged)
+        self.done(1)
 
     def apply(self):
-        self.setSettings()
+        if self.type == 'series':
+            self.collection.setSeriesFolders(*self.getFolders())
+        elif self.type == 'movies':
+            self.collection.setMoviesFolders(*self.getFolders())
+        else:
+            raise SmewtException('Invalid folder type: %s' % self.type)
+
         self.apply_button.setEnabled(False)
 
     def cancel(self):
-        self.done(self.settingsChanged)
-
-    def recursiveSelection(self):
-        return self.dirselector.recursiveSelection()
+        self.done(0)
 
     def selectionChanged(self):
         originalFolders = set([os.path.abspath(f) for f in self.folders])
@@ -109,29 +123,3 @@ class CollectionFoldersPage(QDialog):
 
         else:
             self.apply_button.setEnabled(False)
-
-    def getSettings(self):
-        self.folders = [f for f in unicode(self.settings.value(self.settingKeyFolders).toString()).split(';')
-                        if f != '']
-        self.recursiveSelection = self.settings.value(self.settingKeyRecursive, QVariant(True)).toBool()
-
-    def setSettings(self):
-        self.settingsChanged = 1
-
-        selectedFolders = [str(f) for f in self.dirselector.selectedFolders()]
-
-        if self.settings is not None:
-            self.settings.setValue(self.settingKeyFolders,
-                                   QVariant( ';'.join( selectedFolders ) ) )
-
-            self.settings.setValue(self.settingKeyRecursive,
-                                   QVariant( self.dirselector.recursiveSelection() ) )
-
-if __name__ == "__main__":
-        app = QApplication(sys.argv)
-
-        form = CollectionFoldersPage(folders = ['/home/rmarxer/dev/eigen2'])
-        form.setWindowTitle("Test")
-        form.show()
-        sys.exit(app.exec_())
-

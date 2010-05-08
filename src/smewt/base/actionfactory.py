@@ -60,9 +60,8 @@ class ActionFactory(Singleton):
                 args.append(filename)
 
                 # update last viewed info
-                media = mainWidget.collection.findOne(type = Media,
-                                                      select = lambda x: x.filename == filename)
-                media.metadata[0]['lastViewed'] = time.time()
+                media = mainWidget.smewtd.collection.findOne(Media, filename = filename)
+                media.metadata.lastViewed = time.time()
 
                 if 'subtitle%d' % nfile in surl.args:
                     args += [ '-sub', surl.args['subtitle%d' % nfile] ]
@@ -77,10 +76,8 @@ class ActionFactory(Singleton):
             language = surl.args['language']
 
             for provider in self.subtitleProviders:
-                subTask = SubtitleTask(mainWidget.collection, provider, title, language)
-                QObject.connect(subTask, SIGNAL('foundData'), mainWidget.mergeCollection)
-                mainWidget.taskManager.add( subTask )
-                subTask.start()
+                subTask = SubtitleTask(mainWidget.smewtd.collection, provider, title, language)
+                mainWidget.smewtd.taskManager.add(subTask)
 
         else:
             raise SmewtException('Unknown action type: %s' % surl.actionType)

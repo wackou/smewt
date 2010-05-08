@@ -3,31 +3,31 @@
 <%
 from smewt import SmewtUrl
 
-movies = sorted([ { 'title': m['title'],
-                    'qtitle': m['title'].replace('\'', '\\\''),
-                    'year': m['year'],
-                    'rating': m['rating'] or '-',
-                    'genres': ', '.join(m['genres'] or []) or '-',
-                    'watched': 'checked' if m.watched else '',
-                    'url': SmewtUrl('media', 'movie/single', { 'title': m['title'] }),
-                    'poster': m['loresImage'] } for m in allmovies ], key = lambda x: x['title'])
+movies = sorted([ { 'title': m.title,
+                    'qtitle': m.title.replace('\'', '\\\''),
+                    'year': m.year,
+                    'rating': m.get('rating') or '-',
+                    'genres': ', '.join(m.get('genres') or []) or '-',
+                    'watched': 'checked' if m.get('watched') else '',
+                    'url': SmewtUrl('media', 'movie/single', { 'title': m.title }),
+                    'poster': m.loresImage } for m in allmovies ], key = lambda x: x['title'])
 
-from smewt.base.utils import smewtDirectory
-import_dir = smewtDirectory('smewt', 'media')
+from smewt.base.utils import smewtDirectoryUrl
+import_dir = smewtDirectoryUrl('smewt', 'media')
 
 %>
 
 <html>
 <head>
   <title>All movies view</title>
-  <link rel="stylesheet" href="file://$(import_dir)/movie/movies.css">
+   <link rel="stylesheet" href="file://$(import_dir)/movie/movies.css">
 
-		<style type="text/css" title="currentStyle">
-			@import "file://$(import_dir)/thirdparty/dataTables/media/css/demos.css";
-		</style>
+        <style type="text/css" title="currentStyle">
+            @import "file://$(import_dir)/3rdparty/dataTables/media/css/demos.css";
+        </style>
 
-    <script type="text/javascript" language="javascript" src="file://$(import_dir)/3rdparty/dataTables-1.4/media/js/jquery.js"></script>
-    <script type="text/javascript" language="javascript" src="file://$(import_dir)/3rdparty/dataTables-1.4/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" src="file://$(import_dir)/3rdparty/dataTables/media/js/jquery.js"></script>
+    <script type="text/javascript" language="javascript" src="file://$(import_dir)/3rdparty/dataTables/media/js/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf-8">
     #raw
 
@@ -42,7 +42,7 @@ import_dir = smewtDirectory('smewt', 'media')
 
         } );
     #end raw
-		</script>
+        </script>
 
 </head>
 
@@ -51,11 +51,11 @@ import_dir = smewtDirectory('smewt', 'media')
 <body>
 
 <div id="wrapper">
-	<div id="header">
-		$title MOVIES
-	</div>
+    <div id="header">
+        $title MOVIES
+    </div>
 
-	<div id="container"><form>
+    <div id="container"><form>
 
     <table id="example" class="display">
       <thead>

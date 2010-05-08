@@ -64,9 +64,9 @@ class AmuleCommand():
         cmd = [ 'amulecmd', '--command=Add %s' % ed2kLink ]
         amuleProc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         ProcessTimeout(amuleProc, maxSeconds = 5).start()
-        amuleReply = amuleProc.stdout.read()
+        amuleReply, _ = amuleProc.communicate()
 
-        #print 'amule said:', amuleReply
+        print 'amule said:', amuleReply
         errheader = ' > Request failed with the following error: '
         errmsg = None
         for l in amuleReply.split('\n'):

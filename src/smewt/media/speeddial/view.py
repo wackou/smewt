@@ -19,7 +19,6 @@
 #
 
 from Cheetah.Template import Template
-from smewt import SmewtException, Graph, Media
 from smewt.base.utils import smewtDirectory
 
 def render(url, collection):

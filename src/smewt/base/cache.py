@@ -31,6 +31,8 @@ def load(filename):
         globalCache = cPickle.load(open(filename, 'rb'))
     except IOError:
         log.warning('Cache: Cache file doesn\'t exist')
+    except EOFError:
+        log.error('Cache: cache file is corrupted... Please remove it.')
 
 def save(filename):
     cPickle.dump(globalCache, open(filename, 'wb'))

@@ -18,15 +18,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtGui import QApplication, QMainWindow,  QWidget,  QStatusBar,  QProgressBar,  QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox, QToolBar
+from PyQt4.QtGui import QApplication, QMainWindow, QWidget, QStatusBar, QProgressBar, QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox, QToolBar
 from PyQt4.QtCore import SIGNAL, QSize, Qt, QSettings, QVariant, QPoint, QSize, QObject
 import sys, logging, os, os.path
 from smewt.gui import MainWidget, FeedWatchWidget
 from smewt.base.utils import smewtDirectory
 
 log = logging.getLogger('smewg')
-DEFAULT_WIDTH = 874
-DEFAULT_HEIGHT = 500
+DEFAULT_WIDTH = 900
+DEFAULT_HEIGHT = 740
+
 
 class StatusWidget(QWidget):
     def __init__(self):
@@ -65,7 +66,8 @@ class SmewtGui(QMainWindow):
         importMenu.addAction(self.selectSeriesFoldersAction)
         importMenu.addSeparator()
         importMenu.addAction(self.updateCollectionAction)
-        importMenu.addAction(self.rescanCollectionAction)
+        # temporarily hide as it creates more problems than it solves
+        #importMenu.addAction(self.rescanCollectionAction)
 
         helpMenu = self.menuBar().addMenu('Help')
         helpMenu.addAction(self.aboutAction)
@@ -262,7 +264,7 @@ class SmewtGui(QMainWindow):
         QMessageBox.about(self, 'About Smewt',
 '''Smewt - a smart media manager
 
-(c) 2008, 2009 Nicolas Wack, Ricard Marxer
+(c) 2008-2010 Nicolas Wack, Ricard Marxer
 GPLv3 licensed''')
 
     def aboutQt(self):
@@ -270,13 +272,16 @@ GPLv3 licensed''')
 
 
 if __name__ == '__main__':
+    import smewt
     app = QApplication(sys.argv)
-    app.setOrganizationName("DigitalGaia")
-    app.setOrganizationDomain("smewt.com")
-    app.setApplicationName("Smewg")
+    app.setOrganizationName('DigitalGaia')
+    app.setOrganizationDomain('smewt.com')
+    app.setApplicationName(smewt.APP_NAME)
 
     #from smewt.base import cache
     #cache.load('/tmp/smewt.cache')
+
+    print 'smewt directory:',  smewtDirectory('smewt', 'media', 'speeddial')
 
     sgui = SmewtGui()
 

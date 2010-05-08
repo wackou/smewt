@@ -22,6 +22,7 @@
 from smewtdict import SmewtDict, ValidatingSmewtDict
 from smewtexception import SmewtException
 from textutils import toUtf8
+from smewt.datamodel import BaseObject, MemoryObjectGraph, Equal
 
 # This file contains the 2 base MediaObject types used in Smewt:
 #  - Media: is the type used to represent physical files on the hard disk.
@@ -35,279 +36,74 @@ from textutils import toUtf8
 # The job of a guesser is to map a MediaObject to its corresponding AbstractMediaObject
 
 
-class Media(object):
+class Metadata(BaseObject):
+    schema = { 'confidence': float,
+               'watched': bool
+               }
 
-    typename = 'Media' # useful for printing sometimes when mixed with Metadata objs
+    valid = []
+
+
+class Media(BaseObject):
+    schema = { 'filename': unicode,
+               'sha1': unicode,
+               'metadata': Metadata,
+               'watched': bool, # TODO: or is the one from Metadata sufficient?
+
+               # used by guessers and solvers
+               'matches': Metadata
+               }
+
+    valid = [ 'filename' ]
+    unique = [ 'filename' ]
+    reverseLookup = { 'metadata': 'files',
+                      'matches': 'query' }
 
     types = { 'video': [ 'avi', 'ogm', 'mkv', 'mpg', 'mpeg' ],
               'subtitle': [ 'sub', 'srt' ]
               }
 
-    def __init__(self, filename = ''):
-        self.filename = unicode(filename)
-        self.sha1 = ''
-        self.metadata = [] # refs to Metadata objects
-        self.watched = False
 
-    def __str__(self):
-        return self.__repr__()
-
-    def __repr__(self):
-        return "Media('%s')" % self.filename.encode('utf-8')
-
-    def __eq__(self, other):
-        # FIXME: why do we need that try/except?
-        try:
-            return isinstance(other, Media) and self.filename == other.filename
-        except AttributeError:
-            return hash(None)
-
-    def __ne__(self, other):
-        return not (self == other)
-
-    def __hash__(self):
-        # should be sha1 when we have it
-        # FIXME: why do we need that try/except?
-        try:
-            return hash(self.filename)
-        except AttributeError:
-            return hash(None)
+    def ext(self):
+        return self.filename.split('.')[-1]
 
     def type(self):
+        ext = self.ext()
         for name, exts in Media.types.items():
-            for ext in exts:
-                if self.filename.endswith(ext):
-                    return name
+            if ext in exts:
+                return name
         return 'unknown type'
 
-    def uniqueKey(self):
-        return self.filename
 
+def foundMetadata(query, result, link = True):
+    """Return a graph that contains:
+     - the only Media object found in the query graph
+     - the result object linked as metadata to the previous media object
 
+    WARNING: this functions messes with the data in the query graph, do not reuse it after
+    calling this function.
+    """
+    # TODO: check that result is valid
+    solved = MemoryObjectGraph()
 
+    # remove the stale 'matches' link before adding the media to the resulting graph
+    #query.displayGraph()
+    media = query.findOne(Media)
+    media.matches = []
+    media.metadata = []
+    m = solved.addObject(media)
 
-# TODO: isn't it better to implement properties as actual python properties? or attributes?
-# TODO: !!write unit tests for this class...!!
-class Metadata(object):
-    ''' This is the class which all the metadata objects should inherit.
-    We assume the implementation of the Metadata objects come from plugins.
+    if result is None:
+        return solved
 
-    The following needs to be defined in derived classes:
+    if isinstance(result, list):
+        result = [ solved.addObject(n, recurse = Equal.OnLiterals) for n in result ]
+    else:
+        result = solved.addObject(result, recurse = Equal.OnLiterals)
 
-    1- 'typename' which is a string representing the type name
+    #solved.displayGraph()
+    if link:
+        m.metadata = result
 
-    2- 'schema' which is a dictionary from property name to type
-    ex: schema = { 'epNumber': int,
-                   'title': str
-                   }
+    return solved
 
-    3- 'converters', which is a dictionary from property name to
-       a function that is able to parse this property from a string
-
-    4- 'unique' which is the list of properties that form a primary key
-    '''
-
-    def __init__(self, copy = None, dictionary = {}, headers = [], row = []):
-        # create the properties
-        self.properties = ValidatingSmewtDict(self.schema)
-        self.confidence = None
-        self.watched = False
-
-        # self.mutable should be set to False whenever the object needs to be hashable, such as when
-        # we want to put it in a set or a Graph. When self.mutable is False, none of the properties which
-        # are in its self.unique list can be changed anymore, although the other ones still can.
-        self.mutable = True
-
-        #for prop in self.schema:
-        #    self.properties[prop] = None
-
-        if copy:
-            if isinstance(copy, dict):
-                self.readFromDict(copy)
-            elif isinstance(copy, str) or isinstance(copy, unicode):
-                # little hack: if it's a string, try to build an object using the first string attribute
-                for name, type in self.schema.items():
-                    if type is str or type is unicode:
-                        self.readFromDict({ name: copy })
-                        return
-                raise SmewtException('Cannot build a %s with only the given string "%s"' % (self.typename, copy))
-            else:
-                self.readFromDict(copy.toDict())
-            return
-
-        if dictionary:
-            self.readFromDict(dictionary)
-            return
-
-        if headers and row:
-            self.readFromRow(headers, row)
-            return
-
-    def __getstate__(self):
-        return self.toDict(), self.confidence, self.watched
-
-    def __setstate__(self, state):
-        self.__init__(state[0])
-        self.confidence = state[1]
-        self.watched = state[2]
-
-
-    # used to make sure the values correspond to the schema
-    def isValid(self):
-        # compare properties' type
-        try:
-            for prop in self.schema.keys():
-                if self.properties[prop] is not None and type(self.properties[prop]) != self.schema[prop]:
-                    return False
-        except KeyError:
-            return False
-
-        return True
-
-    def isUnique(self):
-        for prop in self.unique:
-            if self.properties[prop] is None:
-                return False
-        return True
-
-
-    def __repr__(self):
-        return str(self)
-
-    def __str__(self):
-        return self.toString()
-
-    def toString(self, tabs = 0):
-        tabstr = 4 * tabs * ' '
-        tabstr1 = 4 * (tabs+1) * ' '
-        result = ('valid ' if self.isValid() else 'invalid ') + self.typename + ' (confidence: ' + str(self.confidence) + ') : {\n'
-
-        for propname in self.orderedProperties():
-            if propname in self.schema and issubclass(self.schema[propname], Metadata):
-                s = self.properties[propname].toString(tabs = tabs+1)
-            else:
-                s = toUtf8(self.properties[propname])
-            result += tabstr1 + '%-20s : %s\n' % (propname, s)
-
-        return result + tabstr + '}'
-
-    def orderedProperties(self):
-        '''Returns the list of properties ordered using the defined order in the subclass'''
-        result = []
-        propertyNames = self.properties.keys()
-
-        try:
-            for p in self.order:
-                if p in propertyNames:
-                    result += [ p ]
-                    propertyNames.remove(p)
-        except AttributeError:
-            return propertyNames
-
-        return result + propertyNames
-
-    def keys(self):
-        return self.properties.keys()
-
-    def items(self):
-        return self.properties.items()
-
-    def getAttributes(self, attrs):
-        result = [ self[attr] for attr in attrs ]
-        return tuple(result)
-
-    def uniqueKey(self):
-        return self.getAttributes(self.unique)
-
-    def __eq__(self, other):
-        if other is None or type(self) != type(other):
-            return False
-        return self.uniqueKey() == other.uniqueKey()
-
-    def __ne__(self, other):
-        return not (self == other)
-
-    def __hash__(self):
-        return hash((self.__class__, self.uniqueKey()))
-
-    def __getitem__(self, prop):
-        return self.properties[prop]
-
-    def __setitem__(self, prop, value):
-        if not self.mutable and prop in self.unique:
-            raise SmewtException("Metadata: cannot change property '%s' because object '%s' is immutable" % (prop, self))
-        self.properties[prop] = self.parse(self, prop, value)
-
-    def merge(self, other):
-        for name, prop in other.properties.items():
-            self.properties[name] = prop
-
-    def mergeNew(self, other):
-        for name, value in other.properties.items():
-            if name not in self.properties:
-                self.properties[name] = value
-
-
-    def setdefault(self, prop, value):
-        if not prop in self.properties:
-            self.properties[prop] = value
-
-        return self.properties[prop]
-
-    def contains(self, other):
-        for name, prop in other.properties.items():
-            if self.properties[name] != prop:
-                return False
-        return True
-
-    @staticmethod
-    def parse(cls, name, value):
-        if name not in cls.schema:
-            return value
-
-        elif isinstance(value, cls.schema[name]):
-            # if we have a preexisting smewt object of the correct type (ie: no literal), use the ref to it
-            return value
-
-        elif name in cls.converters:
-            # types that need a specific conversion
-            return cls.converters[name](value)
-
-        else:
-            # otherwise just call the default constructor
-            return cls.schema[name](value)
-
-    def parseProperty(self, name, value):
-        return self.parse(self, name, value)
-
-    def toDict(self):
-        return dict(self.properties)
-
-
-    def readFromDict(self, d):
-        for prop, value in d.items():
-            self.properties[prop] = self.parseProperty(prop, value)
-
-    def fromDict(self, d):
-        self.readFromDict(d)
-        return self
-
-    def readFromRow(self, headers, row):
-        '''giving too much information in the row is not a problem,
-        extra fields will be ignored'''
-        # OR
-        '''if a key from the headers is not in the schema, error because
-        the user could have misspelt it'''
-        # ?
-
-        for prop, value in zip(headers, row):
-            try:
-                self.properties[prop] = self.parseProperty(prop, value)
-
-            except KeyError:
-                # property name is not in the schema
-                pass
-
-    def fromRow(self, headers, row):
-        self.readFromRow(headers, row)
-        return self

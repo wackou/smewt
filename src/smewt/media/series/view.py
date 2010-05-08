@@ -19,7 +19,8 @@
 #
 
 from Cheetah.Template import Template
-from smewt.base import SmewtException, Graph, Media
+from smewt.datamodel import MemoryObjectGraph
+from smewt.base import SmewtException, Media
 from serieobject import Series, Episode
 from smewt.media.subtitle.subtitleobject import Subtitle
 from smewt.base.utils import smewtDirectory
@@ -30,24 +31,12 @@ def render(url, collection):
     items we don't want to display, or shape the data so that it's more suited for html rendering, etc...'''
 
     if url.viewType == 'single':
-        # creates a new graph with all the media related to the given series
-        episodes = set(collection.findAll(type = Episode, series = Series(url.args)))
-        episodes |= set(collection.findAll(type = Subtitle, select = lambda x: x['metadata'] in episodes))
-        medias = Graph()
-        medias += collection.findAll(type = Media, select = lambda x: x.metadata[0] in episodes)
-
         t = Template(file = smewtDirectory('smewt', 'media', 'series', 'view_episodes_by_season.tmpl'),
-                     searchList = { 'episodes': medias })
+                     searchList = { 'series': collection.findOne(Series, title = url.args['title']) })
 
     elif url.viewType == 'all':
-        # Select only the series with that have a video media
-        series = set([])
-        for media in collection.findAll(type = Media,
-                                        select = lambda x: x.type() == 'video' and isinstance(x.metadata[0], Episode)):
-            series |= set([media.metadata[0]['series']])
-
         t = Template(file = smewtDirectory('smewt', 'media', 'series', 'view_all_series.tmpl'),
-                     searchList = { 'series': series })
+                     searchList = { 'series': collection.findAll(Series) })
 
     else:
         raise SmewtException('Invalid view type: %s' % url.viewType)

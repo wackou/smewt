@@ -18,52 +18,51 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import cachedmethod, utils, SmewtException, Graph, Media
+from smewt.base import GraphAction, cachedmethod, utils, SmewtException, Media
 from smewt.guessers.guesser import Guesser
 from smewt.media.series import Episode, Series
-
-from PyQt4.QtCore import SIGNAL, QObject, QUrl
-from PyQt4.QtWebKit import QWebView
-
-import sys, re, logging
+from smewt.base.mediaobject import foundMetadata
+from smewt.datamodel import Equal
 from urllib import urlopen,  urlencode
-import imdb
 from imdbmetadataprovider import IMDBMetadataProvider
-
+import imdb
+import logging
 
 log = logging.getLogger('smewt.guessers.episodeimdb')
 
 
-class EpisodeIMDB(Guesser):
+class EpisodeIMDB(GraphAction):
 
-    supportedTypes = [ 'video', 'subtitle' ]
+    def canHandle(self, query):
+        if query.findOne(Media).type() not in [ 'video', 'subtitle' ]:
+            raise SmewtException("%s: can only handle video or subtitle media objects" % self.__class__.__name__)
 
-    def start(self, query):
+    def perform(self, query):
         self.checkValid(query)
         self.query = query
 
         log.debug('EpisodeImdb: finding more info on %s' % query.findAll(type = Episode))
-        ep = query.findOne(type = Episode)
-        if ep['series']:
-            # little hack: if we have no season number, add 1 as default season number
-            # (helps for series which have only 1 season)
-            if not ep['season']:
-                query.update(ep, 'season', 1)
+        ep = query.findOne(Episode)
 
-            self.mdprovider = IMDBMetadataProvider()
-            self.connect(self.mdprovider, SIGNAL('finished'),
-                         self.queryFinished)
+        if ep.get('series') is None:
+            raise SmewtException("EpisodeIMDB: Episode doesn't contain 'series' field: %s" % ep)
 
-            self.mdprovider.startEpisode(ep)
+        # little hack: if we have no season number, add 1 as default season number
+        # (helps for series which have only 1 season)
+        if ep.get('season') is None:
+            ep.season = 1
 
-        else:
-            log.warning("EpisodeIMDB: Episode doesn't contain 'series' field: %s", ep)
-            self.emit(SIGNAL('finished'), self.query)
+        mdprovider = IMDBMetadataProvider()
+        result = mdprovider.startEpisode(ep)
 
+        # first, change the current series object by the one we found on the web
+        oldseries = ep.series
+        ep.series = query.addObject(result.findOne(Series))
+        # and remove the stale series node
+        query.deleteNode(oldseries._node)
 
-    def queryFinished(self, ep, guesses):
-        del self.mdprovider # why is that useful again?
+        # then add all the potential episodes
+        for ep in result.findAll(Episode):
+            query.addObject(ep, recurse = Equal.OnLiterals)
 
-        self.query += guesses
-
-        self.emit(SIGNAL('finished'), self.query)
+        return query

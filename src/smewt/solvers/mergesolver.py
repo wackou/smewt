@@ -19,9 +19,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import Media, Metadata
+from smewt.base import GraphAction, Media, Metadata
 from smewt.solvers.solver import Solver
-import copy
+
 
 class MergeSolver(Solver):
 
@@ -29,15 +29,16 @@ class MergeSolver(Solver):
         super(MergeSolver, self).__init__()
         self.type = type
 
-    def start(self, query):
+    def perform(self, query):
         self.checkValid(query)
 
         results = sorted(query.findAll(type = self.type), key = lambda x: -x.confidence)
-        result = copy.copy(results[0])
 
+        # we have ownership over the query graph, so we can modify its elements
+        result = results[0]
         for md in results[1:]:
-            for k, v in md.properties.items():
-                # TODO: if the 2 values differ, merge only the one with the higher confidence
-                result[k] = v
+            for k, v in md.explicitItems():
+                if k == 'confidence': continue
+                result.set(k, v)
 
-        self.found(query, result)
+        return self.found(query, result)

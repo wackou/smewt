@@ -2,23 +2,23 @@
 
 <%
 from smewt import SmewtUrl
+from smewt.base.utils import tolist
 from smewt.base.textutils import toUtf8
 import datetime
 
 def getComments(md):
     results = []
 
-    for comment in [ p for p in md.properties if p.startswith('comment/') ]:
-        comment = comment[8:]
-        idx = comment.index('/')
-        results += [ (comment[idx+1:],
-                      datetime.datetime.fromtimestamp(int(comment[:idx])).ctime(),
-                      md['comment/'+comment]) ]
+    for comment in tolist(md.get('comments')):
+        results += [ (comment.author,
+                      datetime.datetime.fromtimestamp(comment.date).ctime(),
+                      comment.text) ]
 
     return sorted(results, key = lambda x: x[1])
 
+
 def lastViewedString(m):
-    lastViewed = datetime.datetime.fromtimestamp(m['lastViewed']).date()
+    lastViewed = datetime.datetime.fromtimestamp(m.lastViewed).date()
     daysago = (datetime.date.today() - lastViewed).days
     datestr = lastViewed.isoformat()
 
@@ -31,17 +31,17 @@ def lastViewedString(m):
 
     return 'on ' + datestr
 
-movies = sorted([ { 'title': m['title'],
-                    'qtitle': m['title'].replace('\'', '\\\''),
-                    'year': m['year'],
-                    'rating': m['rating'] or '-',
-                    'genres': ', '.join(m['genres'] or []) or '-',
-                    'lastViewed': m['lastViewed'],
+movies = sorted([ { 'title': m.title,
+                    'qtitle': m.title.replace('\'', '\\\''),
+                    'year': m.year,
+                    'rating': m.get('rating') or '-',
+                    'genres': ', '.join(m.get('genres') or []) or '-',
+                    'lastViewed': m.lastViewed,
                     'lastViewedString': lastViewedString(m),
-                    'watched': 'checked' if m.watched else '',
+                    'watched': 'checked' if m.get('watched') else '',
                     'comments': getComments(m),
-                    'url': SmewtUrl('media', 'movie/single', { 'title': m['title'] }),
-                    'poster': m['loresImage'] } for m in allmovies ], key = lambda x: -x['lastViewed'])
+                    'url': SmewtUrl('media', 'movie/single', { 'title': m.title }),
+                    'poster': m.loresImage } for m in allmovies ], key = lambda x: -x['lastViewed'])
 
 # keep only the 4 most recent movies
 movies = movies[:4]
@@ -56,13 +56,13 @@ import_dir = smewtDirectory('smewt', 'media')
   <title>Recent movies view</title>
   <link rel="stylesheet" href="file://$(import_dir)/movie/movies.css">
 
-  <script type="text/javascript" language="javascript" src="file://$(import_dir)/thirdparty/dataTables/media/js/jquery.js"></script>
+  <script type="text/javascript" language="javascript" src="file://$(import_dir)/3rdparty/dataTables/media/js/jquery.js"></script>
 
   <script type="text/javascript" charset="utf-8">
   #raw
 
     function addComment(form, id, url) {
-        mainWidget.addComment(url, 'wackou', form[id].value);
+        mainWidget.addComment(url, 'Me', form[id].value);
     }
 
   #end raw
@@ -73,12 +73,12 @@ import_dir = smewtDirectory('smewt', 'media')
 <body>
 
 <div id="wrapper">
-	<div id="header">
-		RECENTLY WATCHED MOVIES
-	</div>
-	<div id="container"><form>
+    <div id="header">
+        RECENTLY WATCHED MOVIES
+    </div>
+    <div id="container"><form>
 
-		<div id="left-side">
+        <div id="left-side">
       #for i, m in enumerate(movies)
       #if i % 2 == 0
         <div class="commentbox">

@@ -21,14 +21,14 @@
 from smewtdict import SmewtDict, ValidatingSmewtDict
 from smewtexception import SmewtException
 from smewturl import SmewtUrl
-from solvingchain import SolvingChain, BlockingChain
+from solvingchain import SolvingChain
 from cache import cachedmethod
 from eventserver import EventServer
-from graph import Graph
 from mediaobject import Media, Metadata
-from taskmanager import Task
-from importer import Importer
+from taskmanager import Task, TaskManager
 from importtask import ImportTask
 from subtitletask import SubtitleTask
-from localcollection import LocalCollection
 from actionfactory import ActionFactory
+from graphaction import GraphAction
+from localcollection import LocalCollection
+from smewtdaemon import SmewtDaemon

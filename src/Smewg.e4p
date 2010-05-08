@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2009-05-26, 07:06:20 -->
-<!-- Copyright (C) 2009 Nicolas Wack, wackou@gmail.com -->
+<!-- Saved: 2010-03-05, 21:00:02 -->
+<!-- Copyright (C) 2010 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -19,7 +19,6 @@
     <Source>smewt/solvers/solver.py</Source>
     <Source>smewt/solvers/mergesolver.py</Source>
     <Source>smewt/base/mediaobject.py</Source>
-    <Source>smewt/base/importer.py</Source>
     <Source>smewt/base/solvingchain.py</Source>
     <Source>smewt/base/smewtexception.py</Source>
     <Source>smewt/base/cache.py</Source>
@@ -76,6 +75,33 @@
     <Source>setup.py</Source>
     <Source>smewt/base/actionfactory.py</Source>
     <Source>smewt/media/subtitle/subtitleprovider.py</Source>
+    <Source>smewt/datamodel/objectnode.py</Source>
+    <Source>smewt/datamodel/objectgraph.py</Source>
+    <Source>smewt/datamodel/ontology.py</Source>
+    <Source>smewt/datamodel/memoryobjectnode.py</Source>
+    <Source>smewt/datamodel/memoryobjectgraph.py</Source>
+    <Source>smewt/datamodel/baseobject.py</Source>
+    <Source>smewt/datamodel/utils.py</Source>
+    <Source>smewt/datamodel/neo.py</Source>
+    <Source>smewt/datamodel/neo4jobjectgraph.py</Source>
+    <Source>smewt/datamodel/neo4jobjectnode.py</Source>
+    <Source>smewt/datamodel/abstractdirectedgraph.py</Source>
+    <Source>smewt/datamodel/abstractnode.py</Source>
+    <Source>smewt/datamodel/__init__.py</Source>
+    <Source>smewt/base/importtask.py</Source>
+    <Source>unittests/smewttest.py</Source>
+    <Source>unittests/all_tests.py</Source>
+    <Source>unittests/test_episodefilename.py</Source>
+    <Source>unittests/test_basicnode.py</Source>
+    <Source>unittests/test_datamodel.py</Source>
+    <Source>unittests/test_inheritance.py</Source>
+    <Source>unittests/test_memory.py</Source>
+    <Source>unittests/test_movieimdb.py</Source>
+    <Source>unittests/test_imdb.py</Source>
+    <Source>smewt/base/graphaction.py</Source>
+    <Source>unittests/test_importtask.py</Source>
+    <Source>smewt/base/smewtdaemon.py</Source>
+    <Source>unittests/test_episodesubtitle.py</Source>
   </Sources>
   <Forms>
   </Forms>
