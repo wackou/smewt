@@ -92,6 +92,16 @@ class SmewtGui(QMainWindow):
         self.connect(self.mainWidget, SIGNAL('feedwatcher'),
                      self.showFeedWatcher)
 
+        # first-run wizard
+        settings = QSettings()
+        configured = settings.value('configured').toBool()
+
+        if not configured:
+            settings.setValue('configured', True)
+            from PyQt4.QtCore import QTimer
+            QTimer.singleShot(0, self.firstRun)
+
+
     def shutdown(self):
         self.mainWidget.shutdown()
 
@@ -260,6 +270,40 @@ class SmewtGui(QMainWindow):
             self.statusWidget.progressBar.setMaximum(total)
             self.statusWidget.progressBar.setValue(tagged)
 
+    def firstRun(self):
+        QMessageBox.about(self, 'First run wizard',
+'''                Smewt - a smart media manager
+
+It looks like it is the first time you run Smewt. Smewt is
+intended to be very easy and intuitive to use, and pretty
+much everything should be automatic and will run without
+your supervision.
+
+There are however a few steps you need to do to get you
+started. As you probably already know, Smewt is a media
+manager, which means that it will take care of organizing
+your media files (movies, TV shows, ...) in a nice way and
+make it easier for you to browse through them.
+
+In order to do this, you should tell Smewt where to find
+your files:
+
+ - Open the Collection menu, and select the folder(s)
+   where your movies are located
+
+ - Open the Collection menu, and select the folder(s)
+   where your TV shows are located
+
+As soon as you have done this, Smewt will look for files in
+these folders, and import them into your collection.
+A progress bar at the bottom will indicate the status of this
+operation. When this completes, Smewt will be ready to use.
+
+We hope you will enjoy using Smewt!
+
+The Smewt developers.
+''')
+
     def about(self):
         QMessageBox.about(self, 'About Smewt',
 '''Smewt - a smart media manager
@@ -280,8 +324,6 @@ if __name__ == '__main__':
 
     #from smewt.base import cache
     #cache.load('/tmp/smewt.cache')
-
-    print 'smewt directory:',  smewtDirectory('smewt', 'media', 'speeddial')
 
     sgui = SmewtGui()
 
