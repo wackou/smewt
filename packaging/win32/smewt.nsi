@@ -33,7 +33,7 @@
   RequestExecutionLevel user
 
   ;Useful to disable compression under development
-  SetCompress off
+  ;SetCompress off
 
 
 ;--------------------------------
@@ -89,7 +89,7 @@ Section "Smewt GUI client" SecSmewt
   File ${PYTHON_ROOT}\Lib\copy_reg.py
   File ${PYTHON_ROOT}\Lib\collections.py
   File ${PYTHON_ROOT}\Lib\dis.py
-  File ${PYTHON_ROOT}\Lib\fnmach.py
+  File ${PYTHON_ROOT}\Lib\fnmatch.py
   File ${PYTHON_ROOT}\Lib\functools.py
   File ${PYTHON_ROOT}\Lib\genericpath.py
   File ${PYTHON_ROOT}\Lib\gettext.py
@@ -146,7 +146,7 @@ Section "Smewt GUI client" SecSmewt
   ;3rdparty modules
   SetOutPath $INSTDIR\site-packages
   File ${PYTHON_PACKAGES}\pycurl.pyd
-  File ${PYTHON_PACKAGES}\feedparser.pyd
+  File ${PYTHON_PACKAGES}\feedparser.py
   SetOutPath $INSTDIR\site-packages\Cheetah
   File /r ${PYTHON_PACKAGES}\Cheetah\*.py
   SetOutPath $INSTDIR\site-packages\lxml
