@@ -18,9 +18,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import sys, logging, os, os.path
+
+SMEWT_ROOT = os.path.split(os.path.abspath(__file__))[0]
+
+# need that before importing any other module when Smewt is installed
+if sys.platform == 'win32':
+    sys.path = [ SMEWT_ROOT + '\\site-packages' ] + sys.path
+
 from PyQt4.QtGui import QApplication, QMainWindow, QWidget, QStatusBar, QProgressBar, QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox, QToolBar
 from PyQt4.QtCore import SIGNAL, QSize, Qt, QSettings, QVariant, QPoint, QSize, QObject
-import sys, logging, os, os.path
 from smewt.gui import MainWidget, FeedWatchWidget
 from smewt.base.utils import smewtDirectory
 
