@@ -60,6 +60,18 @@
 ;--------------------------------
 ;Installer Sections
 
+Section 'Prerequisites' SecPrerequisites
+
+  SetOutPath $INSTDIR\Prerequisites
+  MessageBox MB_YESNO "Install Microsoft Visual Studio 2008 C-Runtime?" /SD IDYES IDNO endRedist
+    File "vcredist_x86.exe"
+    ExecWait "$INSTDIR\Prerequisites\vcredist_x86.exe"
+    Goto endRedist
+
+  endRedist:
+SectionEnd
+
+
 Section "Smewt GUI client" SecSmewt
 
   SetOutPath $INSTDIR
@@ -196,10 +208,12 @@ SectionEnd
 
   ;Language strings
   LangString DESC_SecSmewt ${LANG_ENGLISH} "The main Smewt program."
+  LangString DESC_SecPrerequisites ${LANG_ENGLISH} "The Visual Studio 2008 C runtime. If you don't know what that is, you probably need to install it."
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
     !insertmacro MUI_DESCRIPTION_TEXT ${SecSmewt} $(DESC_SecSmewt)
+    !insertmacro MUI_DESCRIPTION_TEXT ${SecPrerequisites} $(DESC_SecPrerequisites)
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ;--------------------------------
