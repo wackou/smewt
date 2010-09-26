@@ -23,7 +23,7 @@ from smewtexception import SmewtException
 from mediaobject import Media, Metadata
 from subtitletask import SubtitleTask
 from smewt.media import Series
-import time, logging
+import sys, time, logging
 
 
 log = logging.getLogger('smewt.base.actionfactory')
@@ -51,22 +51,32 @@ class ActionFactory(Singleton):
 
     def dispatch(self, mainWidget, surl):
         if surl.actionType == 'play':
-            action = 'smplayer'
-            args = [ '-fullscreen', '-close-at-end' ]
+            if sys.platform == 'linux2':
+                action = 'smplayer'
+                args = [ '-fullscreen', '-close-at-end' ]
 
-            nfile = 1
-            while 'filename%d' % nfile in surl.args:
-                filename = surl.args['filename%d' % nfile]
-                args.append(filename)
+                nfile = 1
+                while 'filename%d' % nfile in surl.args:
+                    filename = surl.args['filename%d' % nfile]
+                    args.append(filename)
 
-                # update last viewed info
-                media = mainWidget.smewtd.collection.findOne(Media, filename = filename)
-                media.metadata.lastViewed = time.time()
+                    # update last viewed info
+                    media = mainWidget.smewtd.collection.findOne(Media, filename = filename)
+                    media.metadata.lastViewed = time.time()
 
-                if 'subtitle%d' % nfile in surl.args:
-                    args += [ '-sub', surl.args['subtitle%d' % nfile] ]
+                    if 'subtitle%d' % nfile in surl.args:
+                        args += [ '-sub', surl.args['subtitle%d' % nfile] ]
 
-                nfile += 1
+                    nfile += 1
+
+            elif sys.platform == 'darwin':
+                action = 'open'
+                args = []
+                nfile = 1
+                while 'filename%d' % nfile in surl.args:
+                    filename = surl.args['filename%d' % nfile]
+                    args.append(filename)
+                    nfile += 1
 
             log.debug('launching %s with args = %s' % (action, str(args)))
             mainWidget.externalProcess.startDetached(action, args)
