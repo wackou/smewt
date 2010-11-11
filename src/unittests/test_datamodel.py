@@ -44,9 +44,9 @@ class TestObjectNode(TestCase):
         n1.sameas = n2
         # make sure there's no ambiguity between ObjectNodes and BaseObjects
         self.assertEqual(n1.sameas, n2)
-        self.assert_(n2._node in n1._node.sameas)
-        self.assert_(n2 not in n1._node.sameas)
-        self.assertNotEqual(n1.sameas, n2._node)
+        self.assert_(n2.node in n1.node.sameas)
+        self.assert_(n2 not in n1.node.sameas)
+        self.assertNotEqual(n1.sameas, n2.node)
         self.assertEqual(BaseObject(n1.sameas), n2)
 
         n2.plot = u'empty'
@@ -80,7 +80,7 @@ class TestObjectNode(TestCase):
 
         class F(BaseObject):
             schema = { 'friend': BaseObject }
-            reverseLookup = { 'friend': 'friend' }
+            reverse_lookup = { 'friend': 'friend' }
             valid = schema.keys()
 
         self.assertEqual(issubclass(A, BaseObject), True)
@@ -89,15 +89,15 @@ class TestObjectNode(TestCase):
         self.assertEqual(issubclass(A, B), False)
         self.assertEqual(issubclass(B, BaseObject), True)
         self.assertEqual(issubclass(C, A), False)
-        self.assertEqual(B.parentClass().className(), 'A')
+        self.assertEqual(B.parent_class().class_name(), 'A')
 
         #self.assertRaises(TypeError, ontology.register, E) # should inherit from BaseObject
-        # should not define the same reverseLookup name when other class is a superclass (or subclass) of our class
+        # should not define the same reverse_lookup name when other class is a superclass (or subclass) of our class
         self.assertRaises(TypeError, ontology.register, F)
 
-        self.assert_(ontology.getClass('A') is A)
-        #self.assertRaises(ValueError, ontology.getClass, 'D') # not registered
-        self.assert_(ontology.getClass('B').parentClass().parentClass() is BaseObject)
+        self.assert_(ontology.get_class('A') is A)
+        #self.assertRaises(ValueError, ontology.get_class, 'D') # not registered
+        self.assert_(ontology.get_class('B').parent_class().parent_class() is BaseObject)
 
         # test instance creation
         g = MemoryObjectGraph()
@@ -105,7 +105,7 @@ class TestObjectNode(TestCase):
 
         self.assertEqual(type(a), A)
         self.assertEqual(a.__class__, A)
-        self.assertEqual(a.__class__.className(), 'A')
+        self.assertEqual(a.__class__.class_name(), 'A')
         self.assertEqual(a.__class__.__name__, 'A')
 
     def registerMediaOntology(self):
@@ -125,7 +125,7 @@ class TestObjectNode(TestCase):
                        'synopsis': unicode
                        }
 
-            reverseLookup = { 'series': 'episodes' }
+            reverse_lookup = { 'series': 'episodes' }
             valid = [ 'series', 'season', 'episodeNumber' ]
             unique = valid
 
@@ -155,7 +155,7 @@ class TestObjectNode(TestCase):
                        'imdbRating': float,
                        'director': Person,
                        }
-            reverseLookup = { 'director': 'filmography' }
+            reverse_lookup = { 'director': 'filmography' }
             valid = [ 'title', 'year' ]
             unique = valid
 
@@ -168,7 +168,7 @@ class TestObjectNode(TestCase):
                        'actor': Person,
                        'character': Character
                        }
-            reverseLookup = { 'movie': 'roles',
+            reverse_lookup = { 'movie': 'roles',
                               'actor': 'actingRoles',
                               'character': 'roles'
                               }
@@ -178,21 +178,21 @@ class TestObjectNode(TestCase):
 
     def testMediaOntology(self):
         self.registerMediaOntology()
-        ontology.importClasses([ 'Series', 'Episode', 'Person' ])
+        ontology.import_classes([ 'Series', 'Episode', 'Person' ])
 
         self.assert_('episodes' in Series.schema)
-        self.assert_('episodes' in Series.reverseLookup)
-        self.assertEqual(Person.schema['filmography'], ontology.getClass('Movie'))
-        self.assertEqual(Person.reverseLookup['filmography'], 'director')
+        self.assert_('episodes' in Series.reverse_lookup)
+        self.assertEqual(Person.schema['filmography'], ontology.get_class('Movie'))
+        self.assertEqual(Person.reverse_lookup['filmography'], 'director')
 
         g = MemoryObjectGraph(dynamic = True)
         self.createData(g)
 
-        ep = g.findOne(Episode)
+        ep = g.find_one(Episode)
         # Series needs only 'title', so it should be a fit if the graph is dynamic
-        self.assertEqual(ep._node, Series(ep)._node)
+        self.assertEqual(ep.node, Series(ep).node)
 
-        s = g.findOne(Series, title = 'The Wire')
+        s = g.find_one(Series, title = 'The Wire')
         self.assertRaises(TypeError, Episode, s)
 
 
@@ -200,11 +200,11 @@ class TestObjectNode(TestCase):
         g = MemoryObjectGraph(dynamic = False)
         self.createData(g)
 
-        ep = g.findOne(Episode)
+        ep = g.find_one(Episode)
         # Series needs only 'title', so it should be a fit if the graph is dynamic
         self.assertRaises(TypeError, Series, ep)
 
-        s = g.findOne(Series)
+        s = g.find_one(Series)
         self.assertRaises(TypeError, Episode, s)
 
 
@@ -221,15 +221,15 @@ class TestObjectNode(TestCase):
         self.assertRaises(TypeError, setattr, ep, 'title', 3)
         #self.assertEqual(ep.isValid(), False)
 
-        self.assertEqual(ep.isUnique(), True)
-        #self.assertEqual(g.Episode(series=u'abc').isUnique(), False)
+        self.assertEqual(ep.is_unique(), True)
+        #self.assertEqual(g.Episode(series=u'abc').is_unique(), False)
 
     def testBasicGraphBehavior(self):
         g = MemoryObjectGraph()
         g2 = MemoryObjectGraph()
 
         n1 = g.BaseObject(x = 1)
-        self.assert_(n1._node in g)
+        self.assert_(n1.node in g)
         n2 = g.BaseObject(x = 1)
         n3 = g.BaseObject(n1)
         n4 = g2.BaseObject(n1)
@@ -240,12 +240,12 @@ class TestObjectNode(TestCase):
         self.assertEqual(n1, n4)
 
         # equality of nodes should be based on identity
-        self.assertEqual(n1._node, n3._node)
-        self.assertNotEqual(n1._node, n2._node)
-        self.assertNotEqual(n1._node, n4._node) # not equal as they live in different graphs
+        self.assertEqual(n1.node, n3.node)
+        self.assertNotEqual(n1.node, n2.node)
+        self.assertNotEqual(n1.node, n4.node) # not equal as they live in different graphs
 
         # graph belonging should be tested with identity (related to node)
-        self.assert_(n1._node in g)
+        self.assert_(n1.node in g)
         self.assert_(n3 in g)
         self.assert_(n4 not in g)
 
@@ -254,7 +254,7 @@ class TestObjectNode(TestCase):
         class NiceGuy(BaseObject):
             schema = { 'friend': BaseObject }
             valid = [ 'friend' ]
-            reverseLookup = { 'friend': 'friendOf' }
+            reverse_lookup = { 'friend': 'friendOf' }
 
         g1 = MemoryObjectGraph()
         g2 = MemoryObjectGraph()
@@ -263,47 +263,47 @@ class TestObjectNode(TestCase):
         n2 = g1.NiceGuy(friend = n1)
 
         # by default we use recurse = OnIdentity
-        # we could also have g2.addObject(n2, recurse = OnValue) or recurse = OnUnique
-        r2 = g2.addObject(n2)
+        # we could also have g2.add_object(n2, recurse = OnValue) or recurse = OnUnique
+        r2 = g2.add_object(n2)
         self.assert_(r2 in g2)
         # verify it also brought its friend
         self.assert_(r2.friend in g2)
         self.assertEqual(r2.friend.a, 23)
-        self.assertEquals(len(g2.findAll(a = 23)), 1)
+        self.assertEquals(len(g2.find_all(a = 23)), 1)
 
         # FIXME: the following fails, it surely hides a bug...
         # if we keep on adding by identity, we will end up with lots of friends with a=23
         #n3 = g1.BaseObject(name = u'other node', friend = n1)
-        #r3 = g2.addObject(n3)
-        #self.assertEquals(len(g2.findAll(a = 23)), 2)
+        #r3 = g2.add_object(n3)
+        #self.assertEquals(len(g2.find_all(a = 23)), 2)
 
         # if we keep on adding by identity, we will end up with lots of friends with a=23
         n3 = g1.NiceGuy(name = u'other node', friend = n1)
-        r3 = g2.addObject(n3)
-        self.assertEquals(len(g2.findAll(a = 23)), 2)
+        r3 = g2.add_object(n3)
+        self.assertEquals(len(g2.find_all(a = 23)), 2)
 
         # if we add and recurse on value, we shouldn't be adding the same node again and again
         n4 = g1.NiceGuy(name = u'3rd of its kind', friend = g1.BaseObject(a = 23))
 
-        r4 = g2.addObject(n4, recurse = Equal.OnValue)
+        r4 = g2.add_object(n4, recurse = Equal.OnValue)
 
-        self.assertEquals(len(g2.findAll(a = 23)), 2) # no new node added with a = 23
+        self.assertEquals(len(g2.find_all(a = 23)), 2) # no new node added with a = 23
         # reference should have been updated though, no trying to keep old friends
-        self.assert_(r4.friend._node in [ r._node for r in tolist(r2.friend) ] or
-                     r4.friend._node in [ r._node for r in tolist(r3.friend) ])
+        self.assert_(r4.friend.node in [ r.node for r in tolist(r2.friend) ] or
+                     r4.friend.node in [ r.node for r in tolist(r3.friend) ])
 
 
     def testReverseAttributeLookup(self):
         self.registerMediaOntology()
-        ontology.importClasses([ 'Series', 'Episode' ])
+        ontology.import_classes([ 'Series', 'Episode' ])
 
         g = MemoryObjectGraph()
         self.createData(g)
 
-        s = g.findOne(Series, title = u'The Wire')
+        s = g.find_one(Series, title = u'The Wire')
         self.assertEqual(s, s.episodes[0].series)
 
-        ep = g.findOne(Episode)
+        ep = g.find_one(Episode)
         self.assert_(ep in ep.series.episodes)
 
         # make sure auto-reverse name work correctly
@@ -333,46 +333,46 @@ class TestObjectNode(TestCase):
 
     def testFindObjectsInGraph(self):
         self.registerMediaOntology()
-        ontology.importClasses([ 'Movie', 'Series', 'Episode', 'Person', 'Character' ])
+        ontology.import_classes([ 'Movie', 'Series', 'Episode', 'Person', 'Character' ])
 
         g = MemoryObjectGraph()
         self.createData(g)
 
-        self.assertEqual(len(g.findAll(type = Movie)), 2)
-        self.assertEqual(len(g.findAll(Episode, lambda x: x.season == 2)), 2)
-        self.assertEqual(len(g.findAll(Episode, season = 2)), 2)
-        self.assertEqual(g.findOne(Episode, season = 2, episodeNumber = 1).title, 'Ebb Tide')
-        e = g.findOne(Episode, season = 2, episodeNumber = 1)
+        self.assertEqual(len(g.find_all(type = Movie)), 2)
+        self.assertEqual(len(g.find_all(Episode, lambda x: x.season == 2)), 2)
+        self.assertEqual(len(g.find_all(Episode, season = 2)), 2)
+        self.assertEqual(g.find_one(Episode, season = 2, episodeNumber = 1).title, 'Ebb Tide')
+        e = g.find_one(Episode, season = 2, episodeNumber = 1)
 
-        recentMovies = g.findAll(Movie, lambda m: m.year > 2000)
+        recentMovies = g.find_all(Movie, lambda m: m.year > 2000)
         self.assertEqual(len(recentMovies), 1)
         self.assertEqual(recentMovies[0].title, 'The Dark Knight')
 
-        self.assertEqual(len(g.findAll(Episode, series_title = 'The Wire')), 2)
-        thewire = g.findOne(Series, title = 'The Wire')
-        self.assertEqual(len(g.findAll(Episode, series = thewire)), 2)
+        self.assertEqual(len(g.find_all(Episode, series_title = 'The Wire')), 2)
+        thewire = g.find_one(Series, title = 'The Wire')
+        self.assertEqual(len(g.find_all(Episode, series = thewire)), 2)
         '''
-        g.findAll(Person, role_movie_title = 'The Dark Knight') # role == Role.isPersonOf
-        g.findAll(Character, isCharacterOf_movie_title = 'Fear and Loathing in Las Vegas', regexp = True)
-        g.findAll(Character, roles_movie_title = 'Fear and loathing.*', regexp = True)
+        g.find_all(Person, role_movie_title = 'The Dark Knight') # role == Role.isPersonOf
+        g.find_all(Character, isCharacterOf_movie_title = 'Fear and Loathing in Las Vegas', regexp = True)
+        g.find_all(Character, roles_movie_title = 'Fear and loathing.*', regexp = True)
         print c.isCharacterOf.movie.title
         print c.is_character_of.movie.title
         '''
 
     def testComplexGraph(self):
         self.registerMediaOntology()
-        ontology.importClasses([ 'Movie', 'Series', 'Episode', 'Person', 'Character' ])
+        ontology.import_classes([ 'Movie', 'Series', 'Episode', 'Person', 'Character' ])
 
         g = MemoryObjectGraph()
 
         e = g.Episode(series = g.Series(title = u'abc'), season = 1, episodeNumber = 23)
-        g.findOrCreate(Series, title = u'def')
+        g.find_or_create(Series, title = u'def')
 
-        self.assertEqual(len(g.findAll(Series)), 2)
+        self.assertEqual(len(g.find_all(Series)), 2)
 
-        e2 = g.Episode(series = g.findOrCreate(Series, title = u'abc'), season = 1, episodeNumber = 34)
+        e2 = g.Episode(series = g.find_or_create(Series, title = u'abc'), season = 1, episodeNumber = 34)
 
-        s = g.findOne(Series, title = u'abc')
+        s = g.find_one(Series, title = u'abc')
         self.assertEqual(len(s.episodes), 2)
 
         # test that methos on BaseObjects subclasses are correctly called. In our case: Episode.__cmp__
@@ -393,7 +393,7 @@ class TestObjectNode(TestCase):
         g.clear()
 
 
-        Movie = ontology.getClass('Movie')
+        Movie = ontology.get_class('Movie')
         print 'creating movie'
         m = g.Movie(title = u'hello')
         print 'movie created'

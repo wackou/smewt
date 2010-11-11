@@ -64,57 +64,57 @@ class TestAbstractNode(TestCase):
         d = D()
         3 in d
 
-    def testAbstractNode(self, GraphClass = MemoryGraph):
+    def testAbstractNode(self, GraphClass = MemoryObjectGraph):
         g = GraphClass()
 
-        n = g.createNode()
-        n.setLiteral('title', u'abc')
-        self.assertEqual(n.getLiteral('title'), u'abc')
-        self.assertEqual(list(n.literalKeys()), [ 'title' ])
-        self.assertEqual(list(n.edgeKeys()), [])
+        n = g.create_node()
+        n.set_literal('title', u'abc')
+        self.assertEqual(n.get_literal('title'), u'abc')
+        self.assertEqual(list(n.literal_keys()), [ 'title' ])
+        self.assertEqual(list(n.edge_keys()), [])
 
-        n2 = g.createNode()
-        n.addDirectedEdge('friend', n2)
-        n2.addDirectedEdge('friend', n)
-        self.assertEqual(n.getLiteral('title'), u'abc')
-        self.assertEqual(list(n.literalKeys()), [ 'title' ])
-        self.assertEqual(list(n.edgeKeys()), [ 'friend' ])
-        self.assertEqual(list(n.outgoingEdgeEndpoints('friend')), [ n2 ])
-        self.assertEqual(list(n2.outgoingEdgeEndpoints('friend')), [ n ])
+        n2 = g.create_node()
+        n.add_directed_edge('friend', n2)
+        n2.add_directed_edge('friend', n)
+        self.assertEqual(n.get_literal('title'), u'abc')
+        self.assertEqual(list(n.literal_keys()), [ 'title' ])
+        self.assertEqual(list(n.edge_keys()), [ 'friend' ])
+        self.assertEqual(list(n.outgoing_edge_endpoints('friend')), [ n2 ])
+        self.assertEqual(list(n2.outgoing_edge_endpoints('friend')), [ n ])
 
-        n3 = g.createNode()
-        n.addDirectedEdge('friend', n3)
-        n3.addDirectedEdge('friend', n)
-        self.assertEqual(len(list(n.outgoingEdgeEndpoints('friend'))), 2)
-        self.assertEqual(len(list(n.outgoingEdgeEndpoints())), 2)
-        self.assert_(n2 in n.outgoingEdgeEndpoints('friend'))
-        self.assert_(n3 in n.outgoingEdgeEndpoints('friend'))
+        n3 = g.create_node()
+        n.add_directed_edge('friend', n3)
+        n3.add_directed_edge('friend', n)
+        self.assertEqual(len(list(n.outgoing_edge_endpoints('friend'))), 2)
+        self.assertEqual(len(list(n.outgoing_edge_endpoints())), 2)
+        self.assert_(n2 in n.outgoing_edge_endpoints('friend'))
+        self.assert_(n3 in n.outgoing_edge_endpoints('friend'))
 
 
     def testBasicObjectNode(self, ObjectGraphClass = MemoryObjectGraph):
         g = ObjectGraphClass()
 
-        n = g.createNode()
+        n = g.create_node()
         n.title = u'abc'
-        self.assertEqual(n.getLiteral('title'), u'abc')
-        self.assertEqual(list(n.literalKeys()), [ 'title' ])
-        self.assertEqual(list(n.edgeKeys()), [])
+        self.assertEqual(n.get_literal('title'), u'abc')
+        self.assertEqual(list(n.literal_keys()), [ 'title' ])
+        self.assertEqual(list(n.edge_keys()), [])
 
-        n2 = g.createNode()
+        n2 = g.create_node()
         n.friend = n2
         self.assertEqual(n.title, u'abc')
-        self.assertEqual(list(n.literalKeys()), [ 'title' ])
-        self.assertEqual(list(n.edgeKeys()), [ 'friend' ])
+        self.assertEqual(list(n.literal_keys()), [ 'title' ])
+        self.assertEqual(list(n.edge_keys()), [ 'friend' ])
         self.assertEqual(list(n.friend), [ n2 ])
         self.assertEqual(list(n2.isFriendOf), [ n ])
 
-        n3 = g.createNode()
+        n3 = g.create_node()
         n.friend = [ n2, n3 ]
         self.assert_(n in n2.isFriendOf)
         self.assert_(n in n3.isFriendOf)
         self.assertEqual(tolist(n3.get('friend')), [])
 
-        n4 = g.createNode()
+        n4 = g.create_node()
         n4.friend = n.friend
         self.assert_(n in n2.isFriendOf)
         self.assert_(n in n3.isFriendOf)
@@ -132,7 +132,7 @@ class TestAbstractNode(TestCase):
         class NiceGuy(BaseObject):
             schema = { 'friend': BaseObject }
             valid = [ 'friend' ]
-            reverseLookup = { 'friend': 'friendOf' }
+            reverse_lookup = { 'friend': 'friendOf' }
 
         # There is a problem when the reverse-lookup has the same name as the property because of the types:
         # NiceGuy.friend = BaseObject, BaseObject.friend = NiceGuy
@@ -140,9 +140,9 @@ class TestAbstractNode(TestCase):
         # it should also be possible to have A.friend = B and C.friend = B, and not be a problem for B, ie: type(B.friend) in [ A, C ]
         #
         # or we should restrict the ontology only to accept:
-        #  - no reverseLookup where key == value
+        #  - no reverse_lookup where key == value
         #  - no 2 classes with the same link types to a third class
-        # actually, no reverseLookup where the implicit property could override an already existing one
+        # actually, no reverse_lookup where the implicit property could override an already existing one
 
         g1 = GraphClass()
         g2 = GraphClass()
@@ -151,12 +151,12 @@ class TestAbstractNode(TestCase):
         n2 = g1.NiceGuy(n = u'n2', friend = n1)
         self.assertEqual(n1.friendOf, n2)
 
-        r2 = g2.addObject(n2)
+        r2 = g2.add_object(n2)
         r2.n = u'r2'
         self.assertEqual(n1.friendOf, n2)
 
         n3 = g1.NiceGuy(name = u'other node', friend = n1)
-        r3 = g2.addObject(n3)
+        r3 = g2.add_object(n3)
 
         # TODO: also try adding n2 after n3 is created
 
@@ -187,11 +187,11 @@ class TestAbstractNode(TestCase):
         g3 = GraphClass()
         g3.load('/tmp/smewt_unittest.db')
 
-        self.assertEqual(g3.findOne(NiceGuy, n = 'n2').friend.a, 23)
-        self.assertEqual(g3.findOne(NiceGuy, n = 'n2').friend._node, g3.findOne(BaseObject, n = 'n1')._node)
+        self.assertEqual(g3.find_one(NiceGuy, n = 'n2').friend.a, 23)
+        self.assertEqual(g3.find_one(NiceGuy, n = 'n2').friend.node, g3.find_one(BaseObject, n = 'n1').node)
 
     def testAddObject(self):
-        ontology.reloadSavedOntology('media')
+        ontology.reload_saved_ontology('media')
 
         g = MemoryObjectGraph()
 
@@ -200,7 +200,7 @@ class TestAbstractNode(TestCase):
                       metadata = g1.Episode(series = g1.Series(title = 'A'),
                                             season = 1,
                                             episodeNumber = 1))
-        g.addObject(m1, recurse = Equal.OnUnique)
+        g.add_object(m1, recurse = Equal.OnUnique)
 
         g2 = MemoryObjectGraph()
         m2 = g2.Media(filename = 'a.srt',
@@ -209,9 +209,9 @@ class TestAbstractNode(TestCase):
                                                                    season = 1,
                                                                    episodeNumber = 1)))
 
-        g.addObject(m2, recurse = Equal.OnUnique)
+        g.add_object(m2, recurse = Equal.OnUnique)
 
-        self.assertEqual(len(g.findAll(Episode)), 1)
+        self.assertEqual(len(g.find_all(Episode)), 1)
 
 
 suite = allTests(TestAbstractNode)

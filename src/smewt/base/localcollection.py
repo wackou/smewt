@@ -23,10 +23,10 @@ import logging
 import time, os
 
 from PyQt4.QtCore import QObject, SIGNAL, QVariant, QSettings
+from pygoo import MemoryObjectGraph, ontology
 
 from smewt.base import Media, Metadata
 from smewt.base import ImportTask, SubtitleTask
-from smewt.datamodel import MemoryObjectGraph, ontology
 from smewt.base.utils import GlobDirectoryWalker
 from smewt.taggers import EpisodeTagger, MovieTagger
 import cPickle as pickle
@@ -91,11 +91,11 @@ class LocalCollection(MemoryObjectGraph):
         self.saveSettings()
         self.update()
 
-    def addObject(self, *args, **kwargs):
+    def add_object(self, *args, **kwargs):
         obj = args[0]
         if isinstance(obj, Media):
             self.updateLastScannedTimes([ obj ])
-        return super(LocalCollection, self).addObject(*args, **kwargs)
+        return super(LocalCollection, self).add_object(*args, **kwargs)
 
     def removeNotPresent(self):
         # Remove the nodes that are not in one of the folders anymore
@@ -111,10 +111,10 @@ class LocalCollection(MemoryObjectGraph):
             return True
 
 
-        mediasNotInSeries = self.findAll(type = Media,
+        mediasNotInSeries = self.find_all(type = Media,
                                          select = lambda x: mediasOfUnselectedFolders(x, self.seriesFolders.keys(), self.seriesRecursive))
 
-        mediasNotInMovies = self.findAll(type = Media,
+        mediasNotInMovies = self.find_all(type = Media,
                                          select = lambda x: mediasOfUnselectedFolders(x, self.moviesFolders.keys(), self.moviesRecursive))
 
         # FIXME: implement me
@@ -200,15 +200,15 @@ class LocalCollection(MemoryObjectGraph):
         """Given a list of media that just got inserted into this collection, update the timestamps
         on the containing folders."""
         modified = False
-        ontology.importClasses([ 'Movie', 'Series', 'Episode', 'Subtitle' ])
+        ontology.import_classes([ 'Movie', 'Series', 'Episode', 'Subtitle' ])
 
         for media in mediaList:
-            if (media.metadata._node.isinstance(Movie) or
-                (media.metadata._node.isinstance(Subtitle) and media.metadata.metadata._node.isinstance(Movie))):
+            if (media.metadata.node.isinstance(Movie) or
+                (media.metadata.node.isinstance(Subtitle) and media.metadata.metadata.node.isinstance(Movie))):
                 mediaFolders = self.moviesFolders
                 folderTimes = self.moviesFolderTimes
-            elif (media.metadata._node.isinstance(Episode) or
-                  (media.metadata._node.isinstance(Subtitle) and media.metadata.metadata._node.isinstance(Episode))):
+            elif (media.metadata.node.isinstance(Episode) or
+                  (media.metadata.node.isinstance(Subtitle) and media.metadata.metadata.node.isinstance(Episode))):
                 mediaFolders = self.seriesFolders
                 folderTimes = self.seriesFolderTimes
             else:
@@ -232,4 +232,3 @@ class LocalCollection(MemoryObjectGraph):
 
         if modified:
             self.saveSettings()
-

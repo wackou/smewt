@@ -34,7 +34,7 @@ class EpisodeTagger(Tagger):
         filenameMetadata = SolvingChain(EpisodeFilename(), MergeSolver(Episode)).solve(query)
         result = SolvingChain(EpisodeIMDB(), SimpleSolver(Episode)).solve(filenameMetadata)
 
-        media = result.findOne(Media)
+        media = result.find_one(Media)
 
         # TODO: useless now?
         if not media.get('metadata'):
@@ -75,4 +75,3 @@ class EpisodeTagger(Tagger):
         #result.displayGraph()
         log.debug('Finished tagging: %s' % media)
         return result
-

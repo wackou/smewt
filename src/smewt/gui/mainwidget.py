@@ -204,12 +204,12 @@ class MainWidget(QWidget):
 
     @pyqtSignature("QString, bool")
     def updateWatched(self, title, watched):
-        self.smewtd.collection.findOne(Movie, title = unicode(title)).watched = watched
+        self.smewtd.collection.find_one(Movie, title = unicode(title)).watched = watched
 
     @pyqtSignature("QString, QString, QString")
     def addComment(self, title, author, comment):
         g = self.smewtd.collection
-        movie = g.findOne(Movie, title = unicode(title))
+        movie = g.find_one(Movie, title = unicode(title))
         commentObj = g.Comment(metadata = movie,
                                author = unicode(author),
                                date = int(time.time()),
@@ -241,4 +241,3 @@ class MainWidget(QWidget):
 
         else:
             pass
-

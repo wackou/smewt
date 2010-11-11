@@ -47,7 +47,7 @@ tests = '''
 class TestEpisodeFilename(TestCase):
 
     def setUp(self):
-        ontology.reloadSavedOntology('media')
+        ontology.reload_saved_ontology('media')
 
     def withSolver(self, solver):
         data = yaml.load(tests)
@@ -57,7 +57,7 @@ class TestEpisodeFilename(TestCase):
             query.Media(filename = unicode(filename))
 
             schain = SolvingChain(EpisodeFilename(), solver)
-            result = schain.solve(query).findAll(Episode)
+            result = schain.solve(query).find_all(Episode)
 
             self.assertEqual(len(result), 1, 'Solver coudn\'t solve anything...')
             result = result[0]

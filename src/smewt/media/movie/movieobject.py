@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.datamodel import BaseObject
+from pygoo import BaseObject
 from smewt.base import Metadata
 
 
@@ -48,7 +48,7 @@ class Comment(BaseObject):
                'date': int
                }
 
-    reverseLookup = { 'metadata': 'comments' }
+    reverse_lookup = { 'metadata': 'comments' }
 
     valid = [ 'metadata', 'author', 'date' ]
     unique = [ 'metadata', 'author', 'date' ]

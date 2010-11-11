@@ -19,7 +19,7 @@
 #
 
 from Cheetah.Template import Template
-from smewt.datamodel import MemoryObjectGraph
+from pygoo import MemoryObjectGraph
 from smewt.base import SmewtException, Media
 from serieobject import Series, Episode
 from smewt.media.subtitle.subtitleobject import Subtitle
@@ -32,17 +32,15 @@ def render(url, collection):
 
     if url.viewType == 'single':
         t = Template(file = smewtDirectory('smewt', 'media', 'series', 'view_episodes_by_season.tmpl'),
-                     searchList = { 'series': collection.findOne(Series, title = url.args['title']) })
+                     searchList = { 'series': collection.find_one(Series, title = url.args['title']) })
 
     elif url.viewType == 'all':
         t = Template(file = smewtDirectory('smewt', 'media', 'series', 'view_all_series.tmpl'),
-                     searchList = { 'series': collection.findAll(Series) })
+                     searchList = { 'series': collection.find_all(Series) })
 
     else:
         raise SmewtException('Invalid view type: %s' % url.viewType)
 
     return t.respond()
-
-
 
 

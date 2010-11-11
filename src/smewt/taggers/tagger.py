@@ -26,5 +26,5 @@ class Tagger(object):
         super(Tagger, self).__init__()
 
     def cleanup(self, result):
-        for o in result.findAll(Media):
+        for o in result.find_all(Media):
             o.matches = []

@@ -31,7 +31,7 @@ class Solver(GraphAction):
 
     def canHandle(self, query):
         try:
-            query.findOne(Metadata)
+            query.find_one(Metadata)
         except:
             raise SmewtException('%s: not solving anything...' % self.__class__.__name__)
 

@@ -21,9 +21,9 @@
 
 from __future__ import with_statement
 from PyQt4.QtCore import SIGNAL, Qt, QObject
+from pygoo import MemoryObjectGraph
 from smewt.base import Media, Task, SmewtException, textutils
 from smewt.base.utils import tolist
-from smewt.datamodel import MemoryObjectGraph
 from smewt.media import Series, Subtitle, SubtitleNotFoundError
 import os.path
 
@@ -38,7 +38,7 @@ class SubtitleTask(Task):
         super(SubtitleTask, self).__init__()
         self.collection = collection
         self.provider = provider
-        self.series = collection.findOne(Series, title = title)
+        self.series = collection.find_one(Series, title = title)
         self.language = language
 
         log.info('Creating SubtitleTask for all files from series: %s' % self.series.title)
@@ -49,7 +49,7 @@ class SubtitleTask(Task):
 
         # find objects which don't have yet a subtitle of the desired language
         seriesEpisodes = set(tolist(self.series.episodes))
-        currentSubs = self.collection.findAll(type = Subtitle,
+        currentSubs = self.collection.find_all(type = Subtitle,
                                               validNode = lambda x: x.metadata in seriesEpisodes,
                                               language = self.language)
 
@@ -69,7 +69,7 @@ class SubtitleTask(Task):
 
                 # if file doesn't exist yet, try to download it
                 if not os.path.isfile(subFilename):
-                    possibleSubs = self.provider.getAvailableSubtitles(ep).findAll(language = self.language)
+                    possibleSubs = self.provider.getAvailableSubtitles(ep).find_all(language = self.language)
                     if not possibleSubs:
                         raise SubtitleNotFoundError('didn\'t find any possible subs...')
 

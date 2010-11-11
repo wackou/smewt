@@ -61,7 +61,7 @@ class ActionFactory(Singleton):
                     args.append(filename)
 
                     # update last viewed info
-                    media = mainWidget.smewtd.collection.findOne(Media, filename = filename)
+                    media = mainWidget.smewtd.collection.find_one(Media, filename = filename)
                     media.metadata.lastViewed = time.time()
 
                     if 'subtitle%d' % nfile in surl.args:

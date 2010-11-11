@@ -30,7 +30,7 @@ logging.getLogger('TVSubtitlesProvider').setLevel(logging.INFO)
 class TestEpisodeSubtitle(TestCase):
 
     def setUp(self):
-        ontology.reloadSavedOntology('media')
+        ontology.reload_saved_ontology('media')
 
     def testSingleSubtitle(self):
         for subdata in yaml.load(open('test_episodesubtitle/subsdata.yaml').read()):
@@ -50,7 +50,7 @@ class TestEpisodeSubtitle(TestCase):
 
             self.assert_(subprovider.canHandle(ep))
 
-            available = subprovider.getAvailableSubtitles(ep).findAll(Subtitle, language = language)
+            available = subprovider.getAvailableSubtitles(ep).find_all(Subtitle, language = language)
             self.assert_(len(available) >= 1)
 
             sub = subprovider.getSubtitle(available[0])

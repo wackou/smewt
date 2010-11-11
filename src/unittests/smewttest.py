@@ -38,13 +38,13 @@ addImportPath('.')  # for the tests
 addImportPath('..') # for import smewt
 
 from smewt import *
-from smewt.datamodel import *
+from pygoo import *
 from smewt.solvers import *
 from smewt.guessers import *
 from smewt.media import *
 
 # before starting any tests, save smewt's default ontology in case we mess with it and need it again later
-ontology.saveCurrentOntology('media')
+ontology.save_current_ontology('media')
 
 def allTests(testClass):
     return TestLoader().loadTestsFromTestCase(testClass)

@@ -23,7 +23,7 @@ from smewt.guessers.guesser import Guesser
 from smewt.media import Episode, Series, Movie
 from smewt.base import textutils
 from smewt.base.utils import smewtDirectory, smewtUserDirectory
-from smewt.datamodel import MemoryObjectGraph
+from pygoo import MemoryObjectGraph
 
 from PyQt4.QtCore import SIGNAL, QObject, QUrl
 
@@ -191,7 +191,7 @@ class IMDBMetadataProvider(object):
 
             lores, hires = self.getPoster(series.movieID)
 
-            eps.findOne(Series).update({ 'loresImage': lores,
+            eps.find_one(Series).update({ 'loresImage': lores,
                                          'hiresImage': hires })
 
             return eps
@@ -205,7 +205,7 @@ class IMDBMetadataProvider(object):
             movieImdb = self.getMovie(movieName)
             result = self.getMovieData(movieImdb)
 
-            movie = result.findOne('Movie')
+            movie = result.find_one('Movie')
             lores, hires = self.getPoster(movieImdb.movieID)
             movie.loresImage = lores
             movie.hiresImage = hires
@@ -217,4 +217,3 @@ class IMDBMetadataProvider(object):
             raise
             log.warning(str(e) + ' -- ' + textutils.toUtf8(movieName))
             return MemoryObjectGraph()
-

@@ -21,12 +21,12 @@
 import re, logging
 from urllib import urlopen, urlencode
 from smewt.base import utils, SmewtException, cachedmethod
-from smewt.datamodel import ontology, MemoryObjectGraph
+from pygoo import ontology, MemoryObjectGraph
 from smewt.base.utils import curlget
 from smewt.base.textutils import simpleMatch, between, levenshtein
 from subtitleobject import Subtitle
 from lxml import etree
-ontology.importClasses([ 'Movie', 'Series', 'Episode' ])
+ontology.import_classes([ 'Movie', 'Series', 'Episode' ])
 
 log = logging.getLogger('TVSubtitlesProvider')
 

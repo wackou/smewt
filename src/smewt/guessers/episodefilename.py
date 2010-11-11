@@ -36,13 +36,13 @@ class EpisodeFilename(GraphAction):
         super(EpisodeFilename, self).__init__()
 
     def canHandle(self, query):
-        if query.findOne(Media).type() not in [ 'video', 'subtitle' ]:
+        if query.find_one(Media).type() not in [ 'video', 'subtitle' ]:
             raise SmewtException("%s: can only handle video or subtitle media objects" % self.__class__.__name__)
 
     def perform(self, query):
         self.checkValid(query)
 
-        media = query.findOne(Media)
+        media = query.find_one(Media)
 
         name = utils.splitFilename(media.filename)
 
@@ -67,13 +67,13 @@ class EpisodeFilename(GraphAction):
                 niceGuess = md
             if 'episodeNumber' in md and 'season' not in md and md.episodeNumber > 1000:
                 log.debug('Removing unlikely %s', str(md))
-                query.deleteNode(md._node)
+                query.deleteNode(md.node)
         # if we have season+epnumber, remove single epnumber guesses
         if niceGuess:
-            for md in query.findAll(type = Episode):
+            for md in query.find_all(type = Episode):
                 if 'episodeNumber' in md and 'season' not in md:
                     log.debug('Removing %s because %s looks better' % (md, niceGuess))
-                    query.deleteNode(md._node)
+                    query.deleteNode(md.node)
 
 
         # heuristic 2: try to guess the serie title from the parent directory!
@@ -81,11 +81,11 @@ class EpisodeFilename(GraphAction):
         if textutils.matchAnyRegexp(name[1], [ 'season (?P<season>[0-9]+)',
                                                # TODO: need to find a better way to have language packs for regexps
                                                'saison (?P<season>[0-9]+)' ]):
-            s = query.findOrCreate(Series, title = name[2])
+            s = query.find_or_create(Series, title = name[2])
             result.series = s
             result.confidence = 0.8
         else:
-            s = query.findOrCreate(Series, title = name[1])
+            s = query.find_or_create(Series, title = name[1])
             result.series = s
             result.confidence = 0.4
 
@@ -97,7 +97,7 @@ class EpisodeFilename(GraphAction):
         # such as 72 if some other valid episode number has been found, etc...
 
         # if the episode number is higher than 100, we assume it is season*100+epnumber
-        for md in query.findAll(type = Episode, validNode = lambda x: x.episodeNumber > 100):
+        for md in query.find_all(type = Episode, validNode = lambda x: x.episodeNumber > 100):
             num = md.episodeNumber
             # it's the only guess we have, make it look like it's an episode
             # FIXME: maybe we should check if we already have an estimate for the season number?

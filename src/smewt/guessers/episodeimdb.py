@@ -18,11 +18,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from pygoo import Equal
 from smewt.base import GraphAction, cachedmethod, utils, SmewtException, Media
 from smewt.guessers.guesser import Guesser
 from smewt.media.series import Episode, Series
 from smewt.base.mediaobject import foundMetadata
-from smewt.datamodel import Equal
 from urllib import urlopen,  urlencode
 from imdbmetadataprovider import IMDBMetadataProvider
 import imdb
@@ -34,15 +34,15 @@ log = logging.getLogger('smewt.guessers.episodeimdb')
 class EpisodeIMDB(GraphAction):
 
     def canHandle(self, query):
-        if query.findOne(Media).type() not in [ 'video', 'subtitle' ]:
+        if query.find_one(Media).type() not in [ 'video', 'subtitle' ]:
             raise SmewtException("%s: can only handle video or subtitle media objects" % self.__class__.__name__)
 
     def perform(self, query):
         self.checkValid(query)
         self.query = query
 
-        log.debug('EpisodeImdb: finding more info on %s' % query.findAll(type = Episode))
-        ep = query.findOne(Episode)
+        log.debug('EpisodeImdb: finding more info on %s' % query.find_all(type = Episode))
+        ep = query.find_one(Episode)
 
         if ep.get('series') is None:
             raise SmewtException("EpisodeIMDB: Episode doesn't contain 'series' field: %s" % ep)
@@ -57,12 +57,12 @@ class EpisodeIMDB(GraphAction):
 
         # first, change the current series object by the one we found on the web
         oldseries = ep.series
-        ep.series = query.addObject(result.findOne(Series))
+        ep.series = query.add_object(result.find_one(Series))
         # and remove the stale series node
-        query.deleteNode(oldseries._node)
+        query.deleteNode(oldseries.node)
 
         # then add all the potential episodes
-        for ep in result.findAll(Episode):
-            query.addObject(ep, recurse = Equal.OnLiterals)
+        for ep in result.find_all(Episode):
+            query.add_object(ep, recurse = Equal.OnLiterals)
 
         return query

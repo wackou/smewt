@@ -32,7 +32,7 @@ logging.getLogger('smewt.datamodel').setLevel(logging.WARNING)
 class TestImportTask(TestCase):
 
     def setUp(self):
-        ontology.reloadSavedOntology('media')
+        ontology.reload_saved_ontology('media')
 
     def createTasks(self, collection):
         t1 = ImportTask(collection, EpisodeTagger, 'Monk/Monk.2x05.Mr.Monk.And.The.Very,.Very.Old.Man.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].avi')
@@ -43,9 +43,9 @@ class TestImportTask(TestCase):
         return t1, t2, t3, t4
 
     def collectionTest(self, collection):
-        series = collection.findAll(Series)
-        eps = collection.findAll(Episode)
-        subs = collection.findAll(Subtitle)
+        series = collection.find_all(Series)
+        eps = collection.find_all(Episode)
+        subs = collection.find_all(Subtitle)
 
         self.assertEqual(len(series), 1)
         self.assertEqual(len(eps), 2)

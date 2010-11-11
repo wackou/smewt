@@ -30,7 +30,7 @@ class MovieTagger(Tagger):
         filenameMetadata = MovieFilename().perform(query)
         result = MovieIMDB().perform(filenameMetadata)
 
-        media = result.findOne(Media)
+        media = result.find_one(Media)
         if not media.metadata:
             log.warning('Could not find any tag for: %s' % media)
 
@@ -51,4 +51,3 @@ class MovieTagger(Tagger):
         log.debug('Finished tagging: %s' % media)
 
         return result
-

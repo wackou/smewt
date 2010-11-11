@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.datamodel import MemoryObjectGraph, Equal
+from pygoo import MemoryObjectGraph, Equal
 from smewt.base import Media, Task
 import logging
 
@@ -42,6 +42,5 @@ class ImportTask(Task):
         #result.displayGraph()
 
         # import the data into our collection
-        self.collection.addObject(result.findOne(Media),
+        self.collection.add_object(result.find_one(Media),
                                   recurse = Equal.OnUnique)
-

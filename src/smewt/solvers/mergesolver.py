@@ -32,7 +32,7 @@ class MergeSolver(Solver):
     def perform(self, query):
         self.checkValid(query)
 
-        results = sorted(query.findAll(type = self.type), key = lambda x: -x.confidence)
+        results = sorted(query.find_all(type = self.type), key = lambda x: -x.confidence)
 
         # we have ownership over the query graph, so we can modify its elements
         result = results[0]

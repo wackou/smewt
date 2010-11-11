@@ -40,13 +40,12 @@ class MovieIMDB(GraphAction):
         self.checkValid(query)
         #query.displayGraph()
 
-        log.debug('MovieImdb: finding more info on %s' % query.findAll(type = Media))
-        movie = query.findOne(Movie)
+        log.debug('MovieImdb: finding more info on %s' % query.find_all(type = Media))
+        movie = query.find_one(Movie)
         # if valid movie
 
         mdprovider = IMDBMetadataProvider()
         result = mdprovider.startMovie(movie.title)
 
-        result = foundMetadata(query, result.findOne(Movie))
+        result = foundMetadata(query, result.find_one(Movie))
         return result
-

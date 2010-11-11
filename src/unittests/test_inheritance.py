@@ -26,10 +26,10 @@ from smewttest import *
 
 def printClass(cls):
     print 'class: %s' % cls.__name__
-    print 'parent: %s' % cls.parentClass().__name__
+    print 'parent: %s' % cls.parent_class().__name__
     print 'schema', cls.schema
     print 'implicit', cls.schema._implicit
-    print 'rlookup', cls.reverseLookup
+    print 'rlookup', cls.reverse_lookup
 
 class TestInheritance(TestCase):
 
@@ -102,7 +102,7 @@ class TestInheritance(TestCase):
         class C(B):
             schema = { 'friend': A }
             valid = [ 'b' ]
-            reverseLookup = { 'friend': 'friendOf' }
+            reverse_lookup = { 'friend': 'friendOf' }
 
         self.assertEqual(C.schema['friend'], A)
         self.assert_('friend' not in C.schema._implicit)
@@ -118,8 +118,8 @@ class TestInheritance(TestCase):
         self.assertEqual(E.schema['friendOf'], C)
         self.assertEqual(list(D.schema._implicit), ['friendOf'])
         self.assertEqual(list(E.schema._implicit), ['friendOf'])
-        self.assertEqual(D.reverseLookup, { 'friendOf': 'friend' })
-        self.assertEqual(E.reverseLookup, { 'friendOf': 'friend' })
+        self.assertEqual(D.reverse_lookup, { 'friendOf': 'friend' })
+        self.assertEqual(E.reverse_lookup, { 'friendOf': 'friend' })
 
 
     def testStaticInheritance(self):
@@ -133,11 +133,11 @@ class TestInheritance(TestCase):
 
         g = MemoryObjectGraph(dynamic = True)
         b = g.B()
-        self.assert_(A in b._node._classes)
+        self.assert_(A in b.node._classes)
 
         g = MemoryObjectGraph(dynamic = False)
         b = g.B()
-        self.assert_(A not in b._node._classes)
+        self.assert_(A not in b.node._classes)
 
 
 suite = allTests(TestInheritance)

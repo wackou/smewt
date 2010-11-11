@@ -46,7 +46,7 @@ class Episode(Metadata):
                }
 
     valid = [ 'series', 'season', 'episodeNumber' ]
-    reverseLookup = { 'series': 'episodes' }
+    reverse_lookup = { 'series': 'episodes' }
     #order = [ 'series', 'season', 'episodeNumber',  'title' ]
 
     unique = [ 'series', 'season', 'episodeNumber' ]

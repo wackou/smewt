@@ -19,11 +19,11 @@
 #
 
 from Cheetah.Template import Template
-from smewt.datamodel import MemoryObjectGraph, ontology
+from pygoo import MemoryObjectGraph, ontology
 from smewt.base import SmewtException, Media
 from movieobject import Movie
 from smewt.base.utils import smewtDirectory
-ontology.importClass('Movie')
+ontology.import_class('Movie')
 
 def render(url, collection):
     '''This function always receive an URL and a full graph of all the collection as metadata input.
@@ -32,32 +32,29 @@ def render(url, collection):
 
     if url.viewType == 'single':
         t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_movie.tmpl'),
-                     searchList = { 'movie': collection.findOne(Movie, title = url.args['title']) })
+                     searchList = { 'movie': collection.find_one(Movie, title = url.args['title']) })
 
     elif url.viewType == 'all':
         t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_all_movies.tmpl'),
-                     searchList = { 'movies': collection.findAll(Movie) })
+                     searchList = { 'movies': collection.find_all(Movie) })
 
     elif url.viewType == 'spreadsheet':
         t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_movies_spreadsheet.tmpl'),
-                     searchList = { 'movies': collection.findAll(Movie),
+                     searchList = { 'movies': collection.find_all(Movie),
                                     'title': 'ALL' })
 
     elif url.viewType == 'unwatched':
         t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_movies_spreadsheet.tmpl'),
-                     searchList = { 'movies': [ m for m in collection.findAll(type = Movie) if not m.get('watched') ],
+                     searchList = { 'movies': [ m for m in collection.find_all(type = Movie) if not m.get('watched') ],
                                     'title': 'UNWATCHED' })
 
     elif url.viewType == 'recent':
         t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_recent_movies.tmpl'),
-                     searchList = { 'movies': [ m for m in collection.findAll(type = Movie) if m.get('lastViewed') is not None ],
+                     searchList = { 'movies': [ m for m in collection.find_all(type = Movie) if m.get('lastViewed') is not None ],
                                     'title': 'RECENT' })
 
     else:
         raise SmewtException('Invalid view type: %s' % url.viewType)
 
     return t.respond()
-
-
-
 

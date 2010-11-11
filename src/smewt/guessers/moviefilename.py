@@ -220,12 +220,12 @@ class MovieFilename(GraphAction):
         super(MovieFilename, self).__init__()
 
     def canHandle(self, query):
-        if query.findOne(Media).type() not in [ 'video', 'subtitle' ]:
+        if query.find_one(Media).type() not in [ 'video', 'subtitle' ]:
             raise SmewtException("%s: can only handle video or subtitle media objects" % self.__class__.__name__)
 
     def perform(self, query):
         self.checkValid(query)
-        media = query.findOne(type = Media)
+        media = query.find_one(type = Media)
 
         movie = cleanMovieFilename(media.filename)
 

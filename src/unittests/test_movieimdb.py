@@ -139,7 +139,7 @@ Chat noir, chat blanc (1998)/Chat noir, Chat blanc - Emir Kusturica (VO - VF - s
 class TestMovieIMDB(TestCase):
 
     def setUp(self):
-        ontology.reloadSavedOntology('media')
+        ontology.reload_saved_ontology('media')
 
     def testSimple(self):
         data = yaml.load(tests)
@@ -150,7 +150,7 @@ class TestMovieIMDB(TestCase):
             query.Media(filename = unicode(filename))
 
             schain = SolvingChain(MovieFilename(), MovieIMDB())
-            result = schain.solve(query).findAll(Movie)
+            result = schain.solve(query).find_all(Movie)
 
             self.assertEqual(len(result), 1, 'Solver coudn\'t solve anything...')
             result = result[0]

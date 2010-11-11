@@ -35,11 +35,10 @@ class Subtitle(Metadata):
 
     valid = [ 'metadata' ]
 
-    reverseLookup = { 'metadata': 'subtitles' }
+    reverse_lookup = { 'metadata': 'subtitles' }
 
     order = [ 'metadata', 'language' ]
 
     unique = [ 'metadata', 'language' ]
 
     converters = {}
-

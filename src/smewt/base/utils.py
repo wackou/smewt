@@ -25,7 +25,7 @@ import sys, os, os.path, fnmatch,  errno
 import pycurl
 from PyQt4.QtCore import QSettings, QVariant
 import smewt
-from smewt.datamodel.utils import tolist, toresult
+from pygoo.utils import tolist, toresult
 
 class MethodID(object):
     def __init__(self, filename, module, className, methodName):

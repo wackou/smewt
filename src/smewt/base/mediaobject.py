@@ -19,10 +19,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from pygoo import BaseObject, MemoryObjectGraph, Equal
 from smewtdict import SmewtDict, ValidatingSmewtDict
 from smewtexception import SmewtException
 from textutils import toUtf8
-from smewt.datamodel import BaseObject, MemoryObjectGraph, Equal
 
 # This file contains the 2 base MediaObject types used in Smewt:
 #  - Media: is the type used to represent physical files on the hard disk.
@@ -56,8 +56,8 @@ class Media(BaseObject):
 
     valid = [ 'filename' ]
     unique = [ 'filename' ]
-    reverseLookup = { 'metadata': 'files',
-                      'matches': 'query' }
+    reverse_lookup = { 'metadata': 'files',
+                       'matches': 'query' }
 
     types = { 'video': [ 'avi', 'ogm', 'mkv', 'mpg', 'mpeg' ],
               'subtitle': [ 'sub', 'srt' ]
@@ -88,22 +88,21 @@ def foundMetadata(query, result, link = True):
 
     # remove the stale 'matches' link before adding the media to the resulting graph
     #query.displayGraph()
-    media = query.findOne(Media)
+    media = query.find_one(Media)
     media.matches = []
     media.metadata = []
-    m = solved.addObject(media)
+    m = solved.add_object(media)
 
     if result is None:
         return solved
 
     if isinstance(result, list):
-        result = [ solved.addObject(n, recurse = Equal.OnLiterals) for n in result ]
+        result = [ solved.add_object(n, recurse = Equal.OnLiterals) for n in result ]
     else:
-        result = solved.addObject(result, recurse = Equal.OnLiterals)
+        result = solved.add_object(result, recurse = Equal.OnLiterals)
 
     #solved.displayGraph()
     if link:
         m.metadata = result
 
     return solved
-

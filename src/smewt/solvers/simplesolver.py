@@ -69,10 +69,10 @@ class SimpleSolver(Solver):
         #query.displayGraph()
 
         baseGuess = None
-        metadata = query.findAll(type = self.type)
+        metadata = query.find_all(type = self.type)
 
         for md in metadata:
-            if md.isUnique() and md.get('confidence') >= 0.9:
+            if md.is_unique() and md.get('confidence') >= 0.9:
                 baseGuess = md
                 break
 

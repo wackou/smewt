@@ -29,7 +29,7 @@ logging.getLogger('smewt').setLevel(logging.WARNING)
 class TestIMDB(TestCase):
 
     def setUp(self):
-        ontology.reloadSavedOntology('media')
+        ontology.reload_saved_ontology('media')
 
     def runtestEpisodeIMDB(self, filename):
         query = MemoryObjectGraph()
@@ -40,7 +40,7 @@ class TestIMDB(TestCase):
         for filename, expected in testcases.items():
             query.clear()
             query.Media(filename = filename)
-            result = chain.solve(query).findAll(Episode)
+            result = chain.solve(query).find_all(Episode)
 
             if expected:
                 self.assertEqual(len(result), 1)
