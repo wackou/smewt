@@ -338,7 +338,7 @@ class TestObjectNode(TestCase):
         g = MemoryObjectGraph()
         self.createData(g)
 
-        self.assertEqual(len(g.find_all(type = Movie)), 2)
+        self.assertEqual(len(g.find_all(node_type = Movie)), 2)
         self.assertEqual(len(g.find_all(Episode, lambda x: x.season == 2)), 2)
         self.assertEqual(len(g.find_all(Episode, season = 2)), 2)
         self.assertEqual(g.find_one(Episode, season = 2, episodeNumber = 1).title, 'Ebb Tide')

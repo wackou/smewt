@@ -111,10 +111,10 @@ class LocalCollection(MemoryObjectGraph):
             return True
 
 
-        mediasNotInSeries = self.find_all(type = Media,
+        mediasNotInSeries = self.find_all(node_type = Media,
                                          select = lambda x: mediasOfUnselectedFolders(x, self.seriesFolders.keys(), self.seriesRecursive))
 
-        mediasNotInMovies = self.find_all(type = Media,
+        mediasNotInMovies = self.find_all(node_type = Media,
                                          select = lambda x: mediasOfUnselectedFolders(x, self.moviesFolders.keys(), self.moviesRecursive))
 
         # FIXME: implement me

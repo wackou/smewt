@@ -56,7 +56,7 @@ class EpisodeFilename(GraphAction):
 
         for n in name:
             for match in textutils.matchAllRegexp(n, rexps):
-                ep = query.Episode(confidence = 1.0, allowIncomplete = True, **match)
+                ep = query.Episode(confidence = 1.0, allow_incomplete = True, **match)
                 media.append('matches', ep)
 
         # cleanup a bit by removing unlikely eps numbers which are probably numbers in the title
@@ -67,17 +67,17 @@ class EpisodeFilename(GraphAction):
                 niceGuess = md
             if 'episodeNumber' in md and 'season' not in md and md.episodeNumber > 1000:
                 log.debug('Removing unlikely %s', str(md))
-                query.deleteNode(md.node)
+                query.delete_node(md.node)
         # if we have season+epnumber, remove single epnumber guesses
         if niceGuess:
-            for md in query.find_all(type = Episode):
+            for md in query.find_all(node_type = Episode):
                 if 'episodeNumber' in md and 'season' not in md:
                     log.debug('Removing %s because %s looks better' % (md, niceGuess))
-                    query.deleteNode(md.node)
+                    query.delete_node(md.node)
 
 
         # heuristic 2: try to guess the serie title from the parent directory!
-        result = query.Episode(allowIncomplete = True)
+        result = query.Episode(allow_incomplete = True)
         if textutils.matchAnyRegexp(name[1], [ 'season (?P<season>[0-9]+)',
                                                # TODO: need to find a better way to have language packs for regexps
                                                'saison (?P<season>[0-9]+)' ]):
@@ -97,7 +97,7 @@ class EpisodeFilename(GraphAction):
         # such as 72 if some other valid episode number has been found, etc...
 
         # if the episode number is higher than 100, we assume it is season*100+epnumber
-        for md in query.find_all(type = Episode, validNode = lambda x: x.episodeNumber > 100):
+        for md in query.find_all(node_type = Episode, valid_node = lambda x: x.episodeNumber > 100):
             num = md.episodeNumber
             # it's the only guess we have, make it look like it's an episode
             # FIXME: maybe we should check if we already have an estimate for the season number?

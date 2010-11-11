@@ -41,7 +41,7 @@ class EpisodeIMDB(GraphAction):
         self.checkValid(query)
         self.query = query
 
-        log.debug('EpisodeImdb: finding more info on %s' % query.find_all(type = Episode))
+        log.debug('EpisodeImdb: finding more info on %s' % query.find_all(node_type = Episode))
         ep = query.find_one(Episode)
 
         if ep.get('series') is None:
@@ -59,7 +59,7 @@ class EpisodeIMDB(GraphAction):
         oldseries = ep.series
         ep.series = query.add_object(result.find_one(Series))
         # and remove the stale series node
-        query.deleteNode(oldseries.node)
+        query.delete_node(oldseries.node)
 
         # then add all the potential episodes
         for ep in result.find_all(Episode):

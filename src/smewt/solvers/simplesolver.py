@@ -69,7 +69,7 @@ class SimpleSolver(Solver):
         #query.displayGraph()
 
         baseGuess = None
-        metadata = query.find_all(type = self.type)
+        metadata = query.find_all(node_type = self.type)
 
         for md in metadata:
             if md.is_unique() and md.get('confidence') >= 0.9:

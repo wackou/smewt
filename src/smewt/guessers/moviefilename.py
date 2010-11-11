@@ -225,7 +225,7 @@ class MovieFilename(GraphAction):
 
     def perform(self, query):
         self.checkValid(query)
-        media = query.find_one(type = Media)
+        media = query.find_one(node_type = Media)
 
         movie = cleanMovieFilename(media.filename)
 

@@ -49,8 +49,8 @@ class SubtitleTask(Task):
 
         # find objects which don't have yet a subtitle of the desired language
         seriesEpisodes = set(tolist(self.series.episodes))
-        currentSubs = self.collection.find_all(type = Subtitle,
-                                              validNode = lambda x: x.metadata in seriesEpisodes,
+        currentSubs = self.collection.find_all(node_type = Subtitle,
+                                              valid_node = lambda x: x.metadata in seriesEpisodes,
                                               language = self.language)
 
         alreadyGood = set([ s.metadata for s in currentSubs ])

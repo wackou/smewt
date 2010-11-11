@@ -40,7 +40,7 @@ class MovieIMDB(GraphAction):
         self.checkValid(query)
         #query.displayGraph()
 
-        log.debug('MovieImdb: finding more info on %s' % query.find_all(type = Media))
+        log.debug('MovieImdb: finding more info on %s' % query.find_all(node_type = Media))
         movie = query.find_one(Movie)
         # if valid movie
 
