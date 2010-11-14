@@ -20,5 +20,6 @@
 
 from episodefilename import EpisodeFilename
 from episodeimdb import EpisodeIMDB
+from episodetvdb import EpisodeTVDB
 from moviefilename import MovieFilename
 from movieimdb import MovieIMDB
