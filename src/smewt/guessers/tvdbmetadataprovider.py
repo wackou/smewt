@@ -94,10 +94,21 @@ class TVDBMetadataProvider(object):
         m = self.tmdb.getMovieInfo(movieId)
         
         result = MemoryObjectGraph()
-        movie = result.Movie(title = m['name'],
+        movie = result.Movie(title = unicode(m['name']),
                              year = datetime.datetime.strptime(m['released'], '%Y-%m-%d').year)
 
-        movie.set('director', m['cast']['director'][0]['name'])
+        movie.set('director', [unicode(d['name']) for d in m['cast']['director']])
+        movie.set('writer', [unicode(d['name']) for d in m['cast'].get('author', [{'name': ''}])])
+        movie.set('genres', [unicode(g) for g in m['categories']['genre'].keys()])
+        movie.set('rating', m['rating'])
+        movie.set('plot', [unicode(m['overview'])])
+        movie.set('plotOutline', unicode(m['overview']))
+        
+        try:
+            movie.cast = [ unicode(actor['name']) + ' -- ' + unicode(actor['character']) for actor in m['cast']['actor'][:15] ]
+        except KeyError:
+            movie.cast = []
+
         
         return result
 
