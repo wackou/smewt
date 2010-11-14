@@ -32,7 +32,7 @@ class EpisodeTagger(Tagger):
 
     def perform(self, query):
         filenameMetadata = SolvingChain(EpisodeFilename(), MergeSolver(Episode)).solve(query)
-        result = SolvingChain(EpisodeIMDB(), SimpleSolver(Episode)).solve(filenameMetadata)
+        result = SolvingChain(EpisodeTVDB(), SimpleSolver(Episode)).solve(filenameMetadata)
 
         media = result.findOne(Media)
 
@@ -44,8 +44,8 @@ class EpisodeTagger(Tagger):
             media.metadata = [ self.filenameMetadata ]
 
             # try anyway to get the correct series name and poster
-            from smewt.guessers.imdbmetadataprovider import IMDBMetadataProvider
-            mdprovider = IMDBMetadataProvider()
+            from smewt.guessers.tvdbmetadataprovider import TVDBMetadataProvider
+            mdprovider = TVDBMetadataProvider()
 
             try:
                 series = mdprovider.getSeries(media.metadata.series.title)

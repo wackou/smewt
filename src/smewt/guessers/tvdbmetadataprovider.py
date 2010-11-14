@@ -30,7 +30,11 @@ from PyQt4.QtCore import SIGNAL, QObject, QUrl
 import os, sys, re, logging
 from urllib import urlopen,  urlencode
 from smewt.base.utils import curlget
+
 import thetvdbapi
+import tmdb
+
+import datetime
 
 log = logging.getLogger('smewt.guessers.tvdbmetadataprovider')
 
@@ -39,6 +43,7 @@ class TVDBMetadataProvider(object):
         super(TVDBMetadataProvider, self).__init__()
 
         self.tvdb = thetvdbapi.TheTVDB("65D91F0290476F3E")
+        self.tmdb = tmdb.MovieDb()
 
     @cachedmethod
     def getSeries(self, name):
@@ -75,17 +80,30 @@ class TVDBMetadataProvider(object):
 
     @cachedmethod
     def getMovie(self, name):
-        raise SmewtException("MovieTVDB: Could not find movie '%s'" % name)
+        """Get the IMDBPy movie object given its name."""
+        log.debug('MovieTMDB: looking for movie %s', name)
+        results = self.tmdb.search(name)
+        for r in results:
+          return r['id']
+        
+        raise SmewtException("MovieTMDB: Could not find movie '%s'" % name)
 
     @cachedmethod
-    def getMovieData(self, movieTvdb):
+    def getMovieData(self, movieId):
         """From a given TVDBPy movie object, return a graph containing its information."""
+        m = self.tmdb.getMovieInfo(movieId)
+        
         result = MemoryObjectGraph()
+        movie = result.Movie(title = m['name'],
+                             year = datetime.datetime.strptime(m['released'], '%Y-%m-%d').year)
+
+        movie.set('director', m['cast']['director'][0]['name'])
+        
         return result
 
 
     @cachedmethod
-    def getPoster(self, tvdbID):
+    def getSeriesPoster(self, tvdbID):
         """Return the low- and high-resolution posters (if available) of an tvdb object."""
         imageDir = smewtUserDirectory('images')
         noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
@@ -110,6 +128,40 @@ class TVDBMetadataProvider(object):
         return (loresFilename, hiresFilename)
 
 
+    @cachedmethod
+    def getMoviePoster(self, movieId):
+        """Return the low- and high-resolution posters (if available) of an tvdb object."""
+        imageDir = smewtUserDirectory('images')
+        noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
+
+        loresFilename, hiresFilename = None, None
+        
+        m = self.tmdb.getMovieInfo(movieId)
+        
+        posters = []
+        for poster in m['images'].posters:
+            for key, value in poster.items():
+                if key not in ['id', 'type']:
+                    if value.startswith("http://"):
+                      posters.append(value)
+
+        
+        if len(posters)>0:
+            loresURL = posters[0]
+            loresFilename = os.path.join(imageDir, '%s_lores.jpg' % movieId)
+            open(loresFilename, 'wb').write(curlget(loresURL))
+            
+            if len(posters)>1:
+              hiresURL = posters[1]
+              hiresFilename = os.path.join(imageDir, '%s_hires.jpg' % movieId)
+              open(hiresFilename, 'wb').write(curlget(hiresURL))        
+        else:
+            log.warning('Could not find poster for tmdb ID %s' % movieId)
+            return (noposter, noposter)
+
+        return (loresFilename, hiresFilename)
+
+
     def startEpisode(self, episode):
         if episode.get('series') is None:
             raise SmewtException("TVDBMetadataProvider: Episode doesn't contain 'series' field: %s", md)
@@ -121,7 +173,7 @@ class TVDBMetadataProvider(object):
             #cache.save('/tmp/smewt.cache')
             eps = self.getEpisodes(series)
             #cache.save('/tmp/smewt.cache')
-            lores, hires = self.getPoster(series)
+            lores, hires = self.getSeriesPoster(series)
             eps.findOne(Series).update({ 'loresImage': lores,
                                          'hiresImage': hires })
             return eps
@@ -136,7 +188,7 @@ class TVDBMetadataProvider(object):
             result = self.getMovieData(movieTvdb)
 
             movie = result.findOne('Movie')
-            lores, hires = self.getPoster(movieTvdb)
+            lores, hires = self.getMoviePoster(movieTvdb)
             movie.loresImage = lores
             movie.hiresImage = hires
 

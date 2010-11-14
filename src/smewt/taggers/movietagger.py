@@ -28,7 +28,7 @@ log = logging.getLogger('smewt.taggers.movietagger')
 class MovieTagger(Tagger):
     def perform(self, query):
         filenameMetadata = MovieFilename().perform(query)
-        result = MovieIMDB().perform(filenameMetadata)
+        result = MovieTMDB().perform(filenameMetadata)
 
         media = result.findOne(Media)
         if not media.metadata:

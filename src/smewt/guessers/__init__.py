@@ -23,3 +23,4 @@ from episodeimdb import EpisodeIMDB
 from episodetvdb import EpisodeTVDB
 from moviefilename import MovieFilename
 from movieimdb import MovieIMDB
+from movietmdb import MovieTMDB
