@@ -28,7 +28,7 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'lan
 episodes = {}
 
 for ep in tolist(series.episodes):
-    md = dict(ep.literalItems())
+    md = dict(ep.literal_items())
     # FIXME: we should do sth smarter here, such as ask the user, or at least warn him
     if isinstance(ep.files, list):
         md['filename'] = ep.files[0].filename
