@@ -40,13 +40,13 @@ class MovieTMDB(GraphAction):
         self.checkValid(query)
         #query.displayGraph()
 
-        log.debug('MovieTvdb: finding more info on %s' % query.findAll(type = Media))
-        movie = query.findOne(Movie)
+        log.debug('MovieTvdb: finding more info on %s' % query.find_all(type = Media))
+        movie = query.find_one(Movie)
         # if valid movie
 
         mdprovider = TVDBMetadataProvider()
         result = mdprovider.startMovie(movie.title)
 
-        result = foundMetadata(query, result.findOne(Movie))
+        result = foundMetadata(query, result.find_one(Movie))
         return result
 

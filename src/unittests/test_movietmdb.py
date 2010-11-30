@@ -111,7 +111,7 @@ El Bosque Animado (1987)/El.Bosque.Animado.[Jose.Luis.Cuerda.1987].[Xvid-Dvdrip-
 class TestMovieTMDB(TestCase):
 
     def setUp(self):
-        ontology.reloadSavedOntology('media')
+        ontology.reload_saved_ontology('media')
 
     def testSimple(self):
         data = yaml.load(tests)
@@ -122,7 +122,7 @@ class TestMovieTMDB(TestCase):
             query.Media(filename = unicode(filename))
 
             schain = SolvingChain(MovieFilename(), MovieTMDB())
-            result = schain.solve(query).findAll(Movie)
+            result = schain.solve(query).find_all(Movie)
 
             self.assertEqual(len(result), 1, 'Solver coudn\'t solve anything...')
             result = result[0]

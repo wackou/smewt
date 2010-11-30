@@ -24,10 +24,10 @@ from smewt.base.textutils import levenshtein
 
 
 def exactMatch(baseGuess, md):
-    return baseGuess.uniqueKey() == md.uniqueKey()
+    return baseGuess.unique_key() == md.unique_key()
 
 def fuzzyMatch(baseGuess, md):
-    for p1, p2 in zip(baseGuess.uniqueKey(), md.uniqueKey()):
+    for p1, p2 in zip(baseGuess.unique_key(), md.unique_key()):
         if isinstance(p1, basestring):
             if p1 not in p2:
                 return False
@@ -37,7 +37,7 @@ def fuzzyMatch(baseGuess, md):
     return True
 
 def fuzzyMatch2(baseGuess, md):
-    for p1, p2 in zip(baseGuess.uniqueKey(), md.uniqueKey()):
+    for p1, p2 in zip(baseGuess.unique_key(), md.unique_key()):
         if type(p1) == str or type(p1) == unicode:
             # TODO: levenshtein doesn't cut it here, we need a better string distance
             if levenshtein(p1.lower(), p2.lower()) > 80:
