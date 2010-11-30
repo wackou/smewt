@@ -57,10 +57,6 @@ Brazil (1985)/Brazil_Criterion_Edition_(1985).CD1.avi:
     title: Brazil
     year: 1985
 
-Batman Begins (2005)/Batman Begins.2005.HDDVDRIP.720p.AC3.5.1.x264-Audiofixed.mkv:
-    title: Batman Begins
-    year: 2005
-
 Waking Life (2001)/Waking.Life.2001.DVDRip.{x264-Hp+AAC-He}{Eng}{Sub.Fr}{Chapitres}.mkv:
     title: Waking Life
     year: 2001
@@ -86,12 +82,8 @@ Battle Royale (2000)/Battle.Royale.(Batoru.Rowaiaru).(2000).(Special.Edition).CD
     year: 2000
 
 Dude Where's My Car? (2000)/Dude.Where's.My.Car.(2000).BDRip.720p.DTS.X264-HiS@SiLUHD.mkv:
-    title: Dude, Where's My Car?
+    title: Dude, Where’s My Car?
     year: 2000
-
-El Bosque Animado (1987)/El.Bosque.Animado.[Jose.Luis.Cuerda.1987].[Xvid-Dvdrip-720x432].avi:
-    title: El bosque animado
-    year: 1987
 
 Comme une Image (2004)/Comme.Une.Image.FRENCH.DVDRiP.XViD-NTK.par-www.divx-overnet.com.avi:
     title: Comme une image
@@ -104,6 +96,14 @@ failtests = '''
 Chat noir, chat blanc (1998)/Chat noir, Chat blanc - Emir Kusturica (VO - VF - sub FR - Chapters).mkv:
     title: Chat noir, chat blanc
     year: 1998
+
+Batman Begins (2005)/Batman Begins.2005.HDDVDRIP.720p.AC3.5.1.x264-Audiofixed.mkv:
+    title: Batman Begins
+    year: 2005
+
+El Bosque Animado (1987)/El.Bosque.Animado.[Jose.Luis.Cuerda.1987].[Xvid-Dvdrip-720x432].avi:
+    title: El bosque animado
+    year: 1987
 
 '''
 
