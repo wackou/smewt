@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2010-03-05, 21:00:02 -->
+<!-- Saved: 2010-11-11, 03:05:47 -->
 <!-- Copyright (C) 2010 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -22,7 +22,6 @@
     <Source>smewt/base/solvingchain.py</Source>
     <Source>smewt/base/smewtexception.py</Source>
     <Source>smewt/base/cache.py</Source>
-    <Source>smewt/base/graph.py</Source>
     <Source>smewt/base/eventserver.py</Source>
     <Source>smewt/base/__init__.py</Source>
     <Source>smewt/base/smewturl.py</Source>
@@ -75,19 +74,6 @@
     <Source>setup.py</Source>
     <Source>smewt/base/actionfactory.py</Source>
     <Source>smewt/media/subtitle/subtitleprovider.py</Source>
-    <Source>smewt/datamodel/objectnode.py</Source>
-    <Source>smewt/datamodel/objectgraph.py</Source>
-    <Source>smewt/datamodel/ontology.py</Source>
-    <Source>smewt/datamodel/memoryobjectnode.py</Source>
-    <Source>smewt/datamodel/memoryobjectgraph.py</Source>
-    <Source>smewt/datamodel/baseobject.py</Source>
-    <Source>smewt/datamodel/utils.py</Source>
-    <Source>smewt/datamodel/neo.py</Source>
-    <Source>smewt/datamodel/neo4jobjectgraph.py</Source>
-    <Source>smewt/datamodel/neo4jobjectnode.py</Source>
-    <Source>smewt/datamodel/abstractdirectedgraph.py</Source>
-    <Source>smewt/datamodel/abstractnode.py</Source>
-    <Source>smewt/datamodel/__init__.py</Source>
     <Source>smewt/base/importtask.py</Source>
     <Source>unittests/smewttest.py</Source>
     <Source>unittests/all_tests.py</Source>
