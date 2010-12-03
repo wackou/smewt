@@ -35,7 +35,7 @@ def addImportPath(path):
     sys.path = [ importPath ] + sys.path
 
 addImportPath('.')  # for the tests
-addImportPath('..') # for import smewt
+addImportPath('../..') # for import smewt
 
 from smewt import *
 from pygoo import *

@@ -26,6 +26,10 @@ SMEWT_ROOT = os.path.split(os.path.abspath(__file__))[0]
 if sys.platform == 'win32':
     sys.path = [ SMEWT_ROOT + '\\site-packages' ] + sys.path
 
+# FIXME: remove this
+# small hack to be able to run it locally form the dev folder now that smewg.py is in the bin/ folder
+sys.path = [ os.path.split(SMEWT_ROOT)[0] ] + sys.path
+
 from PyQt4.QtGui import QApplication, QMainWindow, QWidget, QStatusBar, QProgressBar, QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox, QToolBar
 from PyQt4.QtCore import SIGNAL, QSize, Qt, QSettings, QVariant, QPoint, QSize, QObject
 from smewt.gui import MainWidget, FeedWatchWidget
