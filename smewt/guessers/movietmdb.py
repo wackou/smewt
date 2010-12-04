@@ -24,10 +24,9 @@ from smewt.guessers.guesser import Guesser
 from smewt.media import Movie
 from urllib import urlopen,  urlencode
 from tvdbmetadataprovider import TVDBMetadataProvider
-import imdb
 import logging
 
-log = logging.getLogger('smewt.guessers.movieimdb')
+log = logging.getLogger('smewt.guessers.movietmdb')
 
 class MovieTMDB(GraphAction):
 

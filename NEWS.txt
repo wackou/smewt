@@ -1,0 +1,24 @@
+.. This is your project NEWS file which will contain the release notes.
+.. Example: http://www.python.org/download/releases/2.6/NEWS.txt
+.. The content of this file, along with README.rst, will appear in your
+.. project's PyPI page.
+
+News
+====
+
+0.2
+----
+
+*Release date: 04-Dec-2010*
+
+* First really public version, datamodel has been split into a different
+  module (PyGoo). People are encouraged to try this version!
+
+0.1a1
+-----
+
+*Release date: 26-Sep-2010*
+
+* first released development version; still not-so-nice codebase, but
+  has the minimum required to run Smewt without apparent bugs
+
