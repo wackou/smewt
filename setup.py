@@ -18,12 +18,6 @@ install_requires = [
     'feedparser'
 ]
 
-## media_imports = []
-## for root, dirs, files in os.walk('smewt/media'):
-##     media_imports += [ os.path.join(root, '*.' + ext)[6:] for ext in ('png', 'tmpl', 'css', 'html', 'js') ]
-
-## icons_imports = [ 'icons/*.' + ext for ext in ('png', 'svg') ]
-
 datafiles_exts = [ '*.png', '*.svg', '*.tmpl', '*.css', '*.html', '*.js' ]
 
 setup(name = 'smewt',
@@ -31,7 +25,7 @@ setup(name = 'smewt',
       description = 'Smewt - a smart media manager.',
       long_description = README + '\n\n' + NEWS,
       classifiers = [], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
-      keywords = 'pygoo object graph mapper',
+      keywords = 'smewt pygoo media manager video collection',
       author = 'Nicolas Wack',
       author_email = 'wackou@gmail.com',
       url = 'http://www.smewt.com/',
