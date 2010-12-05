@@ -6,10 +6,10 @@
 News
 ====
 
-0.2
-----
+0.2b1
+-----
 
-*Release date: 04-Dec-2010*
+*Release date: 05-Dec-2010*
 
 * First really public version, datamodel has been split into a different
   module (PyGoo). People are encouraged to try this version!
