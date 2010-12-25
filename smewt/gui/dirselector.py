@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import sys
+import sys, os.path
 from collections import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -65,6 +65,22 @@ class DirSelector(QWidget):
         self.formLayout.addWidget(self.recursive_checkbox)
         self.setLayout(self.formLayout)
 
+    def splitPath(self, path):
+        result = []
+        while True:
+            head, tail = os.path.split(path)
+            if (head == '/' and tail == ''):
+                break
+            result = [ tail ] + result
+            path = head
+
+        return [ '/' ] + result
+
+    def expandPathNode(self, fullpath):
+        spath = self.splitPath(fullpath)
+        for i in range(len(spath)):
+            self.tree.expand(self.model.index(os.path.join(*spath[:i+1])))
+
     def recursiveSelection(self):
         return self.model.recursiveSelection
 
@@ -91,7 +107,7 @@ class DirModel(QFileSystemModel):
 
     def __init__(self, parent = None, recursiveSelection = False):
         QFileSystemModel.__init__(self, parent)
-        self.setRootPath('')
+        self.setRootPath('/')
         self.setFilter( QDir.AllDirs | QDir.NoDotAndDotDot )
         self.recursiveSelection = recursiveSelection
         self.clearSelectedFolders()
