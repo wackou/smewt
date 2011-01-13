@@ -201,6 +201,29 @@ class GlobDirectoryWalker:
                         return fullname
 
 
+def dirwalk(directory, validFiles = ['*'], recursive = True):
+    """A generator that goes through all the files in the given directory that matches
+    at least one of the patterns.
+
+    Patterns can either be strings used for globbing or filter functions that return
+    True if the file needs to be considered."""
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            filename = os.path.join(root, file)
+            for validFile in validFiles:
+                # if validFile is a string pattern, do filename matching
+                if isinstance(validFile, basestring):
+                    if fnmatch.fnmatch(filename, validFile):
+                        yield filename
+                else:
+                    # we assume it's a filter function that returns whether a file should be considered
+                    if validFile(filename):
+                        yield filename
+
+        if recursive is False:
+            break
+
+
 class CurlDownloader:
     def __init__(self):
         self.contents = []
