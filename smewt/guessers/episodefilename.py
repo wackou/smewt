@@ -44,7 +44,7 @@ class EpisodeFilename(GraphAction):
 
         media = query.find_one(Media)
 
-        name = utils.splitFilename(media.filename)
+        name = utils.splitPath(media.filename)
 
         # heuristic 1: try to guess the season & epnumber using S01E02 and 1x02 patterns
         sep = '[ \._-]'

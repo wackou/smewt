@@ -99,13 +99,40 @@ def smewtUserDirectoryUrl(*args):
     return pathToUrl(smewtUserDirectory(*args))
 
 
-def splitFilename(filename):
-    root, path = os.path.split(filename)
-    result = [ path ]
-    while path:
-        root, path = os.path.split(root)
-        result.append(unicode(path))
-    return result
+def splitPath(path):
+    result = []
+    while True:
+        head, tail = os.path.split(path)
+        if head == '/' and tail == '':
+            return [ '/' ] + result
+        if head == '' and tail == '':
+            return result
+        result = [ tail ] + result
+        path = head
+
+def commonRoot(pathlist):
+    if not pathlist:
+        return []
+
+    root = splitPath(pathlist[0])
+    for path in pathlist[1:]:
+        for i, dir in enumerate(splitPath(path)):
+            try:
+                if root[i] != dir:
+                    root = root[:i]
+                    break
+            except IndexError:
+                break
+        else:
+            print root, len(splitPath(path))
+            root = root[:len(splitPath(path))]
+        print root
+
+    return os.path.join(*root)
+
+def parentDirectory(path):
+    parentDir = splitPath(path)[:-1]
+    return os.path.join(*parentDir)
 
 
 def guessCountryCode(filename):

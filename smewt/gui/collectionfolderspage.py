@@ -19,11 +19,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import sys
+from smewt.base import utils
 from dirselector import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import os
+import sys
+import logging
+
+log = logging.getLogger('smewt.gui.collectionsfolderpage')
 
 DEFAULT_WIDTH, DEFAULT_HEIGHT = 500, 600
 
@@ -55,11 +59,11 @@ class CollectionFoldersPage(QDialog):
         if type == 'series':
             self.folders, self.recursiveSelection = collection.getSeriesSettings()
             if sys.platform == 'darwin' and not self.folders:
-                self.folders = [ os.environ['HOME'] + '/Series' ] 
+                self.folders = [ os.environ['HOME'] + '/Series' ]
         elif type == 'movies':
             self.folders, self.recursiveSelection = collection.getMoviesSettings()
             if sys.platform == 'darwin' and not self.folders:
-                self.folders = [ os.environ['HOME'] + '/Movies' ] 
+                self.folders = [ os.environ['HOME'] + '/Movies' ]
 
         # remove directories which don't exist to avoid a segfault later
         self.folders = [ folder for folder in self.folders if os.path.isdir(folder) ]
@@ -71,9 +75,24 @@ class CollectionFoldersPage(QDialog):
         self.layout.addWidget(self.instructions_label)
         self.dirselector = DirSelector(folders = self.folders, recursiveSelection = self.recursiveSelection)
 
-        if sys.platform == 'darwin':
-            self.dirselector.expandPathNode(os.environ['HOME'])
-        
+        log.info('Checked folders: %s' % self.folders)
+        if not self.folders:
+            if sys.platform in ('darwin', 'linux2'):
+                log.info('Expanding folder: %s' % os.environ['HOME'])
+                self.dirselector.expandPathNode(os.environ['HOME'])
+
+        # if we have any folders in our list, try to expand the DirSelector in a smart way
+        elif len(self.folders) == 1:
+            dir = utils.parentDirectory(self.folders[0])
+            log.info('Expanding folder: %s' % dir)
+            self.dirselector.expandPathNode(dir)
+
+        else:
+            dir = utils.commonRoot(self.folders)
+            log.info('Expanding folder: %s' % dir)
+            self.dirselector.expandPathNode(dir)
+
+
         self.connect(self.dirselector, SIGNAL('selectionChanged'), self.selectionChanged)
         self.layout.addWidget(self.dirselector)
 

@@ -24,6 +24,7 @@ from collections import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from smewt.base.textutils import toUtf8
+from smewt.base import utils
 
 class DirSelector(QWidget):
     def __init__(self, focusDir = QDir.currentPath(), parent = None, folders = [], recursiveSelection = True):
@@ -65,19 +66,9 @@ class DirSelector(QWidget):
         self.formLayout.addWidget(self.recursive_checkbox)
         self.setLayout(self.formLayout)
 
-    def splitPath(self, path):
-        result = []
-        while True:
-            head, tail = os.path.split(path)
-            if (head == '/' and tail == ''):
-                break
-            result = [ tail ] + result
-            path = head
-
-        return [ '/' ] + result
 
     def expandPathNode(self, fullpath):
-        spath = self.splitPath(fullpath)
+        spath = utils.splitPath(fullpath)
         for i in range(len(spath)):
             self.tree.expand(self.model.index(os.path.join(*spath[:i+1])))
 
