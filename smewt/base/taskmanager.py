@@ -21,7 +21,7 @@
 
 from __future__ import with_statement
 from smewtexception import SmewtException
-from Queue import Queue
+from Queue import PriorityQueue
 from threading import Thread, Lock
 import time
 import logging
@@ -63,8 +63,7 @@ def worker(queue):
             queue.task_done()
 
 
-# FIXME: switch me to PriorityQueue when we have python2.6
-class TaskManager(Queue, object):
+class TaskManager(PriorityQueue, object):
     """The TaskManager is a stable priority queue of tasks. It takes them one by one, the
     one with the highest priority first, and call its perform() method, then repeat until no tasks are left.
 
@@ -81,10 +80,14 @@ class TaskManager(Queue, object):
         self.totalLock = Lock()
 
         t = Thread(target = worker, args = (self,))
-        # FIXME: for python2.6
-        #t.daemon = True
-        t.setDaemon(True)
+        t.daemon = True
         t.start()
+
+    def callback(self):
+        if self.progressCallback:
+           finished = max(0, self.total - self.qsize() - 1)
+           self.progressCallback(finished, self.total)
+
 
     def add(self, task):
         # -task.priority because it always gets the lowest one first
@@ -94,15 +97,17 @@ class TaskManager(Queue, object):
             self.total += 1
             self.put(( (-task.priority, time.time()), task ))
 
+            self.callback()
+
 
     def task_done(self):
-        log.info('Task completed!')
         with self.totalLock:
+            log.info('Task %d/%d completed!' % (self.total - self.qsize(), self.total))
+
             # if we finished all the tasks, reset the current total
             if self.empty():
                 self.total = 0
 
-            if self.progressCallback:
-                self.progressCallback(self.total - self.qsize(), self.total)
+            self.callback()
 
         super(TaskManager, self).task_done()
