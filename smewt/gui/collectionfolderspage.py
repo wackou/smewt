@@ -54,8 +54,12 @@ class CollectionFoldersPage(QDialog):
         #else:
         if type == 'series':
             self.folders, self.recursiveSelection = collection.getSeriesSettings()
+            if sys.platform == 'darwin' and not self.folders:
+                self.folders = [ os.environ['HOME'] + '/Series' ] 
         elif type == 'movies':
             self.folders, self.recursiveSelection = collection.getMoviesSettings()
+            if sys.platform == 'darwin' and not self.folders:
+                self.folders = [ os.environ['HOME'] + '/Movies' ] 
 
         # remove directories which don't exist to avoid a segfault later
         self.folders = [ folder for folder in self.folders if os.path.isdir(folder) ]
@@ -66,6 +70,10 @@ class CollectionFoldersPage(QDialog):
         self.instructions_label = QLabel(description)
         self.layout.addWidget(self.instructions_label)
         self.dirselector = DirSelector(folders = self.folders, recursiveSelection = self.recursiveSelection)
+
+        if sys.platform == 'darwin':
+            self.dirselector.expandPathNode(os.environ['HOME'])
+        
         self.connect(self.dirselector, SIGNAL('selectionChanged'), self.selectionChanged)
         self.layout.addWidget(self.dirselector)
 
