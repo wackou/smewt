@@ -18,11 +18,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import logging
+log = logging.getLogger('smewt')
+
+logging.basicConfig(level = logging.INFO,
+                    format = '%(levelname)-8s %(module)s:%(funcName)s -- %(message)s')
+
+
 from base import SmewtDict, ValidatingSmewtDict, SmewtException, SmewtUrl, SolvingChain, cachedmethod, EventServer, cache, utils, textutils
 from base.mediaobject import Media, Metadata
-import logging
 
-log = logging.getLogger('smewt')
 
 # used to be able to store settings for different versions of Smewt installed on the same computer, ie: a stable
 # and a development version
@@ -42,9 +47,6 @@ def shutdown():
         log.info('Saving cache...')
         cache.save('/tmp/smewt.cache')
 
-
-logging.basicConfig(level = logging.INFO,
-                    format = '%(levelname)-8s %(module)s:%(funcName)s -- %(message)s')
 
 # we most likely never want this to be on debug mode, as it spits out way too much information
 logging.getLogger('smewt.datamodel').setLevel(logging.INFO)
