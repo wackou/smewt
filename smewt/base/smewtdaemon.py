@@ -19,16 +19,30 @@
 #
 
 from PyQt4.QtCore import QSettings, QVariant
+from pygoo import MemoryObjectGraph
 import smewt
 from smewt.media import Series, Episode, Movie
-from smewt.base import LocalCollection
+from smewt.base import utils, Collection
 from smewt.base.taskmanager import Task, TaskManager
-from smewt.base.utils import smewtUserDirectory
-from os.path import join, dirname, splitext
+from os.path import join, dirname, splitext, getsize
 from smewt.taggers import EpisodeTagger, MovieTagger
 import logging
 
 log = logging.getLogger('smewt.base.smewtdaemon')
+
+def episodeSizeFilter(filename):
+    # episodes are videos < 600MB
+    if utils.matchFile(filename, [ '*.avi',  '*.ogm',  '*.mkv' ]) and os.path.getsize(filename) < 600 * 1024 * 1024:
+        return True
+    return False
+
+
+def movieSizeFilter(filename):
+    # episodes are videos < 600MB
+    if utils.matchFile(filename, [ '*.avi',  '*.ogm',  '*.mkv' ]) and os.path.getsize(filename) > 600 * 1024 * 1024:
+        return True
+    return False
+
 
 
 class SmewtDaemon(object):
@@ -38,48 +52,68 @@ class SmewtDaemon(object):
         # FIXME: this is a lame hack to save the collection when we can...
         def callback(current, total):
             if total == 0:
-                self.saveCollection()
+                self.saveDB()
             if progressCallback is not None:
                 progressCallback(current, total)
 
         self.taskManager = TaskManager(progressCallback = callback)
 
+        # get our main graph DB
+        self.loadDB()
+
+        # get our collections: series and movies for now
+        self.episodeCollection = Collection(name = 'Series',
+                                           # episodes are videos < 600MB and/or subtitles
+                                           validFiles = [ lambda f: utils.matchFile(f, ['*.avi', '*.ogm', '*.mkv']) and getsize(f) < 600 * 1024 * 1024,
+                                                          '*.sub', '*.srt' ],
+                                           mediaTagger = EpisodeTagger,
+                                           dataGraph = self.database,
+                                           taskManager = self.taskManager)
+
+
+        self.movieCollection = Collection(name = 'Movie',
+                                          # movies are videos > 600MB and/or subtitles
+                                          validFiles = [ lambda f: utils.matchFile(f, ['*.avi', '*.ogm', '*.mkv']) and getsize(f) > 600 * 1024 * 1024,
+                                                         '*.sub', '*.srt' ],
+                                          mediaTagger = MovieTagger,
+                                          dataGraph = self.database,
+                                          taskManager = self.taskManager)
+
+
+
+
+
+    def loadDB(self):
+        log.info('Loading database...')
         settings = QSettings()
-        cfile = unicode(settings.value('collection_file').toString())
-        if not cfile:
-            cfile = join(smewtUserDirectory(), smewt.APP_NAME + '.collection')
-            settings.setValue('collection_file', QVariant(cfile))
+        dbfile = unicode(settings.value('database_file').toString())
+        if not dbfile:
+            dbfile = join(utils.smewtUserDirectory(), smewt.APP_NAME + '.database')
+            settings.setValue('database_file', QVariant(dbfile))
 
-        csettings = unicode(settings.value('collection_settings').toString())
-        if not csettings:
-            csettings = join(smewtUserDirectory(), smewt.APP_NAME + '.collection_settings')
-            settings.setValue('collection_settings', QVariant(csettings))
-
-
-        self.collection = LocalCollection(taskManager = self.taskManager, settingsFile = csettings)
-        #self.connect(self.collection, SIGNAL('updated'),
-        #             self.refreshCollectionView)
-        #self.connect(self.collection, SIGNAL('updated'),
-        #             self.saveCollection)
-
+        self.database = MemoryObjectGraph()
         try:
-            self.collection.load(cfile)
+            self.database.load(dbfile)
         except:
-            log.warning('Could not load collection %s', cfile)
+            log.warning('Could not load database %s', dbfile)
 
-    def saveCollection(self):
-        cfile = unicode(QSettings().value('collection_file').toString())
-        self.collection.save(cfile)
+    def saveDB(self):
+        log.info('Saving database...')
+        self.database.save(unicode(QSettings().value('database_file').toString()))
 
     def shutdown(self):
-        self.saveCollection()
+        log.info('SmewtDaemon shutdown')
+        self.saveDB()
 
     def quit(self):
+        log.info('SmewtDaemon quit')
         self.taskManager.abortAll()
 
-    def updateCollection(self):
-        self.collection.update()
+    def updateCollections(self):
+        self.episodeCollection.update()
+        self.movieCollection.update()
 
-    def rescanCollection(self):
-        self.collection.rescan()
+    def rescanCollections(self):
+        self.episodeCollection.rescan()
+        self.movieCollection.rescan()
 

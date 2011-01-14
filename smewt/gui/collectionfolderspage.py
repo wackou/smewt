@@ -34,7 +34,6 @@ DEFAULT_WIDTH, DEFAULT_HEIGHT = 500, 600
 class CollectionFoldersPage(QDialog):
     def __init__(self,
                  parent,
-                 type, # should be 'series' or 'movies'
                  description,
                  collection,
                  #settingKeyFolders = 'collection_folders',
@@ -43,42 +42,29 @@ class CollectionFoldersPage(QDialog):
 
         QDialog.__init__(self, parent)
 
-        #self.settingsChanged = 0
-
-        #self.settingKeyFolders = settingKeyFolders
-        #self.settingKeyRecursive = settingKeyRecursive
-
-        self.type = type
         self.collection = collection
 
-        self.applyAnyway = False
-
-        #if self.settings is not None:
-        #    self.getSettings()
-        #else:
-        if type == 'series':
-            self.folders, self.recursiveSelection = collection.getSeriesSettings()
-            if sys.platform == 'darwin' and not self.folders:
-                self.folders = [ os.environ['HOME'] + '/Series' ]
-        elif type == 'movies':
-            self.folders, self.recursiveSelection = collection.getMoviesSettings()
-            if sys.platform == 'darwin' and not self.folders:
-                self.folders = [ os.environ['HOME'] + '/Movies' ]
+        #    if sys.platform == 'darwin' and not self.folders:
+        #        self.folders = [ os.environ['HOME'] + '/Movies' ]
 
         # remove directories which don't exist to avoid a segfault later
-        self.folders = [ folder for folder in self.folders if os.path.isdir(folder) ]
+        self.folders = [ folder for folder in collection.folders if os.path.isdir(folder) ]
+
+        try:
+            self.recursiveSelection = collection.folders.items()[0]
+        except:
+            self.recursiveSelection = True
 
         self.layout = QVBoxLayout()
-
 
         self.instructions_label = QLabel(description)
         self.layout.addWidget(self.instructions_label)
         self.dirselector = DirSelector(folders = self.folders, recursiveSelection = self.recursiveSelection)
 
-        log.info('Checked folders: %s' % self.folders)
+        log.debug('Checked folders: %s' % self.folders)
         if not self.folders:
             if sys.platform in ('darwin', 'linux2'):
-                log.info('Expanding folder: %s' % os.environ['HOME'])
+                log.debug('Expanding folder: %s' % os.environ['HOME'])
                 self.dirselector.expandPathNode(os.environ['HOME'])
 
         # if we have any folders in our list, try to expand the DirSelector in a smart way
@@ -89,7 +75,7 @@ class CollectionFoldersPage(QDialog):
 
         else:
             dir = utils.commonRoot(self.folders)
-            log.info('Expanding folder: %s' % dir)
+            log.debug('Expanding folder: %s' % dir)
             self.dirselector.expandPathNode(dir)
 
 
@@ -123,19 +109,14 @@ class CollectionFoldersPage(QDialog):
         folders = [ str(f) for f in self.dirselector.selectedFolders() ]
         recursiveSelection = self.dirselector.recursiveSelection()
 
-        return (folders, recursiveSelection)
+        return dict((folder, recursiveSelection) for folder in folders)
 
     def ok(self):
         self.apply()
         self.done(1)
 
     def apply(self):
-        if self.type == 'series':
-            self.collection.setSeriesFolders(*self.getFolders())
-        elif self.type == 'movies':
-            self.collection.setMoviesFolders(*self.getFolders())
-        else:
-            raise SmewtException('Invalid folder type: %s' % self.type)
+        self.collection.setFolders(self.getFolders())
 
         self.apply_button.setEnabled(False)
 

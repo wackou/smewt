@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2010-12-01, 00:53:51 -->
-<!-- Copyright (C) 2010 Nicolas Wack, wackou@gmail.com -->
+<!-- Saved: 2011-01-14, 05:12:42 -->
+<!-- Copyright (C) 2011 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -12,7 +12,6 @@
   <Author>Nicolas Wack</Author>
   <Email>wackou@gmail.com</Email>
   <Sources>
-    <Source>smewg.py</Source>
     <Source>smewt/__init__.py</Source>
     <Source>smewt/solvers/simplesolver.py</Source>
     <Source>smewt/solvers/__init__.py</Source>
@@ -75,26 +74,27 @@
     <Source>smewt/base/actionfactory.py</Source>
     <Source>smewt/media/subtitle/subtitleprovider.py</Source>
     <Source>smewt/base/importtask.py</Source>
-    <Source>unittests/smewttest.py</Source>
-    <Source>unittests/all_tests.py</Source>
-    <Source>unittests/test_episodefilename.py</Source>
-    <Source>unittests/test_basicnode.py</Source>
-    <Source>unittests/test_datamodel.py</Source>
-    <Source>unittests/test_inheritance.py</Source>
-    <Source>unittests/test_memory.py</Source>
-    <Source>unittests/test_movieimdb.py</Source>
-    <Source>unittests/test_imdb.py</Source>
     <Source>smewt/base/graphaction.py</Source>
-    <Source>unittests/test_importtask.py</Source>
     <Source>smewt/base/smewtdaemon.py</Source>
-    <Source>unittests/test_episodesubtitle.py</Source>
-    <Source>unittests/test_tvdb.py</Source>
-    <Source>unittests/test_movietmdb.py</Source>
     <Source>smewt/guessers/episodetvdb.py</Source>
     <Source>smewt/guessers/movietmdb.py</Source>
     <Source>smewt/guessers/thetvdbapi.py</Source>
     <Source>smewt/guessers/tmdb.py</Source>
     <Source>smewt/guessers/tvdbmetadataprovider.py</Source>
+    <Source>smewt/test/all_tests.py</Source>
+    <Source>smewt/test/test_episodesubtitle.py</Source>
+    <Source>smewt/test/test_inheritance.py</Source>
+    <Source>smewt/test/test_imdb.py</Source>
+    <Source>smewt/test/test_importtask.py</Source>
+    <Source>smewt/test/test_basicnode.py</Source>
+    <Source>smewt/test/test_movieimdb.py</Source>
+    <Source>smewt/test/test_memory.py</Source>
+    <Source>smewt/test/test_movietmdb.py</Source>
+    <Source>smewt/test/test_episodefilename.py</Source>
+    <Source>smewt/test/smewttest.py</Source>
+    <Source>smewt/test/test_tvdb.py</Source>
+    <Source>smewt/test/test_datamodel.py</Source>
+    <Source>smewt/base/collection.py</Source>
   </Sources>
   <Forms>
   </Forms>

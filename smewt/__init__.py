@@ -18,10 +18,31 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from base import SmewtDict, ValidatingSmewtDict, SmewtException, SmewtUrl, SolvingChain, cachedmethod, EventServer, utils, textutils
+from base import SmewtDict, ValidatingSmewtDict, SmewtException, SmewtUrl, SolvingChain, cachedmethod, EventServer, cache, utils, textutils
 from base.mediaobject import Media, Metadata
-
 import logging
+
+log = logging.getLogger('smewt')
+
+# used to be able to store settings for different versions of Smewt installed on the same computer, ie: a stable
+# and a development version
+ORG_NAME = 'DigitalGaia'
+APP_NAME = 'Smewt-dev'
+
+DEV_MODE = True
+
+
+
+if DEV_MODE:
+    log.info('Loading cache...')
+    cache.load('/tmp/smewt.cache')
+
+def shutdown():
+    if DEV_MODE:
+        log.info('Saving cache...')
+        cache.save('/tmp/smewt.cache')
+
+
 logging.basicConfig(level = logging.INFO,
                     format = '%(levelname)-8s %(module)s:%(funcName)s -- %(message)s')
 
@@ -29,7 +50,3 @@ logging.basicConfig(level = logging.INFO,
 logging.getLogger('smewt.datamodel').setLevel(logging.INFO)
 logging.getLogger('imdbpy').setLevel(logging.INFO)
 
-# used to be able to store settings for different versions of Smewt installed on the same computer, ie: a stable
-# and a development version
-ORG_NAME = 'DigitalGaia'
-APP_NAME = 'Smewt-dev'

@@ -61,17 +61,6 @@ class MainWidget(QWidget):
         layout.addWidget(self.collectionView)
 
         self.smewtd = SmewtDaemon(progressCallback = progressCallback)
-        #self.collection = LocalCollection( taskManager = self.taskManager, settings = QSettings() )
-        #self.connect(self.collection, SIGNAL('updated'),
-        #             self.refreshCollectionView)
-        #self.connect(self.collection, SIGNAL('updated'),
-        #             self.saveCollection)
-
-        #try:
-        #    self.collection.load(t)
-        #except:
-        #    log.warning('Could not load collection %s', t)
-        #    raise
 
         self.setLayout(layout)
 
@@ -141,31 +130,29 @@ class MainWidget(QWidget):
         #filename = unicode(QSettings().value('collection_file').toString())
         #self.collection.save(filename)
 
-        # FIXME: should not be necessary anymore...
-        self.smewtd.saveCollection()
+        # FIXME: should not be necessary anymore... (or is it?)
+        self.smewtd.shutdown()
 
     def updateCollectionSettings(self, result):
         if result == 1:
             self.updateCollection()
 
     def updateCollection(self):
-        self.smewtd.collection.update()
+        self.smewtd.updateCollections()
 
     def rescanCollection(self):
-        self.smewtd.collection.rescan()
+        self.smewtd.rescanCollections()
 
     def selectSeriesFolders(self):
         d = CollectionFoldersPage(self,
-                                  type = 'series',
                                   description = 'Select the folders where your series are.',
-                                  collection = self.smewtd.collection)
+                                  collection = self.smewtd.episodeCollection)
         d.exec_()
 
     def selectMoviesFolders(self):
         d = CollectionFoldersPage(self,
-                                  type = 'movies',
                                   description = 'Select the folders where your movies are.',
-                                  collection = self.smewtd.collection)
+                                  collection = self.smewtd.movieCollection)
         d.exec_()
 
 
@@ -179,17 +166,17 @@ class MainWidget(QWidget):
         surl = self.smewtUrl
 
         if surl.mediaType == 'speeddial':
-            html = speeddial.view.render(surl, self.smewtd.collection)
+            html = speeddial.view.render(surl, self.smewtd.database)
             self.collectionView.page().mainFrame().setHtml(html)
 
         elif surl.mediaType == 'series':
-            html = series.view.render(surl, self.smewtd.collection)
+            html = series.view.render(surl, self.smewtd.database)
             #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
             #print html[:4000]
             self.collectionView.page().mainFrame().setHtml(html)
 
         elif surl.mediaType == 'movie':
-            html = movie.view.render(surl,  self.smewtd.collection)
+            html = movie.view.render(surl,  self.smewtd.database)
             #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
             self.collectionView.page().mainFrame().setHtml(html)
             # insert listener object for checkboxes inside the JS environment
@@ -208,7 +195,7 @@ class MainWidget(QWidget):
 
     @pyqtSignature("QString, QString, QString")
     def addComment(self, title, author, comment):
-        g = self.smewtd.collection
+        g = self.smewtd.database
         movie = g.find_one(Movie, title = unicode(title))
         commentObj = g.Comment(metadata = movie,
                                author = unicode(author),
