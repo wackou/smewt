@@ -80,7 +80,10 @@ class SmewtDaemon(object):
                                           taskManager = self.taskManager)
 
 
-
+        # update them when we start the daemon; do not rescan as it would be too long
+        # and we might delete some files that are on an unaccessible network share or
+        # an external HDD
+        self.updateCollections()
 
 
     def loadDB(self):
