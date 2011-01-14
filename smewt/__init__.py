@@ -19,14 +19,18 @@
 #
 
 import logging
-log = logging.getLogger('smewt')
 
-logging.basicConfig(level = logging.INFO,
-                    format = '%(levelname)-8s %(module)s:%(funcName)s -- %(message)s')
+class NullHandler(logging.Handler):
+    def emit(self, record):
+        pass
+
+h = NullHandler()
+logging.getLogger("smewt").addHandler(h)
 
 
 from base import SmewtDict, ValidatingSmewtDict, SmewtException, SmewtUrl, SolvingChain, cachedmethod, EventServer, cache, utils, textutils
 from base.mediaobject import Media, Metadata
+log = logging.getLogger('smewt')
 
 
 # used to be able to store settings for different versions of Smewt installed on the same computer, ie: a stable
@@ -47,8 +51,4 @@ def shutdown():
         log.info('Saving cache...')
         cache.save('/tmp/smewt.cache')
 
-
-# we most likely never want this to be on debug mode, as it spits out way too much information
-logging.getLogger('smewt.datamodel').setLevel(logging.INFO)
-logging.getLogger('imdbpy').setLevel(logging.INFO)
 

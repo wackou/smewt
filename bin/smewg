@@ -20,6 +20,17 @@
 
 import sys, logging, os, os.path
 
+MAIN_LOGGING_LEVEL = logging.INFO
+
+logging.basicConfig(level = MAIN_LOGGING_LEVEL,
+                    format = '%(levelname)-8s %(module)s:%(funcName)s -- %(message)s')
+
+# we most likely never want this to be on debug mode, as it spits out way too much information
+logging.getLogger('pygoo').setLevel(logging.INFO)
+logging.getLogger('imdbpy').setLevel(logging.INFO)
+
+
+
 # need that before importing any other module when Smewt is installed
 # FIXME: do we still need this?
 if sys.platform == 'win32':

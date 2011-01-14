@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2011-01-14, 19:49:39 -->
+<!-- Saved: 2011-01-14, 20:19:35 -->
 <!-- Copyright (C) 2011 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -95,6 +95,7 @@
     <Source>smewt/test/test_datamodel.py</Source>
     <Source>smewt/base/collection.py</Source>
     <Source>bin/smewg</Source>
+    <Source>bin/run_dev_smewg</Source>
   </Sources>
   <Forms>
   </Forms>
