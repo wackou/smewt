@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2011-01-14, 05:12:42 -->
+<!-- Saved: 2011-01-14, 19:49:39 -->
 <!-- Copyright (C) 2011 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -66,7 +66,6 @@
     <Source>smewt/media/subtitle/subtitleobject.py</Source>
     <Source>smewt/gui/dirselector.py</Source>
     <Source>smewt/gui/collectionfolderspage.py</Source>
-    <Source>smewt/base/localcollection.py</Source>
     <Source>smewt/media/movie/view_recent_movies.tmpl</Source>
     <Source>smewt/base/subtitletask.py</Source>
     <Source>smewt/base/taskmanager.py</Source>
@@ -95,6 +94,7 @@
     <Source>smewt/test/test_tvdb.py</Source>
     <Source>smewt/test/test_datamodel.py</Source>
     <Source>smewt/base/collection.py</Source>
+    <Source>bin/smewg</Source>
   </Sources>
   <Forms>
   </Forms>
@@ -105,8 +105,9 @@
   <Interfaces>
   </Interfaces>
   <Others>
+    <Other>bin/smewg</Other>
   </Others>
-  <MainScript>smewg.py</MainScript>
+  <MainScript>bin/smewg</MainScript>
   <Vcs>
     <VcsType>None</VcsType>
   </Vcs>

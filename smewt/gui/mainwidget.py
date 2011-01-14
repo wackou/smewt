@@ -22,7 +22,7 @@
 from smewt import SmewtException, SmewtUrl, Media, Metadata
 from smewt.gui.collectionfolderspage import CollectionFoldersPage
 from smewt.media import Series, Episode, Movie
-from smewt.base import ImportTask, SubtitleTask, LocalCollection, ActionFactory
+from smewt.base import ImportTask, SubtitleTask, ActionFactory
 from smewt.base.taskmanager import Task, TaskManager
 from PyQt4.QtCore import SIGNAL, SLOT, QVariant, QProcess, QSettings, pyqtSignature
 from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QSizePolicy
