@@ -30,6 +30,5 @@ from importtask import ImportTask
 from subtitletask import SubtitleTask
 from actionfactory import ActionFactory
 from graphaction import GraphAction
-from localcollection import LocalCollection
 from collection import Collection
 from smewtdaemon import SmewtDaemon
