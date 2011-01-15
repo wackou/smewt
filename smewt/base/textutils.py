@@ -29,6 +29,12 @@ def stripBrackets(s):
     return s
 
 
+def cleanString(s):
+    for c in ('.', '-', '_'):
+        s = s.replace(c, ' ')
+    parts = s.split()
+    return ' '.join(p for p in parts if p != '')
+
 # regexps-related functions
 import re
 from smewtexception import SmewtException
