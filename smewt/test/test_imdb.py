@@ -21,10 +21,6 @@
 from smewttest import *
 import glob
 
-import logging
-logging.getLogger('smewt').setLevel(logging.WARNING)
-#logging.getLogger('smewt.datamodel').setLevel(logging.WARNING)
-#logging.getLogger('smewt.datamodel.ObjectGraph').setLevel(logging.DEBUG)
 
 class TestIMDB(TestCase):
 
@@ -69,9 +65,6 @@ testFunc = test%s''' % (testName, filename, testName)
 
 suite = allTests(TestIMDB)
 
-from smewt.base import cache
-cache.load('/tmp/smewt.cache')
-
 if __name__ == '__main__':
     TextTestRunner(verbosity=2).run(suite)
-    cache.save('/tmp/smewt.cache')
+    smewt.shutdown()

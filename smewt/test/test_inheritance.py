@@ -18,9 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import logging
-logging.getLogger('smewt').setLevel(logging.WARNING)
-
 from smewttest import *
 
 
@@ -144,3 +141,4 @@ suite = allTests(TestInheritance)
 
 if __name__ == '__main__':
     TextTestRunner(verbosity=2).run(suite)
+    smewt.shutdown()

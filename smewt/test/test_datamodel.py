@@ -19,9 +19,6 @@
 #
 
 
-import logging
-logging.getLogger('smewt').setLevel(logging.WARNING)
-
 from smewttest import *
 
 class TestObjectNode(TestCase):
@@ -407,3 +404,4 @@ suite = allTests(TestObjectNode)
 
 if __name__ == '__main__':
     TextTestRunner(verbosity=2).run(suite)
+    smewt.shutdown()

@@ -21,12 +21,6 @@
 from smewttest import *
 from smewt.media.subtitle.subtitle_tvsubtitles_provider import TVSubtitlesProvider
 
-import logging
-logging.getLogger('smewt').setLevel(logging.WARNING)
-logging.getLogger('TVSubtitlesProvider').setLevel(logging.INFO)
-#logging.getLogger('smewt.datamodel').setLevel(logging.WARNING)
-#logging.getLogger('smewt.datamodel.ObjectGraph').setLevel(logging.DEBUG)
-
 class TestEpisodeSubtitle(TestCase):
 
     def setUp(self):
@@ -62,9 +56,5 @@ suite = allTests(TestEpisodeSubtitle)
 
 
 if __name__ == '__main__':
-    from smewt.base import cache
-    cache.load('/tmp/smewt.cache')
-
     TextTestRunner(verbosity=2).run(suite)
-
-    cache.save('/tmp/smewt.cache')
+    smewt.shutdown()

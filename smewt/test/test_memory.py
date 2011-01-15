@@ -19,9 +19,6 @@
 #
 
 
-import logging
-logging.getLogger('smewt').setLevel(logging.WARNING)
-
 from smewttest import *
 
 class TestMemory(TestCase):
@@ -61,3 +58,4 @@ suite = allTests(TestMemory)
 
 if __name__ == '__main__':
     TextTestRunner(verbosity=2).run(suite)
+    smewt.shutdown()

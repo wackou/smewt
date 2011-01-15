@@ -18,29 +18,30 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import logging
-logging.getLogger('smewt').setLevel(logging.WARNING)
-
-
 from smewttest import *
 import glob
 
 
 tests = '''
 /data/Series/Black Adder/Black_Adder_-_1x01_-_The_Foretelling.avi:
-    series     : Black Adder
-    season     : 1
+    series        : Black Adder
+    season        : 1
     episodeNumber : 1
 
 /data/Series/Black Adder/Black_Adder_-_1x02_-_Born_To_Be_King.avi:
-    series     : Black Adder
-    season     : 1
+    series        : Black Adder
+    season        : 1
     episodeNumber : 2
 
 /data/Series/Northern Exposure/Northern Exposure - S01E02 - Brains Know-How and Native Intelligence.avi:
-    series     : Northern Exposure
-    season     : 1
+    series        : Northern Exposure
+    season        : 1
     episodeNumber : 2
+
+~/Desktop/Incoming/The.Mentalist.3x11.Bloodsport.ENG.-.sub.FR.HDTV.XviD-AlFleNi-TeaM.[tvu.org.ru].avi:
+    series        : The Mentalist
+    season        : 3
+    episodeNumber : 11
 '''
 
 
@@ -81,3 +82,4 @@ suite = allTests(TestEpisodeFilename)
 
 if __name__ == '__main__':
     TextTestRunner(verbosity=2).run(suite)
+    smewt.shutdown()

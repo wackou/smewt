@@ -21,8 +21,6 @@
 from smewttest import *
 import glob
 
-logging.getLogger('smewt').setLevel(logging.WARNING)
-
 
 tests = '''
 /data/Movies/Fear and Loathing in Las Vegas (1998)/Fear.and.Loathing.in.Las.Vegas.720p.HDDVD.DTS.x264-ESiR.mkv:
@@ -137,9 +135,6 @@ class TestMovieTMDB(TestCase):
 
 suite = allTests(TestMovieTMDB)
 
-from smewt.base import cache
-cache.load('/tmp/smewt.cache')
-
 if __name__ == '__main__':
     TextTestRunner(verbosity=2).run(suite)
-    cache.save('/tmp/smewt.cache')
+    smewt.shutdown()
