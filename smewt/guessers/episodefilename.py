@@ -23,7 +23,7 @@ from smewt.base import GraphAction, utils, textutils
 from smewt.base import Media, Metadata
 from smewt.base.utils import tolist
 from smewt.media import Episode, Series
-import logging
+import logging, re
 
 log = logging.getLogger('smewt.guessers.episodefilename')
 
@@ -44,7 +44,10 @@ class EpisodeFilename(GraphAction):
 
         media = query.find_one(Media)
 
+        log.debug('EpisodeFilename guesser working on file: %s' % media.filename)
+
         name = utils.splitPath(media.filename)
+        filename = name[-1]
 
         # heuristic 1: try to guess the season & epnumber using S01E02 and 1x02 patterns
         sep = '[ \._-]'
@@ -56,6 +59,7 @@ class EpisodeFilename(GraphAction):
 
         for n in name:
             for match in textutils.matchAllRegexp(n, rexps):
+                log.debug('Found with confidence 1.0: %s' % match)
                 ep = query.Episode(confidence = 1.0, allow_incomplete = True, **match)
                 media.append('matches', ep)
 
@@ -76,16 +80,29 @@ class EpisodeFilename(GraphAction):
                     query.delete_node(md.node)
 
 
-        # heuristic 2: try to guess the serie title from the parent directory!
+        # heuristic 2: try to guess the serie title from the filename
+        for rexp in rexps:
+            result = re.compile(rexp, re.IGNORECASE).search(filename)
+            if result:
+                title = textutils.cleanString(filename[:result.span()[0]])
+                log.debug('Found with confidence 0.6: series title = %s' % title)
+
+                series = query.find_or_create(Series, title = title)
+                media.append('matches', query.Episode(confidence = 0.6, allow_incomplete = True, series = series))
+
+
+        # heuristic 3: try to guess the serie title from the parent directory!
         result = query.Episode(allow_incomplete = True)
-        if textutils.matchAnyRegexp(name[1], [ 'season (?P<season>[0-9]+)',
+        if textutils.matchAnyRegexp(name[-2], [ 'season (?P<season>[0-9]+)',
                                                # TODO: need to find a better way to have language packs for regexps
                                                'saison (?P<season>[0-9]+)' ]):
-            s = query.find_or_create(Series, title = name[2])
+            log.debug('Found with confidence 0.8: series title = %s' % name[-3])
+            s = query.find_or_create(Series, title = name[-3])
             result.series = s
             result.confidence = 0.8
         else:
-            s = query.find_or_create(Series, title = name[1])
+            log.debug('Found with confidence 0.4: series title = %s' % name[-2])
+            s = query.find_or_create(Series, title = name[-2])
             result.series = s
             result.confidence = 0.4
 
