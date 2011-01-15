@@ -21,13 +21,17 @@
 from smewttest import *
 from smewt.media.subtitle.subtitle_tvsubtitles_provider import TVSubtitlesProvider
 
+
+def datafile(filename):
+    return os.path.join(os.path.split(__file__)[0], 'test_episodesubtitle', filename)
+
 class TestEpisodeSubtitle(TestCase):
 
     def setUp(self):
         ontology.reload_saved_ontology('media')
 
     def testSingleSubtitle(self):
-        for subdata in yaml.load(open('test_episodesubtitle/subsdata.yaml').read()):
+        for subdata in yaml.load(open(datafile('subsdata.yaml')).read()):
             query = MemoryObjectGraph()
             resultFile = subdata['result']
             del subdata['result']
@@ -48,7 +52,7 @@ class TestEpisodeSubtitle(TestCase):
             self.assert_(len(available) >= 1)
 
             sub = subprovider.getSubtitle(available[0])
-            self.assertEqual(open('test_episodesubtitle/' + resultFile).read(), sub.replace('\r\n', '\n'))
+            self.assertEqual(open(datafile(resultFile)).read(), sub.replace('\r\n', '\n'))
 
 
 

@@ -45,6 +45,13 @@ def movieSizeFilter(filename):
 
 
 
+def validEpisode(filename):
+    return utils.matchFile(filename, ['*.avi', '*.ogm', '*.mkv']) and getsize(filename) < 600 * 1024 * 1024,
+
+def validMovie(filename):
+    return utils.matchFile(filename, ['*.avi', '*.ogm', '*.mkv']) and getsize(filename) > 600 * 1024 * 1024,
+
+
 class SmewtDaemon(object):
     def __init__(self, progressCallback = None):
         super(SmewtDaemon, self).__init__()
@@ -64,8 +71,7 @@ class SmewtDaemon(object):
         # get our collections: series and movies for now
         self.episodeCollection = Collection(name = 'Series',
                                            # episodes are videos < 600MB and/or subtitles
-                                           validFiles = [ lambda f: utils.matchFile(f, ['*.avi', '*.ogm', '*.mkv']) and getsize(f) < 600 * 1024 * 1024,
-                                                          '*.sub', '*.srt' ],
+                                           validFiles = [ validEpisode, '*.sub', '*.srt' ],
                                            mediaTagger = EpisodeTagger,
                                            dataGraph = self.database,
                                            taskManager = self.taskManager)
@@ -73,8 +79,7 @@ class SmewtDaemon(object):
 
         self.movieCollection = Collection(name = 'Movie',
                                           # movies are videos > 600MB and/or subtitles
-                                          validFiles = [ lambda f: utils.matchFile(f, ['*.avi', '*.ogm', '*.mkv']) and getsize(f) > 600 * 1024 * 1024,
-                                                         '*.sub', '*.srt' ],
+                                          validFiles = [ validMovie, '*.sub', '*.srt' ],
                                           mediaTagger = MovieTagger,
                                           dataGraph = self.database,
                                           taskManager = self.taskManager)

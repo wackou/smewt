@@ -75,7 +75,7 @@ class TVDBMetadataProvider(object):
             ep.set('title', episode.name)
             ep.set('synopsis', episode.overview)
             ep.set('originalAirDate', str(episode.first_aired))
-            
+
         return result
 
     @cachedmethod
@@ -85,31 +85,31 @@ class TVDBMetadataProvider(object):
         results = self.tmdb.search(name)
         for r in results:
           return r['id']
-        
+
         raise SmewtException("MovieTMDB: Could not find movie '%s'" % name)
 
     @cachedmethod
     def getMovieData(self, movieId):
         """From a given TVDBPy movie object, return a graph containing its information."""
         m = self.tmdb.getMovieInfo(movieId)
-        
+
         result = MemoryObjectGraph()
         movie = result.Movie(title = unicode(m['name']),
                              year = datetime.datetime.strptime(m['released'], '%Y-%m-%d').year)
 
-        movie.set('director', [unicode(d['name']) for d in m['cast']['director']])
+        movie.set('director', [unicode(d['name']) for d in m['cast'].get('director', [])])
         movie.set('writer', [unicode(d['name']) for d in m['cast'].get('author', [{'name': ''}])])
         movie.set('genres', [unicode(g) for g in m['categories']['genre'].keys()])
         movie.set('rating', m['rating'])
         movie.set('plot', [unicode(m['overview'])])
         movie.set('plotOutline', unicode(m['overview']))
-        
+
         try:
             movie.cast = [ unicode(actor['name']) + ' -- ' + unicode(actor['character']) for actor in m['cast']['actor'][:15] ]
         except KeyError:
             movie.cast = []
 
-        
+
         return result
 
 
@@ -120,18 +120,18 @@ class TVDBMetadataProvider(object):
         noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
 
         loresFilename, hiresFilename = None, None
-        
+
         urls = self.tvdb.get_show_image_choices(tvdbID)
         posters = [url for url in urls if url[1]=='poster']
         if len(posters)>0:
             loresURL = posters[0][0]
             loresFilename = os.path.join(imageDir, '%s_lores.jpg' % tvdbID)
             open(loresFilename, 'wb').write(curlget(loresURL))
-            
+
             if len(posters)>1:
               hiresURL = posters[1][0]
               hiresFilename = os.path.join(imageDir, '%s_hires.jpg' % tvdbID)
-              open(hiresFilename, 'wb').write(curlget(hiresURL))        
+              open(hiresFilename, 'wb').write(curlget(hiresURL))
         else:
             log.warning('Could not find poster for tvdb ID %s' % tvdbID)
             return (noposter, noposter)
@@ -146,9 +146,9 @@ class TVDBMetadataProvider(object):
         noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
 
         loresFilename, hiresFilename = None, None
-        
+
         m = self.tmdb.getMovieInfo(movieId)
-        
+
         posters = []
         for poster in m['images'].posters:
             for key, value in poster.items():
@@ -156,16 +156,16 @@ class TVDBMetadataProvider(object):
                     if value.startswith("http://"):
                       posters.append(value)
 
-        
+
         if len(posters)>0:
             loresURL = posters[0]
             loresFilename = os.path.join(imageDir, '%s_lores.jpg' % movieId)
             open(loresFilename, 'wb').write(curlget(loresURL))
-            
+
             if len(posters)>1:
               hiresURL = posters[1]
               hiresFilename = os.path.join(imageDir, '%s_hires.jpg' % movieId)
-              open(hiresFilename, 'wb').write(curlget(hiresURL))        
+              open(hiresFilename, 'wb').write(curlget(hiresURL))
         else:
             log.warning('Could not find poster for tmdb ID %s' % movieId)
             return (noposter, noposter)

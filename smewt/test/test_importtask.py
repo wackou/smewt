@@ -31,44 +31,55 @@ class TestImportTask(TestCase):
     def setUp(self):
         ontology.reload_saved_ontology('media')
 
-    def createTasks(self, collection):
-        t1 = ImportTask(collection, EpisodeTagger, 'Monk/Monk.2x05.Mr.Monk.And.The.Very,.Very.Old.Man.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].avi')
-        t2 = ImportTask(collection, EpisodeTagger, 'Monk/Monk.2x05.Mr.Monk.And.The.Very,.Very.Old.Man.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].English.srt')
-        t3 = ImportTask(collection, EpisodeTagger, 'Monk/Monk.2x06.Mr.Monk.Goes.To.The.Theater.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].avi')
-        t4 = ImportTask(collection, EpisodeTagger, 'Monk/Monk.2x06.Mr.Monk.Goes.To.The.Theater.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].English.srt')
+    def createTasks(self, database):
+        t1 = ImportTask(database, EpisodeTagger, 'Monk/Monk.2x05.Mr.Monk.And.The.Very,.Very.Old.Man.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].avi')
+        t2 = ImportTask(database, EpisodeTagger, 'Monk/Monk.2x05.Mr.Monk.And.The.Very,.Very.Old.Man.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].English.srt')
+        t3 = ImportTask(database, EpisodeTagger, 'Monk/Monk.2x06.Mr.Monk.Goes.To.The.Theater.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].avi')
+        t4 = ImportTask(database, EpisodeTagger, 'Monk/Monk.2x06.Mr.Monk.Goes.To.The.Theater.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].English.srt')
 
         return t1, t2, t3, t4
 
-    def collectionTest(self, collection):
-        series = collection.find_all(Series)
-        eps = collection.find_all(Episode)
-        subs = collection.find_all(Subtitle)
+    def collectionTestIncomplete(self, database):
+        self.assertEqual(len(list(database.nodes())), 5)
+        series = database.find_all(Series)
+        eps = database.find_all(Episode)
+        subs = database.find_all(Subtitle)
+
+        self.assertEqual(len(series), 1)
+        self.assertEqual(len(eps), 1)
+        self.assertEqual(len(subs), 1)
+
+    def collectionTest(self, database):
+        self.assertEqual(len(list(database.nodes())), 9)
+        series = database.find_all(Series)
+        eps = database.find_all(Episode)
+        subs = database.find_all(Subtitle)
 
         self.assertEqual(len(series), 1)
         self.assertEqual(len(eps), 2)
         self.assertEqual(len(subs), 2)
 
-    def testImportEpisodes(self):
-        collection = MemoryObjectGraph()
+    def atestImportEpisodes(self):
+        database = MemoryObjectGraph()
 
-        t1, t2, t3, t4 = self.createTasks(collection)
+        t1, t2, t3, t4 = self.createTasks(database)
 
         t1.perform()
-        #collection.displayGraph()
+        #database.display_graph()
         t2.perform()
-        #collection.displayGraph()
+        #database.display_graph()
         t3.perform()
-        #collection.displayGraph()
+        #database.display_graph()
         t4.perform()
-        #collection.displayGraph()
+        #database.display_graph()
 
-        self.collectionTest(collection)
+        self.collectionTest(database)
 
-    def testTaskManager(self):
-        collection = MemoryObjectGraph()
+    def atestTaskManager(self):
+        database = MemoryObjectGraph()
 
         tm = TaskManager()
-        for task in self.createTasks(collection):
+        for task in self.createTasks(database):
             tm.add(task)
 
         # the TaskManager might already have started to process a task, in which case the queue size is 3
@@ -80,9 +91,9 @@ class TestImportTask(TestCase):
         self.assert_(tm.empty())
         self.assertEqual(tm.total, 0)
 
-        #collection.displayGraph()
+        #database.display_graph()
 
-        self.collectionTest(collection)
+        self.collectionTest(database)
 
     def testSmewtDaemon(self):
         # we need to remove traces of previous test runs, even though we're supposed to have cleaned it after the test,
@@ -105,41 +116,55 @@ class TestImportTask(TestCase):
 
         smewtd = SmewtDaemon()
 
-        # create fake collection
+        # create fake database
         cmds = '''mkdir -p /tmp/smewt_test_daemon/Monk
         touch /tmp/smewt_test_daemon/Monk/Monk.2x05.Mr.Monk.And.The.Very,.Very.Old.Man.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].avi
         touch /tmp/smewt_test_daemon/Monk/Monk.2x05.Mr.Monk.And.The.Very,.Very.Old.Man.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].English.srt
+        '''
+        for cmd in cmds.split('\n'):
+            os.system(cmd.strip())
+
+        smewtd.episodeCollection.folders = { '/tmp/smewt_test_daemon': True }
+
+        # make sure we don't have a residual collection from previous test runs
+        self.assertEqual(len(list(smewtd.database.nodes())), 0)
+
+        # initial import of the collection
+        smewtd.episodeCollection.rescan()
+        smewtd.taskManager.join() # wait for all import tasks to finish
+
+        print list(smewtd.episodeCollection.collectionFiles())
+        #smewtd.database.display_graph()
+        self.collectionTestIncomplete(smewtd.database)
+
+        # update collection, as we haven't changed anything it should be the same
+        smewtd.episodeCollection.update()
+        smewtd.taskManager.join() # wait for all import tasks to finish
+
+        #smewtd.database.display_graph()
+        self.collectionTestIncomplete(smewtd.database)
+
+        # fully rescan collection, should still be the same
+        smewtd.episodeCollection.rescan()
+        smewtd.taskManager.join() # wait for all import tasks to finish
+
+        #smewtd.database.display_graph()
+        self.collectionTestIncomplete(smewtd.database)
+
+        # add some more files
+        cmds = '''mkdir -p /tmp/smewt_test_daemon/Monk
         touch /tmp/smewt_test_daemon/Monk/Monk.2x06.Mr.Monk.Goes.To.The.Theater.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].avi
         touch /tmp/smewt_test_daemon/Monk/Monk.2x06.Mr.Monk.Goes.To.The.Theater.DVDRip.XviD-MEDiEVAL.[tvu.org.ru].English.srt
         '''
         for cmd in cmds.split('\n'):
             os.system(cmd.strip())
 
-        smewtd.collection.seriesFolders = { '/tmp/smewt_test_daemon': None }
-
-        # make sure we don't have a residual collection from previous test runs
-        self.assertEqual(len(list(smewtd.collection.nodes())), 0)
-
-        # initial import of the collection
-        smewtd.collection.rescan()
+        # update collection
+        smewtd.episodeCollection.update()
         smewtd.taskManager.join() # wait for all import tasks to finish
 
-        #smewtd.collection.displayGraph()
-        self.collectionTest(smewtd.collection)
-
-        # update collection, as we haven't changed anything it should be the same
-        smewtd.collection.update()
-        smewtd.taskManager.join() # wait for all import tasks to finish
-
-        #smewtd.collection.displayGraph()
-        self.collectionTest(smewtd.collection)
-
-        # fully rescan collection, should still be the same
-        smewtd.collection.rescan()
-        smewtd.taskManager.join() # wait for all import tasks to finish
-
-        #smewtd.collection.displayGraph()
-        self.collectionTest(smewtd.collection)
+        #smewtd.database.display_graph()
+        self.collectionTest(smewtd.database)
 
         # clean up our mess before we exit
         os.system('rm -fr ~/.config/DigitalGaia_tmp')
