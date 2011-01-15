@@ -3,7 +3,7 @@
 #
 # Smewt - A smart collection manager
 # Copyright (c) 2008 Ricard Marxer <email@ricardmarxer.com>
-# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
+# Copyright (c) 2011 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,6 +24,10 @@ from smewt.solvers.solver import Solver
 
 
 class MergeSolver(Solver):
+    """A MergeSolver finds all nodes of the given type in a graph and merges their data into a single one.
+
+    Each node should have a 'confidence' attribute that will be used for resolving conflicts. Only the value
+    with the highest confidence is kept in the end."""
 
     def __init__(self, type):
         super(MergeSolver, self).__init__()
@@ -38,7 +42,8 @@ class MergeSolver(Solver):
         result = results[0]
         for md in results[1:]:
             for k, v in md.explicit_items():
-                if k == 'confidence': continue
+                if k == 'confidence' or k in result.keys():
+                    continue
                 result.set(k, v)
 
         return self.found(query, result)
