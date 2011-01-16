@@ -207,7 +207,8 @@ def matchFile(filename, validFiles = ['*']):
                 return True
         else:
             # we assume it's a filter function that returns whether a file should be considered
-            return validFile(filename)
+            if validFile(filename):
+                return True
 
     return False
 

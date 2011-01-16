@@ -60,6 +60,7 @@ class Collection(object):
         collection = settings.value('collection_%s' % self.name).toList()
         if collection:
             self.folders = dict((toUtf8(folder), recursive.toBool()) for folder, recursive in collection[0].toMap().items())
+            # FIXME: file access times should be stored in the graph DB, not as settings
             self.files = dict((toUtf8(file), lastAccessed.toInt()[0]) for file, lastAccessed in collection[1].toMap().items())
 
     def saveSettings(self):

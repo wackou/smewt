@@ -45,7 +45,7 @@ class MainWidget(QWidget):
         super(MainWidget, self).__init__()
 
         def progressCallback(current, total):
-            print 'progress callback: %d out of %d' % (current, total)
+            log.debug('progress callback: %d out of %d' % (current, total))
             self.progressChanged(current, total)
         # FIXME: uncomment me
         #self.connect(self.taskManager, SIGNAL('progressChanged'), self.progressChanged)

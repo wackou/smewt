@@ -30,26 +30,13 @@ import logging
 
 log = logging.getLogger('smewt.base.smewtdaemon')
 
-def episodeSizeFilter(filename):
-    # episodes are videos < 600MB
-    if utils.matchFile(filename, [ '*.avi',  '*.ogm',  '*.mkv' ]) and os.path.getsize(filename) < 600 * 1024 * 1024:
-        return True
-    return False
-
-
-def movieSizeFilter(filename):
-    # episodes are videos < 600MB
-    if utils.matchFile(filename, [ '*.avi',  '*.ogm',  '*.mkv' ]) and os.path.getsize(filename) > 600 * 1024 * 1024:
-        return True
-    return False
-
 
 
 def validEpisode(filename):
-    return utils.matchFile(filename, ['*.avi', '*.ogm', '*.mkv']) and getsize(filename) < 600 * 1024 * 1024,
+    return utils.matchFile(filename, [ '*.avi', '*.ogm', '*.mkv' ]) and getsize(filename) < 600 * 1024 * 1024
 
 def validMovie(filename):
-    return utils.matchFile(filename, ['*.avi', '*.ogm', '*.mkv']) and getsize(filename) > 600 * 1024 * 1024,
+    return utils.matchFile(filename, [ '*.avi', '*.ogm', '*.mkv' ]) and getsize(filename) > 600 * 1024 * 1024,
 
 
 class SmewtDaemon(object):
@@ -71,7 +58,7 @@ class SmewtDaemon(object):
         # get our collections: series and movies for now
         self.episodeCollection = Collection(name = 'Series',
                                            # episodes are videos < 600MB and/or subtitles
-                                           validFiles = [ validEpisode, '*.sub', '*.srt' ],
+                                           validFiles = [ validEpisode, '*.idx', '*.sub', '*.srt' ],
                                            mediaTagger = EpisodeTagger,
                                            dataGraph = self.database,
                                            taskManager = self.taskManager)
@@ -79,7 +66,7 @@ class SmewtDaemon(object):
 
         self.movieCollection = Collection(name = 'Movie',
                                           # movies are videos > 600MB and/or subtitles
-                                          validFiles = [ validMovie, '*.sub', '*.srt' ],
+                                          validFiles = [ validMovie, '*.idx', '*.sub', '*.srt' ],
                                           mediaTagger = MovieTagger,
                                           dataGraph = self.database,
                                           taskManager = self.taskManager)

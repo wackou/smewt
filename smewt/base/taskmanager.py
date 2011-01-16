@@ -57,8 +57,8 @@ def worker(queue):
             log.warning('TaskManager: task failed with type error: %s' % e)
             raise
             pass
-        except Exception, e:
-            log.warning('TaskManager: task failed unexpectedly with error: %s' % e)
+        #except Exception, e:
+        #    log.warning('TaskManager: task failed unexpectedly with error: %s' % e)
         finally:
             queue.task_done()
 

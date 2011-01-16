@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import SmewtException, SolvingChain, Media, utils
+from smewt.base import SmewtException, SolvingChain, Media, Metadata, utils
 from smewt.media import Episode, Series, Subtitle
 from smewt.taggers.tagger import Tagger
 from smewt.guessers import *
@@ -31,7 +31,9 @@ log = logging.getLogger('smewt.taggers.episodetagger')
 class EpisodeTagger(Tagger):
 
     def perform(self, query):
+        log.info('EpisodeTagger tagging episode: %s' % query.find_one(Media).filename)
         filenameMetadata = SolvingChain(EpisodeFilename(), MergeSolver(Episode)).solve(query)
+        log.info('EpisodeTagger found info from filename: %s' % filenameMetadata.find_one(Episode))
         result = SolvingChain(EpisodeTVDB(), SimpleSolver(Episode)).solve(filenameMetadata)
 
         media = result.find_one(Media)
@@ -62,16 +64,16 @@ class EpisodeTagger(Tagger):
 
         # import subtitles correctly
         if media.type() == 'subtitle':
-            # FIXME: problem for vobsubs: as a media points to a single metadata object, we cannot
-            # represent a .sub for 3 different languages...
             subs = []
             for language in utils.guessCountryCode(media.filename):
+                log.info('Found %s sub in file %s' % (language, media.filename))
                 subs += [ result.Subtitle(metadata = media.metadata,
                                           language = language) ]
 
-                media.metadata = subs
+            media.metadata = subs
+
 
         self.cleanup(result)
-        #result.displayGraph()
-        log.debug('Finished tagging: %s' % media)
+
+        log.debug('Finished tagging: %s' % media.filename)
         return result

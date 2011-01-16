@@ -59,7 +59,7 @@ class TestImportTask(TestCase):
         self.assertEqual(len(eps), 2)
         self.assertEqual(len(subs), 2)
 
-    def atestImportEpisodes(self):
+    def testImportEpisodes(self):
         database = MemoryObjectGraph()
 
         t1, t2, t3, t4 = self.createTasks(database)
@@ -75,7 +75,14 @@ class TestImportTask(TestCase):
 
         self.collectionTest(database)
 
-    def atestTaskManager(self):
+    def testImportVobsubSubtitle(self):
+        database = MemoryObjectGraph()
+        t = ImportTask(database, EpisodeTagger, '/home/download/tmp/testsmewt_series/Arrested_development/Arrested.Development.3x07.Prison.Break-In.DVDRip-TOPAZ.[tvu.org.ru].idx')
+        t.perform()
+        str(database.find_one(Media))
+        #database.display_graph()
+
+    def testTaskManager(self):
         database = MemoryObjectGraph()
 
         tm = TaskManager()

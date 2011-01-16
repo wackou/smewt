@@ -60,7 +60,7 @@ class Media(BaseObject):
                        'matches': 'query' }
 
     types = { 'video': [ 'avi', 'ogm', 'mkv', 'mpg', 'mpeg' ],
-              'subtitle': [ 'sub', 'srt' ]
+              'subtitle': [ 'idx', 'sub', 'srt' ]
               }
 
 
@@ -87,7 +87,7 @@ def foundMetadata(query, result, link = True):
     solved = MemoryObjectGraph()
 
     # remove the stale 'matches' link before adding the media to the resulting graph
-    #query.displayGraph()
+    #query.display_graph()
     media = query.find_one(Media)
     media.matches = []
     media.metadata = []
@@ -101,7 +101,7 @@ def foundMetadata(query, result, link = True):
     else:
         result = solved.add_object(result, recurse = Equal.OnLiterals)
 
-    #solved.displayGraph()
+    #solved.display_graph()
     if link:
         m.metadata = result
 

@@ -20,7 +20,7 @@
 #
 
 from smewt.base import GraphAction, utils, textutils
-from smewt.base import Media, Metadata
+from smewt.base import Media, Metadata, SmewtException
 from smewt.base.utils import tolist
 from smewt.media import Episode, Series
 import logging, re
