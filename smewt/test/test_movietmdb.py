@@ -43,6 +43,10 @@ tests = '''
     title: Sin City
     year: 2005
 
+/data/Movies/Borat (2006)/Borat.(2006).R5.PROPER.REPACK.DVDRip.XviD-PUKKA.avi:
+    title: "Borat: Cultural Learnings of America for Make Benefit Glorious Nation of Kazakhstan"
+    year: 2006
+
 "[XCT].Le.Prestige.(The.Prestige).DVDRip.[x264.HP.He-Aac.{Fr-Eng}.St{Fr-Eng}.Chaps].mkv":
     title: The Prestige
     year: 2006
@@ -55,6 +59,10 @@ Brazil (1985)/Brazil_Criterion_Edition_(1985).CD1.avi:
     title: Brazil
     year: 1985
 
+Batman Begins (2005)/Batman Begins.2005.HDDVDRIP.720p.AC3.5.1.x264-Audiofixed.mkv:
+    title: Batman Begins
+    year: 2005
+
 Waking Life (2001)/Waking.Life.2001.DVDRip.{x264-Hp+AAC-He}{Eng}{Sub.Fr}{Chapitres}.mkv:
     title: Waking Life
     year: 2001
@@ -62,6 +70,10 @@ Waking Life (2001)/Waking.Life.2001.DVDRip.{x264-Hp+AAC-He}{Eng}{Sub.Fr}{Chapitr
 Futurama - Bender's Game (2008)/Futurama.Benders.Game.2008.DVDRiP.XViD-DOMiNO.avi:
     title: "Futurama: Bender's Game"
     year: 2008
+
+Dancer in the Dark (2000)/Dancer.in.the.dark.{Rv10.He-Aac}{Fr-Eng}{SUB.Fr.Songs.translate.-.Fr}{Chap.&.Pieces.Jointes}.mkv:
+    title: Dancer in the Dark
+    year: 2000
 
 American Gangster (2007)/American Gangster[2007][Unrated Edition]DvDrip[Eng]-FXG.avi:
     title: American Gangster
@@ -95,6 +107,19 @@ Chat noir, chat blanc (1998)/Chat noir, Chat blanc - Emir Kusturica (VO - VF - s
     title: Chat noir, chat blanc
     year: 1998
 
+Bienvenido Mister Marshall (1953)/Bienvenido Mister Marshall (Berlanga, 1952).avi:
+    title: Bienvenido Mister Marshall
+    year: 1953
+
+The.Running.Man.SE.1987.CD1.DVDrip.ws.XviD.AC3.5ch.iNT-NDRT.avi:
+    title: The Running Man
+    year: 1987
+
+Screaming Masterpiece (Gargandi Snilld) (2005)/Screaming Masterpiece.avi:
+    title: Gargandi snilld
+    year: 2005
+
+
 Batman Begins (2005)/Batman Begins.2005.HDDVDRIP.720p.AC3.5.1.x264-Audiofixed.mkv:
     title: Batman Begins
     year: 2005
@@ -104,7 +129,6 @@ El Bosque Animado (1987)/El.Bosque.Animado.[Jose.Luis.Cuerda.1987].[Xvid-Dvdrip-
     year: 1987
 
 '''
-
 
 class TestMovieTMDB(TestCase):
 

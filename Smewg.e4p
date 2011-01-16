@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2011-01-14, 20:19:35 -->
+<!-- Saved: 2011-01-16, 02:21:31 -->
 <!-- Copyright (C) 2011 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -27,13 +27,10 @@
     <Source>smewt/base/textutils.py</Source>
     <Source>smewt/base/utils.py</Source>
     <Source>smewt/base/smewtdict.py</Source>
-    <Source>smewt/guessers/episodeimdb.py</Source>
     <Source>smewt/guessers/episodefilename.py</Source>
     <Source>smewt/guessers/guesser.py</Source>
-    <Source>smewt/guessers/movieimdb.py</Source>
     <Source>smewt/guessers/__init__.py</Source>
     <Source>smewt/guessers/moviefilename.py</Source>
-    <Source>smewt/guessers/imdbmetadataprovider.py</Source>
     <Source>smewt/gui/feedwatchwidget.py</Source>
     <Source>smewt/gui/__init__.py</Source>
     <Source>smewt/gui/mainwidget.py</Source>
@@ -83,10 +80,8 @@
     <Source>smewt/test/all_tests.py</Source>
     <Source>smewt/test/test_episodesubtitle.py</Source>
     <Source>smewt/test/test_inheritance.py</Source>
-    <Source>smewt/test/test_imdb.py</Source>
     <Source>smewt/test/test_importtask.py</Source>
     <Source>smewt/test/test_basicnode.py</Source>
-    <Source>smewt/test/test_movieimdb.py</Source>
     <Source>smewt/test/test_memory.py</Source>
     <Source>smewt/test/test_movietmdb.py</Source>
     <Source>smewt/test/test_episodefilename.py</Source>
@@ -96,6 +91,11 @@
     <Source>smewt/base/collection.py</Source>
     <Source>bin/smewg</Source>
     <Source>bin/run_dev_smewg</Source>
+    <Source>smewt/test/test_tvdb/futurama.yaml</Source>
+    <Source>smewt/test/test_tvdb/duckman.yaml</Source>
+    <Source>smewt/test/test_episodesubtitle/subsdata.yaml</Source>
+    <Source>smewt/test/test_episodesubtitle/The Big Bang Theory - 2x12 - The Killer Robot Instability.HDTV.xor.fr.srt</Source>
+    <Source>smewt/test/test_tvdb/blackadder.yaml</Source>
   </Sources>
   <Forms>
   </Forms>

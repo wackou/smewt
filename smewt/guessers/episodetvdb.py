@@ -40,9 +40,9 @@ class EpisodeTVDB(GraphAction):
         self.checkValid(query)
         self.query = query
 
-        log.debug('EpisodeTvdb: finding more info on %s' % query.find_all(type = Episode))
         ep = query.find_one(Episode)
 
+        log.debug('EpisodeTvdb: finding more info on %s' % ep)
         if ep.get('series') is None:
             raise SmewtException("EpisodeTVDB: Episode doesn't contain 'series' field: %s" % ep)
 

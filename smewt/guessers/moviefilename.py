@@ -75,6 +75,26 @@ def guessXCT(filename):
     finally:
         return filename, md
 
+
+'''
+def VideoFilename(filename):
+    parts = textutils.cleanString(filename).split()
+
+    found = {} # dictionary of identified named properties to their index in the parts list
+
+    # heuristic 1: find VO, sub FR, etc...
+    for i, part in enumerate(parts):
+        if matchRegexp(part, [ 'VO', 'VF' ]):
+            found = { ('audio', 'VO'): i }
+
+    # heuristic 2: match video size
+    #rexp('...x...') with x > 200  # eg: (720, 480) -> property format = 16/9, etc...
+
+    # we consider the name to be what's left at the beginning, before any other identified part
+    # (other possibility: look at the remaining zones in parts which are not covered by any identified props, look for the first one, or the biggest one)
+    name = ' '.join(parts[:min(found.values())])
+'''
+
 def cleanMovieFilename(filename):
     import os.path
     filename = os.path.basename(filename)
@@ -116,8 +136,8 @@ def cleanMovieFilename(filename):
     properties = { 'format': [ 'DVDRip', 'HDDVD', 'HDDVDRip', 'BDRip', 'R5', 'HDRip', 'DVD', 'Rip' ],
                    'container': [ 'avi', 'mkv', 'ogv', 'wmv', 'mp4', 'mov' ],
                    'screenSize': [ '720p' ],
-                   'videoCodec': [ 'XviD', 'DivX', 'x264' ],
-                   'audioCodec': [ 'AC3', 'DTS', 'AAC' ],
+                   'videoCodec': [ 'XviD', 'DivX', 'x264', 'Rv10' ],
+                   'audioCodec': [ 'AC3', 'DTS', 'He-AAC', 'AAC-He', 'AAC' ],
                    'language': [ 'english', 'eng',
                                  'spanish', 'esp',
                                  'french', 'fr',
@@ -129,6 +149,8 @@ def cleanMovieFilename(filename):
                    'other': [ '5ch', 'PROPER', 'REPACK', 'LIMITED', 'DualAudio', 'iNTERNAL', 'Audiofixed',
                               'classic', # not so sure about this one, could appear in a title
                               'ws', # widescreen
+                              'SE', # special edition
+                              # TODO: director's cut
                               ],
                    }
 
@@ -228,6 +250,8 @@ class MovieFilename(GraphAction):
         media = query.find_one(node_type = Media)
 
         movie = cleanMovieFilename(media.filename)
+
+        log.info('Found filename information from: %s\n%s' % (media.filename, movie))
 
         media.matches = query.Movie(**movie)
         return query

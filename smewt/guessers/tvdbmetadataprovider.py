@@ -178,12 +178,10 @@ class TVDBMetadataProvider(object):
             raise SmewtException("TVDBMetadataProvider: Episode doesn't contain 'series' field: %s", md)
 
         name = episode.series.title
+        series = self.getSeries(name)
+        eps = self.getEpisodes(series)
+
         try:
-            series = self.getSeries(name)
-            from smewt.base import cache
-            #cache.save('/tmp/smewt.cache')
-            eps = self.getEpisodes(series)
-            #cache.save('/tmp/smewt.cache')
             lores, hires = self.getSeriesPoster(series)
             eps.find_one(Series).update({ 'loresImage': lores,
                                           'hiresImage': hires })
@@ -203,7 +201,7 @@ class TVDBMetadataProvider(object):
             movie.loresImage = lores
             movie.hiresImage = hires
 
-            #result.displayGraph()
+            #result.display_graph()
             return result
 
         except SmewtException, e:

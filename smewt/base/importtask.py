@@ -31,7 +31,6 @@ class ImportTask(Task):
         self.collection = collection
         self.taggerType = taggerType
         self.filename = filename
-        log.info('Creating %s import task for file: %s' % (taggerType.__name__, filename))
 
     def perform(self):
         query = MemoryObjectGraph()
@@ -39,7 +38,7 @@ class ImportTask(Task):
         result = self.taggerType().perform(query)
 
         # TODO: check that we actually found something useful
-        #result.displayGraph()
+        #result.display_graph()
 
         # import the data into our collection
         self.collection.add_object(result.find_one(Media),

@@ -52,6 +52,9 @@ class TestTVDB(TestCase):
 
 # add a single test function for each file contained in the test_imdb/ directory
 for filename in glob.glob(join(currentPath(), 'test_tvdb', '*.yaml')):
+    if filename.endswith('blackadder.yaml'):
+        continue
+
     testName = basename(filename)[0].upper() + basename(filename)[1:-5]
     # dammit what a laborious hack... closure seems to work oddly otherwise...
     fcode = '''
