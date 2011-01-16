@@ -24,5 +24,3 @@ from moviefilename import MovieFilename
 from movietmdb import MovieTMDB
 
 
-from episodeimdb import EpisodeIMDB
-from movieimdb import MovieIMDB
