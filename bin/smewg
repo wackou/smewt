@@ -95,6 +95,7 @@ class SmewtGui(QMainWindow):
         navigationToolBar = QToolBar('Navigation')
         navigationToolBar.addAction(self.backAction)
         navigationToolBar.addAction(self.fwdAction)
+        navigationToolBar.addAction(self.refreshAction)
         navigationToolBar.addAction(self.homeAction)
         navigationToolBar.addSeparator()
         navigationToolBar.addAction(self.zoomOutAction)
@@ -179,8 +180,13 @@ class SmewtGui(QMainWindow):
         self.connect(self.fwdAction, SIGNAL('triggered()'),
                      self.mainWidget.forward)
 
+        self.refreshAction = QAction(QIcon(smewtDirectory('smewt', 'icons', 'view-refresh.png')), 'Refresh', self)
+        self.refreshAction.setStatusTip('Refresh the main view')
+        self.connect(self.refreshAction, SIGNAL('triggered()'),
+                     self.mainWidget.refreshCollectionView)
+
         self.homeAction = QAction(QIcon(smewtDirectory('smewt', 'icons', 'go-home.png')), 'Home (Speed Dial)', self)
-        self.homeAction.setStatusTip('Returns to the speed dial')
+        self.homeAction.setStatusTip('Return to speed dial')
         self.connect(self.homeAction, SIGNAL('triggered()'),
                      self.showSpeedDial)
 
