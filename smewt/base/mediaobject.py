@@ -49,6 +49,7 @@ class Media(BaseObject):
                'sha1': unicode,
                'metadata': Metadata,
                'watched': bool, # TODO: or is the one from Metadata sufficient?
+               'lastAccessed': float, # seconds since the epoch
 
                # used by guessers and solvers
                'matches': Metadata

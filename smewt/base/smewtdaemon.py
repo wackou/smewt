@@ -19,17 +19,26 @@
 #
 
 from PyQt4.QtCore import QSettings, QVariant
-from pygoo import MemoryObjectGraph
+from pygoo import MemoryObjectGraph, Equal
 import smewt
 from smewt.media import Series, Episode, Movie
-from smewt.base import utils, Collection
+from smewt.base import utils, Collection, Media
 from smewt.base.taskmanager import Task, TaskManager
 from os.path import join, dirname, splitext, getsize
 from smewt.taggers import EpisodeTagger, MovieTagger
-import logging
+import time, logging
 
 log = logging.getLogger('smewt.base.smewtdaemon')
 
+
+class VersionedMediaGraph(MemoryObjectGraph):
+
+    def add_object(self, node, recurse = Equal.OnIdentity, excluded_deps = list()):
+        result = super(VersionedMediaGraph, self).add_object(node, recurse, excluded_deps)
+        if isinstance(result, Media):
+            result.lastModified = time.time()
+
+        return result
 
 
 def validEpisode(filename):
@@ -86,7 +95,7 @@ class SmewtDaemon(object):
             dbfile = join(utils.smewtUserDirectory(), smewt.APP_NAME + '.database')
             settings.setValue('database_file', QVariant(dbfile))
 
-        self.database = MemoryObjectGraph()
+        self.database = VersionedMediaGraph()
         try:
             self.database.load(dbfile)
         except:

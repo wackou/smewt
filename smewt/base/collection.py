@@ -49,22 +49,18 @@ class Collection(object):
         # folders is a dict of folder names to bool indicating whether they should be traversed recursively
         self.folders = folders
 
-        # files is a dict of filenames to last time they were updated
-        self.files = {}
-
         self.loadSettings()
 
 
     def loadSettings(self):
         settings = QSettings()
-        collection = settings.value('collection_%s' % self.name).toList()
+        collection = settings.value('collection_%s' % self.name)
         if collection:
-            self.folders = dict((toUtf8(folder), recursive.toBool()) for folder, recursive in collection[0].toMap().items())
-            # FIXME: file access times should be stored in the graph DB, not as settings
-            self.files = dict((toUtf8(file), lastAccessed.toInt()[0]) for file, lastAccessed in collection[1].toMap().items())
+            self.folders = dict((toUtf8(folder), recursive.toBool()) for folder, recursive in collection.toMap().items())
+            log.info('loaded %s folders: %s' % (self.name, self.folders))
 
     def saveSettings(self):
-        QSettings().setValue('collection_%s' % self.name, QVariant([ QVariant(self.folders), QVariant(self.files) ]))
+        QSettings().setValue('collection_%s' % self.name, QVariant(self.folders))
 
 
     def checkIntegrity():
@@ -85,9 +81,11 @@ class Collection(object):
                 yield f
 
     def modifiedFiles(self):
+        lastModified = dict((f.filename, f.get('lastModified', None)) for f in self.graph.find_all(Media))
         for f in self.collectionFiles():
-            # yield a file if we haven't heard of it yet of if it has been modified recently
-            if f not in self.files or int(os.path.getmtime(f)) > self.files[f]:
+            f = f.decode('utf-8')
+            # yield a file if we haven't heard of it yet or if it has been modified recently
+            if f not in lastModified or os.path.getmtime(f) > lastModified[f]:
                 yield f
 
     def importFiles(self, files):
@@ -97,9 +95,6 @@ class Collection(object):
             if self.taskManager:
                 importTask = ImportTask(self.graph, self.mediaTagger, f)
                 self.taskManager.add(importTask)
-
-            # TODO: is this correct to do this here or should we wait for the import task to succeed?
-            self.files[f] = os.path.getmtime(f)
 
         # save newly imported files
         self.saveSettings()
