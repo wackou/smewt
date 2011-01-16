@@ -27,6 +27,7 @@ from pygoo import MemoryObjectGraph, ontology
 from smewt.base import utils, Media, Metadata
 from smewt.base import ImportTask, SubtitleTask
 from smewt.taggers import EpisodeTagger, MovieTagger
+from smewt.base.textutils import toUtf8
 
 log = logging.getLogger('smewt.base.collection')
 
@@ -58,8 +59,8 @@ class Collection(object):
         settings = QSettings()
         collection = settings.value('collection_%s' % self.name).toList()
         if collection:
-            self.folders = dict((str(folder), recursive.toBool()) for folder, recursive in collection[0].toMap().items())
-            self.files = dict((str(file), lastAccessed.toInt()[0]) for file, lastAccessed in collection[1].toMap().items())
+            self.folders = dict((toUtf8(folder), recursive.toBool()) for folder, recursive in collection[0].toMap().items())
+            self.files = dict((toUtf8(file), lastAccessed.toInt()[0]) for file, lastAccessed in collection[1].toMap().items())
 
     def saveSettings(self):
         QSettings().setValue('collection_%s' % self.name, QVariant([ QVariant(self.folders), QVariant(self.files) ]))
@@ -85,7 +86,7 @@ class Collection(object):
     def modifiedFiles(self):
         for f in self.collectionFiles():
             # yield a file if we haven't heard of it yet of if it has been modified recently
-            if f not in self.files or os.path.getmtime(f) > self.files[f]:
+            if f not in self.files or int(os.path.getmtime(f)) > self.files[f]:
                 yield f
 
     def importFiles(self, files):
