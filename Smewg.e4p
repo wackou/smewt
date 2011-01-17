@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2011-01-16, 02:21:31 -->
+<!-- Saved: 2011-01-17, 23:20:34 -->
 <!-- Copyright (C) 2011 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -96,6 +96,11 @@
     <Source>smewt/test/test_episodesubtitle/subsdata.yaml</Source>
     <Source>smewt/test/test_episodesubtitle/The Big Bang Theory - 2x12 - The Killer Robot Instability.HDTV.xor.fr.srt</Source>
     <Source>smewt/test/test_tvdb/blackadder.yaml</Source>
+    <Source>bin/reset_config.sh</Source>
+    <Source>bin/make_release.sh</Source>
+    <Source>NEWS.txt</Source>
+    <Source>README.txt</Source>
+    <Source>NOTES.py</Source>
   </Sources>
   <Forms>
   </Forms>

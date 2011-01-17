@@ -123,7 +123,6 @@ class TaskManager(QtCore.QObject):
             self.queue.put(( (-task.priority, time.time()), task ))
             self.total += 1
 
-            print 'callback'
             self.callback()
 
 
