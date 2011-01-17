@@ -52,14 +52,9 @@ class SmewtDaemon(object):
     def __init__(self, progressCallback = None):
         super(SmewtDaemon, self).__init__()
 
-        # FIXME: this is a lame hack to save the collection when we can...
-        def callback(current, total):
-            if total == 0:
-                self.saveDB()
-            if progressCallback is not None:
-                progressCallback(current, total)
-
-        self.taskManager = TaskManager(progressCallback = callback)
+        # get a TaskManager for all the import tasks
+        self.taskManager = TaskManager()
+        self.taskManager.progressChanged.connect(self.progressChanged)
 
         # get our main graph DB
         self.loadDB()
@@ -81,10 +76,10 @@ class SmewtDaemon(object):
                                           taskManager = self.taskManager)
 
 
-        # update them when we start the daemon; do not rescan as it would be too long
-        # and we might delete some files that are on an unaccessible network share or
-        # an external HDD
-        self.updateCollections()
+
+    def progressChanged(self, current, total):
+        if total == 0:
+            self.saveDB()
 
 
     def loadDB(self):
@@ -105,13 +100,11 @@ class SmewtDaemon(object):
         log.info('Saving database...')
         self.database.save(unicode(QSettings().value('database_file').toString()))
 
-    def shutdown(self):
-        log.info('SmewtDaemon shutdown')
-        self.saveDB()
-
     def quit(self):
-        log.info('SmewtDaemon quit')
-        self.taskManager.abortAll()
+        log.info('SmewtDaemon quitting...')
+        self.taskManager.finishNow()
+        self.saveDB()
+        log.info('SmewtDaemon quitting OK!')
 
     def updateCollections(self):
         self.episodeCollection.update()

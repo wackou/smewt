@@ -44,12 +44,6 @@ class MainWidget(QWidget):
     def __init__(self):
         super(MainWidget, self).__init__()
 
-        def progressCallback(current, total):
-            log.debug('progress callback: %d out of %d' % (current, total))
-            self.progressChanged(current, total)
-        # FIXME: uncomment me
-        #self.connect(self.taskManager, SIGNAL('progressChanged'), self.progressChanged)
-
         self.collectionView = QWebView()
         self.collectionView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
         #self.collectionView.page().setLinkDelegationPolicy(QWebPage.DelegateExternalLinks)
@@ -60,7 +54,8 @@ class MainWidget(QWidget):
         layout = QVBoxLayout()
         layout.addWidget(self.collectionView)
 
-        self.smewtd = SmewtDaemon(progressCallback = progressCallback)
+        self.smewtd = SmewtDaemon()
+        self.smewtd.taskManager.progressChanged.connect(self.progressChanged)
 
         self.setLayout(layout)
 
@@ -73,8 +68,13 @@ class MainWidget(QWidget):
 
         self.externalProcess = QProcess()
 
-    def shutdown(self):
-        self.saveCollection()
+
+    def progressChanged(self, finished, total):
+        if total == 0:
+            self.refreshCollectionView()
+
+    def quit(self):
+        self.smewtd.quit()
 
     def setZoomFactor(self, factor):
         self.collectionView.page().mainFrame().setTextSizeMultiplier( factor )
@@ -116,22 +116,21 @@ class MainWidget(QWidget):
             self.index = len(self.history) - 1
 
         QSettings().setValue('base_url',  QVariant(unicode(self.smewtUrl)))
-        self.refreshCollectionView()
+        try:
+            self.refreshCollectionView()
+        except Exception, e:
+            import sys, traceback
+            log.warning('Exception:\n%s' % ''.join(traceback.format_exception(*sys.exc_info())))
 
-    def quit(self):
-        #self.taskManager.abortAll()
-        pass
+            # In case of error, return to the home screen
+            log.warning('Returning to Speed Dial view')
+            self.speedDial()
 
     def loadCollection(self):
+        """Debug method."""
         filename = str(QFileDialog.getOpenFileName(self, 'Select file to load the collection'))
         self.collection.load(filename)
 
-    def saveCollection(self):
-        #filename = unicode(QSettings().value('collection_file').toString())
-        #self.collection.save(filename)
-
-        # FIXME: should not be necessary anymore... (or is it?)
-        self.smewtd.shutdown()
 
     def updateCollectionSettings(self, result):
         if result == 1:
@@ -155,9 +154,6 @@ class MainWidget(QWidget):
                                   collection = self.smewtd.movieCollection)
         d.exec_()
 
-
-    def progressChanged(self, tagged, total):
-        self.emit(SIGNAL('progressChanged'),  tagged,  total)
 
     def mergeCollection(self, result):
         self.collection += result

@@ -22,7 +22,8 @@
 from __future__ import with_statement
 from smewtexception import SmewtException
 from Queue import PriorityQueue
-from threading import Thread, Lock
+from threading import Thread, Lock, current_thread
+from PyQt4 import QtCore
 import time
 import logging
 
@@ -43,27 +44,39 @@ class Task(object):
         raise NotImplementedError
 
 
-def worker(queue):
+def worker(taskManager):
+    log.info('Worker thread is: %d' % current_thread().ident)
     while True:
+        if taskManager.shouldFinish:
+            log.info('Worker thread stopped working because TaskManager should finish now')
+            return
+
         try:
-            (_, _), task = queue.get()
+            taskId = taskManager.taskId
+            (_, _), task = taskManager.queue.get()
+            taskManager.taskId + 1
+
             # TODO: need to have timeout on the tasks, eg: 5 seconds
+            # TODO: need to be able to stop task immediately
             task.perform()
+
         except SmewtException, e:
             log.warning('TaskManager: task failed with error: %s' % e)
+
         except TypeError, e:
             # to avoid errors when the program exits and the queue has been deleted
             # FIXME: catches way too much, we need to somehow tell the thread to stop when the TaskManager gets deleted
             log.warning('TaskManager: task failed with type error: %s' % e)
             raise
-            pass
+
         #except Exception, e:
         #    log.warning('TaskManager: task failed unexpectedly with error: %s' % e)
+
         finally:
-            queue.task_done()
+            taskManager.taskDone(taskId)
 
 
-class TaskManager(PriorityQueue, object):
+class TaskManager(QtCore.QObject):
     """The TaskManager is a stable priority queue of tasks. It takes them one by one, the
     one with the highest priority first, and call its perform() method, then repeat until no tasks are left.
 
@@ -71,43 +84,75 @@ class TaskManager(PriorityQueue, object):
 
     The TaskManager can be controlled asynchronously, as it runs the tasks in a separate thread."""
 
-    def __init__(self, progressCallback = None):
+    progressChanged = QtCore.pyqtSignal(int, int)
+
+    def __init__(self):
         super(TaskManager, self).__init__()
 
-        self.progressCallback = progressCallback
+        # our main task queue
+        self.queue = PriorityQueue()
 
-        self.total = 0
-        self.totalLock = Lock()
+        self.taskId = 0    # ID for the next task that will be generated
+        self.total = 0     # used to keep track of the total jobs that have been submitted (queue size decreases as we process tasks)
+        self.finished = [] # list of task IDs which have finished
 
-        t = Thread(target = worker, args = (self,))
-        t.daemon = True
-        t.start()
+        self.lock = Lock()
+
+        log.info('Main GUI thread is: %d' % current_thread().ident)
+
+        self.shouldFinish = False
+
+        # ideally a pool of threads or sth like TBB or ThreadWeaver
+        self.workerThread = Thread(target = worker, args = (self,))
+        self.workerThread.daemon = True
+        self.workerThread.start()
+
 
     def callback(self):
-        if self.progressCallback:
-           finished = max(0, self.total - self.qsize() - 1)
-           self.progressCallback(finished, self.total)
+        # we need to send a signal here so that it can be dealt with properly by the gui thread
+        # (we don't want to execute a gui callback using a worker thread)
+        self.progressChanged.emit(len(self.finished), self.total)
 
 
     def add(self, task):
-        # -task.priority because it always gets the lowest one first
-        # we need to put the time as well, because Queue uses heap sort which is not stable, so we
-        # had to find a way to make it look stable ;-)
-        with self.totalLock:
+        log.debug('TaskManager add task')
+        with self.lock:
+            # -task.priority because it always gets the lowest one first
+            # we need to put the time as well, because Queue uses heap sort which is not stable, so we
+            # had to find a way to make it look stable ;-)
+            self.queue.put(( (-task.priority, time.time()), task ))
             self.total += 1
-            self.put(( (-task.priority, time.time()), task ))
 
+            print 'callback'
             self.callback()
 
 
-    def task_done(self):
-        with self.totalLock:
-            log.info('Task %d/%d completed!' % (self.total - self.qsize(), self.total))
+    def taskDone(self, taskId):
+        log.debug('TaskManager task done')
+        with self.lock:
+            self.queue.task_done()
+            self.finished.append(taskId)
+
+            log.info('Task %d/%d completed!' % (len(self.finished), self.total))
 
             # if we finished all the tasks, reset the current total
-            if self.empty():
+            if self.queue.empty():
+                self.finished = []
                 self.total = 0
 
             self.callback()
 
-        super(TaskManager, self).task_done()
+    def finishNow(self):
+        log.info('TaskManager should finish ASAP, waiting for currently running tasks to finish')
+        self.shouldFinish = True
+        with self.lock:
+            if self.total == 0:
+                # worker thread is already waiting on an empty queue, we can't wait for him
+                log.info('No currently running jobs')
+                return
+
+        # FIXME: need to stop worker, we can't always wait for him
+        self.workerThread.join()
+
+        log.info('TaskManager: last running task finished')
+

@@ -119,10 +119,12 @@ class SmewtGui(QMainWindow):
             settings.setValue('configured', True)
             from PyQt4.QtCore import QTimer
             QTimer.singleShot(0, self.firstRun)
+        else:
+            # only start the update of the collections now that our GUI is fully setup
+            # do not rescan as it would be too long and we might delete some files that
+            # are on an unaccessible network share or an external HDD
+            self.mainWidget.smewtd.updateCollections()
 
-
-    def shutdown(self):
-        self.mainWidget.shutdown()
 
     def showFeedWatcher(self):
         self.tabWidget.setCurrentIndex(1)
@@ -145,7 +147,7 @@ class SmewtGui(QMainWindow):
         self.statusBar().addPermanentWidget(self.statusWidget)
 
 
-        self.connect(self.mainWidget, SIGNAL('progressChanged'), self.progressChanged)
+        self.mainWidget.smewtd.taskManager.progressChanged.connect(self.progressChanged)
 
     def createActions(self):
         self.quitAction = QAction('Quit', self)
@@ -234,8 +236,11 @@ class SmewtGui(QMainWindow):
         self.setWindowState(self.windowState() ^ Qt.WindowFullScreen  )
 
     def quit(self):
+        log.info('SmewtGui quitting...')
         self.writeWindowSettings()
         self.mainWidget.quit()
+
+        log.info('Quitting application...')
         QApplication.instance().quit()
 
     def readWindowSettings(self):
@@ -288,9 +293,14 @@ class SmewtGui(QMainWindow):
         event.ignore()
 
     def progressChanged(self,  tagged,  total):
+        from threading import current_thread
+        log.debug('Received signal in thread %d' % current_thread().ident)
+
         if total == 0:
+            log.debug('Resetting progress bar')
             self.statusWidget.progressBar.reset()
         else:
+            log.debug('Setting progress bar to %d/%d' % (tagged, total))
             self.statusWidget.progressBar.setMaximum(total)
             self.statusWidget.progressBar.setValue(tagged)
 
@@ -347,9 +357,6 @@ if __name__ == '__main__':
     app.setApplicationName(smewt.APP_NAME)
 
     sgui = SmewtGui()
-
-    QObject.connect(app, SIGNAL('aboutToQuit()'),
-                    sgui.shutdown)
 
     sgui.show()
     app.exec_()
