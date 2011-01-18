@@ -1,6 +1,13 @@
 
 ? /data/Series/Futurama/Season 1/Futurama.Extras.-.Trailer.DVDRiP-frankysan.[tvu.org.ru].ogm
-: null
+: series: Futurama
+  season: 1
+  episodeNumber: -1
+
+? /data/Series/Futurama/Season 2/Futurama.Extras.-.Trailer.DVDRiP-frankysan.[tvu.org.ru].ogm
+: series: Futurama
+  season: 2
+  episodeNumber: -1
 
 ? /data/Series/Futurama/Season 1/Futurama.1x03.I,.Roommate.DVDRiP-frankysan.[tvu.org.ru].ogm
 : series : Futurama
