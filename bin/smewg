@@ -32,17 +32,17 @@ class ColoredFormatter(logging.Formatter):
     RESET_FONT = "\x1B[0m"
 
     def __init__(self):
-        self.fmt = '%(levelname)-8s ' + BLUE_FONT + '%(module)s:%(funcName)s' + RESET_FONT + ' -- %(message)s'
+        self.fmt = '%(levelname)-8s ' + self.BLUE_FONT + '%(module)s:%(funcName)s' + self.RESET_FONT + ' -- %(message)s'
         logging.Formatter.__init__(self, self.fmt)
 
     def format(self, record):
         result = logging.Formatter.format(self, record)
         if record.levelno in (logging.DEBUG, logging.INFO):
-            return GREEN_FONT + result
+            return self.GREEN_FONT + result
         elif record.levelno == logging.WARNING:
-            return YELLOW_FONT + result
+            return self.YELLOW_FONT + result
         else:
-            return RED_FONT + result
+            return self.RED_FONT + result
 
 
 
