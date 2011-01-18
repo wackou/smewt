@@ -29,25 +29,33 @@ episodes = {}
 
 for ep in tolist(series.episodes):
     md = dict(ep.literal_items())
+
+
     # FIXME: we should do sth smarter here, such as ask the user, or at least warn him
-    if isinstance(ep.files, list):
-        md['filename'] = ep.files[0].filename
+    files = ep.get('files')
+    if not files:
+        # dirty fix so we don't crash if the episode has no associated video file:
+        md['filename'] = ''
+    elif isinstance(files, list):
+        md['filename'] = files[0].filename
     else:
-        md['filename'] = ep.files.filename
+        md['filename'] = files.filename
+
     md['url'] = SmewtUrl('action', 'play', { 'filename1': md['filename'] })
     md['subtitleUrls'] = []
 
     languageFiles = defaultdict(lambda: [])
     subtitles = []
 
-    for subtitle in tolist(ep.get('subtitles')):
-        for subfile in tolist(subtitle.files):
-            subtitleFilename = subfile.filename
-            # we shouldn't need to check that they start with the same prefix anymore, as the taggers/guessers should have mapped them correctly
-            mediaFilename = [ f.filename for f in tolist(ep.files) ] # if subtitleFilename.startswith(os.path.splitext(f.filename)[0]) ]
-            mediaFilename = mediaFilename[0] # FIXME: check len == 1 all the time
+    if files:
+        for subtitle in tolist(ep.get('subtitles')):
+            for subfile in tolist(subtitle.files):
+                subtitleFilename = subfile.filename
+                # we shouldn't need to check that they start with the same prefix anymore, as the taggers/guessers should have mapped them correctly
+                mediaFilename = [ f.filename for f in tolist(files) ] # if subtitleFilename.startswith(os.path.splitext(f.filename)[0]) ]
+                mediaFilename = mediaFilename[0] # FIXME: check len == 1 all the time
 
-            languageFiles[subtitle.language] += [ (mediaFilename, subtitleFilename) ]
+                languageFiles[subtitle.language] += [ (mediaFilename, subtitleFilename) ]
 
     # prepare links for playing movie with subtitles
     for lang, sfiles in languageFiles.items():
