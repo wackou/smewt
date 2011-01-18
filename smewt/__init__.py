@@ -52,3 +52,31 @@ def shutdown():
         cache.save('/tmp/smewt.cache')
 
 
+def setupLogging():
+    """Sets up a nice colored logger as the main application logger (not only smewt itself)."""
+    class ColoredFormatter(logging.Formatter):
+        GREEN_FONT = "\x1B[0;32m"
+        YELLOW_FONT = "\x1B[0;33m"
+        BLUE_FONT = "\x1B[0;34m"
+        RED_FONT = "\x1B[0;31m"
+        RESET_FONT = "\x1B[0m"
+
+        def __init__(self):
+            self.fmt = '%(levelname)-8s ' + self.BLUE_FONT + '%(module)s:%(funcName)s' + self.RESET_FONT + ' -- %(message)s'
+            logging.Formatter.__init__(self, self.fmt)
+
+        def format(self, record):
+            result = logging.Formatter.format(self, record)
+            if record.levelno in (logging.DEBUG, logging.INFO):
+                return self.GREEN_FONT + result
+            elif record.levelno == logging.WARNING:
+                return self.YELLOW_FONT + result
+            else:
+                return self.RED_FONT + result
+
+
+    ch = logging.StreamHandler()
+    ch.setFormatter(ColoredFormatter())
+    logging.getLogger().addHandler(ch)
+
+

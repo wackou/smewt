@@ -69,6 +69,7 @@ testFunc = test%s''' % (testName, filename, testName)
 suite = allTests(TestTVDB)
 
 if __name__ == '__main__':
+    smewt.setupLogging()
     TextTestRunner(verbosity=2).run(suite)
     smewt.shutdown()
 
