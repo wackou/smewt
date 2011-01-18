@@ -60,17 +60,9 @@ def worker(taskManager):
             # TODO: need to be able to stop task immediately
             task.perform()
 
-        except SmewtException, e:
-            log.warning('TaskManager: task failed with error: %s' % e)
-
-        except TypeError, e:
-            # to avoid errors when the program exits and the queue has been deleted
-            # FIXME: catches way too much, we need to somehow tell the thread to stop when the TaskManager gets deleted
-            log.warning('TaskManager: task failed with type error: %s' % e)
-            raise
-
-        #except Exception, e:
-        #    log.warning('TaskManager: task failed unexpectedly with error: %s' % e)
+        except Exception, e:
+            import sys, traceback
+            log.warning('TaskManager: task failed with error: %s' % ''.join(traceback.format_exception(*sys.exc_info())))
 
         finally:
             taskManager.taskDone(taskId)
