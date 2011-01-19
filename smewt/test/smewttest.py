@@ -27,7 +27,10 @@ from os.path import *
 from utils.slogging import setupLogging
 
 setupLogging()
-logging.getLogger().setLevel(logging.INFO)
+logging.getLogger().setLevel(logging.WARNING)
+
+# we most likely never want this to be on debug mode, as it spits out way too much information
+logging.getLogger('pygoo').setLevel(logging.INFO)
 
 def currentPath():
     '''Returns the path in which the calling file is located.'''

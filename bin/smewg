@@ -20,7 +20,7 @@
 
 import sys, logging, os, os.path
 
-MAIN_LOGGING_LEVEL = logging.INFO
+MAIN_LOGGING_LEVEL = logging.WARNING
 
 
 from utils.slogging import setupLogging

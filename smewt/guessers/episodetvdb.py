@@ -19,10 +19,11 @@
 #
 
 from smewt.base import GraphAction, cachedmethod, utils, SmewtException, Media
+from smewt.base.utils import smewtDirectory
 from smewt.guessers.guesser import Guesser
 from smewt.media.series import Episode, Series
 from smewt.base.mediaobject import foundMetadata
-from pygoo import Equal
+from pygoo import MemoryObjectGraph, Equal
 from urllib import urlopen,  urlencode
 from tvdbmetadataprovider import TVDBMetadataProvider
 import logging
@@ -51,17 +52,23 @@ class EpisodeTVDB(GraphAction):
         if ep.get('season') is None:
             ep.season = 1
 
-        mdprovider = TVDBMetadataProvider()
-        result = mdprovider.startEpisode(ep)
+        try:
+            mdprovider = TVDBMetadataProvider()
+            result = mdprovider.startEpisode(ep)
 
-        # first, change the current series object by the one we found on the web
-        oldseries = ep.series
-        ep.series = query.add_object(result.find_one(Series))
-        # and remove the stale series node
-        query.delete_node(oldseries.node)
+        except SmewtException, e:
+            # series could not be found, return a dummy Unknown series instead so we can group them somewhere
+            noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
+            result = MemoryObjectGraph()
+            result.Series(title = 'Unknown', loresImage = noposter, hiresImage = noposter)
 
-        # then add all the potential episodes
+        # update the series
+        query.delete_node(ep.series.node)
+        ep.series = query.add_object(result.find_one(Series)) # this add_object should be unnecessary
+
+        # and add all the potential episodes
         for ep in result.find_all(Episode):
             query.add_object(ep, recurse = Equal.OnLiterals)
+
 
         return query

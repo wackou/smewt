@@ -54,7 +54,7 @@ class EpisodeFilename(GraphAction):
         rexps = [ 'season (?P<season>[0-9]+)',
                   sep + '(?P<episodeNumber>[0-9]+)(?:v[23])?' + sep, # v2 or v3 for some mangas which have multiples rips
                   '(?P<season>[0-9]+)[x\.](?P<episodeNumber>[0-9]+)',
-                  'S(?P<season>[0-9]+)E(?P<episodeNumber>[0-9]+)'
+                  '[Ss](?P<season>[0-9]+)[Ee](?P<episodeNumber>[0-9]+)'
                   ]
 
         for n in name:
@@ -66,7 +66,7 @@ class EpisodeFilename(GraphAction):
         # cleanup a bit by removing unlikely eps numbers which are probably numbers in the title
         # or even dates in the filename, etc...
         niceGuess = None
-        for md in tolist(media.matches):
+        for md in tolist(media.get('matches')):
             if 'episodeNumber' in md and 'season' in md:
                 niceGuess = md
             if 'episodeNumber' in md and 'season' not in md and md.episodeNumber > 1000:
@@ -100,13 +100,17 @@ class EpisodeFilename(GraphAction):
             s = query.find_or_create(Series, title = name[-3])
             result.series = s
             result.confidence = 0.8
+            media.append('matches', result)
+
         else:
             log.debug('Found with confidence 0.4: series title = %s' % name[-2])
             s = query.find_or_create(Series, title = name[-2])
             result.series = s
             result.confidence = 0.4
+            media.append('matches', result)
 
-        media.append('matches', result)
+        # heuristic 4: add those anyway with very little probability, so that if don't find anything we can still use this
+        media.append('matches', query.Episode(confidence = 0.1, series = query.Series(title = 'Unknown'), season = 1, episodeNumber = -1))
 
         # post-processing
         # we could already clean a bit the data here by solving it and comparing it to

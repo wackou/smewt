@@ -24,6 +24,7 @@ from smewt.media import Episode, Series, Subtitle
 from smewt.taggers.tagger import Tagger
 from smewt.guessers import *
 from smewt.solvers import *
+from pygoo import MemoryObjectGraph
 import logging
 
 log = logging.getLogger('smewt.taggers.episodetagger')
@@ -38,29 +39,10 @@ class EpisodeTagger(Tagger):
 
         media = result.find_one(Media)
 
-        # TODO: useless now?
-        if not media.get('metadata'):
-            log.warning('Could not find any tag for: %s' % media)
-
-            # we didn't find any info outside of what the filename told us
-            media.metadata = [ self.filenameMetadata ]
-
-            # try anyway to get the correct series name and poster
-            from smewt.guessers.tvdbmetadataprovider import TVDBMetadataProvider
-            mdprovider = TVDBMetadataProvider()
-
-            try:
-                series = mdprovider.getSeries(media.metadata.series.title)
-                result += media.metadata
-                media.metadata.series = Series(title = series)
-                media.metadata.episodeNumber = -1
-
-                lores, hires = mdprovider.getPoster(series.movieID)
-                media.metadata.series.loresImage = lores
-                media.metadata.series.hiresImage = hires
-
-            except SmewtException:
-                log.warning('Could not even find a probable series name for: %s' % media)
+        # if we didn't find a valid episode but we still have a series, let's create a syntactically
+        # valid episode anyway so it can be imported
+        if not media.metadata.get('episodeNumber'):
+            media.metadata.episodeNumber = -1
 
         # import subtitles correctly
         if media.type() == 'subtitle':

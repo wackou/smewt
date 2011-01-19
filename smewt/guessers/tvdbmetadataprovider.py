@@ -50,6 +50,7 @@ class TVDBMetadataProvider(object):
         """Get the TVDBPy series object given its name."""
         results = self.tvdb.get_matching_shows(name)
         for id, name in results:
+            # FIXME: that doesn't look correct: either yield or no for
             return id
         raise SmewtException("EpisodeTVDB: Could not find series '%s'" % name)
 
@@ -63,10 +64,6 @@ class TVDBMetadataProvider(object):
         # TODO: debug to see if this is the correct way to access the series' title
         result = MemoryObjectGraph()
         smewtSeries = result.Series(title = show.name)
-
-        # FIXME: find a better way to know whether there are episodes or not
-        if len(episodes)==0:
-          return result
 
         for episode in episodes:
             ep = result.Episode(series = smewtSeries,

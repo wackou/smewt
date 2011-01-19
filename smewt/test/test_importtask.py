@@ -140,7 +140,6 @@ class TestImportTask(TestCase):
         smewtd.episodeCollection.rescan()
         smewtd.taskManager.queue.join() # wait for all import tasks to finish
 
-        print list(smewtd.episodeCollection.collectionFiles())
         #smewtd.database.display_graph()
         self.collectionTestIncomplete(smewtd.database)
 

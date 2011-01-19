@@ -21,6 +21,9 @@
 from smewt.base import Media, Metadata
 from smewt.solvers.solver import Solver
 from smewt.base.textutils import levenshtein
+import logging
+
+log = logging.getLogger('smewt.solvers.simplesolver')
 
 
 def exactMatch(baseGuess, md):
@@ -53,8 +56,8 @@ def fuzzyMatch2(baseGuess, md):
 
 class SimpleSolver(Solver):
     '''This solver implements this simple solving strategy:
-    - first look if there's a metadata which represents a unique object with
-      confidence > 0.9. If not found, the solver failed.
+    - first find the metadata which represents a unique object with
+      highest confidence. If not found, the solver failed.
     - then merges all the information there is in all the guesses which have the
       same unique ID.
     '''
@@ -66,19 +69,24 @@ class SimpleSolver(Solver):
     def perform(self, query):
         self.checkValid(query)
 
-        #query.displayGraph()
+        #query.display_graph()
 
-        baseGuess = None
         metadata = query.find_all(node_type = self.type)
 
+        # 1- get a node that looks like it could be our potential candidate
+        baseGuess, confidence = None, -1
         for md in metadata:
-            if md.is_unique() and md.get('confidence') >= 0.9:
-                baseGuess = md
-                break
+            if md.is_unique() and md.get('confidence') > confidence:
+                baseGuess, confidence = md, md.get('confidence')
 
         if baseGuess is None:
-            return self.found(query, None)
+            raise SmewtException('SimpleSolver could not find base guess')
 
+        if confidence < 0.9:
+            log.warning('Base guess for %s looks shady, confidence = %f: %s' % (query.find_one(Media).filename, confidence, baseGuess))
+            #return self.found(query, None)
+
+        # 2- once we have it, merge data from other nodes that look like him
         for md in metadata:
             # do not inadvertently overwrite some data we could have found from another instance
             if md is baseGuess:
