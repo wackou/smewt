@@ -23,8 +23,8 @@ import sys, logging, os, os.path
 MAIN_LOGGING_LEVEL = logging.INFO
 
 
-
-smewt.setupLogging()
+from utils.slogging import setupLogging
+setupLogging()
 
 logging.getLogger().setLevel(MAIN_LOGGING_LEVEL)
 

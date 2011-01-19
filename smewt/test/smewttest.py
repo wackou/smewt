@@ -24,17 +24,10 @@ from unittest import TestCase as BaseTestCase
 import yaml, logging, sys, os
 from os.path import *
 
-logging.basicConfig(level = logging.INFO,
-                    format = '%(levelname)-8s %(module)s:%(funcName)s -- %(message)s')
+from utils.slogging import setupLogging
 
-# we most likely never want this to be on debug mode, as it spits out way too much information
-logging.getLogger('pygoo').setLevel(logging.INFO)
-logging.getLogger('imdbpy').setLevel(logging.INFO)
-
-
-
-
-
+setupLogging()
+logging.getLogger().setLevel(logging.INFO)
 
 def currentPath():
     '''Returns the path in which the calling file is located.'''
