@@ -19,6 +19,7 @@
 #
 
 from smewt.base import Media, utils
+from smewt.media import Movie, Subtitle
 from smewt.taggers.tagger import Tagger
 from smewt.guessers import *
 import logging
@@ -27,7 +28,9 @@ log = logging.getLogger('smewt.taggers.movietagger')
 
 class MovieTagger(Tagger):
     def perform(self, query):
+        log.info('MovieTagger tagging movie: %s' % query.find_one(Media).filename)
         filenameMetadata = MovieFilename().perform(query)
+        log.info('MovieTagger found info from filename: %s' % filenameMetadata.find_one(Movie))
         result = MovieTMDB().perform(filenameMetadata)
 
         media = result.find_one(Media)
@@ -44,10 +47,10 @@ class MovieTagger(Tagger):
                 subs += [ result.Subtitle(metadata = media.metadata,
                                           language = language) ]
 
-                media.metadata = subs
+            media.metadata = subs
 
 
         self.cleanup(result)
-        log.debug('Finished tagging: %s' % media)
 
+        log.debug('Finished tagging: %s' % media)
         return result

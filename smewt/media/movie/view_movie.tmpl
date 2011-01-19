@@ -30,14 +30,14 @@ subtitles = []
 
 languageFiles = defaultdict(lambda: [])
 
-for media in tolist(movie.files):
+for media in tolist(movie.get('files')):
     files.append(media.filename)
 
 for subtitle in tolist(movie.get('subtitles')):
     for subfile in tolist(subtitle.files):
         subtitleFilename = subfile.filename
         mediaFilename = [ filename for filename in files if subtitleFilename.startswith(os.path.splitext(filename)[0]) ]
-        mediaFilename = mediaFilename[0] # FIXME: check len == 1 all the time
+        mediaFilename = mediaFilename[0] if mediaFilename else '' # FIXME: check len == 1 all the time
 
         languageFiles[subtitle.language] += [ (mediaFilename, subtitleFilename) ]
 

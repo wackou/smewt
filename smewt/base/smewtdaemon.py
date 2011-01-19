@@ -45,7 +45,7 @@ def validEpisode(filename):
     return utils.matchFile(filename, [ '*.avi', '*.ogm', '*.mkv' ]) and getsize(filename) < 600 * 1024 * 1024
 
 def validMovie(filename):
-    return utils.matchFile(filename, [ '*.avi', '*.ogm', '*.mkv' ]) and getsize(filename) > 600 * 1024 * 1024,
+    return utils.matchFile(filename, [ '*.avi', '*.ogm', '*.mkv' ]) and getsize(filename) > 600 * 1024 * 1024
 
 
 class SmewtDaemon(object):

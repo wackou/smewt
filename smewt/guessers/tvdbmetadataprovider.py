@@ -78,6 +78,8 @@ class TVDBMetadataProvider(object):
     @cachedmethod
     def getMovie(self, name):
         """Get the IMDBPy movie object given its name."""
+        if not name:
+            raise SmewtException('You need to specify at least a probable name for the movie...')
         log.debug('MovieTMDB: looking for movie %s', name)
         results = self.tmdb.search(name)
         for r in results:
@@ -91,12 +93,14 @@ class TVDBMetadataProvider(object):
         m = self.tmdb.getMovieInfo(movieId)
 
         result = MemoryObjectGraph()
-        movie = result.Movie(title = unicode(m['name']),
-                             year = datetime.datetime.strptime(m['released'], '%Y-%m-%d').year)
+        movie = result.Movie(title = unicode(m['name']))
+
+        if m.get('released'):
+            movie.set('year', datetime.datetime.strptime(m['released'], '%Y-%m-%d').year)
 
         movie.set('director', [unicode(d['name']) for d in m['cast'].get('director', [])])
         movie.set('writer', [unicode(d['name']) for d in m['cast'].get('author', [{'name': ''}])])
-        movie.set('genres', [unicode(g) for g in m['categories']['genre'].keys()])
+        movie.set('genres', [unicode(g) for g in m['categories'].get('genre', {}).keys()])
         movie.set('rating', m['rating'])
         movie.set('plot', [unicode(m['overview'])])
         movie.set('plotOutline', unicode(m['overview']))
@@ -203,6 +207,4 @@ class TVDBMetadataProvider(object):
 
         except SmewtException, e:
             raise
-            log.warning(str(e) + ' -- ' + textutils.toUtf8(movieName))
-            return MemoryObjectGraph()
 

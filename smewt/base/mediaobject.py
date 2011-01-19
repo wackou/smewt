@@ -69,7 +69,7 @@ class Media(BaseObject):
         return self.filename.split('.')[-1]
 
     def type(self):
-        ext = self.ext()
+        ext = self.ext().lower()
         for name, exts in Media.types.items():
             if ext in exts:
                 return name

@@ -19,9 +19,11 @@
 #
 
 from smewt.base import GraphAction, cachedmethod, utils, textutils, SmewtException, Media
+from smewt.base.utils import smewtDirectory
 from smewt.base.mediaobject import foundMetadata
 from smewt.guessers.guesser import Guesser
 from smewt.media import Movie
+from pygoo import MemoryObjectGraph
 from urllib import urlopen,  urlencode
 from tvdbmetadataprovider import TVDBMetadataProvider
 import logging
@@ -37,14 +39,19 @@ class MovieTMDB(GraphAction):
 
     def perform(self, query):
         self.checkValid(query)
-        #query.displayGraph()
 
-        log.debug('MovieTvdb: finding more info on %s' % query.find_all(type = Media))
+        log.debug('MovieTvdb: finding more info on %s' % query.find_one(Movie))
         movie = query.find_one(Movie)
-        # if valid movie
 
-        mdprovider = TVDBMetadataProvider()
-        result = mdprovider.startMovie(movie.title)
+        try:
+            mdprovider = TVDBMetadataProvider()
+            result = mdprovider.startMovie(movie.title)
+        except SmewtException, e:
+            # movie could not be found, return a dummy Unknown movie instead so we can group them somewhere
+            log.warning('Could not find info for movie: %s' % query.find_one(Media).filename)
+            noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
+            result = MemoryObjectGraph()
+            result.Movie(title = 'Unknown', loresImage = noposter, hiresImage = noposter)
 
         result = foundMetadata(query, result.find_one(Movie))
         return result

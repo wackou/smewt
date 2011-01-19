@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import GraphAction, Media, Metadata
+from smewt.base import GraphAction, Media, Metadata, SmewtException
 from smewt.media import Movie
 from smewt.guessers.guesser import Guesser
 from smewt.base import utils, textutils
@@ -242,8 +242,9 @@ class MovieFilename(GraphAction):
         super(MovieFilename, self).__init__()
 
     def canHandle(self, query):
-        if query.find_one(Media).type() not in [ 'video', 'subtitle' ]:
-            raise SmewtException("%s: can only handle video or subtitle media objects" % self.__class__.__name__)
+        media = query.find_one(Media)
+        if media.type() not in ('video', 'subtitle'):
+            raise SmewtException("%s: can only handle video or subtitle media objects: %s" % (self.__class__.__name__, media.filename))
 
     def perform(self, query):
         self.checkValid(query)
@@ -251,7 +252,7 @@ class MovieFilename(GraphAction):
 
         movie = cleanMovieFilename(media.filename)
 
-        log.info('Found filename information from: %s\n%s' % (media.filename, movie))
+        #log.info('Found filename information from %s: %s' % (media.filename, movie))
 
         media.matches = query.Movie(**movie)
         return query

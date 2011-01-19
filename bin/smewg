@@ -20,7 +20,7 @@
 
 import sys, logging, os, os.path
 
-MAIN_LOGGING_LEVEL = logging.WARNING
+MAIN_LOGGING_LEVEL = logging.DEBUG
 
 
 from utils.slogging import setupLogging
@@ -121,7 +121,7 @@ class SmewtGui(QMainWindow):
             settings.setValue('configured', True)
             QTimer.singleShot(0, self.firstRun)
         else:
-            # only start the update of the collections now that our GUI is fully setup
+            # only start the update of the collections once our GUI is fully setup
             # do not rescan as it would be too long and we might delete some files that
             # are on an unaccessible network share or an external HDD
             QTimer.singleShot(2000, self.mainWidget.smewtd.updateCollections)
