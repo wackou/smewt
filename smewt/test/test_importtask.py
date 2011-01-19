@@ -90,12 +90,12 @@ class TestImportTask(TestCase):
             tm.add(task)
 
         # the TaskManager might already have started to process a task, in which case the queue size is 3
-        self.assert_(tm.qsize() >= 3)
+        self.assert_(tm.queue.qsize() >= 3)
         self.assert_(tm.total == 4)
 
-        tm.join()
+        tm.queue.join()
 
-        self.assert_(tm.empty())
+        self.assert_(tm.queue.empty())
         self.assertEqual(tm.total, 0)
 
         #database.display_graph()
@@ -138,7 +138,7 @@ class TestImportTask(TestCase):
 
         # initial import of the collection
         smewtd.episodeCollection.rescan()
-        smewtd.taskManager.join() # wait for all import tasks to finish
+        smewtd.taskManager.queue.join() # wait for all import tasks to finish
 
         print list(smewtd.episodeCollection.collectionFiles())
         #smewtd.database.display_graph()
@@ -146,14 +146,14 @@ class TestImportTask(TestCase):
 
         # update collection, as we haven't changed anything it should be the same
         smewtd.episodeCollection.update()
-        smewtd.taskManager.join() # wait for all import tasks to finish
+        smewtd.taskManager.queue.join() # wait for all import tasks to finish
 
         #smewtd.database.display_graph()
         self.collectionTestIncomplete(smewtd.database)
 
         # fully rescan collection, should still be the same
         smewtd.episodeCollection.rescan()
-        smewtd.taskManager.join() # wait for all import tasks to finish
+        smewtd.taskManager.queue.join() # wait for all import tasks to finish
 
         #smewtd.database.display_graph()
         self.collectionTestIncomplete(smewtd.database)
@@ -168,7 +168,7 @@ class TestImportTask(TestCase):
 
         # update collection
         smewtd.episodeCollection.update()
-        smewtd.taskManager.join() # wait for all import tasks to finish
+        smewtd.taskManager.queue.join() # wait for all import tasks to finish
 
         #smewtd.database.display_graph()
         self.collectionTest(smewtd.database)

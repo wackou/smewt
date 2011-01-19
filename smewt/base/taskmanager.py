@@ -121,7 +121,6 @@ class TaskManager(QtCore.QObject):
     def taskDone(self, taskId):
         log.debug('TaskManager task done')
         with self.lock:
-            self.queue.task_done()
             self.finished.append(taskId)
 
             log.info('Task %d/%d completed!' % (len(self.finished), self.total))
@@ -131,6 +130,7 @@ class TaskManager(QtCore.QObject):
                 self.finished = []
                 self.total = 0
 
+            self.queue.task_done()
             self.callback()
 
     def finishNow(self):
