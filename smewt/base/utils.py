@@ -79,7 +79,7 @@ def smewtDirectory(*args):
 def smewtDirectoryUrl(*args):
     return pathToUrl(smewtDirectory(*args))
 
-def smewtUserDirectory(*args):
+def smewtUserPath(*args):
     settings = QSettings()
     userdir = unicode(settings.value('user_dir').toString())
     if not userdir:
@@ -90,10 +90,14 @@ def smewtUserDirectory(*args):
 
         settings.setValue('user_dir',  QVariant(userdir))
 
-    userdir = os.path.join(userdir, *args)
+    return os.path.join(userdir, *args)
+
+def smewtUserDirectory(*args):
+    userdir = smewtUserPath(*args)
     makedir(userdir) # make sure directory exists
 
     return userdir
+
 
 def smewtUserDirectoryUrl(*args):
     return pathToUrl(smewtUserDirectory(*args))

@@ -20,7 +20,7 @@
 
 import sys, logging, os, os.path
 
-MAIN_LOGGING_LEVEL = logging.WARNING
+MAIN_LOGGING_LEVEL = logging.INFO
 
 
 from utils.slogging import setupLogging
@@ -43,7 +43,9 @@ if sys.platform == 'win32':
 from PyQt4.QtGui import QApplication, QMainWindow, QWidget, QStatusBar, QProgressBar, QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox, QToolBar
 from PyQt4.QtCore import SIGNAL, QSize, Qt, QSettings, QVariant, QPoint, QSize, QObject, QTimer
 from smewt.gui import MainWidget, FeedWatchWidget
+from smewt.base import cache, utils
 from smewt.base.utils import smewtDirectory
+from os.path import join
 
 log = logging.getLogger('smewg')
 DEFAULT_WIDTH = 900
@@ -80,6 +82,8 @@ class SmewtGui(QMainWindow):
 
         # create menubar
         mainMenu = self.menuBar().addMenu('Main')
+        mainMenu.addAction(self.clearCacheAction)
+        mainMenu.addSeparator()
         mainMenu.addAction(self.quitAction)
 
         importMenu = self.menuBar().addMenu('Collection')
@@ -124,7 +128,7 @@ class SmewtGui(QMainWindow):
             # only start the update of the collections once our GUI is fully setup
             # do not rescan as it would be too long and we might delete some files that
             # are on an unaccessible network share or an external HDD
-            QTimer.singleShot(2000, self.mainWidget.smewtd.updateCollections)
+            QTimer.singleShot(2000, self.reloadCacheAndUpdateCollections)
 
 
     def showFeedWatcher(self):
@@ -151,6 +155,10 @@ class SmewtGui(QMainWindow):
         self.mainWidget.smewtd.taskManager.progressChanged.connect(self.progressChanged)
 
     def createActions(self):
+        self.clearCacheAction = QAction('Clear internet cache', self)
+        self.connect(self.clearCacheAction, SIGNAL('triggered()'),
+                     self.clearCache)
+
         self.quitAction = QAction('Quit', self)
         self.connect(self.quitAction, SIGNAL('triggered()'),
                      self.quit)
@@ -236,10 +244,22 @@ class SmewtGui(QMainWindow):
         flag = Qt.WindowFullScreen if self.fullScreenAction.isChecked() else ~Qt.WindowFullScreen
         self.setWindowState(self.windowState() ^ Qt.WindowFullScreen  )
 
+    def reloadCacheAndUpdateCollections(self):
+        # do this now instead of at the very beginning so that our GUI can be setup faster
+        cache.load(utils.smewtUserPath(smewt.APP_NAME + '.cache'))
+        self.mainWidget.smewtd.updateCollections()
+
+    def clearCache(self):
+        cache.clear()
+        os.remove(utils.smewtUserPath(smewt.APP_NAME + '.cache'))
+
     def quit(self):
         log.info('SmewtGui quitting...')
         self.writeWindowSettings()
         self.mainWidget.quit()
+
+        # save cache
+        cache.save(utils.smewtUserPath(smewt.APP_NAME + '.cache'))
 
         log.info('Quitting application...')
         QApplication.instance().quit()
@@ -363,5 +383,4 @@ if __name__ == '__main__':
     app.exec_()
 
     log.info('Exiting')
-    smewt.shutdown()
     sys.exit() # why is this necessary when running from eric?

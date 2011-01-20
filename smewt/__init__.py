@@ -37,19 +37,3 @@ log = logging.getLogger('smewt')
 # and a development version
 ORG_NAME = 'DigitalGaia'
 APP_NAME = 'Smewt-dev'
-
-DEV_MODE = True
-
-
-
-if DEV_MODE:
-    log.info('Loading cache...')
-    cache.load('/tmp/smewt.cache')
-
-def shutdown():
-    if DEV_MODE:
-        log.info('Saving cache...')
-        cache.save('/tmp/smewt.cache')
-
-
-

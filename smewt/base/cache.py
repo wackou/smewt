@@ -25,7 +25,13 @@ log = logging.getLogger('smewt.base.cache')
 
 globalCache = {}
 
+def clear():
+    log.info('Cache: clearing memory cache')
+    global globalCache
+    globalCache = {}
+
 def load(filename):
+    log.info('Cache: loading cache from %s' % filename)
     global globalCache
     try:
         globalCache = cPickle.load(open(filename, 'rb'))
@@ -35,6 +41,7 @@ def load(filename):
         log.error('Cache: cache file is corrupted... Please remove it.')
 
 def save(filename):
+    log.info('Cache: saving cache to %s' % filename)
     cPickle.dump(globalCache, open(filename, 'wb'))
 
 

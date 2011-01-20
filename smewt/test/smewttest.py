@@ -59,6 +59,8 @@ ontology.save_current_ontology('media')
 from smewt.base import cache
 cache.load('/tmp/smewt.cache')
 
+def shutdown():
+    cache.save('/tmp/smewt.cache')
 
 def allTests(testClass):
     return TestLoader().loadTestsFromTestCase(testClass)
