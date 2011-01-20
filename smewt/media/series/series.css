@@ -44,6 +44,11 @@
  width: 50%;
 }
 
+#center-side {
+ float: left;
+ width: 100%;
+}
+
 #right-side {
  margin: 0;
  float: left;
@@ -178,6 +183,34 @@ h1 {
 }
 
 .tabberlive .tabbertab .episode a:hover {
+ text-decoration: underline;
+}
+
+
+.suggest {
+ font: 16px Verdana, sans-serif;
+ margin-left: 3px;
+ border: 1px solid #778;
+ margin-bottom: 5px;
+ padding: 10px;
+ background-color: #F0F0F0;
+}
+
+.suggest p {
+ color: #000000;
+ padding: 0px;
+ margin: 0px;
+ margin-top: 10px;
+}
+
+
+.suggest a {
+ text-decoration: none;
+ font-weight: bold;
+ color: #448;
+}
+
+.suggest a:hover {
  text-decoration: underline;
 }
 

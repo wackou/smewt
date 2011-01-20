@@ -38,9 +38,15 @@ def render(url, collection):
         t = Template(file = smewtDirectory('smewt', 'media', 'series', 'view_all_series.tmpl'),
                      searchList = { 'series': collection.find_all(Series) })
 
+    elif url.viewType == 'suggestions':
+        t = Template(file = smewtDirectory('smewt', 'media', 'series', 'view_episode_suggestions.tmpl'),
+                     searchList = { 'episodes': [ ep for ep in collection.find_all(Episode) if 'lastViewed' in ep ]})
+
     else:
         raise SmewtException('Invalid view type: %s' % url.viewType)
 
-    return t.respond()
+    result = t.respond()
+    #open('/tmp/view.html', 'w').write(result.encode('utf-8'))
+    return result
 
 

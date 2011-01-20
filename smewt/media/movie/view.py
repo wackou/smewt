@@ -30,6 +30,8 @@ def render(url, collection):
     This is the place to put some logic before the html rendering is done, such as filtering out
     items we don't want to display, or shape the data so that it's more suited for html rendering, etc...'''
 
+    # TODO: this is the place where we know which data we want to cache from the database to a MemoryObjectGraph
+
     if url.viewType == 'single':
         t = Template(file = smewtDirectory('smewt', 'media', 'movie', 'view_movie.tmpl'),
                      searchList = { 'movie': collection.find_one(Movie, title = url.args['title']) })

@@ -1,0 +1,79 @@
+#set episodes = $episodes
+
+<%
+from smewt import SmewtUrl
+from smewt.base.utils import tolist, pathToUrl
+from smewt.base.textutils import toUtf8
+from itertools import groupby
+import datetime
+
+# map of series to list of episodes
+suggest = {}
+
+# first find the last viewed episode for each season
+episodes = sorted(episodes, key = lambda ep: ep.series.title)
+
+for serieName, eps in groupby(episodes, lambda ep: ep.series.title):
+    eps = list(eps)
+    lastViewed = max(eps, key = lambda ep: ep.lastViewed)
+
+
+    # then look if we have a more recent one which we haven't watched yet
+    s = []
+    for ep in lastViewed.series.episodes:
+        if 'lastViewed' not in ep and (ep.season, ep.episodeNumber) > (lastViewed.season, lastViewed.episodeNumber):
+            s.append(ep)
+
+    # find only more recent episode to watch
+    if s:
+        keep = sorted(s, key = lambda ep: (-ep.season, -ep.episodeNumber))
+        suggest[keep[0].series] = keep
+
+# sort our suggestions to show the last scanned ones first
+suggest = sorted(suggest.items(), key = lambda eps: -tolist(eps[1][0].files)[0].lastModified)
+
+from smewt.base.utils import smewtDirectory
+import_dir = smewtDirectory('smewt', 'media')
+
+%>
+
+<html>
+<head>
+  <title>Episodes suggestions</title>
+  <link rel="stylesheet" href="file://$(import_dir)/series/series.css">
+</head>
+
+<body>
+
+<div id="wrapper">
+    <div id="header">
+        EPISODES SUGGESTIONS
+    </div>
+    <div id="container">
+
+    <div id="center-side">
+      #for s, eps in suggest
+        <div class="series">
+        #set url = SmewtUrl('media', 'series/single', { 'title': s.title })
+        #set poster = pathToUrl(s.get('loresImage'))
+          <img src="file://$poster" />
+          <a href='$url'>$s.title</a>
+        </div>
+
+        #for ep in eps
+        <div class="suggest">
+          #set url = SmewtUrl('action', 'play', { 'filename1': tolist(ep.files)[0].filename })
+          <a href="$url">$ep.episodeNumber - $ep.title </a>
+            #if 'synopsis' in ep:
+              <p>$ep.synopsis</p>
+            #end if
+        </div>
+        #end for
+      #end for
+    </div>
+    </div>
+
+</div>
+
+</body>
+</html>
