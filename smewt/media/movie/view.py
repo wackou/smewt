@@ -56,4 +56,6 @@ def render(url, collection):
     else:
         raise SmewtException('Invalid view type: %s' % url.viewType)
 
-    return t.respond()
+    result = t.respond()
+    #open('/tmp/view.html', 'w').write(result.encode('utf-8'))
+    return result

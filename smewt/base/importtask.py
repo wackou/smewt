@@ -43,3 +43,4 @@ class ImportTask(Task):
         # import the data into our collection
         self.collection.add_object(result.find_one(Media),
                                    recurse = Equal.OnUnique)
+

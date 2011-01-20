@@ -6,12 +6,11 @@ from smewt import SmewtUrl, Media
 from smewt.media import Movie
 from smewt.base.utils import pathToUrl, smewtDirectoryUrl, guessCountryCode, tolist
 from smewt.base import SmewtException
-import datetime
+import datetime, time
 
 import_dir = smewtDirectoryUrl('smewt', 'media')
 flags_dir = smewtDirectoryUrl('smewt', 'media', 'common', 'images', 'flags')
 
-#movie = movieData.find_one(node_type = Movie)
 movieName = movie.title
 poster = pathToUrl(movie.loresImage)
 
@@ -115,15 +114,27 @@ qtitle = movie.title.replace('\'', '\\\'')
 <div class="rightshifted">
   <h1>$movieName</h1>
 
+#if movieName != 'Unknown':
   <a href="$englishSubsLink">Get missing English subtitles</a>
   <a href="$frenchSubsLink">Get missing French subtitles</a>
-#if playLink:
-  <a href="$playLink">Play Movie</a>
-  #for s in subtitles
-     <a href="$s.url"><img src="file://$s.languageImage" /></a>
-  #end for
+  #if playLink:
+    <a href="$playLink">Play Movie</a>
+    #for s in subtitles
+       <a href="$s.url"><img src="file://$s.languageImage" /></a>
+    #end for
+  #end if
 #end if
 </div>
+
+#if movieName == 'Unknown':
+<p>&nbsp;</p>
+  #for f, url in [ (f, SmewtUrl('action', 'play', { 'filename1': f.filename })) for f in movie.get('files', []) ]:
+
+    <div class="singlefile"><a href="$url"><i>$f.filename</i></a></div>
+  #end for
+
+
+#else
 
 <div class="tabber">
   <div class="tabbertab">
@@ -168,8 +179,36 @@ qtitle = movie.title.replace('\'', '\\\'')
 
   </div>
 
-</div>
+  <div class="tabbertab">
+    <h2>Files</h2>
 
+<%
+allfiles = tolist(movie.get('files'))
+for sub in tolist(movie.get('subtitles')):
+  allfiles += tolist(sub.get('files'))
+
+files = [ (f,
+         SmewtUrl('action', 'play', { 'filename1': f.filename }),
+         time.ctime(f.lastModified)) for f in allfiles ]
+%>
+
+    #for f, url, mtime in files
+
+    <div class="singlefile">
+        <p><a href="$url">$f.filename</a></p>
+        #for k, v in f.items()
+          #if k == 'lastModified':
+            <p><b>last scanned on</b>: $mtime</p>
+          #elif k not in ('metadata', 'filename')
+            <p><b>$k</b>: $v</p>
+          #end if
+        #end for
+    </div>
+    #end for
+
+
+</div>
+#end if
 
 </body>
 </html>
