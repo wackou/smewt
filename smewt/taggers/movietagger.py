@@ -30,13 +30,18 @@ class MovieTagger(Tagger):
     def perform(self, query):
         log.info('MovieTagger tagging movie: %s' % query.find_one(Media).filename)
         filenameMetadata = MovieFilename().perform(query)
-        log.info('MovieTagger found info from filename: %s' % filenameMetadata.find_one(Movie))
+        filenameMovie = filenameMetadata.find_one(Movie)
+        log.info('MovieTagger found info from filename: %s' % filenameMovie)
         result = MovieTMDB().perform(filenameMetadata)
 
         media = result.find_one(Media)
         if not media.metadata:
             log.warning('Could not find any tag for: %s' % media)
 
+        # import the info we got from the filename if nothing better came in with MovieTMDB
+        for prop in filenameMovie.keys():
+            if prop not in media.metadata and prop not in media:
+                media[prop] = filenameMovie[prop]
 
         # import subtitles correctly
         if media.type() == 'subtitle':
