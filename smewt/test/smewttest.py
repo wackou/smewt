@@ -24,13 +24,16 @@ from unittest import TestCase as BaseTestCase
 import yaml, logging, sys, os
 from os.path import *
 
+MAIN_LOGGING_LEVEL = logging.WARNING
+
 from utils.slogging import setupLogging
 
 setupLogging()
-logging.getLogger().setLevel(logging.WARNING)
+logging.getLogger().setLevel(MAIN_LOGGING_LEVEL)
 
 # we most likely never want this to be on debug mode, as it spits out way too much information
-logging.getLogger('pygoo').setLevel(logging.INFO)
+if MAIN_LOGGING_LEVEL == logging.DEBUG:
+    logging.getLogger('pygoo').setLevel(logging.INFO)
 
 def currentPath():
     '''Returns the path in which the calling file is located.'''

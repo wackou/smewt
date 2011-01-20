@@ -36,4 +36,4 @@ suite = TestSuite(testObjectsList)
 
 if __name__ == '__main__':
     TextTestRunner(verbosity=2).run(suite)
-    smewt.shutdown()
+    shutdown()

@@ -29,8 +29,9 @@ setupLogging()
 logging.getLogger().setLevel(MAIN_LOGGING_LEVEL)
 
 # we most likely never want this to be on debug mode, as it spits out way too much information
-logging.getLogger('pygoo').setLevel(logging.INFO)
-logging.getLogger('imdbpy').setLevel(logging.INFO)
+if MAIN_LOGGING_LEVEL == logging.DEBUG:
+    logging.getLogger('pygoo').setLevel(logging.INFO)
+    logging.getLogger('imdbpy').setLevel(logging.INFO)
 
 
 # need that before importing any other module when Smewt is installed
@@ -251,7 +252,9 @@ class SmewtGui(QMainWindow):
 
     def clearCache(self):
         cache.clear()
-        os.remove(utils.smewtUserPath(smewt.APP_NAME + '.cache'))
+        cacheFile = utils.smewtUserPath(smewt.APP_NAME + '.cache')
+        log.info('Deleting cache file: %s' % cacheFile)
+        os.remove(cacheFile)
 
     def quit(self):
         log.info('SmewtGui quitting...')
