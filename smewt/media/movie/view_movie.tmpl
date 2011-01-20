@@ -144,7 +144,6 @@ qtitle = movie.title.replace('\'', '\\\'')
     <p><b>director:</b> $director</p>
     <p><b>writer:</b> $writer</p>
     <p><b>genres:</b> $genres</p>
-    <p><b>plot outline:</b> $movie.plotOutline</p>
     #if $movie.plot:
       <p><b>plot:</b> $movie.plot[0]</p>
       #if len($movie.plot) > 1:

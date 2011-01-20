@@ -103,7 +103,6 @@ class TVDBMetadataProvider(object):
         movie.set('genres', [unicode(g) for g in m['categories'].get('genre', {}).keys()])
         movie.set('rating', m['rating'])
         movie.set('plot', [unicode(m['overview'])])
-        movie.set('plotOutline', unicode(m['overview']))
 
         try:
             movie.cast = [ unicode(actor['name']) + ' -- ' + unicode(actor['character']) for actor in m['cast']['actor'][:15] ]
