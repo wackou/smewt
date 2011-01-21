@@ -163,8 +163,8 @@ qtitle = movie.title.replace('\'', '\\\'')
   <div class="tabbertab">
     <h2>Comments</h2>
           #if $comments
-            #for author, time, comment in $comments
-              <p>Comment by <b>$author</b> at $time:<br/>
+            #for author, atime, comment in $comments
+              <p>Comment by <b>$author</b> at $atime:<br/>
               <div class="comment"><pre>$comment</pre></div> </p>
             #end for
           #else
