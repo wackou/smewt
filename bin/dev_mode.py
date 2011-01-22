@@ -25,4 +25,6 @@ smewg = smewg.replace(''.join(logfunc) + '\nsetupLogging()\n',
 setupLogging()''', )
 open('bin/smewg', 'w').write(smewg)
 
+#os.system('git commit -a -m "Switched back to development version "' + VERSION)
+
 print 'Successfully switched to development version ' + VERSION
