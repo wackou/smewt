@@ -6,8 +6,6 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 NEWS = open(os.path.join(here, 'NEWS.txt')).read()
 
-version = '0.2b1'
-
 install_requires = [
     # List your project dependencies here.
     # For more details, see:

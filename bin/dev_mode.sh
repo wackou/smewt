@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ -x $1 ]; then
-  echo "Error: you need to specify a version number for the make_release script to work. Aborting..."
+  echo "Error: you need to specify a development version number for the dev_mode script to work. Aborting..."
   exit
 fi
 
@@ -9,7 +9,7 @@ VERSION=$1
 
 
 # write version number to file
-sed "s/__version__ =.*/__version__ = '$VERSION'/" smewt/__init__.py | sed "s/APP_NAME = .*/APP_NAME = 'Smewt'/" | sponge smewt/__init__.py
+sed "s/__version__ =.*/__version__ = '$VERSION'/" smewt/__init__.py | sed "s/APP_NAME = .*/APP_NAME = 'Smewt-dev'/" | sponge smewt/__init__.py
 
 
 
