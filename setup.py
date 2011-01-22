@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 import os
+import smewt # for smewt.__version__
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
@@ -21,7 +22,7 @@ install_requires = [
 datafiles_exts = [ '*.png', '*.svg', '*.tmpl', '*.css', '*.html', '*.js' ]
 
 setup(name = 'smewt',
-      version = version,
+      version = smewt.__version__,
       description = 'Smewt - a smart media manager.',
       long_description = README + '\n\n' + NEWS,
       classifiers = [], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
