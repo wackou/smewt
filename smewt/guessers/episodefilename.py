@@ -54,7 +54,7 @@ class EpisodeFilename(GraphAction):
         rexps = [ 'season (?P<season>[0-9]+)',
                   sep + '(?P<episodeNumber>[0-9]+)(?:v[23])?' + sep, # v2 or v3 for some mangas which have multiples rips
                   '(?P<season>[0-9]+)[x\.](?P<episodeNumber>[0-9]+)',
-                  '[Ss](?P<season>[0-9]+)[Ee](?P<episodeNumber>[0-9]+)'
+                  '[Ss](?P<season>[0-9]+) ?[Ee](?P<episodeNumber>[0-9]+)'
                   ]
 
         for n in name:
