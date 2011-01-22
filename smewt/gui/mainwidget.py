@@ -205,6 +205,8 @@ class MainWidget(QWidget):
         url = url.toEncoded()
 
         if url.startsWith('file://'):
+            # FIXME: we should not use this anymore but a SmewtUrl with action = play
+            log.warning('Deprecated api: links with file:// ...')
             action = 'smplayer'
             args = [ str(url)[7:] ]
             log.debug('launching %s with args = %s', (action, args))
