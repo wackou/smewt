@@ -3,12 +3,24 @@
 
 import os, sys, re
 
-if len(sys.argv) != 2:
+if len(sys.argv) != 2 and len(sys.argv) != 3:
     print 'Error: you need to specify a version number for the make_release script to work. Aborting...'
     sys.exit(1)
 
-
 VERSION = sys.argv[1]
+COMMIT = False
+
+if len(sys.argv) == 3:
+    if sys.argv[1] == '-f':
+        VERSION = sys.argv[2]
+        COMMIT = True
+    elif sys.argv[2] == '-f':
+        VERSION = sys.argv[1]
+        COMMIT = True
+    else:
+        print 'Invalid parameters: ' + ' '.join(sys.argv)
+        sys.exit(1)
+
 
 # write version number to file
 sinit = open('smewt/__init__.py').read()
@@ -29,6 +41,10 @@ setupLogging()''', )
 
 open('bin/smewg', 'w').write(smewg)
 
-#os.system('git commit -a -m "Switched back to development version "' + VERSION)
+if COMMIT:
+    os.system('git commit -a -m "Switched back to development version "' + VERSION)
 
 print 'Successfully switched to development version ' + VERSION
+
+if not COMMIT:
+    print 'No files have been committed. To commit, please call this script with the "-f" parameter.'
