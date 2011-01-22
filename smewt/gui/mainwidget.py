@@ -187,7 +187,7 @@ class MainWidget(QWidget):
 
     @pyqtSignature("QString, bool")
     def updateWatched(self, title, watched):
-        self.smewtd.collection.find_one(Movie, title = unicode(title)).watched = watched
+        self.smewtd.database.find_one(Movie, title = unicode(title)).watched = watched
 
     @pyqtSignature("QString, QString, QString")
     def addComment(self, title, author, comment):
