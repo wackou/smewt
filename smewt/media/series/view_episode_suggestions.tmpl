@@ -52,6 +52,8 @@ import_dir = smewtDirectory('smewt', 'media')
     <div id="container">
 
     <div id="center-side">
+
+    #if suggest
       #for s, eps in suggest
         <div class="series">
         #set url = SmewtUrl('media', 'series/single', { 'title': s.title })
@@ -70,6 +72,11 @@ import_dir = smewtDirectory('smewt', 'media')
         </div>
         #end for
       #end for
+    #else
+      <p>No episode suggestions are available at this moment.</p>
+
+      <p>When you start watching series, this view will show you the most recent episodes that you haven't seen yet, sorted by series .</p>
+    #end if
     </div>
     </div>
 
