@@ -12,7 +12,7 @@ install_requires = [
     # List your project dependencies here.
     # For more details, see:
     # http://packages.python.org/distribute/setuptools.html#declaring-dependencies
-    'pygoo',
+    'pygoo>=0.1.3',
     'pycurl',
     'cheetah',
     'lxml',
