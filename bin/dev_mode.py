@@ -22,12 +22,15 @@ if len(sys.argv) == 3:
         sys.exit(1)
 
 
-# write version number to file
+# write version number to files
 sinit = open('smewt/__init__.py').read()
 sinit = re.sub('__version__ =.*', '__version__ = \'%s\'' % VERSION, sinit)
 sinit = re.sub('APP_NAME = .*', 'APP_NAME = \'Smewt-dev\'', sinit)
 open('smewt/__init__.py', 'w').write(sinit)
 
+setup = open('setup.py').read()
+setup = re.sub('      version =.*', '      version = \'%s\',' % VERSION, setup)
+open('setup.py', 'w').write(setup)
 
 # replace logging function call in smewg
 smewg = open('bin/smewg').read()
