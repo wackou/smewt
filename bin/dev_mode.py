@@ -14,6 +14,7 @@ VERSION = sys.argv[1]
 sinit = open('smewt/__init__.py').read()
 sinit = re.sub('__version__ =.*', '__version__ = \'%s\'' % VERSION, sinit)
 sinit = re.sub('APP_NAME = .*', 'APP_NAME = \'Smewt-dev\'', sinit)
+sinit = re.sub('MAIN_LOGGING_LEVEL =.*', 'MAIN_LOGGING_LEVEL = logging.INFO', sinit)
 open('smewt/__init__.py', 'w').write(sinit)
 
 
