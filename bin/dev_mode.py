@@ -14,16 +14,19 @@ VERSION = sys.argv[1]
 sinit = open('smewt/__init__.py').read()
 sinit = re.sub('__version__ =.*', '__version__ = \'%s\'' % VERSION, sinit)
 sinit = re.sub('APP_NAME = .*', 'APP_NAME = \'Smewt-dev\'', sinit)
-sinit = re.sub('MAIN_LOGGING_LEVEL =.*', 'MAIN_LOGGING_LEVEL = logging.INFO', sinit)
 open('smewt/__init__.py', 'w').write(sinit)
 
 
 # replace logging function call in smewg
 smewg = open('bin/smewg').read()
+
+smewg = re.sub('\nMAIN_LOGGING_LEVEL =.*', '\nMAIN_LOGGING_LEVEL = logging.INFO', smewg)
+
 logfunc = [ l for l in open('utils/slogging.py') if l[0] != '#' ]
 smewg = smewg.replace(''.join(logfunc) + '\nsetupLogging()\n',
                       '''from utils.slogging import setupLogging
 setupLogging()''', )
+
 open('bin/smewg', 'w').write(smewg)
 
 #os.system('git commit -a -m "Switched back to development version "' + VERSION)

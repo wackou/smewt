@@ -14,7 +14,6 @@ VERSION = sys.argv[1]
 # write version number to file
 sinit = open('smewt/__init__.py').read()
 sinit = re.sub('__version__ =.*', '__version__ = \'%s\'' % VERSION, sinit)
-sinit = re.sub('MAIN_LOGGING_LEVEL =.*', 'MAIN_LOGGING_LEVEL = logging.WARNING', sinit)
 
 sinit = re.sub('APP_NAME = .*', 'APP_NAME = \'Smewt\'', sinit)
 open('smewt/__init__.py', 'w').write(sinit)
@@ -22,9 +21,13 @@ open('smewt/__init__.py', 'w').write(sinit)
 
 # replace logging function call in smewg
 smewg = open('bin/smewg').read()
+
+smewg = re.sub('\nMAIN_LOGGING_LEVEL =.*', '\nMAIN_LOGGING_LEVEL = logging.WARNING', smewg)
+
 logfunc = [ l for l in open('utils/slogging.py') if l[0] != '#' ]
 smewg = smewg.replace('''from utils.slogging import setupLogging
 setupLogging()''', ''.join(logfunc) + '\nsetupLogging()\n')
+
 open('bin/smewg', 'w').write(smewg)
 
 
