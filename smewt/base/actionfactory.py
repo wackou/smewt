@@ -86,7 +86,7 @@ class ActionFactory(Singleton):
             language = surl.args['language']
 
             for provider in self.subtitleProviders:
-                subTask = SubtitleTask(mainWidget.smewtd.collection, provider, title, language)
+                subTask = SubtitleTask(mainWidget.smewtd.database, provider, title, language)
                 mainWidget.smewtd.taskManager.add(subTask)
 
         else:

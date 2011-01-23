@@ -34,11 +34,11 @@ log = logging.getLogger('smewt.subtitletask')
 
 # TODO: should be renamed SeriesSubtitleTask
 class SubtitleTask(Task):
-    def __init__(self, collection, provider, title, language):
+    def __init__(self, database, provider, title, language):
         super(SubtitleTask, self).__init__()
-        self.collection = collection
+        self.database = database
         self.provider = provider
-        self.series = collection.find_one(Series, title = title)
+        self.series = database.find_one(Series, title = title)
         self.language = language
 
         log.info('Creating SubtitleTask for all files from series: %s' % self.series.title)
@@ -49,9 +49,9 @@ class SubtitleTask(Task):
 
         # find objects which don't have yet a subtitle of the desired language
         seriesEpisodes = set(tolist(self.series.episodes))
-        currentSubs = self.collection.find_all(node_type = Subtitle,
-                                              valid_node = lambda x: x.metadata in seriesEpisodes,
-                                              language = self.language)
+        currentSubs = self.database.find_all(node_type = Subtitle,
+                                             valid_node = lambda x: x.metadata in seriesEpisodes,
+                                             language = self.language)
 
         alreadyGood = set([ s.metadata for s in currentSubs ])
 
@@ -95,8 +95,8 @@ class SubtitleTask(Task):
                     log.warning('\'%s\' already exists. Not overwriting it...' % subFilename)
 
                 # update the found subs with this one
-                sub = self.collection.Subtitle(metadata = ep, language = self.language)
-                subfile = self.collection.Media(filename = subFilename, metadata = sub)
+                sub = self.database.Subtitle(metadata = ep, language = self.language)
+                subfile = self.database.Media(filename = subFilename, metadata = sub)
 
             except SubtitleNotFoundError, e:
                 log.warning('subno: did not found any subtitle for %s: %s', str(video), str(e))
