@@ -133,9 +133,16 @@ for season, eps in seasons.items():
 
 <%
 import os.path
-extras = [ ep for ep in eps if 'title' not in ep and ep['filename'] is not None ]
-for ep in extras:
-    ep['title'] = os.path.basename(ep['filename'])
+eps = [ ep for ep in tolist(series.get('episodes')) if ep.episodeNumber == -1 and ep.get('files') ]
+
+files = []
+for ep in eps:
+    files += [ f.filename for f in tolist(ep.files) ]
+
+extras = [ { 'title': f,
+             'url': SmewtUrl('action', 'play', { 'filename1': f })
+	     }
+	     for f in files ]
 %>
 
   #if extras
