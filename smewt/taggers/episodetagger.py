@@ -20,6 +20,7 @@
 #
 
 from smewt.base import SmewtException, SolvingChain, Media, Metadata, utils
+from smewt.base.textutils import toUtf8
 from smewt.media import Episode, Series, Subtitle
 from smewt.taggers.tagger import Tagger
 from smewt.guessers import *
@@ -32,7 +33,7 @@ log = logging.getLogger('smewt.taggers.episodetagger')
 class EpisodeTagger(Tagger):
 
     def perform(self, query):
-        log.info('EpisodeTagger tagging episode: %s' % query.find_one(Media).filename)
+        log.info('EpisodeTagger tagging episode: %s' % toUtf8(query.find_one(Media).filename))
         filenameMetadata = SolvingChain(EpisodeFilename(), MergeSolver(Episode)).solve(query)
         log.info('EpisodeTagger found info from filename: %s' % filenameMetadata.find_one(Episode))
         result = SolvingChain(EpisodeTVDB(), SimpleSolver(Episode)).solve(filenameMetadata)
@@ -48,7 +49,7 @@ class EpisodeTagger(Tagger):
         if media.type() == 'subtitle':
             subs = []
             for language in utils.guessCountryCode(media.filename):
-                log.info('Found %s sub in file %s' % (language, media.filename))
+                log.info('Found %s sub in file %s' % (toUtf8(language), toUtf8(media.filename)))
                 subs += [ result.Subtitle(metadata = media.metadata,
                                           language = language) ]
 

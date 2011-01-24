@@ -20,6 +20,7 @@
 
 from smewt.base import GraphAction, cachedmethod, utils, textutils, SmewtException, Media
 from smewt.base.utils import smewtDirectory
+from smewt.base.textutils import toUtf8
 from smewt.base.mediaobject import foundMetadata
 from smewt.guessers.guesser import Guesser
 from smewt.media import Movie
@@ -48,7 +49,7 @@ class MovieTMDB(GraphAction):
             result = mdprovider.startMovie(movie.title)
         except SmewtException, e:
             # movie could not be found, return a dummy Unknown movie instead so we can group them somewhere
-            log.warning('Could not find info for movie: %s' % query.find_one(Media).filename)
+            log.warning('Could not find info for movie: %s' % toUtf8(query.find_one(Media).filename))
             noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
             result = MemoryObjectGraph()
             result.Movie(title = 'Unknown', loresImage = noposter, hiresImage = noposter)
