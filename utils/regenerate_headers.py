@@ -19,7 +19,7 @@
 #
 
 
-from smewt.utils import GlobDirectoryWalker
+from smewt.utils import dirwalk
 from subprocess import Popen,  PIPE
 import os
 
@@ -79,7 +79,7 @@ def getLicenseHeader(filename):
     return lh
 
 if __name__ == '__main__':
-    for filename in GlobDirectoryWalker(os.getcwd(), ['*.py']):
+    for filename in dirwalk(os.getcwd(), ['*.py']):
         try:
             licenseHeader = getLicenseHeader(filename)
 
