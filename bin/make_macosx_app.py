@@ -4,6 +4,7 @@
 import os
 
 os.system('rm -fr dist build')
+os.system('cp bin/smewg bin/smewg.py')
 os.system('python setup.py py2app')
 
 
@@ -28,4 +29,4 @@ find dist/smewt.app/Contents/plugins -type f -exec install_name_tool -change QtC
 find dist/smewt.app/Contents/plugins -type f -exec install_name_tool -change QtCore.framework/Versions/4/QtCore @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore {} ';'
 
 '''
-                                                                                                                                                                       
+

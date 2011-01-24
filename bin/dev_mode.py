@@ -33,7 +33,7 @@ setup = re.sub('      version =.*', '      version = \'%s\',' % VERSION, setup)
 open('setup.py', 'w').write(setup)
 
 # replace logging function call in smewg
-smewg = open('bin/smewg.py').read()
+smewg = open('bin/smewg').read()
 
 smewg = re.sub('\nMAIN_LOGGING_LEVEL =.*', '\nMAIN_LOGGING_LEVEL = logging.INFO', smewg)
 
@@ -42,7 +42,7 @@ smewg = smewg.replace(''.join(logfunc) + '\nsetupLogging(%s)\n' % ('colored=Fals
                       '''from utils.slogging import setupLogging
 setupLogging()''', )
 
-open('bin/smewg.py', 'w').write(smewg)
+open('bin/smewg', 'w').write(smewg)
 
 if COMMIT:
     os.system('git commit -a -m "Switched back to development version "' + VERSION)
