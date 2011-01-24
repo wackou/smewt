@@ -6,6 +6,15 @@
 News
 ====
 
+0.2b2
+-----
+
+*Release date: 25-Jan-2011*
+
+* Fixed lots of bugs everywhere. Smewt should start to feel ready for daily
+  use now!
+
+
 0.2b1
 -----
 
