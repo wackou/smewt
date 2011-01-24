@@ -27,8 +27,13 @@ RED_FONT = "\x1B[0;31m"
 RESET_FONT = "\x1B[0m"
 
 
-def setupLogging():
+def setupLogging(colored = True):
     """Sets up a nice colored logger as the main application logger (not only smewt itself)."""
+
+    class SimpleFormatter(logging.Formatter):
+        def __init__(self):
+            self.fmt = '%(levelname)-8s %(module)s:%(funcName)s -- %(message)s'
+            logging.Formatter.__init__(self, self.fmt)
 
     class ColoredFormatter(logging.Formatter):
         def __init__(self):
@@ -46,6 +51,9 @@ def setupLogging():
 
 
     ch = logging.StreamHandler()
-    ch.setFormatter(ColoredFormatter())
+    if colored:
+        ch.setFormatter(ColoredFormatter())
+    else:
+        ch.setFormatter(SimpleFormatter())
     logging.getLogger().addHandler(ch)
 

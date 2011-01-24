@@ -41,7 +41,7 @@ smewg = re.sub('\nMAIN_LOGGING_LEVEL =.*', '\nMAIN_LOGGING_LEVEL = logging.INFO'
 
 logfunc = [ l for l in open('utils/slogging.py') if l[0] != '#' ]
 smewg = smewg.replace('''from utils.slogging import setupLogging
-setupLogging()''', ''.join(logfunc) + '\nsetupLogging()\n')
+setupLogging()''', ''.join(logfunc) + '\nsetupLogging(%s)\n' % 'colored=False' if sys.platform == 'darwin' else '')
 
 open('bin/smewg.py', 'w').write(smewg)
 
