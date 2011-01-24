@@ -329,6 +329,7 @@ class SmewtGui(QMainWindow):
             self.statusWidget.progressBar.setValue(tagged)
 
     def firstRun(self):
+        return
         QMessageBox.about(self, 'First run wizard',
 '''                Smewt - a smart media manager
 
