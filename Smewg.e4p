@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2011-01-24, 23:39:23 -->
+<!-- Saved: 2011-01-25, 00:40:10 -->
 <!-- Copyright (C) 2011 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -107,8 +107,8 @@
     <Source>smewt/media/series/view_episode_suggestions.tmpl</Source>
     <Source>bin/make_release.py</Source>
     <Source>bin/dev_mode.py</Source>
-    <Source>bin/smewg.py</Source>
     <Source>bin/make_macosx_app.py</Source>
+    <Source>bin/smewg</Source>
   </Sources>
   <Forms>
   </Forms>
