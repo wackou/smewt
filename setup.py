@@ -24,7 +24,7 @@ APP = ['bin/smewg.py']
 DATA_FILES = []
 OPTIONS = { 'argv_emulation': True,
             'iconfile': 'smewt/icons/smewt.icns',
-            'packages': [ 'smewt', 'Cheetah' ],
+            'packages': [ 'smewt', 'Cheetah', 'lxml' ],
             'frameworks': [ '/Developer/Applications/Qt/plugins/iconengines/libqsvgicon.dylib' ],
             'includes': [ 'sip', 'PyQt4', 'PyQt4.QtCore', 'PyQt4.QtGui', 'PyQt4.QtNetwork', 'PyQt4.QtWebKit',  'PyQt4.QtXml', 'PyQt4.QtSvg' ],
 	    'excludes': [ 'PyQt4.QtDesigner', 'PyQt4.QtOpenGL', 'PyQt4.QtScript',
