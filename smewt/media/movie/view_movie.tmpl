@@ -115,8 +115,10 @@ qtitle = movie.title.replace('\'', '\\\'')
   <h1>$movieName</h1>
 
 #if movieName != 'Unknown':
+  <!--
   <a href="$englishSubsLink">Get missing English subtitles</a>
   <a href="$frenchSubsLink">Get missing French subtitles</a>
+  -->
   #if playLink:
     <a href="$playLink">Play Movie</a>
     #for s in subtitles
