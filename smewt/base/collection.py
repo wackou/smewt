@@ -78,12 +78,11 @@ class Collection(object):
     def collectionFiles(self):
         for folder, recursive in self.folders.items():
             for f in utils.dirwalk(folder, self.validFiles, recursive):
-                yield f
+                yield f.decode('utf-8')
 
     def modifiedFiles(self):
         lastModified = dict((f.filename, f.get('lastModified', None)) for f in self.graph.find_all(Media))
         for f in self.collectionFiles():
-            f = f.decode('utf-8')
             # yield a file if we haven't heard of it yet or if it has been modified recently
             if f not in lastModified or os.path.getmtime(f) > lastModified[f]:
                 yield f
@@ -91,7 +90,7 @@ class Collection(object):
     def importFiles(self, files):
         for f in files:
             # new import task
-            log.info('Import in %s collection: %s' % (self.name, f))
+            log.info('Import in %s collection: %s' % (self.name, toUtf8(f)))
             if self.taskManager:
                 importTask = ImportTask(self.graph, self.mediaTagger, f)
                 self.taskManager.add(importTask)

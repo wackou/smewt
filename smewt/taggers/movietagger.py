@@ -19,6 +19,7 @@
 #
 
 from smewt.base import Media, utils
+from smewt.base.textutils import toUtf8
 from smewt.media import Movie, Subtitle
 from smewt.taggers.tagger import Tagger
 from smewt.guessers import *
@@ -28,7 +29,7 @@ log = logging.getLogger('smewt.taggers.movietagger')
 
 class MovieTagger(Tagger):
     def perform(self, query):
-        log.info('MovieTagger tagging movie: %s' % query.find_one(Media).filename)
+        log.info('MovieTagger tagging movie: %s' % toUtf8(query.find_one(Media).filename))
         filenameMetadata = MovieFilename().perform(query)
         filenameMovie = filenameMetadata.find_one(Movie)
         log.info('MovieTagger found info from filename: %s' % filenameMovie)
@@ -36,7 +37,7 @@ class MovieTagger(Tagger):
 
         media = result.find_one(Media)
         if not media.metadata:
-            log.warning('Could not find any tag for: %s' % media)
+            log.warning(u'Could not find any tag for: %s' % media)
 
         # import the info we got from the filename if nothing better came in with MovieTMDB
         for prop in filenameMovie.keys():
