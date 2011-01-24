@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2011-01-22, 21:10:02 -->
+<!-- Saved: 2011-01-24, 22:13:17 -->
 <!-- Copyright (C) 2011 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -89,7 +89,6 @@
     <Source>smewt/test/test_tvdb.py</Source>
     <Source>smewt/test/test_datamodel.py</Source>
     <Source>smewt/base/collection.py</Source>
-    <Source>bin/smewg</Source>
     <Source>bin/run_dev_smewg</Source>
     <Source>smewt/test/test_tvdb/futurama.yaml</Source>
     <Source>smewt/test/test_tvdb/duckman.yaml</Source>
@@ -108,6 +107,7 @@
     <Source>smewt/media/series/view_episode_suggestions.tmpl</Source>
     <Source>bin/make_release.py</Source>
     <Source>bin/dev_mode.py</Source>
+    <Source>bin/smewg.py</Source>
   </Sources>
   <Forms>
   </Forms>
@@ -118,7 +118,6 @@
   <Interfaces>
   </Interfaces>
   <Others>
-    <Other>bin/smewg</Other>
   </Others>
   <MainScript>bin/smewg</MainScript>
   <Vcs>

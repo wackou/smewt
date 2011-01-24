@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-import os
+import os, sys
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
@@ -27,30 +27,34 @@ OPTIONS = { 'argv_emulation': True,
             'packages': [ 'smewt', 'Cheetah', 'lxml' ],
             'frameworks': [ '/Developer/Applications/Qt/plugins/iconengines/libqsvgicon.dylib' ],
             'includes': [ 'sip', 'PyQt4', 'PyQt4.QtCore', 'PyQt4.QtGui', 'PyQt4.QtNetwork', 'PyQt4.QtWebKit',  'PyQt4.QtXml', 'PyQt4.QtSvg' ],
-	    'excludes': [ 'PyQt4.QtDesigner', 'PyQt4.QtOpenGL', 'PyQt4.QtScript',
+            'excludes': [ 'PyQt4.QtDesigner', 'PyQt4.QtOpenGL', 'PyQt4.QtScript',
                           'PyQt4.QtSql', 'PyQt4.QtTest' ] # 'PyQt4.phonon'
             }
 
 
-setup(name = 'Smewt',
-      version = '0.2-dev',
-      description = 'Smewt - a smart media manager.',
-      long_description = README + '\n\n' + NEWS,
-      classifiers = [], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
-      keywords = 'smewt pygoo media manager video collection',
-      author = 'Nicolas Wack',
-      author_email = 'wackou@gmail.com',
-      url = 'http://www.smewt.com/',
-      license = 'GPLv3',
-      packages = find_packages(exclude = [ 'ez_setup', 'examples', 'tests' ]),
-      #package_data = dict((package, datafiles_exts) for package in find_packages()),
-      include_package_data = True,
-      scripts = [ 'bin/smewg.py' ],
-      install_requires = install_requires,
+args = dict(name = 'Smewt',
+            version = '0.2-dev',
+            description = 'Smewt - a smart media manager.',
+            long_description = README + '\n\n' + NEWS,
+            classifiers = [], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+            keywords = 'smewt pygoo media manager video collection',
+            author = 'Nicolas Wack',
+            author_email = 'wackou@gmail.com',
+            url = 'http://www.smewt.com/',
+            license = 'GPLv3',
+            packages = find_packages(exclude = [ 'ez_setup', 'examples', 'tests' ]),
+            #package_data = dict((package, datafiles_exts) for package in find_packages()),
+            include_package_data = True,
+            scripts = [ 'bin/smewg.py' ],
+            install_requires = install_requires
+            )
 
-      # for py2app
-      app=APP,
-      data_files=DATA_FILES,
-      options={'py2app': OPTIONS},
-      setup_requires=['py2app'],
-      )
+if sys.platform == 'darwin':
+    args.update(dict(# for py2app
+                     app=APP,
+                     data_files=DATA_FILES,
+                     options={'py2app': OPTIONS},
+                     setup_requires=['py2app']
+                     ))
+
+setup(**args)
