@@ -16,9 +16,23 @@ install_requires = [
     'feedparser'
 ]
 
+
 datafiles_exts = [ '*.png', '*.svg', '*.tmpl', '*.css', '*.html', '*.js' ]
 
-setup(name = 'smewt',
+# py2app data
+APP = ['bin/smewg.py']
+DATA_FILES = []
+OPTIONS = { 'argv_emulation': True,
+            'iconfile': 'smewt/icons/smewt.icns',
+            'packages': [ 'smewt', 'Cheetah' ],
+            'frameworks': [ '/Developer/Applications/Qt/plugins/iconengines/libqsvgicon.dylib' ],
+            'includes': [ 'sip', 'PyQt4', 'PyQt4.QtCore', 'PyQt4.QtGui', 'PyQt4.QtNetwork', 'PyQt4.QtWebKit',  'PyQt4.QtXml', 'PyQt4.QtSvg' ],
+	    'excludes': [ 'PyQt4.QtDesigner', 'PyQt4.QtOpenGL', 'PyQt4.QtScript',
+                          'PyQt4.QtSql', 'PyQt4.QtTest' ] # 'PyQt4.phonon'
+            }
+
+
+setup(name = 'Smewt',
       version = '0.2-dev',
       description = 'Smewt - a smart media manager.',
       long_description = README + '\n\n' + NEWS,
@@ -32,5 +46,11 @@ setup(name = 'smewt',
       #package_data = dict((package, datafiles_exts) for package in find_packages()),
       include_package_data = True,
       scripts = [ 'bin/smewg' ],
-      install_requires = install_requires
+      install_requires = install_requires,
+
+      # for py2app
+      app=APP,
+      data_files=DATA_FILES,
+      options={'py2app': OPTIONS},
+      setup_requires=['py2app'],
       )
