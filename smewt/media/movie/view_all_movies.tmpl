@@ -24,6 +24,7 @@ import_dir = smewtDirectoryUrl('smewt', 'media', 'movie')
     </div>
     <div id="container">
 
+    #if movies
         <div id="left-side">
       #for m in movies[::2]
         <div class="movie">
@@ -41,6 +42,9 @@ import_dir = smewtDirectoryUrl('smewt', 'media', 'movie')
         </div>
       #end for
     </div>
+    #else
+      <p>There are no movies in your library. Make sure you go into <b>Collection -> Select movies folders</b> to tell Smewt where to look for them.</p>
+    #end if
 
   </div>
 </div>

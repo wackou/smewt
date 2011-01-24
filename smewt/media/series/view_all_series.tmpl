@@ -26,6 +26,7 @@ import_dir = smewtDirectoryUrl('smewt', 'media', 'series')
     </div>
     <div id="container">
 
+    #if series
         <div id="left-side">
       #for s in series[::2]
         <div class="series">
@@ -43,6 +44,9 @@ import_dir = smewtDirectoryUrl('smewt', 'media', 'series')
         </div>
       #end for
     </div>
+    #else
+      <p>There are no episodes in your library. Make sure you go into <b>Collection -> Select series folders</b> to tell Smewt where to look for them.</p>
+    #end if
 
   </div>
 </div>
