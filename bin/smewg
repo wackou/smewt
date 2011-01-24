@@ -366,9 +366,10 @@ The Smewt developers.
     def about(self):
         QMessageBox.about(self, 'About Smewt',
 '''Smewt - a smart media manager
+Version %s
 
 (c) 2008-2011 Nicolas Wack, Ricard Marxer
-GPLv3 licensed''')
+GPLv3 licensed''' % smewt.__version__)
 
     def aboutQt(self):
         QMessageBox.aboutQt(self)
