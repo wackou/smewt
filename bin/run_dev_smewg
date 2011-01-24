@@ -31,4 +31,4 @@ SMEWT_ROOT_PARENT = up(SMEWT_ROOT)
 sys.path = [ os.path.join(SMEWT_ROOT_PARENT, 'smewt'), os.path.join(SMEWT_ROOT_PARENT, 'pygoo') ] + sys.path
 
 # then run smewg normally
-execfile(os.path.join(SMEWT_ROOT, 'bin', 'smewg.py'))
+execfile(os.path.join(SMEWT_ROOT, 'bin', 'smewg'))
