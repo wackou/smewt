@@ -32,7 +32,7 @@ OPTIONS = { 'argv_emulation': True,
             }
 
 
-args = dict(name = 'Smewt',
+args = dict(name = 'smewt',
             version = '0.2-dev',
             description = 'Smewt - a smart media manager.',
             long_description = README + '\n\n' + NEWS,
@@ -51,6 +51,7 @@ args = dict(name = 'Smewt',
 
 if sys.platform == 'darwin':
     args.update(dict(# for py2app
+                     name = 'Smewt',
                      app=APP,
                      data_files=DATA_FILES,
                      options={'py2app': OPTIONS},
