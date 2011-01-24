@@ -45,7 +45,7 @@ setup(name = 'Smewt',
       packages = find_packages(exclude = [ 'ez_setup', 'examples', 'tests' ]),
       #package_data = dict((package, datafiles_exts) for package in find_packages()),
       include_package_data = True,
-      scripts = [ 'bin/smewg' ],
+      scripts = [ 'bin/smewg.py' ],
       install_requires = install_requires,
 
       # for py2app

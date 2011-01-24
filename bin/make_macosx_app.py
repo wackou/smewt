@@ -3,8 +3,8 @@
 
 import os
 
-#os.system('rm -fr dist build')
-#os.system('python setup.py py2app')
+os.system('rm -fr dist build')
+os.system('python setup.py py2app')
 
 
 APPDIR = 'dist/Smewt.app'
@@ -19,7 +19,7 @@ for MODULE in [ 'QtCore', 'QtGui', 'QtXml', 'QtSvg', 'QtNetwork', 'QtDBus' ]:
     os.system("find %s/Contents/plugins -type f -exec install_name_tool -change %s.framework/Versions/4/%s @executable_path/../Frameworks/%s.framework/Versions/4/%s {} ';'" % (APPDIR, MODULE, MODULE, MODULE, MODULE))
 
 
-os.system("find %s/ -name \"*_debug\" -exec rm {} ';'")
+os.system("find %s/ -name \"*_debug\" -exec rm {} ';'" % APPDIR)
 '''
 find dist/smewt.app/Contents/plugins -type f -exec install_name_tool -change QtGui.framework/Versions/4/QtGui @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui {} ';'
 

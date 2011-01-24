@@ -34,7 +34,7 @@ open('setup.py', 'w').write(setup)
 
 
 # replace logging function call in smewg
-smewg = open('bin/smewg').read()
+smewg = open('bin/smewg.py').read()
 
 smewg = re.sub('\nMAIN_LOGGING_LEVEL =.*', '\nMAIN_LOGGING_LEVEL = logging.WARNING', smewg)
 
@@ -42,7 +42,7 @@ logfunc = [ l for l in open('utils/slogging.py') if l[0] != '#' ]
 smewg = smewg.replace('''from utils.slogging import setupLogging
 setupLogging()''', ''.join(logfunc) + '\nsetupLogging()\n')
 
-open('bin/smewg', 'w').write(smewg)
+open('bin/smewg.py', 'w').write(smewg)
 
 
 if COMMIT:
