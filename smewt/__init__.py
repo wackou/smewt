@@ -19,7 +19,7 @@
 #
 
 
-__version__ = '0.2'
+__version__ = '0.3-dev'
 
 import logging
 
@@ -39,4 +39,4 @@ log = logging.getLogger('smewt')
 # used to be able to store settings for different versions of Smewt installed on the same computer, ie: a stable
 # and a development version
 ORG_NAME = 'Falafelton'
-APP_NAME = 'Smewt'
+APP_NAME = 'Smewt-dev'
