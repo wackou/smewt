@@ -105,14 +105,14 @@ class TestImportTask(TestCase):
     def testSmewtDaemon(self):
         # we need to remove traces of previous test runs, even though we're supposed to have cleaned it after the test,
         # a previous run of the test that failed might not have done that
-        os.system('rm -fr ~/.config/DigitalGaia_tmp')
+        os.system('rm -fr ~/.config/Falafelton_tmp')
         os.system('rm -fr /tmp/smewt_test_daemon')
 
         import smewt
         orgname = smewt.ORG_NAME
         appname = smewt.APP_NAME
 
-        smewt.ORG_NAME = 'DigitalGaia_tmp'
+        smewt.ORG_NAME = 'Falafelton_tmp'
         smewt.APP_NAME = 'Smewt_tmp'
 
         from PyQt4.QtCore import QCoreApplication
@@ -173,7 +173,7 @@ class TestImportTask(TestCase):
         self.collectionTest(smewtd.database)
 
         # clean up our mess before we exit
-        os.system('rm -fr ~/.config/DigitalGaia_tmp')
+        os.system('rm -fr ~/.config/Falafelton_tmp')
         os.system('rm -fr /tmp/smewt_test_daemon')
 
         smewt.ORG_NAME = orgname
