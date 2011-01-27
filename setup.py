@@ -54,7 +54,7 @@ if sys.platform == 'darwin':
                      name = 'Smewt',
                      app=APP,
                      data_files=DATA_FILES,
-                     options={'py2app': OPTIONS},
+                     options={'py2app': OPTIONS, 'plist':dict(CFBundleIdentifier = 'com.smewt.Smewt')},
                      setup_requires=['py2app']
                      ))
 
