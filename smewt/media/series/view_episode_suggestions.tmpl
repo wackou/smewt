@@ -10,6 +10,8 @@ import datetime
 # map of series to list of episodes
 suggest = {}
 
+epsiodeCount = 3
+
 # first find the last viewed episode for each season
 episodes = sorted(episodes, key = lambda ep: ep.series.title)
 
@@ -21,12 +23,12 @@ for serieName, eps in groupby(episodes, lambda ep: ep.series.title):
     # then look if we have a more recent one which we haven't watched yet
     s = []
     for ep in lastViewed.series.episodes:
-        if 'lastViewed' not in ep and (ep.season, ep.episodeNumber) > (lastViewed.season, lastViewed.episodeNumber):
+        if 'title' in ep and 'lastViewed' not in ep and (ep.season, ep.episodeNumber) > (lastViewed.season, lastViewed.episodeNumber):
             s.append(ep)
 
     # find only more recent episode to watch
     if s:
-        keep = sorted(s, key = lambda ep: (-ep.season, -ep.episodeNumber))
+        keep = sorted(s, key = lambda ep: (ep.season, ep.episodeNumber))[:epsiodeCount]
         suggest[keep[0].series] = keep
 
 # sort our suggestions to show the last scanned ones first
@@ -65,7 +67,11 @@ import_dir = smewtDirectory('smewt', 'media')
         #for ep in eps
         <div class="suggest">
           #set url = SmewtUrl('action', 'play', { 'filename1': tolist(ep.files)[0].filename })
-          <a href="$url">$ep.episodeNumber - $ep.title </a>
+          #if 'title' in ep:
+            <a href="$url">$ep.episodeNumber - $ep.title </a>
+          #else
+            <a href="$url">$ep.episodeNumber - <i>Unknown</i> </a>
+          #end if
             #if 'synopsis' in ep:
               <p>$ep.synopsis</p>
             #end if
