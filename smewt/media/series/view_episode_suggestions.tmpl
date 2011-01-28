@@ -23,7 +23,7 @@ for serieName, eps in groupby(episodes, lambda ep: ep.series.title):
     # then look if we have a more recent one which we haven't watched yet
     s = []
     for ep in lastViewed.series.episodes:
-        if 'title' in ep and 'lastViewed' not in ep and (ep.season, ep.episodeNumber) > (lastViewed.season, lastViewed.episodeNumber):
+        if 'title' in ep and (ep.season, ep.episodeNumber) >= (lastViewed.season, lastViewed.episodeNumber):
             s.append(ep)
 
     # find only more recent episode to watch
