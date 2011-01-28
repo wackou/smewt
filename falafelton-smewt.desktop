@@ -1,10 +1,10 @@
 [Desktop Entry]
 Type=Application
-Version=0.1
+Version=0.2
 Encoding=UTF-8
 Name=Smewt
 GenericName=Media Collection Manager
-Exec=smewg.py %U
+Exec=smewg %U
 Comment=Smewt - Your Media Anywhere and Everywhere!
 Icon=smewt
 X-KDE-Protocols=smewt

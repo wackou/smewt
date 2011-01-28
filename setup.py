@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
 import os, sys
 
@@ -19,9 +20,23 @@ install_requires = [
 
 datafiles_exts = [ '*.png', '*.svg', '*.tmpl', '*.css', '*.html', '*.js' ]
 
+DATA_FILES = []
+if sys.platform == 'linux2':
+  DATA_FILES += [('/usr/share/applications' , ['falafelton-smewt.desktop']),
+                 ('/usr/share/icons/hicolor/scalable/apps' , ['smewt/icons/smewt.svg'])]
+
+from setuptools.command.install import install as _install
+import subprocess
+
+class install(_install):
+    def run(self):
+        _install.run(self)
+        print 'Processing triggers for menu ...'
+        subprocess.call(['xdg-desktop-menu', 'install', '/usr/share/applications/falafelton-smewt.desktop'])
+        subprocess.call(['update-menus'])
+
 # py2app data
 APP = ['bin/smewg.py']
-DATA_FILES = []
 OPTIONS = { 'argv_emulation': True,
             'iconfile': 'smewt/icons/smewt.icns',
             'packages': [ 'smewt', 'Cheetah', 'lxml' ],
@@ -38,7 +53,7 @@ args = dict(name = 'smewt',
             long_description = README + '\n\n' + NEWS,
             classifiers = [], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
             keywords = 'smewt pygoo media manager video collection',
-            author = 'Nicolas Wack',
+            author = 'Nicolas Wack, Ricard Marxer',
             author_email = 'wackou@gmail.com',
             url = 'http://www.smewt.com/',
             license = 'GPLv3',
@@ -57,5 +72,9 @@ if sys.platform == 'darwin':
                      options={'py2app': OPTIONS, 'plist':dict(CFBundleIdentifier = 'com.smewt.Smewt')},
                      setup_requires=['py2app']
                      ))
+
+if sys.platform == 'linux2':
+    args.update(dict(cmdclass = {'install': install},
+                     data_files = DATA_FILES))
 
 setup(**args)
