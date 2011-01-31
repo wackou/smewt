@@ -7,4 +7,12 @@ function toggleByName( whatName )
   }
 }
 
+function isToggled( whatName )
+{
+  var x = document.getElementsByName( whatName );
 
+  if (x[0].style.display == 'inline')
+      return true;
+  else
+      return false;
+}

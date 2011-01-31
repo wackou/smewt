@@ -1,4 +1,5 @@
 #set series = $series
+#set displaySynopsis = $displaySynopsis
 
 <%
 from itertools import groupby
@@ -23,6 +24,10 @@ poster = pathToUrl(series.get('loresImage'))
 englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'en' })
 frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'fr' })
 spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'es' })
+if displaySynopsis:
+    displayStyle = 'inline'
+else:
+    displayStyle = 'none'
 
 # First prepare the episodes
 episodes = {}
@@ -88,10 +93,20 @@ for season, eps in seasons.items():
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-<title>single serie display</title>
-<script type="text/javascript" src="file://$(import_dir)/3rdparty/tabber.js"></script>
-<script type="text/javascript" src="file://$(import_dir)/3rdparty/styler.js"></script>
-<link rel="stylesheet" href="file://$(import_dir)/series/series.css" type="text/css">
+    <title>single serie display</title>
+    <script type="text/javascript" src="file://$(import_dir)/3rdparty/tabber.js"></script>
+    <script type="text/javascript" src="file://$(import_dir)/3rdparty/styler.js"></script>
+    <link rel="stylesheet" href="file://$(import_dir)/series/series.css" type="text/css">
+
+    <script type="text/javascript" charset="utf-8">
+    #raw
+        function toggleSynopsis() {
+            toggleByName('synopsis');
+            mainWidget.toggleSynopsis(isToggled('synopsis'));
+        }
+    #end raw
+    </script>
+
 </head>
 
 <body>
@@ -104,7 +119,7 @@ for season, eps in seasons.items():
   <a href="$englishSubsLink">Get missing English subtitles</a>
   <a href="$frenchSubsLink">Get missing French subtitles</a>
   <a href="$spanishSubsLink">Get missing Spanish subtitles</a>
-  <a href="javascript:toggleByName('synopsis')">Toggle synopsis</a>
+  <a href="javascript:toggleSynopsis()">Toggle synopsis</a>
 </div>
 
 <div class="tabber">
@@ -125,7 +140,7 @@ for season, eps in seasons.items():
       #end for
 
       #if 'synopsis' in ep:
-        <div name="synopsis" style="display:inline"><p>$ep.synopsis</p></div>
+        <div name="synopsis" style="display:$displayStyle"><p>$ep.synopsis</p></div>
       #end if
       </div>
     #end if
@@ -141,8 +156,8 @@ for ep in eps:
 
 extras = [ { 'title': f,
              'url': SmewtUrl('action', 'play', { 'filename1': f })
-	     }
-	     for f in files ]
+             }
+             for f in files ]
 %>
 
   #if extras

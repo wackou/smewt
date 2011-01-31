@@ -24,6 +24,13 @@ from smewtdict import SmewtDict, ValidatingSmewtDict
 from smewtexception import SmewtException
 from textutils import toUtf8
 
+# FIXME: this needs to be moved somewhere else...
+class Config(BaseObject):
+    """Config class for representing the application configuration as an in-database object."""
+    schema = { 'displaySynopsis': bool
+               }
+    valid = []
+
 # This file contains the 2 base MediaObject types used in Smewt:
 #  - Media: is the type used to represent physical files on the hard disk.
 #    It always has at least 2 properties: 'filename' and 'sha1'

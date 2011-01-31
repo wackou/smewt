@@ -20,7 +20,7 @@
 
 from Cheetah.Template import Template
 from pygoo import MemoryObjectGraph
-from smewt.base import SmewtException, Media
+from smewt.base import SmewtException, Media, Config
 from serieobject import Series, Episode
 from smewt.media.subtitle.subtitleobject import Subtitle
 from smewt.base.utils import smewtDirectory
@@ -31,8 +31,15 @@ def render(url, collection):
     items we don't want to display, or shape the data so that it's more suited for html rendering, etc...'''
 
     if url.viewType == 'single':
+        # FIXME: this definitely doesn't belong here...
+        try:
+            config = collection.find_one(Config)
+        except ValueError:
+            config = collection.Config(displaySynopsis = True)
         t = Template(file = smewtDirectory('smewt', 'media', 'series', 'view_episodes_by_season.tmpl'),
-                     searchList = { 'series': collection.find_one(Series, title = url.args['title']) })
+                     searchList = { 'series': collection.find_one(Series, title = url.args['title']),
+                                    'displaySynopsis': config.displaySynopsis
+                                    })
 
     elif url.viewType == 'all':
         t = Template(file = smewtDirectory('smewt', 'media', 'series', 'view_all_series.tmpl'),

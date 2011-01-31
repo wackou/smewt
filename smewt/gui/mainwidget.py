@@ -170,6 +170,9 @@ class MainWidget(QWidget):
             #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
             #print html[:4000]
             self.collectionView.page().mainFrame().setHtml(html)
+            # insert listener object for synopsis toggle button
+            self.connect(self.collectionView.page().mainFrame(), SIGNAL('javaScriptWindowObjectCleared()'),
+                         self.connectJavaScript)
 
         elif surl.mediaType == 'movie':
             html = movie.view.render(surl,  self.smewtd.database)
@@ -184,6 +187,10 @@ class MainWidget(QWidget):
 
     def connectJavaScript(self):
         self.collectionView.page().mainFrame().addToJavaScriptWindowObject('mainWidget', self)
+
+    @pyqtSignature("bool")
+    def toggleSynopsis(self, synopsis):
+        self.smewtd.database.find_one('Config').displaySynopsis = synopsis
 
     @pyqtSignature("QString, bool")
     def updateWatched(self, title, watched):
