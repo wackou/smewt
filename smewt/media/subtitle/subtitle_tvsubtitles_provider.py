@@ -19,10 +19,10 @@
 #
 
 import re, logging
-from urllib import urlopen, urlencode
+from urllib import urlencode
+from urllib2 import urlopen
 from smewt.base import utils, SmewtException, cachedmethod
 from pygoo import ontology, MemoryObjectGraph
-from smewt.base.utils import curlget
 from smewt.base.textutils import simpleMatch, between, levenshtein
 from subtitleobject import Subtitle
 from lxml import etree
@@ -84,7 +84,7 @@ class TVSubtitlesProvider:
         log.debug('Getting subtitles id for %s %dx%2d' % (episode.series.title, episode.season, episode.episodeNumber))
         episodeID = self.getEpisodeID(episode.series.title, episode.season, episode.episodeNumber)
         episodeURL = self.baseUrl + '/episode-%d.html' % episodeID
-        episodeHtml = curlget(episodeURL)
+        episodeHtml = urlopen(episodeURL).read()
         subtitlesHtml = between(episodeHtml, 'Subtitles for this episode', 'Back to')
 
         result = MemoryObjectGraph()
@@ -121,13 +121,9 @@ class TVSubtitlesProvider:
                 sub = sorted(dists)[0][1]
             log.warning('Choosing %s' % sub)
 
-        cd = utils.CurlDownloader()
-        # first get this page to get session cookies...
-        cd.get(self.baseUrl + '/subtitle-%s.html' % sub['id'])
-        # ...then grab the sub file
-        cd.get(self.baseUrl + '/download-%s.html' % sub['id'])
+        zippedSub = urlopen(self.baseUrl + '/download-%s.html' % sub['id']).read()
 
-        zf = zipfile.ZipFile(cStringIO.StringIO(cd.contents))
+        zf = zipfile.ZipFile(cStringIO.StringIO(zippedSub))
         filename = zf.infolist()[0].filename
         extension = os.path.splitext(filename)[1]
         subtext = zf.read(filename)
@@ -165,13 +161,9 @@ class TVSubtitlesProvider:
         If the subtitle could not be found, a SubtitleNotFoundError exception should be raised.'''
         import cStringIO, zipfile, os.path
 
-        cd = utils.CurlDownloader()
-        # first get this page to get session cookies...
-        cd.get(self.baseUrl + '/subtitle-%d.html' % subtitle.tvsubid)
-        # ...then grab the sub file
-        cd.get(self.baseUrl + '/download-%d.html' % subtitle.tvsubid)
+        zippedSub = urlopen(self.baseUrl + '/download-%d.html' % subtitle.tvsubid).read()
 
-        zf = zipfile.ZipFile(cStringIO.StringIO(cd.contents))
+        zf = zipfile.ZipFile(cStringIO.StringIO(zippedSub))
         filename = zf.infolist()[0].filename
         #extension = os.path.splitext(filename)[1]
         subtext = zf.read(filename)

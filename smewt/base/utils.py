@@ -203,31 +203,3 @@ def dirwalk(directory, validFiles = ['*'], recursive = True):
         if recursive is False:
             break
 
-
-class CurlDownloader:
-    def __init__(self):
-        self.contents = []
-        self.c = pycurl.Curl()
-
-    def callback(self, buf):
-        self.contents.append(buf)
-
-    def get(self, url):
-        self.contents = []
-        c = self.c
-        c.setopt(c.URL, url)
-        c.setopt(c.WRITEFUNCTION, self.callback)
-        c.setopt(c.COOKIEFILE, '')
-        c.setopt(c.FOLLOWLOCATION, 1)
-        c.perform()
-
-        self.contents = ''.join(self.contents)
-
-        return self.contents
-
-    def __del__(self):
-        self.c.close()
-
-def curlget(url):
-    c = CurlDownloader()
-    return c.get(url)

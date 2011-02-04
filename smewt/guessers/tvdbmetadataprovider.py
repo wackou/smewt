@@ -28,8 +28,7 @@ from pygoo import MemoryObjectGraph
 from PyQt4.QtCore import SIGNAL, QObject, QUrl
 
 import os, sys, re, logging
-from urllib import urlopen,  urlencode
-from smewt.base.utils import curlget
+from urllib2 import urlopen
 
 import thetvdbapi
 import tmdb
@@ -126,12 +125,12 @@ class TVDBMetadataProvider(object):
         if len(posters)>0:
             loresURL = posters[0][0]
             loresFilename = os.path.join(imageDir, '%s_lores.jpg' % tvdbID)
-            open(loresFilename, 'wb').write(curlget(loresURL))
+            open(loresFilename, 'wb').write(urlopen(loresURL).read())
 
             if len(posters)>1:
               hiresURL = posters[1][0]
               hiresFilename = os.path.join(imageDir, '%s_hires.jpg' % tvdbID)
-              open(hiresFilename, 'wb').write(curlget(hiresURL))
+              open(hiresFilename, 'wb').write(urlopen(hiresURL).read())
         else:
             log.warning('Could not find poster for tvdb ID %s' % tvdbID)
             return (noposter, noposter)
@@ -160,12 +159,12 @@ class TVDBMetadataProvider(object):
         if len(posters)>0:
             loresURL = posters[0]
             loresFilename = os.path.join(imageDir, '%s_lores.jpg' % movieId)
-            open(loresFilename, 'wb').write(curlget(loresURL))
+            open(loresFilename, 'wb').write(urlopen(loresURL).read())
 
             if len(posters)>1:
               hiresURL = posters[1]
               hiresFilename = os.path.join(imageDir, '%s_hires.jpg' % movieId)
-              open(hiresFilename, 'wb').write(curlget(hiresURL))
+              open(hiresFilename, 'wb').write(urlopen(hiresURL).read())
         else:
             log.warning('Could not find poster for tmdb ID %s' % movieId)
             return (noposter, noposter)

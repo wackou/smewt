@@ -51,7 +51,12 @@ class TestEpisodeSubtitle(TestCase):
             available = subprovider.getAvailableSubtitles(ep).find_all(Subtitle, language = language)
             self.assert_(len(available) >= 1)
 
-            sub = subprovider.getSubtitle(available[0])
+            sub = available[0]
+            # FIXME: should implement hint with the filename...
+            if '720p' in available[0].source and len(available) > 1:
+                sub = available[1]
+
+            sub = subprovider.getSubtitle(sub)
             self.assertEqual(open(datafile(resultFile)).read(), sub.replace('\r\n', '\n'))
 
 
