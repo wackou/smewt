@@ -11,7 +11,6 @@ install_requires = [
     # For more details, see:
     # http://packages.python.org/distribute/setuptools.html#declaring-dependencies
     'pygoo>=0.1.3',
-    'pycurl',
     'cheetah',
     'lxml',
     'feedparser'

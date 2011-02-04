@@ -22,7 +22,6 @@
 
 # filename- and network-related functions
 import sys, os, os.path, fnmatch,  errno
-import pycurl
 from PyQt4.QtCore import QSettings, QVariant
 import smewt
 from pygoo.utils import tolist, toresult
