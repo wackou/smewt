@@ -73,7 +73,12 @@ def pathToUrl(path):
     return path
 
 def smewtDirectory(*args):
-    return os.path.join(currentPath(), '..', '..', *args)
+    result = os.path.join(currentPath(), '..', '..', *args)
+
+    # big fat hack so that smewt still works when "compiled" with py2exe
+    result = result.replace('library.zip\\', '')
+
+    return result
 
 def smewtDirectoryUrl(*args):
     return pathToUrl(smewtDirectory(*args))
@@ -108,6 +113,8 @@ def splitPath(path):
         head, tail = os.path.split(path)
         if head == '/' and tail == '':
             return [ '/' ] + result
+        if len(head) == 3 and head[1:] == ':\\' and tail == '':
+            return [ head ] + result
         if head == '' and tail == '':
             return result
         result = [ tail ] + result

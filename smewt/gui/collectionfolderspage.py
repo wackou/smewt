@@ -107,6 +107,11 @@ class CollectionFoldersPage(QDialog):
 
     def getFolders(self):
         folders = [ str(f) for f in self.dirselector.selectedFolders() ]
+
+        # make sure everything's native
+        if sys.platform == 'win32':
+            folders = [ f.replace('/', '\\') for f in folders ]
+
         recursiveSelection = self.dirselector.recursiveSelection()
 
         return dict((folder, recursiveSelection) for folder in folders)

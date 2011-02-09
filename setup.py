@@ -67,7 +67,8 @@ if sys.platform == 'darwin':
     args.update(dict(# for py2app
                      name = 'Smewt',
                      app=APP,
-                     data_files=DATA_FILES,
+                     data_files=DATA_FILES, # FIXME: this line should be removed
+
                      options={'py2app': OPTIONS, 'plist':dict(CFBundleIdentifier = 'com.smewt.Smewt')},
                      setup_requires=['py2app']
                      ))
@@ -75,5 +76,32 @@ if sys.platform == 'darwin':
 if sys.platform == 'linux2':
     args.update(dict(cmdclass = {'install': install},
                      data_files = DATA_FILES))
+
+if sys.platform == 'win32':
+    import py2exe
+    import glob
+    from os.path import join
+
+    allfiles = []
+    for package in find_packages():
+        datafiles = []
+        root_path = package.replace('.', '\\')
+        for pattern in datafiles_exts:
+            datafiles += glob.glob(join(root_path, pattern))
+        if datafiles:
+            allfiles.append((root_path, datafiles))
+
+    # also add qt plugins
+    allfiles.append(('iconengines', glob.glob('C:\\Python27\\Lib\\site-packages\\PyQt4\\plugins\\iconengines\\*')))
+    allfiles.append(('imageformats', glob.glob('C:\\Python27\\Lib\\site-packages\\PyQt4\\plugins\\imageformats\\*')))
+
+    args.update(dict(windows = ['bin/smewg'],
+                     data_files = allfiles,
+                     options = { 'py2exe': { 'dll_excludes': 'MSVCP90.dll',
+                                             'includes': [ 'sip',
+                                                           'PyQt4.QtNetwork',
+                                                           'Cheetah.DummyTransaction',
+                                                           'lxml'
+                                                           ] }}))
 
 setup(**args)

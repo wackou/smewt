@@ -19,6 +19,7 @@
 #
 
 import logging
+import sys
 
 GREEN_FONT = "\x1B[0;32m"
 YELLOW_FONT = "\x1B[0;33m"
@@ -51,7 +52,7 @@ def setupLogging(colored = True):
 
 
     ch = logging.StreamHandler()
-    if colored:
+    if colored and sys.platform != 'win32':
         ch.setFormatter(ColoredFormatter())
     else:
         ch.setFormatter(SimpleFormatter())
