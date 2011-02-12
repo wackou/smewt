@@ -3,11 +3,13 @@
 - make release should write version in smewt.nsi
 - player detection in windows/linux
 - check unicode problems on windows
+- can't see /Volumes on Mac OS X
 
 - update website with deps for linux
 - clean collection (ie: remove files which don't exist anymore)
 
 - update acknowledgments
+- is MANIFEST.in necessary?
 
 - smplayer -close-at-end    (?)
 

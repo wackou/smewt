@@ -2,4 +2,4 @@ prune utils
 include *.txt
 recursive-include smewt/media *.png *.tmpl *.css *.html *.js
 recursive-include smewt/icons *.png *.svg
-include falafelton-smewt.desktop
+include packaging/linux/falafelton-smewt.desktop

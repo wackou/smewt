@@ -52,7 +52,6 @@ if COMMIT:
 
 
     # generate and upload package to PyPI
-    # TODO: generate win packages
     os.system('python setup.py sdist upload')
 
 else:

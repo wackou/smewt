@@ -19,32 +19,6 @@ install_requires = [
 
 datafiles_exts = [ '*.png', '*.svg', '*.tmpl', '*.css', '*.html', '*.js' ]
 
-DATA_FILES = []
-if sys.platform == 'linux2':
-  DATA_FILES += [('/usr/share/applications' , ['falafelton-smewt.desktop']),
-                 ('/usr/share/icons/hicolor/scalable/apps' , ['smewt/icons/smewt.svg'])]
-
-from setuptools.command.install import install as _install
-import subprocess
-
-class install(_install):
-    def run(self):
-        _install.run(self)
-        print 'Processing triggers for menu ...'
-        subprocess.call(['xdg-desktop-menu', 'install', '/usr/share/applications/falafelton-smewt.desktop'])
-        subprocess.call(['update-menus'])
-
-# py2app data
-APP = ['bin/smewg.py']
-OPTIONS = { 'argv_emulation': True,
-            'iconfile': 'smewt/icons/smewt.icns',
-            'packages': [ 'smewt', 'Cheetah', 'lxml' ],
-            'frameworks': [ '/Developer/Applications/Qt/plugins/iconengines/libqsvgicon.dylib' ],
-            'includes': [ 'sip', 'PyQt4', 'PyQt4.QtCore', 'PyQt4.QtGui', 'PyQt4.QtNetwork', 'PyQt4.QtWebKit',  'PyQt4.QtXml', 'PyQt4.QtSvg' ],
-            'excludes': [ 'PyQt4.QtDesigner', 'PyQt4.QtOpenGL', 'PyQt4.QtScript',
-                          'PyQt4.QtSql', 'PyQt4.QtTest' ] # 'PyQt4.phonon'
-            }
-
 
 args = dict(name = 'smewt',
             version = '0.3-dev',
@@ -63,19 +37,47 @@ args = dict(name = 'smewt',
             install_requires = install_requires
             )
 
-if sys.platform == 'darwin':
-    args.update(dict(# for py2app
-                     name = 'Smewt',
-                     app=APP,
-                     data_files=DATA_FILES, # FIXME: this line should be removed
-
-                     options={'py2app': OPTIONS, 'plist':dict(CFBundleIdentifier = 'com.smewt.Smewt')},
-                     setup_requires=['py2app']
-                     ))
 
 if sys.platform == 'linux2':
-    args.update(dict(cmdclass = {'install': install},
+    from setuptools.command.install import install
+    import subprocess
+
+    class SmewtInstall(install):
+        def run(self):
+            install.run(self)
+            print 'Processing triggers for menu ...'
+            subprocess.call(['xdg-desktop-menu', 'install', '/usr/share/applications/falafelton-smewt.desktop'])
+            subprocess.call(['update-menus'])
+
+    DATA_FILES = [('/usr/share/applications' , [ 'packaging/linux/falafelton-smewt.desktop' ]),
+                  ('/usr/share/icons/hicolor/scalable/apps' , [ 'smewt/icons/smewt.svg' ])]
+
+    args.update(dict(cmdclass = { 'install': SmewtInstall },
                      data_files = DATA_FILES))
+
+
+if sys.platform == 'darwin':
+    # py2app data
+    OPTIONS = { 'argv_emulation': True,
+                'iconfile': 'smewt/icons/smewt.icns',
+                'packages': [ 'smewt', 'Cheetah', 'lxml' ],
+                'frameworks': [ '/Developer/Applications/Qt/plugins/iconengines/libqsvgicon.dylib' ],
+                'includes': [ 'sip', 'PyQt4', 'PyQt4.QtCore', 'PyQt4.QtGui', 'PyQt4.QtNetwork', 'PyQt4.QtWebKit',  'PyQt4.QtXml', 'PyQt4.QtSvg' ],
+                'excludes': [ 'PyQt4.QtDesigner', 'PyQt4.QtOpenGL', 'PyQt4.QtScript',
+                              'PyQt4.QtSql', 'PyQt4.QtTest' ] # 'PyQt4.phonon'
+                }
+
+    args.update(dict(# for py2app
+                     name = 'Smewt',
+                     app = ['bin/smewg.py'],
+                     data_files = DATA_FILES, # FIXME: this line should be removed, right?
+
+                     options = { 'py2app': OPTIONS,
+                                 'plist': dict(CFBundleIdentifier = 'com.smewt.Smewt')
+                                 },
+                     setup_requires = [ 'py2app' ]
+                     ))
+
 
 if sys.platform == 'win32':
     import py2exe
@@ -103,5 +105,6 @@ if sys.platform == 'win32':
                                                            'Cheetah.DummyTransaction',
                                                            'lxml', 'lxml._elementpath'
                                                            ] }}))
+
 
 setup(**args)
