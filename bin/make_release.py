@@ -32,6 +32,11 @@ setup = open('setup.py').read()
 setup = re.sub('      version =.*', '      version = \'%s\',' % VERSION, setup)
 open('setup.py', 'w').write(setup)
 
+nsis = open('packaging/win32/smewt.nsi').read()
+nsis = re.sub('!define VERSION .*', '!define VERSION  \'%s\'' % VERSION, nsis)
+open('packaging/win32/smewt.nsi', 'w').write(nsis)
+
+
 
 # replace logging function call in smewg
 smewg = open('bin/smewg').read()

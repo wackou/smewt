@@ -16,7 +16,7 @@
 
   ;Name and file
   Name "Smewt"
-  !define VERSION '0.2'
+  !define VERSION  '0.3-dev'
   !define SMEWT_ROOT '..\..'
   !define MUI_FINISHPAGE_RUN '$INSTDIR\smewg.exe'
 
