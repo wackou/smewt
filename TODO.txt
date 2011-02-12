@@ -1,0 +1,26 @@
+
+- delete old stuff
+- make release should write version in smewt.nsi
+- player detection in windows/linux
+- check unicode problems on windows
+
+- update website with deps for linux
+- clean collection (ie: remove files which don't exist anymore)
+
+- update acknowledgments
+
+- smplayer -close-at-end    (?)
+
+
+- how can we enhance this? (should be the first one):
+  (levenshtein gives more weight to errors than addition/supression)
+
+  In [20]: levenshtein('English subtitles (HDTV)', 'Californication.2x03.No.Way.To.Treat.A.Lady.HDTV.XviD-NoTV.[tvu.org.ru].avi')
+  Out[20]: 67
+
+  In [21]: levenshtein('English subtitles (720p HDTV.SYS)', 'Californication.2x03.No.Way.To.Treat.A.Lady.HDTV.XviD-NoTV.[tvu.org.ru].avi')
+  Out[21]: 66
+
+
+
+- clean python imports (ie: no 'from PyQt4.QtCore import *')

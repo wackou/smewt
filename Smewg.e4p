@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2011-01-25, 00:40:10 -->
+<!-- Saved: 2011-02-12, 01:34:37 -->
 <!-- Copyright (C) 2011 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -98,7 +98,6 @@
     <Source>bin/reset_config.sh</Source>
     <Source>NEWS.txt</Source>
     <Source>README.txt</Source>
-    <Source>NOTES.py</Source>
     <Source>smewt/test/test_tvdb/deadwood.yaml</Source>
     <Source>utils/slogging.py</Source>
     <Source>utils/__init__.py</Source>
@@ -109,6 +108,7 @@
     <Source>bin/dev_mode.py</Source>
     <Source>bin/make_macosx_app.py</Source>
     <Source>bin/smewg</Source>
+    <Source>TODO</Source>
   </Sources>
   <Forms>
   </Forms>
