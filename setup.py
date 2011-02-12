@@ -101,7 +101,7 @@ if sys.platform == 'win32':
                                              'includes': [ 'sip',
                                                            'PyQt4.QtNetwork',
                                                            'Cheetah.DummyTransaction',
-                                                           'lxml'
+                                                           'lxml', 'lxml._elementpath'
                                                            ] }}))
 
 setup(**args)
