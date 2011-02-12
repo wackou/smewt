@@ -51,32 +51,47 @@ class ActionFactory(Singleton):
 
     def dispatch(self, mainWidget, surl):
         if surl.actionType == 'play':
-            if sys.platform == 'linux2':
-                action = 'smplayer'
-                args = [ '-fullscreen', '-close-at-end' ]
+            # FIXME: this should be handled properly with media player plugins
 
-                nfile = 1
-                while 'filename%d' % nfile in surl.args:
-                    filename = surl.args['filename%d' % nfile]
-                    args.append(filename)
+            # find list of all files to be played
+            args = []
+            nfile = 1
+            while 'filename%d' % nfile in surl.args:
+                filename = surl.args['filename%d' % nfile]
+                args.append(filename)
 
-                    # update last viewed info
+                # update last viewed info
+                try:
                     media = mainWidget.smewtd.database.find_one(Media, filename = filename)
                     media.metadata.lastViewed = time.time()
+                except:
+                    pass
 
-                    if 'subtitle%d' % nfile in surl.args:
-                        args += [ '-sub', surl.args['subtitle%d' % nfile] ]
+                nfile += 1
 
-                    nfile += 1
+            if sys.platform == 'linux2':
+                action = 'xdg-open'
+
+                # if we have smplayer installed, use it with subtitles support
+                if os.system('which smplayer') == 0:
+                    action = 'smplayer'
+                    args = [ '-fullscreen', '-close-at-end' ]
+
+                    nfile = 1
+                    while 'filename%d' % nfile in surl.args:
+                        filename = surl.args['filename%d' % nfile]
+                        args.append(filename)
+
+                        if 'subtitle%d' % nfile in surl.args:
+                            args += [ '-sub', surl.args['subtitle%d' % nfile] ]
+
+                        nfile += 1
 
             elif sys.platform == 'darwin':
                 action = 'open'
-                args = []
-                nfile = 1
-                while 'filename%d' % nfile in surl.args:
-                    filename = surl.args['filename%d' % nfile]
-                    args.append(filename)
-                    nfile += 1
+
+            elif sys.platform == 'win32':
+                action = 'open'
 
             log.debug('launching %s with args = %s' % (action, str(args)))
             mainWidget.externalProcess.startDetached(action, args)

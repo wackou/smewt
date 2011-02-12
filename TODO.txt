@@ -1,8 +1,8 @@
 
 - delete old stuff
-- make release should write version in smewt.nsi
 - player detection in windows/linux
 - check unicode problems on windows
+- icon for smewt on windows sucks donkey balls (16px in start menu look like crap)
 - can't see /Volumes on Mac OS X
 
 - update website with deps for linux
@@ -10,8 +10,6 @@
 
 - update acknowledgments
 - is MANIFEST.in necessary?
-
-- smplayer -close-at-end    (?)
 
 
 - how can we enhance this? (should be the first one):
