@@ -99,7 +99,13 @@ class DirModel(QFileSystemModel):
     def __init__(self, parent = None, recursiveSelection = False):
         QFileSystemModel.__init__(self, parent)
         self.setRootPath('/')
-        self.setFilter( QDir.AllDirs | QDir.NoDotAndDotDot )
+        # TODO: this is completely ugly, but without this /Volumes does not appear on Mac OS X...
+        # a nice solution would probably be to reimplement a nice model that has all the non-hidden
+        # files + only /Volumes, but that's for another day...
+        if sys.platform == 'darwin':
+            self.setFilter(QDir.AllDirs | QDir.Drives | QDir.NoDotAndDotDot  | QDir.Hidden)
+        else:
+            self.setFilter(QDir.AllDirs | QDir.Drives | QDir.NoDotAndDotDot)
         self.recursiveSelection = recursiveSelection
         self.clearSelectedFolders()
 
