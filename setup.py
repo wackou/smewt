@@ -97,6 +97,9 @@ if sys.platform == 'win32':
     allfiles.append(('iconengines', glob.glob('C:\\Python27\\Lib\\site-packages\\PyQt4\\plugins\\iconengines\\*')))
     allfiles.append(('imageformats', glob.glob('C:\\Python27\\Lib\\site-packages\\PyQt4\\plugins\\imageformats\\*')))
 
+    # add the open.exe utility program
+    allfiles.append(('.', [ 'packaging\\win32\\open.exe' ]))
+
     args.update(dict(windows = ['bin/smewg'],
                      data_files = allfiles,
                      options = { 'py2exe': { 'dll_excludes': 'MSVCP90.dll',
