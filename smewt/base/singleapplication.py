@@ -53,9 +53,15 @@ class SingleApplicationWatcher:
 
         # Create the server, binding to localhost on port 9999
         try:
-            self.server = ReusableSocketServer(('localhost', PORT), ActivationHandler)
+            log.info('Creating single app server on %s:%d' % ('localhost', PORT))
+            if sys.platform == 'win32':
+                # it looks like with reuse_address multiple processes can listen
+                # on the same port on windows (python bug?)
+                self.server = SocketServer.TCPServer(('localhost', PORT), ActivationHandler)
+            else:
+                self.server = ReusableSocketServer(('localhost', PORT), ActivationHandler)
             self.running = True
-        except Exception, e:
+        except:
             # address already in use, activate running server and exit
             log.warning('Found already running instance, activate it')
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
