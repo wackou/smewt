@@ -28,8 +28,8 @@
   ;Get installation folder from registry if available
   InstallDirRegKey HKCU "Software\Smewt" ""
 
-  ;Request application privileges for Windows Vista
-  RequestExecutionLevel user
+  ;Request application privileges for Windows Vista / 7 to install in Program Files
+  RequestExecutionLevel admin
 
   ;Useful to disable compression under development
   ;SetCompress off
