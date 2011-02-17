@@ -56,7 +56,7 @@ class Collection(object):
         settings = QSettings()
         collection = settings.value('collection_%s' % self.name)
         if collection:
-            self.folders = dict((toUtf8(folder), recursive.toBool()) for folder, recursive in collection.toMap().items())
+            self.folders = dict((unicode(folder), recursive.toBool()) for folder, recursive in collection.toMap().items())
             log.info('loaded %s folders: %s' % (self.name, self.folders))
 
     def saveSettings(self):
@@ -78,7 +78,7 @@ class Collection(object):
     def collectionFiles(self):
         for folder, recursive in self.folders.items():
             for f in utils.dirwalk(folder, self.validFiles, recursive):
-                yield f.decode('utf-8')
+                yield f
 
     def modifiedFiles(self):
         lastModified = dict((f.filename, f.get('lastModified', None)) for f in self.graph.find_all(Media))

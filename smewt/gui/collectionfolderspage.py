@@ -106,7 +106,7 @@ class CollectionFoldersPage(QDialog):
         self.resize(size)
 
     def getFolders(self):
-        folders = [ str(f) for f in self.dirselector.selectedFolders() ]
+        folders = [ unicode(f) for f in self.dirselector.selectedFolders() ]
 
         # make sure everything's native
         if sys.platform == 'win32':
