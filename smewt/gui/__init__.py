@@ -21,3 +21,4 @@
 from mainwidget import MainWidget
 from feedwatchwidget import FeedWatchWidget
 from collectionfolderspage import CollectionFoldersPage
+from aboutdialog import AboutDialog

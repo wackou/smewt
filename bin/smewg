@@ -41,7 +41,7 @@ if MAIN_LOGGING_LEVEL == logging.DEBUG:
 
 from PyQt4.QtGui import QApplication, QMainWindow, QWidget, QStatusBar, QProgressBar, QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox, QToolBar
 from PyQt4.QtCore import SIGNAL, QSize, Qt, QSettings, QVariant, QPoint, QSize, QObject, QTimer
-from smewt.gui import MainWidget, FeedWatchWidget
+from smewt.gui import MainWidget, FeedWatchWidget, AboutDialog
 from smewt.base import cache, utils
 from smewt.base.utils import smewtDirectory
 from os.path import join
@@ -122,7 +122,6 @@ class SmewtGui(QMainWindow):
 
         if not configured:
             settings.setValue('configured', True)
-            QTimer.singleShot(0, self.firstRun)
         else:
             # only start the update of the collections once our GUI is fully setup
             # do not rescan as it would be too long and we might delete some files that
@@ -326,48 +325,9 @@ class SmewtGui(QMainWindow):
             self.statusWidget.progressBar.setMaximum(total)
             self.statusWidget.progressBar.setValue(tagged)
 
-    def firstRun(self):
-        return
-        QMessageBox.about(self, 'First run wizard',
-'''                Smewt - a smart media manager
-
-It looks like it is the first time you run Smewt. Smewt is
-intended to be very easy and intuitive to use, and pretty
-much everything should be automatic and will run without
-your supervision.
-
-There are however a few steps you need to do to get you
-started. As you probably already know, Smewt is a media
-manager, which means that it will take care of organizing
-your media files (movies, TV shows, ...) in a nice way and
-make it easier for you to browse through them.
-
-In order to do this, you should tell Smewt where to find
-your files:
-
- - Open the Collection menu, and select the folder(s)
-   where your movies are located
-
- - Open the Collection menu, and select the folder(s)
-   where your TV shows are located
-
-As soon as you have done this, Smewt will look for files in
-these folders, and import them into your collection.
-A progress bar at the bottom will indicate the status of this
-operation. When this completes, Smewt will be ready to use.
-
-We hope you will enjoy using Smewt!
-
-The Smewt developers.
-''')
 
     def about(self):
-        QMessageBox.about(self, 'About Smewt',
-'''Smewt - a smart media manager
-Version %s
-
-(c) 2008-2011 Nicolas Wack, Ricard Marxer
-GPLv3 licensed''' % smewt.__version__)
+        AboutDialog().exec_()
 
     def aboutQt(self):
         QMessageBox.aboutQt(self)
