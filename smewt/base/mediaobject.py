@@ -20,7 +20,6 @@
 #
 
 from pygoo import BaseObject, MemoryObjectGraph, Equal
-from smewtdict import SmewtDict, ValidatingSmewtDict
 from smewtexception import SmewtException
 from textutils import toUtf8
 
