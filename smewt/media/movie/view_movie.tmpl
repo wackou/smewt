@@ -156,9 +156,11 @@ qtitle = movie.title.replace('\'', '\\\'')
 
   <div class="tabbertab">
     <h2>Cast</h2>
-    #for person_role in $movie.cast
-      <p>$person_role</p>
-    #end for
+    #if 'cast' in movie
+      #for person_role in $movie.cast
+        <p>$person_role</p>
+      #end for
+    #end if
     <p></p>
   </div>
 
