@@ -26,6 +26,7 @@ if len(sys.argv) == 3:
 sinit = open('smewt/__init__.py').read()
 sinit = re.sub('__version__ =.*', '__version__ = \'%s\'' % VERSION, sinit)
 sinit = re.sub('APP_NAME = .*', 'APP_NAME = \'Smewt\'', sinit)
+sinit = re.sub('SINGLE_APP_PORT = .*', 'SINGLE_APP_PORT = 8357', sinit)
 open('smewt/__init__.py', 'w').write(sinit)
 
 setup = open('setup.py').read()

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2011-02-12, 02:48:27 -->
+<!-- Saved: 2011-02-17, 22:11:45 -->
 <!-- Copyright (C) 2011 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -112,6 +112,7 @@
     <Source>packaging/linux/falafelton-smewt.desktop</Source>
     <Source>bin/make_windows_installer.bat</Source>
     <Source>packaging/win32/smewt.nsi</Source>
+    <Source>smewt/base/singleapplication.py</Source>
   </Sources>
   <Forms>
   </Forms>

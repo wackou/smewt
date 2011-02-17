@@ -238,6 +238,18 @@ class SmewtGui(QMainWindow):
         self.connect(self.rescanCollectionAction,  SIGNAL('triggered()'),
                      self.mainWidget.rescanCollection)
 
+        # for single app to bring up the window we need a signal that can go through threads
+        self.connect(self, SIGNAL('bringUp()'),
+                     self.bringUpWindow)
+
+    def bringUpWindow(self):
+        self.setVisible(True)
+        self.setWindowState(sgui.windowState() & ~Qt.WindowMinimized);
+        self.show()
+        self.raise_()
+        self.activateWindow()
+
+
     def toggleFullScreen(self):
         flag = Qt.WindowFullScreen if self.fullScreenAction.isChecked() else ~Qt.WindowFullScreen
         self.setWindowState(self.windowState() ^ Qt.WindowFullScreen  )
@@ -341,6 +353,15 @@ if __name__ == '__main__':
     app.setApplicationName(smewt.APP_NAME)
 
     sgui = SmewtGui()
+
+    def cb():
+        sgui.emit(SIGNAL('bringUp()'))
+
+    from smewt.base import singleapplication
+    singleapplication.PORT = smewt.SINGLE_APP_PORT
+    singleapplication.CALLBACK = cb
+    sapp = singleapplication.SingleApplicationWatcher()
+
 
     sgui.show()
     app.exec_()
