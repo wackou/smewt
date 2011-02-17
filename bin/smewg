@@ -48,7 +48,7 @@ from os.path import join
 
 log = logging.getLogger('smewg')
 DEFAULT_WIDTH = 900
-DEFAULT_HEIGHT = 740
+DEFAULT_HEIGHT = 600
 
 
 class StatusWidget(QWidget):
