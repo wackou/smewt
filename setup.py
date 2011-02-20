@@ -70,8 +70,6 @@ if sys.platform == 'darwin':
     args.update(dict(# for py2app
                      name = 'Smewt',
                      app = ['bin/smewg.py'],
-                     data_files = DATA_FILES, # FIXME: this line should be removed, right?
-
                      options = { 'py2app': OPTIONS,
                                  'plist': dict(CFBundleIdentifier = 'com.smewt.Smewt')
                                  },
