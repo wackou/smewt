@@ -18,7 +18,9 @@
   Name "Smewt"
   !define VERSION  '0.3-dev'
   !define SMEWT_ROOT '..\..'
-  !define MUI_FINISHPAGE_RUN '$INSTDIR\smewg.exe'
+  ; comment this, we don't want to run smewg the first time as admin on windows 7
+  ; TODO: is this really necessary or are we being too cautious?
+  ;!define MUI_FINISHPAGE_RUN '$INSTDIR\smewg.exe'
 
   OutFile "smewt_${VERSION}_setup.exe"
 
