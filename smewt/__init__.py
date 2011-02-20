@@ -31,7 +31,7 @@ h = NullHandler()
 logging.getLogger("smewt").addHandler(h)
 
 
-from base import SmewtDict, ValidatingSmewtDict, SmewtException, SmewtUrl, SolvingChain, cachedmethod, EventServer, cache, utils, textutils
+from base import SmewtException, SmewtUrl, SolvingChain, cachedmethod, EventServer, cache, utils, textutils
 from base.mediaobject import Media, Metadata
 log = logging.getLogger('smewt')
 

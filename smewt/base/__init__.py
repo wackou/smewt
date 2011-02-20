@@ -18,7 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewtdict import SmewtDict, ValidatingSmewtDict
 from smewtexception import SmewtException
 from smewturl import SmewtUrl
 from solvingchain import SolvingChain
