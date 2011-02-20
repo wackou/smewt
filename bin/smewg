@@ -25,7 +25,10 @@ MAIN_LOGGING_LEVEL = logging.INFO
 # when we create a py2exe, we want to redirect the output the a file ourselves,
 # otherwise it gives an error when closing the app
 if sys.platform == 'win32' and os.path.exists(os.path.join(os.getcwd(), 'library.zip')):
-    sys.stderr = open(os.path.join(os.getcwd(), 'smewt.log'), 'w')
+    userdir = os.path.join(os.environ['USERPROFILE'], 'Application Data', 'Smewt')
+    if not os.path.exists(userdir):
+        os.makedirs(userdir)
+    sys.stderr = open(os.path.join(userdir, 'smewt.log'), 'w')
 
 
 from utils.slogging import setupLogging
