@@ -23,7 +23,7 @@ from smewtexception import SmewtException
 from mediaobject import Media, Metadata
 from subtitletask import SubtitleTask
 from smewt.media import Series
-import sys, time, logging
+import os, sys, time, logging
 
 
 log = logging.getLogger('smewt.base.actionfactory')
@@ -71,6 +71,8 @@ class ActionFactory(Singleton):
 
             if sys.platform == 'linux2':
                 action = 'xdg-open'
+                # FIXME: xdg-open only accepts 1 argument, this will break movies split in multiple files...
+                args = args[:1]
 
                 # if we have smplayer installed, use it with subtitles support
                 if os.system('which smplayer') == 0:

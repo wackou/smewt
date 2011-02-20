@@ -6,6 +6,23 @@
 News
 ====
 
+0.2.1
+-----
+
+*Release date: 21-Feb-2011*
+
+* Fixed some stuff to be able to run Smewt on Windows; also comes with a Windows
+  installer now: Smewt is available on all 3 major platforms!!
+
+
+0.2
+---
+
+*Release date: 27-Jan-2011*
+
+* Fixed some stuff in the Mac OS X installer (DMG provided now!)
+
+
 0.2b2
 -----
 

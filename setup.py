@@ -30,7 +30,7 @@ args = dict(name = 'smewt',
             author_email = 'wackou@gmail.com',
             url = 'http://www.smewt.com/',
             license = 'GPLv3',
-            packages = find_packages(exclude = [ 'ez_setup', 'examples', 'tests' ]),
+            packages = find_packages(exclude = [ 'ez_setup', 'examples', 'tests', 'utils' ]),
             #package_data = dict((package, datafiles_exts) for package in find_packages()),
             include_package_data = True,
             scripts = [ 'bin/smewg' ],
@@ -52,8 +52,10 @@ if sys.platform == 'linux2':
     DATA_FILES = [('/usr/share/applications' , [ 'packaging/linux/falafelton-smewt.desktop' ]),
                   ('/usr/share/icons/hicolor/scalable/apps' , [ 'smewt/icons/smewt.svg' ])]
 
-    args.update(dict(cmdclass = { 'install': SmewtInstall },
-                     data_files = DATA_FILES))
+    # only try install icon and menu entry if we are root
+    if os.geteuid() == 0:
+        args.update(dict(cmdclass = { 'install': SmewtInstall },
+                         data_files = DATA_FILES))
 
 
 if sys.platform == 'darwin':

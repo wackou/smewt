@@ -1,15 +1,10 @@
 
 - delete old stuff
 - player detection in windows/linux
-- check unicode problems on windows
-- icon for smewt on windows sucks donkey balls (16px in start menu look like crap)
-- can't see /Volumes on Mac OS X
+- collection folder is ugly slow on windows
+- tasks should be interruptible (so that exit works instantly instead of waiting for current task to complete)
 
-- update website with deps for linux
 - clean collection (ie: remove files which don't exist anymore)
-
-- update acknowledgments
-- is MANIFEST.in necessary?
 
 
 - how can we enhance this? (should be the first one):
