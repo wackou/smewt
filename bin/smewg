@@ -31,50 +31,8 @@ if sys.platform == 'win32' and os.path.exists(os.path.join(os.getcwd(), 'library
     sys.stderr = open(os.path.join(userdir, 'smewt.log'), 'w')
 
 
-
-import logging
-import sys
-
-GREEN_FONT = "\x1B[0;32m"
-YELLOW_FONT = "\x1B[0;33m"
-BLUE_FONT = "\x1B[0;34m"
-RED_FONT = "\x1B[0;31m"
-RESET_FONT = "\x1B[0m"
-
-
-def setupLogging(colored = True):
-    """Sets up a nice colored logger as the main application logger (not only smewt itself)."""
-
-    class SimpleFormatter(logging.Formatter):
-        def __init__(self):
-            self.fmt = '%(levelname)-8s %(module)s:%(funcName)s -- %(message)s'
-            logging.Formatter.__init__(self, self.fmt)
-
-    class ColoredFormatter(logging.Formatter):
-        def __init__(self):
-            self.fmt = '%(levelname)-8s ' + BLUE_FONT + '%(module)s:%(funcName)s' + RESET_FONT + ' -- %(message)s'
-            logging.Formatter.__init__(self, self.fmt)
-
-        def format(self, record):
-            result = logging.Formatter.format(self, record)
-            if record.levelno in (logging.DEBUG, logging.INFO):
-                return GREEN_FONT + result
-            elif record.levelno == logging.WARNING:
-                return YELLOW_FONT + result
-            else:
-                return RED_FONT + result
-
-
-    ch = logging.StreamHandler()
-    if colored and sys.platform != 'win32':
-        ch.setFormatter(ColoredFormatter())
-    else:
-        ch.setFormatter(SimpleFormatter())
-    logging.getLogger().addHandler(ch)
-
-
+from utils.slogging import setupLogging
 setupLogging()
-
 
 logging.getLogger().setLevel(MAIN_LOGGING_LEVEL)
 
