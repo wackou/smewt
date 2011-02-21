@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2011-02-17, 23:56:00 -->
+<!-- Saved: 2011-02-21, 01:05:09 -->
 <!-- Copyright (C) 2011 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -112,6 +112,9 @@
     <Source>bin/make_windows_installer.bat</Source>
     <Source>packaging/win32/smewt.nsi</Source>
     <Source>smewt/base/singleapplication.py</Source>
+    <Source>MANIFEST.in</Source>
+    <Source>ACKNOWLEDGMENTS</Source>
+    <Source>smewt/gui/aboutdialog.py</Source>
   </Sources>
   <Forms>
   </Forms>
