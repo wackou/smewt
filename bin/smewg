@@ -281,9 +281,12 @@ class SmewtGui(QMainWindow):
 
     def readWindowSettings(self):
         settings = QSettings()
-        pos = settings.value("MainWindow/pos", QVariant(QPoint((QApplication.desktop().width()-DEFAULT_WIDTH)/2, (QApplication.desktop().width()-DEFAULT_HEIGHT)/2))).toPoint()
         size = settings.value("MainWindow/size", QVariant(QSize(DEFAULT_WIDTH, DEFAULT_HEIGHT))).toSize()
         self.resize(size)
+        
+        rect = QApplication.desktop().availableGeometry(self)
+        center = rect.center()
+        pos = settings.value("MainWindow/pos", QVariant(QPoint(center.x()-self.width()/2.0, center.y()-self.height()/2.0))).toPoint()
         self.move(pos)
 
         self.restoreState(settings.value("MainWindow/windowstate").toByteArray())
