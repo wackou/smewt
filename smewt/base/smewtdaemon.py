@@ -28,6 +28,8 @@ from os.path import join, dirname, splitext, getsize
 from smewt.taggers import EpisodeTagger, MovieTagger
 import time, logging
 
+from smewt.plugins.coherencemediaserver import CoherencePlugin
+
 log = logging.getLogger('smewt.base.smewtdaemon')
 
 
@@ -75,7 +77,8 @@ class SmewtDaemon(object):
                                           dataGraph = self.database,
                                           taskManager = self.taskManager)
 
-
+        cp = CoherencePlugin()
+        cp.activate(self.episodeCollection)
 
     def progressChanged(self, current, total):
         if total == 0:
