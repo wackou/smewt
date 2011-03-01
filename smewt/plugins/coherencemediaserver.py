@@ -79,7 +79,7 @@ class CoherencePlugin(log.Loggable):
             #'logmode': 'info',
             'controlpoint': 'yes',
             'plugins': {},
-            'logmode': 'info'
+            'logmode': 'debug'
         }
 
         coherence_instance = Coherence(coherence_config)
