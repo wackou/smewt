@@ -183,8 +183,6 @@ class MediaStore(BackendStore):
     implements = ['MediaServer']
 
     def __init__(self, server, **kwargs):
-        print 'HERE'
-        self.warning("Before __init__ MediaStore %r", kwargs)
         BackendStore.__init__(self,server,**kwargs)
         self.warning("__init__ MediaStore %r", kwargs)
 
