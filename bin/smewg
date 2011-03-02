@@ -73,6 +73,8 @@ class SmewtGui(QMainWindow):
     def __init__(self):
         super(SmewtGui, self).__init__()
         self.setWindowTitle('Smewg - An Ordinary Smewt Gui')
+        
+        self.plugins = []
 
         self.readWindowSettings()
 
@@ -94,6 +96,9 @@ class SmewtGui(QMainWindow):
         importMenu.addSeparator()
         importMenu.addAction(self.updateCollectionAction)
         importMenu.addAction(self.rescanCollectionAction)
+
+        pluginsMenu = self.menuBar().addMenu('Plugins')
+        pluginsMenu.addAction(self.coherenceAction)
 
         helpMenu = self.menuBar().addMenu('Help')
         helpMenu.addAction(self.aboutAction)
@@ -245,6 +250,11 @@ class SmewtGui(QMainWindow):
         self.connect(self, SIGNAL('bringUp()'),
                      self.bringUpWindow)
 
+        # for plugins
+        self.coherenceAction = QAction('Activate coherence plugin', self)
+        self.connect(self.coherenceAction, SIGNAL('triggered()'),
+                     self.coherenceActivate)
+                     
     def bringUpWindow(self):
         self.setVisible(True)
         self.setWindowState(sgui.windowState() & ~Qt.WindowMinimized);
@@ -252,6 +262,11 @@ class SmewtGui(QMainWindow):
         self.raise_()
         self.activateWindow()
 
+    def coherenceActivate(self):
+        from smewt.plugins.coherencemediaserver import CoherencePlugin
+        coherencePlugin = CoherencePlugin()
+        coherencePlugin.activate(self.mainWidget.smewtd.database)
+        self.plugins.append(coherencePlugin)
 
     def toggleFullScreen(self):
         flag = Qt.WindowFullScreen if self.fullScreenAction.isChecked() else ~Qt.WindowFullScreen
@@ -270,6 +285,13 @@ class SmewtGui(QMainWindow):
 
     def quit(self):
         log.info('SmewtGui quitting...')
+
+        log.debug('Deactivating plugins...')
+        for plugin in self.plugins:
+          plugin.deactivate()
+        
+        log.debug('Finished deactivating plugins')
+        
         self.writeWindowSettings()
         self.mainWidget.quit()
 

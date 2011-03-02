@@ -10,9 +10,6 @@
 
 import coherence.extern.louie as louie
 
-from coherence.upnp.devices.media_server import MediaServer
-from SmewtStore import MediaStore
-
 from coherence import log
 
 # for the icon
@@ -27,6 +24,7 @@ class CoherencePlugin(log.Loggable):
 
     def activate(self, smewt_db):
         from smewt.plugins import qt4reactor
+                
         try:
             qt4reactor.install()
         except AssertionError, e:
@@ -42,17 +40,25 @@ class CoherencePlugin(log.Loggable):
 
         self.smewt_db = smewt_db
         self.sources = {}
-        kwargs = {}
+        kwargs = {"smewt_db": self.smewt_db}
+        
+        from coherence.upnp.devices.media_server import MediaServer
+        from SmewtStore import MediaStore
+        
         self.server = MediaServer(self.coherence, MediaStore, **kwargs)
+        
+        from twisted.internet import reactor
+        reactor.runReturn()
+        
         self.warning("Media Store available with UUID %s" % str(self.server.uuid))
 
-    def deactivate(self, smewt_db):
+    def deactivate(self, smewt_db=None):
         self.info("Coherence UPnP plugin deactivated")
         if self.coherence is None:
             return
 
         self.coherence.shutdown()
-
+        
         del self.coherence
 
 
@@ -79,7 +85,7 @@ class CoherencePlugin(log.Loggable):
             #'logmode': 'info',
             'controlpoint': 'yes',
             'plugins': {},
-            'logmode': 'debug'
+            'logmode': 'warn'
         }
 
         coherence_instance = Coherence(coherence_config)
