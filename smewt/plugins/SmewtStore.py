@@ -12,6 +12,7 @@ import coherence.extern.louie as louie
 import urllib
 
 from smewt.media.series.serieobject import Series, Episode
+from smewt.base.utils import tolist
 
 import mimetypes
 mimetypes.init()
@@ -93,52 +94,22 @@ class Container(BackendItem):
 
 
 
-class SeriesItem(BackendItem):
+class SeriesItem(Container):
 
     logCategory = 'smewt_media_store'
 
     def __init__(self, store, series, parent_id):
-        self.id = store.new_item(self)
+        Container.__init__(self, store, series.title, parent_id, children_callback = self.get_children_implementation)
         self.series = series
-        self.store = store
 
-    def get_children(self,start=0,request_count=0):
+    def get_children_implementation(self, parent_id):
+        self.warning("SeriesItem.get_children")
         children = []
 
-        for ep in self.series.episodes:
-          children.append(EpisodeItem(self.store, ep, self.id))
-
-        if request_count == 0:
-            return children[start:]
-        else:
-            return children[start:request_count]
-
-    def get_child_count(self):
-        return len(self.get_children())
-
-    def get_item(self, parent_id = SERIES_CONTAINER_ID):
-        """
-        item = DIDLLite.VideoBroadcast(self.id, parent_id, self.series.title)
-        
-        if __version_info__ >= (0,6,4):
-            if self.get_child_count() > 0:
-                res = DIDLLite.PlayContainerResource(self.store.server.uuid, cid=self.get_id(), fid=str(VIDEO_COUNT+int(self.get_children()[0].get_id())))
-                item.res.append(res)
-        
-        return item
-        """
-        item = Container(self.store, self.series.title, self.id, children=self.get_children())
-        return item
-        
-    def get_id(self):
-        return self.id
-
-    def get_name(self):
-        return self.series.title
-
-    def get_cover(self):
-        return self.series.poster
-
+        for ep in tolist(self.series.episodes):
+          children.append(EpisodeItem(self.store, ep, parent_id))
+          
+        return children
 
 
 class EpisodeItem(BackendItem):
@@ -150,7 +121,7 @@ class EpisodeItem(BackendItem):
         self.episode = episode
         self.store = store
 
-    def get_children(self,start=0,request_count=0):
+    def get_children(self,start=0, request_count=0):
         return []
         
     def get_child_count(self):
@@ -160,10 +131,10 @@ class EpisodeItem(BackendItem):
         item = DIDLLite.VideoItem(self.id, parent_id, self.episode.title)
         
         # add http resource
-        for videoFile in self.episode.files:
-          url = videoFile.filename
-          mimetype = mimetypes.guess_type(url, strict=False)
-          res = DIDLLite.Resource(url, 'http-get:*:%s:*' % mimetype)
+        for videoFile in tolist(self.episode.files):
+          url = 'file:/' + videoFile.filename
+          mimetype, _ = mimetypes.guess_type(url, strict=False)
+          res = DIDLLite.Resource(url, 'http-get:*:%s:*' % (mimetype,))
           item.res.append(res)
 
         return item
@@ -200,7 +171,7 @@ class MediaStore(BackendStore):
         """
         
         self.smewt_db = kwargs.get("smewt_db", None)
-        
+        self.urlbase = kwargs.get("urlbase", "")
         self.series = None
         self.episodes = None
         
@@ -224,6 +195,8 @@ class MediaStore(BackendStore):
 
     def get_by_id(self,id):
         self.info("looking for id %r", id)
+        if '@' in id:
+          id = id.split('@')[0]
         return self.items[int(id)]
         
     def new_item(self, item):
