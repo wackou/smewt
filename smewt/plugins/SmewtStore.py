@@ -132,9 +132,12 @@ class EpisodeItem(BackendItem):
         
         # add http resource
         for videoFile in tolist(self.episode.files):
-          url = 'file:/' + videoFile.filename
+          url = 'file://' + videoFile.filename
           mimetype, _ = mimetypes.guess_type(url, strict=False)
           res = DIDLLite.Resource(url, 'http-get:*:%s:*' % (mimetype,))
+          item.res.append(res)
+
+          res = DIDLLite.Resource(url, 'internal:%s:%s:*' % (self.store.server.coherence.hostname, mimetype,))
           item.res.append(res)
 
         return item
@@ -169,7 +172,7 @@ class MediaStore(BackendStore):
                                  '7': lambda : self.get_by_id(MOVIES_CONTAINER_ID)
                                  })
         """
-        
+        self.server = server
         self.smewt_db = kwargs.get("smewt_db", None)
         self.urlbase = kwargs.get("urlbase", "")
         self.series = None
@@ -177,6 +180,7 @@ class MediaStore(BackendStore):
         
         self.next_id = 0
         self.items = {}
+        self.ids = {}
         
         try:
             self.name = kwargs['name']
@@ -201,7 +205,16 @@ class MediaStore(BackendStore):
         
     def new_item(self, item):
         item_id = self.next_id
+        """
+        smewt_id = tuple(item.keys())
+        if smewt_id in self.ids:
+          return self.ids[item]
+        """
         self.items[item_id] = item
+        #self.ids[smewt_id] = item_id
+        
+        #print item_id
+        
         self.next_id += 1
       
         return item_id
