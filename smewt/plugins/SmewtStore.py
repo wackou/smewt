@@ -146,6 +146,7 @@ class EpisodeItem(BackendItem):
         self.id = store.new_item(self)
         self.episode = episode
         self.store = store
+        self.parent_id = parent_id
 
     def get_children(self,start=0, request_count=0):
         return []
@@ -158,14 +159,25 @@ class EpisodeItem(BackendItem):
         
         # add http resource
         for videoFile in tolist(self.episode.files):
-          url = 'file://' + videoFile.filename
-          mimetype, _ = mimetypes.guess_type(url, strict=False)
-          res = DIDLLite.Resource(url, 'http-get:*:%s:*' % (mimetype,))
+          filename = videoFile.filename
+          internal_url = 'file://' + filename
+          external_url = '%s/%d@%d' % (self.store.urlbase, self.id, self.parent_id,)
+          mimetype, _ = mimetypes.guess_type(filename, strict=False)
+          size = None
+          if os.path.isfile(filename):
+            size = os.path.getsize(filename)
+          
+          res = DIDLLite.Resource(external_url, 'http-get:*:%s:*' % (mimetype,))
+          res.size = size
           item.res.append(res)
 
-          res = DIDLLite.Resource(url, 'internal:%s:%s:*' % (self.store.server.coherence.hostname, mimetype,))
+          res = DIDLLite.Resource(internal_url, 'internal:%s:%s:*' % (self.store.server.coherence.hostname, mimetype,))
+          res.size = size
           item.res.append(res)
-
+          
+          # FIXME: Handle correctly multifile videos
+          self.location = filename
+          
         return item
 
     def get_id(self):
