@@ -46,9 +46,15 @@ if sys.platform == 'linux2':
         def run(self):
             install.run(self)
             print 'Processing triggers for menu ...'
-            subprocess.call(['xdg-desktop-menu', 'install', '--mode', 'user', 'packaging/linux/falafelton-smewt.desktop'])
-            subprocess.call(['xdg-icon-resource', 'install', '--mode', 'user', '--size', '128', 'smewt/icons/falafelton-smewt_128x128.png', 'falafelton-smewt'])
-            subprocess.call(['update-menus'])
+            subprocess.call(['xdg-desktop-menu', 'install', 'packaging/linux/falafelton-smewt.desktop'])
+            subprocess.call(['xdg-icon-resource', 'install', '--size', '128', 'smewt/icons/falafelton-smewt_128x128.png', 'falafelton-smewt'])
+            if os.path.exists('/usr/bin/update-menus'):
+                # Debian
+                subprocess.call(['update-menus'])
+            elif os.path.exists('/usr/bin/update-desktop-database'):
+                # Ubuntu
+                subprocess.call(['update-desktop-database'])
+
 
     DATA_FILES = [('.' , [ 'packaging/linux/falafelton-smewt.desktop' ]),
                   ('.' , [ 'smewt/icons/falafelton-smewt_128x128.png' ])]
