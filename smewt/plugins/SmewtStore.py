@@ -27,6 +27,7 @@ mimetypes.add_type('video/x-matroska', '.mkv')
 from coherence import __version_info__
 
 from coherence.upnp.core import DIDLLite
+from coherence.upnp.core import utils
 
 from coherence.backend import BackendItem, BackendStore
 
@@ -103,7 +104,7 @@ class SeriesItem(Container):
         self.series = series
 
     def get_children_implementation(self, parent_id):
-        self.warning("SeriesItem.get_children")
+        self.debug("SeriesItem.get_children")
         children = []
 
         seasons = set([e.season for e in tolist(self.series.episodes)])
@@ -126,7 +127,7 @@ class SeasonItem(Container):
         self.season = season
 
     def get_children_implementation(self, parent_id):
-        self.warning("SeriesItem.get_children")
+        self.debug("SeasonItem.get_children")
         children = []
 
         for ep in tolist(self.series.episodes):
@@ -156,12 +157,13 @@ class EpisodeItem(BackendItem):
 
     def get_item(self, parent_id = SERIES_CONTAINER_ID):
         item = DIDLLite.VideoItem(self.id, parent_id, self.get_name())
-        
+
+        external_url = '%s/%d@%d' % (self.store.urlbase, self.id, self.parent_id,)
+
         # add http resource
         for videoFile in tolist(self.episode.files):
           filename = videoFile.filename
           internal_url = 'file://' + filename
-          external_url = '%s/%d@%d' % (self.store.urlbase, self.id, self.parent_id,)
           mimetype, _ = mimetypes.guess_type(filename, strict=False)
           size = None
           if os.path.isfile(filename):
@@ -178,6 +180,21 @@ class EpisodeItem(BackendItem):
           # FIXME: Handle correctly multifile videos
           self.location = filename
           
+        for subtitle in tolist(self.episode.get('subtitles')):
+          for subfile in tolist(subtitle.files):
+            subfilename = subfile.filename
+            if os.path.isfile(subfilename):
+              # check for a subtitles file
+              hash_from_path = str(id(subfilename))
+              mimetype = 'smi/caption'
+              new_res = DIDLLite.Resource(external_url+'?attachment='+hash_from_path,
+                                          'http-get:*:%s:%s' % (mimetype, '*'))
+              new_res.size = os.path.getsize(subfilename)
+              item.res.append(new_res)
+              if not hasattr(item, 'attachments'):
+                  item.attachments = {}
+              item.attachments[hash_from_path] = utils.StaticFile(subfilename)
+
         return item
 
     def get_id(self):
@@ -272,7 +289,7 @@ class MediaStore(BackendStore):
         self.warning("__init__ MediaStore initialized")
 
     def children_series(self, parent_id):
-        self.warning("children_series")
+        self.debug("children_series")
         series = []
 
         if self.smewt_db is None:
