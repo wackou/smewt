@@ -46,12 +46,12 @@ if sys.platform == 'linux2':
         def run(self):
             install.run(self)
             print 'Processing triggers for menu ...'
-            subprocess.call(['xdg-desktop-menu', 'install', '--mode', 'user', '/usr/share/applications/falafelton-smewt.desktop'])
-            #subprocess.call(['xdg-icon-resource', 'install', '--mode', 'user', '/usr/share/icons/hicolor/scalable/apps/smewt.svg'])
+            subprocess.call(['xdg-desktop-menu', 'install', '--mode', 'user', 'falafelton-smewt.desktop'])
+            subprocess.call(['xdg-icon-resource', 'install', '--mode', 'user', '--size', '128', 'falafelton-smewt_128x128.png'])
             subprocess.call(['update-menus'])
 
-    DATA_FILES = [('/usr/share/applications' , [ 'packaging/linux/falafelton-smewt.desktop' ]),
-                  ('/usr/share/icons/hicolor/scalable/apps' , [ 'smewt/icons/smewt.svg' ])]
+    DATA_FILES = [('.' , [ 'packaging/linux/falafelton-smewt.desktop' ]),
+                  ('.' , [ 'smewt/icons/falafelton-smewt_128x128.png' ])]
 
     # only try install icon and menu entry if we are root
     #if os.geteuid() == 0:
