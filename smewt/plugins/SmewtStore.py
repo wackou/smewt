@@ -106,9 +106,35 @@ class SeriesItem(Container):
         self.warning("SeriesItem.get_children")
         children = []
 
+        seasons = set([e.season for e in tolist(self.series.episodes)])
+
+        for season in seasons:
+          children.append(SeasonItem(self.store, self.series, season, parent_id))
+        
+        children.sort(key = lambda x: x.season)
+        
+        return children
+
+
+class SeasonItem(Container):
+
+    logCategory = 'smewt_media_store'
+
+    def __init__(self, store, series, season, parent_id):
+        Container.__init__(self, store, "Season %d" % season, parent_id, children_callback = self.get_children_implementation)
+        self.series = series
+        self.season = season
+
+    def get_children_implementation(self, parent_id):
+        self.warning("SeriesItem.get_children")
+        children = []
+
         for ep in tolist(self.series.episodes):
-          children.append(EpisodeItem(self.store, ep, parent_id))
-          
+          if ep.season == self.season:
+            children.append(EpisodeItem(self.store, ep, parent_id))
+        
+        children.sort(key = lambda x: x.episode.episodeNumber)
+        
         return children
 
 
@@ -128,7 +154,7 @@ class EpisodeItem(BackendItem):
         return len(self.get_children())
 
     def get_item(self, parent_id = SERIES_CONTAINER_ID):
-        item = DIDLLite.VideoItem(self.id, parent_id, self.episode.title)
+        item = DIDLLite.VideoItem(self.id, parent_id, self.get_name())
         
         # add http resource
         for videoFile in tolist(self.episode.files):
@@ -146,16 +172,10 @@ class EpisodeItem(BackendItem):
         return self.id
 
     def get_name(self):
-        return self.episode.title
+        return "%d - %s" % (self.episode.episodeNumber, self.episode.title,)
 
     def get_cover(self):
         return self.cover
-
-    def get_id(self):
-        return self.id
-
-    def get_name(self):
-        return self.episode.title
 
 
 
@@ -249,5 +269,7 @@ class MediaStore(BackendStore):
         all_series = self.smewt_db.find_all(Series)
         for s in all_series:
           series.append(SeriesItem(self, s, parent_id))
-          
+        
+        series.sort(key = lambda x: x.series.title)
+        
         return series
