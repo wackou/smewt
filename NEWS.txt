@@ -6,6 +6,15 @@
 News
 ====
 
+0.2.2
+-----
+
+*Release date: 4-Mar-2011*
+
+* Fixed installing Smewt on Ubuntu; there were issues with the menu
+  entries before
+
+
 0.2.1
 -----
 
