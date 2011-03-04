@@ -16,7 +16,7 @@
 
   ;Name and file
   Name "Smewt"
-  !define VERSION  '0.3-dev'
+  !define VERSION  '0.2.2'
   !define SMEWT_ROOT '..\..'
   ; comment this, we don't want to run smewg the first time as admin on windows 7
   ; TODO: is this really necessary or are we being too cautious?

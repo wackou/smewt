@@ -21,7 +21,7 @@ datafiles_exts = [ '*.png', '*.svg', '*.tmpl', '*.css', '*.html', '*.js' ]
 
 
 args = dict(name = 'smewt',
-            version = '0.3-dev',
+            version = '0.2.2',
             description = 'Smewt - a smart media manager.',
             long_description = README + '\n\n' + NEWS,
             classifiers = [], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
