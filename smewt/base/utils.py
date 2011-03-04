@@ -107,6 +107,7 @@ def smewtUserDirectoryUrl(*args):
     return pathToUrl(smewtUserDirectory(*args))
 
 
+# FIXME: once we depend on GuessIt, import this function directly from there
 def splitPath(path):
     result = []
     while True:
