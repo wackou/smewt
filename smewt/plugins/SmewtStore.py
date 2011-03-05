@@ -12,6 +12,7 @@ import coherence.extern.louie as louie
 import urllib
 
 from smewt.media.series.serieobject import Series, Episode
+from smewt.media.movie.movieobject import Movie
 from smewt.base.utils import tolist
 
 import mimetypes
@@ -110,6 +111,8 @@ class SeriesItem(Container):
         seasons = set([e.season for e in tolist(self.series.episodes)])
 
         for season in seasons:
+          if self.store.only_available and not any([any([os.path.isfile(videoFile.filename) for videoFile in tolist(ep.files)]) for ep in tolist(self.series.episodes) if ep.season == season]):
+            continue
           children.append(SeasonItem(self.store, self.series, season, parent_id))
         
         children.sort(key = lambda x: x.season)
@@ -132,6 +135,9 @@ class SeasonItem(Container):
 
         for ep in tolist(self.series.episodes):
           if ep.season == self.season:
+            if self.store.only_available and not any([os.path.isfile(videoFile.filename) for videoFile in tolist(ep.files)]):
+              continue
+            
             children.append(EpisodeItem(self.store, ep, parent_id))
         
         children.sort(key = lambda x: x.episode.episodeNumber)
@@ -206,6 +212,72 @@ class EpisodeItem(BackendItem):
     def get_cover(self):
         return self.cover
 
+class MovieItem(BackendItem):
+
+    logCategory = 'smewt_media_store'
+
+    def __init__(self, store, movie, parent_id):
+        self.id = store.new_item(self)
+        self.movie = movie
+        self.store = store
+        self.parent_id = parent_id
+
+    def get_children(self,start=0, request_count=0):
+        return []
+        
+    def get_child_count(self):
+        return len(self.get_children())
+
+    def get_item(self, parent_id = SERIES_CONTAINER_ID):
+        item = DIDLLite.VideoItem(self.id, parent_id, self.get_name())
+
+        external_url = '%s/%d@%d' % (self.store.urlbase, self.id, self.parent_id,)
+
+        # add http resource
+        for videoFile in tolist(self.movie.files):
+          filename = videoFile.filename
+          internal_url = 'file://' + filename
+          mimetype, _ = mimetypes.guess_type(filename, strict=False)
+          size = None
+          if os.path.isfile(filename):
+            size = os.path.getsize(filename)
+          
+          res = DIDLLite.Resource(external_url, 'http-get:*:%s:*' % (mimetype,))
+          res.size = size
+          item.res.append(res)
+
+          res = DIDLLite.Resource(internal_url, 'internal:%s:%s:*' % (self.store.server.coherence.hostname, mimetype,))
+          res.size = size
+          item.res.append(res)
+          
+          # FIXME: Handle correctly multifile videos
+          self.location = filename
+          
+        for subtitle in tolist(self.movie.get('subtitles')):
+          for subfile in tolist(subtitle.files):
+            subfilename = subfile.filename
+            if os.path.isfile(subfilename):
+              # check for a subtitles file
+              hash_from_path = str(id(subfilename))
+              mimetype = 'smi/caption'
+              new_res = DIDLLite.Resource(external_url+'?attachment='+hash_from_path,
+                                          'http-get:*:%s:%s' % (mimetype, '*'))
+              new_res.size = os.path.getsize(subfilename)
+              item.res.append(new_res)
+              if not hasattr(item, 'attachments'):
+                  item.attachments = {}
+              item.attachments[hash_from_path] = utils.StaticFile(subfilename)
+
+        return item
+
+    def get_id(self):
+        return self.id
+
+    def get_name(self):
+        return "%s" % (self.movie.title,)
+
+    def get_cover(self):
+        return self.cover
 
 
 class MediaStore(BackendStore):
@@ -224,6 +296,7 @@ class MediaStore(BackendStore):
         self.server = server
         self.smewt_db = kwargs.get("smewt_db", None)
         self.urlbase = kwargs.get("urlbase", "")
+        self.only_available = kwargs.get("only_available", True)
         self.series = None
         self.episodes = None
         
@@ -241,8 +314,14 @@ class MediaStore(BackendStore):
         all_series = Container(self, 'All series', root_container.get_id(), 
                                children_callback = self.children_series,
                                play_container = False)
-                          
+        
         root_container.add_child(all_series)
+        
+        all_movies = Container(self, 'All movies', root_container.get_id(), 
+                               children_callback = self.children_movies,
+                               play_container = False)
+                          
+        root_container.add_child(all_movies)
 
         louie.send('Coherence.UPnP.Backend.init_completed', None, backend=self)
 
@@ -253,6 +332,7 @@ class MediaStore(BackendStore):
         return self.items[int(id)]
         
     def new_item(self, item):
+        #FIXME: make a proper mapping between pygoo and upnp ids
         item_id = self.next_id
         """
         smewt_id = tuple(item.keys())
@@ -296,9 +376,28 @@ class MediaStore(BackendStore):
           return series
           
         all_series = self.smewt_db.find_all(Series)
-        for s in all_series:
+        for s in tolist(all_series):
+          if self.only_available and not any([any([os.path.isfile(videoFile.filename) for videoFile in tolist(ep.files)]) for ep in tolist(s.episodes)]):
+            continue
           series.append(SeriesItem(self, s, parent_id))
         
         series.sort(key = lambda x: x.series.title)
         
         return series
+        
+    def children_movies(self, parent_id):
+        self.debug("children_movies")
+        movies = []
+
+        if self.smewt_db is None:
+          return movies
+          
+        all_movies= self.smewt_db.find_all(Movie)
+        for m in tolist(all_movies):
+          if self.only_available and not any([os.path.isfile(videoFile.filename) for videoFile in tolist(m.files)]):
+            continue
+          movies.append(MovieItem(self, m, parent_id))
+        
+        movies.sort(key = lambda x: x.movie.title)
+        
+        return movies
