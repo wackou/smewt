@@ -43,7 +43,7 @@ class CoherencePlugin(log.Loggable):
         kwargs = {"smewt_db": self.smewt_db}
         
         from coherence.upnp.devices.media_server import MediaServer
-        from SmewtStore import MediaStore
+        from coherencestore import MediaStore
         
         self.server = MediaServer(self.coherence, MediaStore, **kwargs)
         
