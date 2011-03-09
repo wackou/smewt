@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import time, logging, itertools, os.path
+import urllib, time, logging, itertools, os.path
 from coherence.backend import BackendItem, BackendStore
 from smewt.base.utils import tolist
 
@@ -80,14 +80,9 @@ class VideoItem(BackendItem):
         self.media = media
         self.name = name
         self.parent_id = parent_id
+        self.item = self.create_item()
         
-    def get_children(self,start=0, request_count=0):
-        return []
-        
-    def get_child_count(self):
-        return len(self.get_children())
-
-    def get_item(self):
+    def create_item(self):
         item = DIDLLite.VideoItem(self.id, self.parent_id, self.get_name())
 
         external_url = '%s/%d@%d' % (self.store.urlbase, self.id, self.parent_id,)
@@ -125,9 +120,19 @@ class VideoItem(BackendItem):
               item.res.append(new_res)
               if not hasattr(item, 'attachments'):
                   item.attachments = {}
+              
               item.attachments[hash_from_path] = utils.StaticFile(subfilename)
 
         return item
+        
+    def get_children(self,start=0, request_count=0):
+        return []
+        
+    def get_child_count(self):
+        return len(self.get_children())
+  
+    def get_item(self):
+        return self.item
 
     def get_id(self):
         return self.id
@@ -182,8 +187,14 @@ def groupByProperty(items, prop, getProperty = None, default = 'Other'):
   
   return sorted(groups.items(), key=lambda x: x[0] if x[0] is not default else LAST_KEY)
 
-def moviesByProperty(store, database, prop, parent_id=-1, getProperty = None, default='Other'):
-  moviesItems = lambda db: tolist(db.find_all('Movie'))  
+def is_available(x):
+  return any([os.path.isfile(f.filename) for f in tolist(x.files)])
+
+def moviesByProperty(store, database, prop, parent_id=-1, only_available=True, getProperty = None, default='Other'):
+  moviesItems = lambda db: tolist(db.find_all('Movie'))
+  if only_available:
+    moviesItems = lambda db: list(itertools.ifilter(is_available, tolist(db.find_all('Movie'))))
+  
   moviesViews = [
   {
     'groupItems': lambda sortedItems: groupByProperty(sortedItems, prop, getProperty=getProperty, default=default),
@@ -198,8 +209,11 @@ def moviesByProperty(store, database, prop, parent_id=-1, getProperty = None, de
   items = moviesItems(database)
   return recursiveContainer(store, items, moviesViews, parent_id=parent_id)
 
-def allSeries(store, database, parent_id=-1):
+def allSeries(store, database, parent_id=-1, only_available=True):
   seriesItems = lambda db: tolist(db.find_all('Episode'))
+  if only_available:
+    seriesItems = lambda db: list(itertools.ifilter(is_available, tolist(db.find_all('Episode'))))
+
   seriesViews = [
   {
     'sortItems': lambda items: sorted(items, key = lambda i: i.series.title),
@@ -212,7 +226,7 @@ def allSeries(store, database, parent_id=-1):
     'name': lambda k: 'Season %d' % (k,)
   },
   {
-    'sortItems': lambda items: sorted(items, key = lambda i: i.episodeNumber),
+    'sortItems': lambda items: sorted(items, key = lambda i: int(i.episodeNumber)),
     'name': lambda k: '%d - %s' % (k.get('episodeNumber', 0), k.get('title', 'UNKNOWN'), ) 
   }
   ]
@@ -220,8 +234,11 @@ def allSeries(store, database, parent_id=-1):
   items = seriesItems(database)
   return recursiveContainer(store, items, seriesViews, parent_id=parent_id)
 
-def allMovies(store, database, parent_id=-1):
+def allMovies(store, database, parent_id=-1, only_available=True):
   moviesItems = lambda db: tolist(db.find_all('Movie'))
+  if only_available:
+    moviesItems = lambda db: list(itertools.ifilter(is_available, tolist(db.find_all('Movie'))))
+
   moviesViews = [
   {
     'sortItems': lambda items: sorted(items, key = lambda i: i.title),

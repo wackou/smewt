@@ -48,7 +48,8 @@ class CoherencePlugin(log.Loggable):
         self.server = MediaServer(self.coherence, MediaStore, **kwargs)
         
         from twisted.internet import reactor
-        reactor.runReturn()
+        reactor.runReturn(installSignalHandlers=False)
+        #reactor.run()
         
         self.warning("Media Store available with UUID %s" % str(self.server.uuid))
 
@@ -56,8 +57,11 @@ class CoherencePlugin(log.Loggable):
         self.info("Coherence UPnP plugin deactivated")
         if self.coherence is None:
             return
-
+        
         self.coherence.shutdown()
+        
+        from twisted.internet import reactor
+        reactor.stop()
         
         del self.coherence
 
