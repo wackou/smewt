@@ -2,15 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import urllib, time, logging, itertools, os.path
-from coherence.backend import BackendItem, BackendStore
+
 from smewt.base.utils import tolist
 
-from coherence.upnp.core import DIDLLite
-from coherence.upnp.core import utils
-
 from coherence.backend import BackendItem, BackendStore
+from coherence.upnp.core import DIDLLite
+from coherence.upnp.core import utils as coherence_utils
 
-import smewt
+#import smewt
 #from smewt.media import Series, Episode, Movie
 #from smewt.base import utils, Collection, Media
 #from smewt.base.taskmanager import Task, TaskManager
@@ -70,6 +69,59 @@ class Container(BackendItem):
     def get_id(self):
         return self.id
 
+class VideoFileItem(BackendItem):
+    logCategory = 'smewt_media_store'
+
+    def __init__(self, store, media, name, parent_id):
+        self.id = store.new_item(self)
+        self.store = store
+        self.media = media
+        self.name = name
+        self.parent_id = parent_id
+        self.item = self.create_item()
+        
+    def create_item(self):
+        item = DIDLLite.VideoItem(self.id, self.parent_id, self.get_name())
+
+        external_url = '%s/%d@%d' % (self.store.urlbase, self.id, self.parent_id,)
+
+        # add http resource
+        filename = self.media.filename
+        internal_url = 'file://' + filename
+        mimetype, _ = mimetypes.guess_type(filename, strict=False)
+        size = None
+        if os.path.isfile(filename):
+          size = os.path.getsize(filename)
+        
+        res = DIDLLite.Resource(external_url, 'http-get:*:%s:*' % (mimetype,))
+        res.size = size
+        item.res.append(res)
+
+        res = DIDLLite.Resource(internal_url, 'internal:%s:%s:*' % (self.store.server.coherence.hostname, mimetype,))
+        res.size = size
+        item.res.append(res)
+        
+        self.location = filename
+        
+        return item
+        
+    def get_children(self,start=0, request_count=0):
+        return []
+        
+    def get_child_count(self):
+        return len(self.get_children())
+  
+    def get_item(self):
+        return self.item
+
+    def get_id(self):
+        return self.id
+
+    def get_name(self):
+        return self.name
+
+    def get_cover(self):
+        return self.cover
 
 class VideoItem(BackendItem):
     logCategory = 'smewt_media_store'
@@ -121,7 +173,7 @@ class VideoItem(BackendItem):
               if not hasattr(item, 'attachments'):
                   item.attachments = {}
               
-              item.attachments[hash_from_path] = utils.StaticFile(subfilename)
+              item.attachments[hash_from_path] = coherence_utils.StaticFile(subfilename)
 
         return item
         
@@ -153,10 +205,25 @@ def recursiveContainer(store, items, view_funcs, prefix='', parent_id=-1):
     items = sortItems(items)
     if len(view_funcs) == 0 or 'groupItems' not in view_funcs[0]:
       children = []
+      unknown = None
       for i in items:
-        newitem = VideoItem(store, i, unicode(nameMethod(i)), parent_id)
-        #print '%s%s [%d]' % (prefix, unicode(nameMethod(i)), newitem.id, )
-        children.append(newitem)
+        files = tolist(i.files)
+        if len(files)>0 and 'title' in i and i.title == 'Unknown':
+          # These unguessed files are matched to a movie named 'Unknown'
+          unknown = Container(store, 'Unknown', parent_id)
+          #print '%s%s [%d]' % (prefix, unicode('Unknown'), unknown.id, )
+          for f in tolist(i.files):
+            newitem = VideoFileItem(store, f, unicode(os.path.basename(f.filename)), parent_id)
+            #print '  %s%s [%d]' % (prefix, unicode(os.path.basename(f.filename)), newitem.id, )
+            unknown.add_child(newitem)
+        else:
+          # These are the normal files
+          newitem = VideoItem(store, i, unicode(nameMethod(i)), parent_id)
+          #print '%s%s [%d]' % (prefix, unicode(nameMethod(i)), newitem.id, )
+          children.append(newitem)
+      
+      if unknown is not None:
+        children.append(unknown)
       return children
     
     groupItems = view_funcs[0]['groupItems']
@@ -245,7 +312,7 @@ def allMovies(store, database, parent_id=-1, only_available=True):
     'name': lambda k: k.title if 'title' in k else 'UNKNOWN'
   }
   ]
-
+  
   items = moviesItems(database)
   return recursiveContainer(store, items, moviesViews, parent_id=parent_id)
 
@@ -256,10 +323,17 @@ if __name__ == '__main__':
 
   dbfile = unicode('/home/rmarxer/.config/Falafelton/Smewt-dev.database')
 
-  class Store(BackendStore):
+  class FakeCoherence:
+    hostname = 'fake'
+
+  class FakeServer:
+    coherence = FakeCoherence()
+
+  class FakeStore(BackendStore):
     def __init__(self, urlbase=''):
       self.urlbase = urlbase
       self.items = {}
+      self.server = FakeServer()
       self.last_int = 0
       
     def new_item(self, item):
@@ -282,7 +356,7 @@ if __name__ == '__main__':
   except:
       log.warning('Could not load database %s', dbfile)
 
-  store = Store()
+  store = FakeStore()
 
   allSeries(store, database)
   allMovies(store, database)
