@@ -50,8 +50,8 @@ from smewt.base.utils import smewtDirectory
 from os.path import join
 
 log = logging.getLogger('smewg')
-DEFAULT_WIDTH = 900
-DEFAULT_HEIGHT = 600
+DEFAULT_WIDTH = 960
+DEFAULT_HEIGHT = 720
 
 
 class StatusWidget(QWidget):
@@ -282,10 +282,12 @@ class SmewtGui(QMainWindow):
 
     def readWindowSettings(self):
         settings = QSettings()
-        size = settings.value("MainWindow/size", QVariant(QSize(DEFAULT_WIDTH, DEFAULT_HEIGHT))).toSize()
+        rect = QApplication.desktop().availableGeometry(self)
+
+        size = settings.value("MainWindow/size", QVariant(QSize(min(DEFAULT_WIDTH, rect.width()),
+                                                                min(DEFAULT_HEIGHT, rect.height())))).toSize()
         self.resize(size)
 
-        rect = QApplication.desktop().availableGeometry(self)
         center = rect.center()
         pos = settings.value("MainWindow/pos", QVariant(QPoint(center.x()-self.width()/2.0, center.y()-self.height()/2.0))).toPoint()
         self.move(pos)
