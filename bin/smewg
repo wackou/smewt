@@ -42,7 +42,7 @@ if MAIN_LOGGING_LEVEL == logging.DEBUG:
     logging.getLogger('imdbpy').setLevel(logging.INFO)
 
 
-from PyQt4.QtGui import QApplication, QMainWindow, QWidget, QStatusBar, QProgressBar, QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox, QToolBar
+from PyQt4.QtGui import QApplication, QMainWindow, QWidget, QStatusBar, QProgressBar, QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox, QToolBar, QKeySequence
 from PyQt4.QtCore import SIGNAL, QSize, Qt, QSettings, QVariant, QPoint, QSize, QObject, QTimer
 from smewt.gui import MainWidget, FeedWatchWidget, AboutDialog
 from smewt.base import cache, utils
@@ -161,6 +161,7 @@ class SmewtGui(QMainWindow):
                      self.clearCache)
 
         self.quitAction = QAction('Quit', self)
+        self.quitAction.setShortcuts(QKeySequence.Quit)
         self.connect(self.quitAction, SIGNAL('triggered()'),
                      self.quit)
 
@@ -283,7 +284,7 @@ class SmewtGui(QMainWindow):
         settings = QSettings()
         size = settings.value("MainWindow/size", QVariant(QSize(DEFAULT_WIDTH, DEFAULT_HEIGHT))).toSize()
         self.resize(size)
-        
+
         rect = QApplication.desktop().availableGeometry(self)
         center = rect.center()
         pos = settings.value("MainWindow/pos", QVariant(QPoint(center.x()-self.width()/2.0, center.y()-self.height()/2.0))).toPoint()
