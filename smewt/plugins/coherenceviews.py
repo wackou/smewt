@@ -201,27 +201,33 @@ def recursiveContainer(store, items, view_funcs, prefix='', parent_id=-1):
     if len(view_funcs) > 0:
       nameMethod = view_funcs[0].get('name', lambda x: x)
       sortItems = view_funcs[0].get('sortItems', lambda x: x)
-    
+      itemClass = view_funcs[0].get('item', None)
+      
     items = sortItems(items)
     if len(view_funcs) == 0 or 'groupItems' not in view_funcs[0]:
       children = []
       unknown = None
       for i in items:
-        files = tolist(i.files)
-        if len(files)>0 and 'title' in i and i.title == 'Unknown':
-          # These unguessed files are matched to a movie named 'Unknown'
-          unknown = Container(store, 'Unknown', parent_id)
-          #print '%s%s [%d]' % (prefix, unicode('Unknown'), unknown.id, )
-          for f in tolist(i.files):
-            newitem = VideoFileItem(store, f, unicode(os.path.basename(f.filename)), parent_id)
-            #print '  %s%s [%d]' % (prefix, unicode(os.path.basename(f.filename)), newitem.id, )
-            unknown.add_child(newitem)
+        if itemClass is None:
+          files = tolist(i.files)
+          if len(files)>0 and 'title' in i and i.title == 'Unknown':
+            # These unguessed files are matched to a movie named 'Unknown'
+            unknown = Container(store, 'Unknown', parent_id)
+            print '%s%s [%d]' % (prefix, unicode('Unknown'), unknown.id, )
+            for f in tolist(i.files):
+              newitem = VideoFileItem(store, f, unicode(os.path.basename(f.filename)), parent_id)
+              print '  %s%s [%d]' % (prefix, unicode(os.path.basename(f.filename)), newitem.id, )
+              unknown.add_child(newitem)
+          else:
+            # These are the normal files
+            newitem = VideoItem(store, i, unicode(nameMethod(i)), parent_id)
+            print '%s%s [%d]' % (prefix, unicode(nameMethod(i)), newitem.id, )
+            children.append(newitem)
         else:
-          # These are the normal files
-          newitem = VideoItem(store, i, unicode(nameMethod(i)), parent_id)
-          #print '%s%s [%d]' % (prefix, unicode(nameMethod(i)), newitem.id, )
+          newitem = itemClass(store, i, unicode(nameMethod(i)), parent_id)
+          print '%s%s [%d]' % (prefix, unicode(nameMethod(i)), newitem.id, )
           children.append(newitem)
-      
+          
       if unknown is not None:
         children.append(unknown)
       return children
@@ -233,7 +239,7 @@ def recursiveContainer(store, items, view_funcs, prefix='', parent_id=-1):
     children = []
     for k, v in group:
       cont = Container(store, unicode(nameMethod(k)), parent_id)
-      #print '%s%s [%d]' % (prefix, unicode(nameMethod(k)), cont.id, )
+      print '%s%s [%d]' % (prefix, unicode(nameMethod(k)), cont.id, )
       cont.add_children( recursiveContainer(store, list(v), view_funcs[1:], parent_id = cont.id, prefix = ' ' + prefix) )
       children.append(cont)
       
@@ -294,13 +300,13 @@ def allSeries(store, database, parent_id=-1, only_available=True):
   },
   {
     'sortItems': lambda items: sorted(items, key = lambda i: int(i.episodeNumber)),
-    'name': lambda k: '%d - %s' % (k.get('episodeNumber', 0), k.get('title', 'UNKNOWN'), ) 
+    'name': lambda k: '%3d - %s' % (k.get('episodeNumber', 0), k.get('title', tolist(k.get('files', []))[0].get('filename', '[unknown]')), ) 
   }
   ]
 
   items = seriesItems(database)
   return recursiveContainer(store, items, seriesViews, parent_id=parent_id)
-
+  
 def allMovies(store, database, parent_id=-1, only_available=True):
   moviesItems = lambda db: tolist(db.find_all('Movie'))
   if only_available:
@@ -309,13 +315,41 @@ def allMovies(store, database, parent_id=-1, only_available=True):
   moviesViews = [
   {
     'sortItems': lambda items: sorted(items, key = lambda i: i.title),
-    'name': lambda k: k.title if 'title' in k else 'UNKNOWN'
+    'name': lambda k: k.title if 'title' in k else '[unknown]'
   }
   ]
   
   items = moviesItems(database)
   return recursiveContainer(store, items, moviesViews, parent_id=parent_id)
 
+def advSeries(store, database, parent_id=-1, only_available=True):  
+  def isEpisode(m):
+    from smewt.media.series.serieobject import Episode
+    return os.path.isfile(m.filename) and any([any([mdlink.isinstance(Episode) for mdlink in mds]) for mds in tolist(m.metadata)])
+    
+  seriesItems = lambda db: list(db.find_all(node_type = 'Media', valid_node = isEpisode))
+
+  seriesViews = [
+  {
+    'sortItems': lambda items: sorted(items, key = lambda i: tolist(i.metadata)[0].series.title),
+    'groupItems': lambda sortedItems: itertools.groupby(sortedItems, key=lambda i: tolist(i.metadata)[0].series),
+    'name': lambda k: k.title if 'title' in k else 'UNKNOWN'
+  },
+  {
+    'sortItems': lambda items: sorted(items, key = lambda i: tolist(i.metadata)[0].season),
+    'groupItems': lambda sortedItems: itertools.groupby(sortedItems, key=lambda i: tolist(i.metadata)[0].season),
+    'name': lambda k: 'Season %d' % (k,)
+  },
+  {
+    'sortItems': lambda items: sorted(items, key = lambda i: (int(tolist(i.metadata)[0].episodeNumber), i.filename)),
+    'name': lambda k: '%3d - %s' % (tolist(k.metadata)[0].get('episodeNumber', 0), tolist(k.metadata)[0].get('title', os.path.basename(k.get('filename', '[unknown]'))), ), 
+    'item': VideoFileItem
+  }
+  ]
+
+  items = seriesItems(database)
+  return recursiveContainer(store, items, seriesViews, parent_id=parent_id)
+ 
 if __name__ == '__main__':
   from pygoo import *
   logging.basicConfig(level=logging.WARNING)
@@ -357,10 +391,12 @@ if __name__ == '__main__':
       log.warning('Could not load database %s', dbfile)
 
   store = FakeStore()
-
+  
+  advSeries(store, database)
   allSeries(store, database)
   allMovies(store, database)
   moviesByProperty(store, database, 'genres')
   moviesByProperty(store, database, 'director')
   moviesByProperty(store, database, 'cast', getProperty = lambda x: [act.split('--')[0] for act in x.get('cast', [])])
   moviesByProperty(store, database, 'year', getProperty = lambda x: [x.get('year', None)])
+  
