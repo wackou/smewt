@@ -28,7 +28,10 @@ SMEWT_ROOT = up(up(os.path.abspath(__file__)))
 SMEWT_ROOT_PARENT = up(SMEWT_ROOT)
 
 # first add paths to local smewt and pygoo repositories
-sys.path = [ os.path.join(SMEWT_ROOT_PARENT, 'smewt'), os.path.join(SMEWT_ROOT_PARENT, 'pygoo') ] + sys.path
+sys.path = [ os.path.join(SMEWT_ROOT_PARENT, 'smewt'),
+             os.path.join(SMEWT_ROOT_PARENT, 'pygoo'),
+             os.path.join(SMEWT_ROOT_PARENT, 'guessit')
+             ] + sys.path
 
 # then run smewg normally
 execfile(os.path.join(SMEWT_ROOT, 'bin', 'smewg'))
