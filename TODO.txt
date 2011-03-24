@@ -8,12 +8,17 @@ FEATURES:
 - clean collection (ie: remove files which don't exist anymore)
 - player detection in windows/linux
 
+- merge the taggers and guessers and solvers into GuessIt, along with periscope, to have a library that is
+  able to retrieve any type of information from a file: web info, possible subtitles, etc... (renaming: MediaInfo?)
+
 
 BUGFIXES:
 ---------
 
 - collection folder is ugly slow on windows (some only?)
 - taskbar icon doesn't appear in all windows (confirmed?)
+- moviefilename and episodefilename should add some MD to media, not metadata (eg: guessit.video info)
+- in Tagger.cleanup(), the check to matches should be unnecesary, we shouldn't use that anymore
 
 
 MISCELLANEOUS:

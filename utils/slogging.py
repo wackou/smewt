@@ -43,7 +43,9 @@ def setupLogging(colored = True):
 
         def format(self, record):
             result = logging.Formatter.format(self, record)
-            if record.levelno in (logging.DEBUG, logging.INFO):
+            if record.levelno == logging.DEBUG:
+                return BLUE_FONT + result
+            elif record.levelno == logging.INFO:
                 return GREEN_FONT + result
             elif record.levelno == logging.WARNING:
                 return YELLOW_FONT + result
