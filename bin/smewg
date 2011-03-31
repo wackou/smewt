@@ -36,6 +36,9 @@ setupLogging()
 
 logging.getLogger().setLevel(MAIN_LOGGING_LEVEL)
 
+import logging.handlers
+logging.getLogger().addHandler(logging.handlers.SocketHandler('localhost', 9020))
+
 # we most likely never want this to be on debug mode, as it spits out way too much information
 if MAIN_LOGGING_LEVEL == logging.DEBUG:
     logging.getLogger('pygoo').setLevel(logging.INFO)
