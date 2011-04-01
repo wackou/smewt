@@ -63,7 +63,7 @@ class TreeNode(object):
         if parent:
             result = parent.children.index(self)
         return result
-        
+
 class LoggerModel(QtCore.QAbstractItemModel):
     def __init__(self, parent):
         super(LoggerModel, self).__init__(parent)
@@ -424,13 +424,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         t.setDaemon(True)
         t.start()
 
-        if options:
-            self.udp_addr = get_addr(options.udphost, DEFAULT_UDP_LOGGING_PORT)
-        s = listeners.LoggingUDPServer(self.udp_addr, self.on_record, 0.5)
-        self.udp_server = s
-        self.udp_thread = t = threading.Thread(target=s.serve_until_stopped)
-        t.setDaemon(True)
-        t.start()
+        #if options:
+        #    self.udp_addr = get_addr(options.udphost, DEFAULT_UDP_LOGGING_PORT)
+        #s = listeners.LoggingUDPServer(self.udp_addr, self.on_record, 0.5)
+        #self.udp_server = s
+        #self.udp_thread = t = threading.Thread(target=s.serve_until_stopped)
+        #t.setDaemon(True)
+        #t.start()
 
         if zmq:
             if options:
@@ -586,7 +586,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if zmq:
             self.zmq_addr = settings.value('zmqhost', 'localhost:9024')
         settings.endGroup()
-        
+
     def load_settings(self):
         settings = self.settings
         settings.beginGroup('mainwindow')
@@ -667,8 +667,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def closeEvent(self, event):
         self.tcp_server.stop()
         self.tcp_thread.join()
-        self.udp_server.stop()
-        self.udp_thread.join()
+        #self.udp_server.stop()
+        #self.udp_thread.join()
         if zmq:
             self.zmq_server.stop()
             self.zmq_thread.join()
@@ -891,7 +891,7 @@ def main():
     parser = optparse.OptionParser()
     parser.add_option('-c', '--capacity', default=0, type='int', dest='capacity',
                       help='Maximum number of messages to hold')
-    parser.add_option('-t', '--tcp', default='0.0.0.0', dest='tcphost',
+    parser.add_option('-t', '--tcp', default='0.0.0.0:9025', dest='tcphost',
                       help='Where to listen for TCP traffic (host[:port])')
     parser.add_option('-u', '--udp', default='0.0.0.0', dest='udphost',
                       help='Where to listen for UDP traffic (host[:port])')

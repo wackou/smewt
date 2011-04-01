@@ -21,6 +21,7 @@
 import sys, logging, os, os.path
 
 MAIN_LOGGING_LEVEL = logging.INFO
+LOGGING_TCP_PORT = 9025
 
 # when we create a py2exe, we want to redirect the output the a file ourselves,
 # otherwise it gives an error when closing the app
@@ -37,7 +38,7 @@ setupLogging()
 logging.getLogger().setLevel(MAIN_LOGGING_LEVEL)
 
 import logging.handlers
-logging.getLogger().addHandler(logging.handlers.SocketHandler('localhost', 9020))
+logging.getLogger().addHandler(logging.handlers.SocketHandler('localhost', LOGGING_TCP_PORT))
 
 # we most likely never want this to be on debug mode, as it spits out way too much information
 if MAIN_LOGGING_LEVEL == logging.DEBUG:
