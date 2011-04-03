@@ -43,7 +43,7 @@ class GraphAction(object):
 
 
     def checkValid(self, query):
-        """Check that our query graph contains only one MEdia object and that it can be handled
+        """Check that our query graph contains only one Media object and that it can be handled
         by our GraphAction."""
         media = query.find_all(Media)
         if len(media) != 1:

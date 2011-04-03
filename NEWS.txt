@@ -6,6 +6,15 @@
 News
 ====
 
+0.?
+-----
+
+*Release date: ???*
+
+* Fixed size and position of Smewt window on first launch on weird geometry
+  setups (ex: dual-screen, very small screens, ...)
+
+
 0.2.2
 -----
 

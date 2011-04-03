@@ -42,6 +42,7 @@ open('packaging/win32/smewt.nsi', 'w').write(nsis)
 smewg = open('bin/smewg').read()
 
 smewg = re.sub('\nMAIN_LOGGING_LEVEL =.*', '\nMAIN_LOGGING_LEVEL = logging.INFO', smewg)
+smewg = re.sub('\nLOGGING_TCP_PORT =.*', '\nLOGGING_TCP_PORT = 9025', smewg)
 
 logfunc = [ l for l in open('utils/slogging.py') if l[0] != '#' ]
 smewg = smewg.replace(''.join(logfunc) + '\nsetupLogging(%s)\n' % ('colored=False' if sys.platform == 'darwin' else ''),

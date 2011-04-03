@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import Media, Metadata
+from smewt.base import Media, Metadata, SmewtException
 from smewt.solvers.solver import Solver
 from smewt.base.textutils import levenshtein
 import logging
@@ -69,7 +69,7 @@ class SimpleSolver(Solver):
     def perform(self, query):
         self.checkValid(query)
 
-        #query.display_graph()
+        #query.display_graph('SimpleSolver query')
 
         metadata = query.find_all(node_type = self.type)
 
