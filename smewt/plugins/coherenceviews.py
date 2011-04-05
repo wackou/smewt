@@ -213,19 +213,19 @@ def recursiveContainer(store, items, view_funcs, prefix='', parent_id=-1):
           if len(files)>0 and 'title' in i and i.title == 'Unknown':
             # These unguessed files are matched to a movie named 'Unknown'
             unknown = Container(store, 'Unknown', parent_id)
-            print '%s%s [%d]' % (prefix, unicode('Unknown'), unknown.id, )
+            #print '%s%s [%d]' % (prefix, unicode('Unknown'), unknown.id, )
             for f in tolist(i.files):
               newitem = VideoFileItem(store, f, unicode(os.path.basename(f.filename)), parent_id)
-              print '  %s%s [%d]' % (prefix, unicode(os.path.basename(f.filename)), newitem.id, )
+              #print '  %s%s [%d]' % (prefix, unicode(os.path.basename(f.filename)), newitem.id, )
               unknown.add_child(newitem)
           else:
             # These are the normal files
             newitem = VideoItem(store, i, unicode(nameMethod(i)), parent_id)
-            print '%s%s [%d]' % (prefix, unicode(nameMethod(i)), newitem.id, )
+            #print '%s%s [%d]' % (prefix, unicode(nameMethod(i)), newitem.id, )
             children.append(newitem)
         else:
           newitem = itemClass(store, i, unicode(nameMethod(i)), parent_id)
-          print '%s%s [%d]' % (prefix, unicode(nameMethod(i)), newitem.id, )
+          #print '%s%s [%d]' % (prefix, unicode(nameMethod(i)), newitem.id, )
           children.append(newitem)
           
       if unknown is not None:
@@ -239,7 +239,7 @@ def recursiveContainer(store, items, view_funcs, prefix='', parent_id=-1):
     children = []
     for k, v in group:
       cont = Container(store, unicode(nameMethod(k)), parent_id)
-      print '%s%s [%d]' % (prefix, unicode(nameMethod(k)), cont.id, )
+      #print '%s%s [%d]' % (prefix, unicode(nameMethod(k)), cont.id, )
       cont.add_children( recursiveContainer(store, list(v), view_funcs[1:], parent_id = cont.id, prefix = ' ' + prefix) )
       children.append(cont)
       

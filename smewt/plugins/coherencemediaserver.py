@@ -42,7 +42,15 @@ class CoherencePlugin(log.Loggable,QObject):
 
         self.smewt_db = smewt_db
         self.sources = {}
-        kwargs = {"smewt_db": self.smewt_db}
+          
+        kwargs = {}
+        kwargs['smewt_db'] = self.smewt_db
+        
+        # Get the UUID of the Digital Media Server from the configuration object in the Smewt Db
+        dms_uuid = self.smewt_db.find_one('Config').get('coherence_dmsuuid', None)
+
+        if dms_uuid:
+          kwargs['uuid'] = dms_uuid
         
         from coherence.upnp.devices.media_server import MediaServer
         from coherencestore import MediaStore
@@ -56,6 +64,10 @@ class CoherencePlugin(log.Loggable,QObject):
         reactor.runReturn(installSignalHandlers=False)
         #reactor.run()
         
+        # Set the UUID of the Digital Media Server of the configuration object in the Smewt Db
+        if dms_uuid is None:
+          self.smewt_db.find_one('Config').coherence_dmsuuid = str(self.server.uuid)
+          
         self.warning("Media Store available with UUID %s" % str(self.server.uuid))
 
     def deactivate(self, smewt_db=None):
