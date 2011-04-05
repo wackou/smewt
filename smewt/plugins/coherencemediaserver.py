@@ -8,6 +8,8 @@
 # Licensed under the MIT license
 # http://opensource.org/licenses/mit-license.php
 
+from PyQt4.QtCore import QObject, SIGNAL
+
 import coherence.extern.louie as louie
 
 from coherence import log
@@ -15,26 +17,26 @@ from coherence import log
 # for the icon
 import os.path, urllib
 
-class CoherencePlugin(log.Loggable):
+class CoherencePlugin(log.Loggable,QObject):
 
     logCategory = 'smewt_coherence_plugin'
 
     def __init__(self):
+        QObject.__init__(self)
         self.coherence = None
 
-    def activate(self, smewt_db):
-        from smewt.plugins import qt4reactor
-                
+    def activate(self, smewt_db):                
         try:
-            qt4reactor.install()
+          from smewt.plugins import qt4reactor
+          qt4reactor.install()
         except AssertionError, e:
-            # sometimes it's already installed
-            self.warning("qt4reactor already installed %r" % e)
+          # sometimes it's already installed
+          self.warning("qt4reactor already installed %r" % e)
 
         self.coherence = self.get_coherence()
         if self.coherence is None:
-            self.warning("Coherence is not installed or too old, aborting")
-            return
+          self.warning("Coherence is not installed or too old, aborting")
+          return
 
         self.warning("Coherence UPnP plugin activated")
 
@@ -48,6 +50,9 @@ class CoherencePlugin(log.Loggable):
         self.server = MediaServer(self.coherence, MediaStore, **kwargs)
         
         from twisted.internet import reactor
+        
+        #self.connect(self, SIGNAL("deactivating()"), reactor.stop)
+        
         reactor.runReturn(installSignalHandlers=False)
         #reactor.run()
         
@@ -59,6 +64,13 @@ class CoherencePlugin(log.Loggable):
             return
         
         self.coherence.shutdown()
+        
+        #from twisted.internet import reactor
+        #reactor.stop()
+        #self.emit(SIGNAL("deactivating()"))
+        
+        #from twisted.internet import reactor
+        #QTimer.singleShot(0, reactor, SLOT("stop()"));
         
         from twisted.internet import reactor
         reactor.stop()
