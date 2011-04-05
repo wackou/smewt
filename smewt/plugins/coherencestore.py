@@ -62,7 +62,7 @@ class MediaStore(BackendStore):
 
         self.root_container = Container(self, self.name, -1)
         
-        self.add_container('All series', lambda pid: allSeries(self, self.smewt_db, parent_id=pid))
+        self.add_container('All series', lambda pid: advSeries(self, self.smewt_db, parent_id=pid))
         self.add_container('All movies', lambda pid: allMovies(self, self.smewt_db, parent_id=pid))
         self.add_container('Movies by genre', lambda pid: moviesByProperty(self, self.smewt_db, 'genres', parent_id=pid))
         self.add_container('Movies by year', lambda pid: moviesByProperty(self, self.smewt_db, 'year', getProperty = lambda x: [x.get('year', None)], parent_id=pid))
