@@ -300,7 +300,7 @@ class SmewtGui(QMainWindow):
 
         log.info('Quitting application...')
         QApplication.instance().quit()
-
+        
     def readWindowSettings(self):
         settings = QSettings()
         pos = settings.value("MainWindow/pos", QVariant(QPoint((QApplication.desktop().width()-DEFAULT_WIDTH)/2, (QApplication.desktop().width()-DEFAULT_HEIGHT)/2))).toPoint()
@@ -392,4 +392,9 @@ if __name__ == '__main__':
     app.exec_()
 
     log.info('Exiting')
+    
+    # FIXME: must remove.  This is needed when activating the Coherence plugin.
+    log.warn('Killing application...')
+    os.kill(os.getpid(), 9)
+
     sys.exit() # why is this necessary when running from eric?
