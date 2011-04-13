@@ -20,6 +20,7 @@
 
 from smewttest import *
 from smewt.media.subtitle.subtitle_tvsubtitles_provider import TVSubtitlesProvider
+from smewt.base.subtitletaskperiscope import SubtitleTaskPeriscope
 
 
 def datafile(filename):
@@ -30,35 +31,67 @@ class TestEpisodeSubtitle(TestCase):
     def setUp(self):
         ontology.reload_saved_ontology('media')
 
-    def testSingleSubtitle(self):
+    def testPeriscopeSubtitle(self):
         for subdata in yaml.load(open(datafile('subsdata.yaml')).read()):
-            query = MemoryObjectGraph()
-            resultFile = subdata['result']
-            del subdata['result']
+            video = subdata['video']
+            lang =  subdata['language']
+            subfile = subdata['result']
 
-            language = subdata['language']
-            del subdata['language']
+            from guessit import episode
+            ep = episode.guess_episode_filename(video)
 
-            s = query.Series(title = subdata['series'])
-            del subdata['series']
+            series = ep.pop('series')
 
-            ep = query.Episode(series = s, **subdata)
+            g = MemoryObjectGraph()
+            ep = g.Episode(series = g.Series(title = series), **ep)
+            videofile = g.Media(filename = datafile(video), metadata = ep)
 
-            subprovider = TVSubtitlesProvider()
+            subtask = SubtitleTaskPeriscope(ep, lang)
+            sub = subtask.downloadSubtitleText()
 
-            self.assert_(subprovider.canHandle(ep))
+            self.assert_(self.subtitlesEqual(sub, open(datafile(subfile)).read()))
 
-            available = subprovider.getAvailableSubtitles(ep).find_all(Subtitle, language = language)
-            self.assert_(len(available) >= 1)
 
-            sub = available[0]
-            # FIXME: should implement hint with the filename...
-            if '720p' in available[0].source and len(available) > 1:
-                sub = available[1]
+    def subtitlesEqual(self, sub1, sub2):
+        sub1 = sub1.replace('\r\n', '\n')
+        sub2 = sub2.replace('\r\n', '\n')
 
-            sub = subprovider.getSubtitle(sub)
-            self.assertEqual(open(datafile(resultFile)).read(), sub.replace('\r\n', '\n'))
+        # why doesn't this work?
+        #        import tempfile
+        #        subfile1 = tempfile.NamedTemporaryFile()
+        #        subfile1.write(sub1)
+        #        subfile1.close()
+        #        subfile2 = tempfile.NamedTemporaryFile()
+        #        subfile2.write(sub2)
+        #        subfile2.close()
+        #
+        #        # for python >= 2.7
+        #        #subprocess.check_output
+        #
+        #        import subprocess
+        #        subprocess.Popen([ 'diff', subfile1.name, subfile2.name ], stdout = subprocess.PIPE)
 
+        subfile1 = '/tmp/sub1.srt'
+        subfile2 = '/tmp/sub2.srt'
+
+        open(subfile1, 'w').write(sub1)
+        open(subfile2, 'w').write(sub2)
+        import subprocess
+        diffp = subprocess.Popen([ 'diff', subfile1, subfile2 ], stdout = subprocess.PIPE)
+        diff, _ = diffp.communicate()
+
+        os.remove(subfile1)
+        os.remove(subfile2)
+
+
+        # 19 = length of a diff chunk on a file with more than a 1000 lines (4+1+4 +1 +4+1+4)
+        realdiff = filter(lambda l: len(l) > 19, diff.split('\n'))
+
+        # 50 = completely arbitrary ;-)
+        if len(realdiff) > 50:
+            return False
+
+        return True
 
 
 suite = allTests(TestEpisodeSubtitle)
