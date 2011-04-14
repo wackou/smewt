@@ -20,9 +20,11 @@
 
 from PyQt4.QtCore import SIGNAL, QObject
 from smewtexception import SmewtException
+from smewt.base.utils import tolist, toresult
 from mediaobject import Media, Metadata
 from subtitletask import SubtitleTask
-from smewt.media import Series
+from subtitletaskperiscope import SubtitleTaskPeriscope
+from smewt.media import Series, Subtitle
 import os, sys, time, logging
 
 
@@ -102,9 +104,29 @@ class ActionFactory(Singleton):
             title = surl.args['title']
             language = surl.args['language']
 
-            for provider in self.subtitleProviders:
-                subTask = SubtitleTask(mainWidget.smewtd.database, provider, title, language)
-                mainWidget.smewtd.taskManager.add(subTask)
+            db = mainWidget.smewtd.database
+            series = db.find_one('Series', title = title)
+
+            seriesEpisodes = set(tolist(series.episodes))
+            currentSubs = db.find_all(node_type = Subtitle,
+                                      # FIXME: we shouldn't have to go to the node, but if we don't, the valid_node lambda doesn't return anything...
+                                      valid_node = lambda x: toresult(list(x.metadata)) in set(ep.node for ep in seriesEpisodes),
+                                      language = language)
+
+
+            alreadyGood = set(s.metadata for s in currentSubs)
+
+            episodes = [ ep for ep in seriesEpisodes if ep not in alreadyGood ]
+
+            if episodes:
+                for ep in episodes:
+                    subtask = SubtitleTaskPeriscope(ep, language)
+                    mainWidget.smewtd.taskManager.add(subtask)
+            else:
+                from guessit.language import _language_map as lmap
+                log.info('All videos already have %s subtitles!' % lmap[language])
+
+
 
         else:
             raise SmewtException('Unknown action type: %s' % surl.actionType)

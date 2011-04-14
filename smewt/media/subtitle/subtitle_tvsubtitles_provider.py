@@ -153,6 +153,8 @@ class TVSubtitlesProvider:
         return self.getAvailableSubtitlesID(metadata)
 
 
+    # FIXME: cachedmethod doesn't work because of weakrefs in the graph...
+    #@cachedmethod
     def getSubtitle(self, subtitle):
         '''This method should return the contents of the given subtitle as a string.
         The Subtitle object should be picked among the ones returned by the getAvailableSubtitles

@@ -27,7 +27,7 @@ from smewt.base.utils import tolist
 from smewt.media import Series, Subtitle, SubtitleNotFoundError
 import guessit.language
 import periscope
-import os.path
+import sys, os.path
 
 import itertools
 import logging
@@ -56,9 +56,11 @@ class SubtitleTaskPeriscope(Task):
 
     def downloadSubtitleText(self):
         subdl = periscope.Periscope()
-        ep = self.episode
 
-        #ep.graph().display_graph()
+        ep = self.episode
+        epdesc = 'episode %dx%02d of %s' % (self.episode.season, self.episode.episodeNumber, self.episode.series.title)
+
+        log.info('Trying to download subtitle for %s' % epdesc)
 
         files = tolist(self.episode.get('files', []))
         if files:
@@ -71,11 +73,13 @@ class SubtitleTaskPeriscope(Task):
         for sub in subs :
             log.debug("Found a sub from %s in language %s, downloadable from %s" % (sub['plugin'], sub['lang'], sub['link']))
 
-        # TODO: choose best subtitle smartly
 
         if not subs:
             raise SmewtException('Could not find any subs for %s' % self.episode)
 
+        # TODO: choose best subtitle smartly
+        if len(subs) > 1:
+            log.warning('Multiple subtitles found, trying to pick the best one...')
 
         # FIXME: need to be fixed in periscope so that it can return the text directly, or at least let
         #        us choose where it needs to be written
@@ -87,9 +91,9 @@ class SubtitleTaskPeriscope(Task):
         if sub:
             result = open(sub["subtitlepath"]).read()
             os.remove(sub["subtitlepath"])
-            log.debug('Successfully downloaded %s subtitle for %s' % (self.language, self.episode))
+            log.debug('Successfully downloaded %s subtitle for %s' % (self.language, epdesc))
         else:
-            raise SmewtException('Could not complete download for sub %s' % self.episode)
+            raise SmewtException(u'Could not complete download for sub of %s' % epdesc)
 
         if os.path.exists(subpath + '.bak'):
             os.rename(subpath + '.bak', subpath)
@@ -115,8 +119,8 @@ class SubtitleTaskPeriscope(Task):
             if not files:
                 log.error('Cannot write subtitle file for %s because it doesn\'t have an attached file')
 
-            languageMap = guessit.language.languageMap
-            filetmpl = files[0].filename.rsplit('.', 1)[0] + '.' + languageMap[lang] + '%s.srt'
+            languageMap = guessit.language._language_map
+            filetmpl = files[0].filename.rsplit('.', 1)[0] + '.' + languageMap[self.language] + '%s.srt'
 
             filename = filetmpl % ''
             i = 2
@@ -129,70 +133,8 @@ class SubtitleTaskPeriscope(Task):
 
             open(filename, 'w').write(subtext)
 
+            # update the found subs with this one
+            db = self.episode.graph()
+            sub = db.Subtitle(metadata = self.episode, language = self.language)
+            subfile = db.Media(filename = filename, metadata = sub)
 
-
-        ############# OLD IMPLEMENTATION
-        return
-
-        languageMap = guessit.language.languageMap
-
-        # find objects which don't have yet a subtitle of the desired language
-        seriesEpisodes = set(tolist(self.series.episodes))
-        currentSubs = self.database.find_all(node_type = Subtitle,
-                                             valid_node = lambda x: x.metadata in seriesEpisodes,
-                                             language = self.language)
-
-        alreadyGood = set([ s.metadata for s in currentSubs ])
-
-        episodes = [ ep for ep in seriesEpisodes if ep not in alreadyGood ]
-        if not episodes:
-            log.info('All videos already have subtitles!')
-
-        subs = MemoryObjectGraph()
-
-        for ep in episodes:
-            try:
-                # the following assumes we always have a single metadata object for this file
-                videoFilename = ep.files.filename
-                subFilename = os.path.splitext(videoFilename)[0] + '.%s.srt' % languageMap[self.language]
-
-                # if file doesn't exist yet, try to download it
-                if not os.path.isfile(subFilename):
-                    possibleSubs = self.provider.getAvailableSubtitles(ep).find_all(language = self.language)
-                    if not possibleSubs:
-                        raise SubtitleNotFoundError('didn\'t find any possible subs...')
-
-                    # we could do a more elaborate selection here if more than 1 result is returned
-                    candidate = possibleSubs[0]
-                    if len(possibleSubs) > 1:
-                        log.warning('More than 1 possible subtitle found: %s', str(possibleSubs))
-                        dists = [ (textutils.levenshtein(videoFilename, sub.title), sub) for sub in possibleSubs ]
-                        candidate = sorted(dists)[0][1]
-                        log.warning('Choosing %s' % candidate)
-
-                    log.info('Trying to download subs for %s' % ep.files.filename)
-                    subtext = self.provider.getSubtitle(candidate)
-
-                    # write the subtitle in the appropriate file
-                    # (here as well we might want to look at how many results we have (ie: movie
-                    # spanning multiple CDs, etc...)
-                    if self.subfile is not None:
-                        with open(subFilename, 'w') as f:
-                            f.write(subtext)
-                        log.info('Found subtitle for %s' % ep.files.filename)
-
-                else:
-                    log.warning('\'%s\' already exists. Not overwriting it...' % subFilename)
-
-                # update the found subs with this one
-                sub = self.database.Subtitle(metadata = ep, language = self.language)
-                subfile = self.database.Media(filename = subFilename, metadata = sub)
-
-            except SubtitleNotFoundError, e:
-                log.warning('subno: did not found any subtitle for %s: %s', str(video), str(e))
-
-            except SmewtException, e:
-                log.warning('se: did not found any subtitle for %s: %s' % (str(video), str(e)))
-
-
-        log.debug('SubtitleTaskPeriscope: all done!')
