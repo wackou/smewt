@@ -208,7 +208,7 @@ class MainWidget(QWidget):
         self.refreshCollectionView()
 
     def linkClicked(self,  url):
-        log.info('clicked on link %s', url.toString())
+        log.info('clicked on link %s', unicode(url.toString()))
         url = url.toEncoded()
 
         if url.startsWith('file://'):

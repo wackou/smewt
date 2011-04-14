@@ -62,7 +62,7 @@ class SubtitleTaskPeriscope(Task):
         ep = self.episode
         epdesc = 'episode %dx%02d of %s' % (self.episode.season, self.episode.episodeNumber, self.episode.series.title)
 
-        log.info('Trying to download subtitle for %s' % epdesc)
+        log.info('Trying to download %s subtitle for %s' % (languageMap[self.language], epdesc))
 
         files = tolist(self.episode.get('files', []))
         if files:
@@ -77,7 +77,7 @@ class SubtitleTaskPeriscope(Task):
 
 
         if not subs:
-            raise SmewtException('Could not find any %s subs for %s' % (self.language, epdesc))
+            raise SmewtException('Could not find any %s subs for %s' % (languageMap[self.language], epdesc))
 
         # TODO: choose best subtitle smartly
         if len(subs) > 1:
@@ -93,7 +93,7 @@ class SubtitleTaskPeriscope(Task):
         if sub:
             result = open(sub["subtitlepath"]).read()
             os.remove(sub["subtitlepath"])
-            log.debug('Successfully downloaded %s subtitle for %s' % (self.language, epdesc))
+            log.debug('Successfully downloaded %s subtitle for %s' % (languageMap[self.language], epdesc))
         else:
             raise SmewtException(u'Could not complete download for sub of %s' % epdesc)
 
