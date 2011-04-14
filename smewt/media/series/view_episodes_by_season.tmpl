@@ -116,17 +116,27 @@ for season, eps in seasons.items():
 <div class="rightshifted">
   <h1>$seriesName</h1>
 
-  <a href="$englishSubsLink">Get missing English subtitles</a>
-  <a href="$frenchSubsLink">Get missing French subtitles</a>
-  <a href="$spanishSubsLink">Get missing Spanish subtitles</a>
   <a href="javascript:toggleSynopsis()">Toggle synopsis</a>
 </div>
+
 
 <div class="tabber">
 #for seasonNumber, eps in seasons.items():
   <div class="tabbertab">
   <h2>Season $seasonNumber</h2>
   <p>
+
+  <%
+englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'season': seasonNumber, 'language': 'en' })
+frenchSubsLink  = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'season': seasonNumber, 'language': 'fr' })
+spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'season': seasonNumber, 'language': 'es' })
+  %>
+    <div class="boxlink">
+      <a href="$englishSubsLink">Get missing English subtitles</a>
+      <a href="$frenchSubsLink">Get missing French subtitles</a>
+      <a href="$spanishSubsLink">Get missing Spanish subtitles</a>
+    </div>
+
   #for ep in [ ep for ep in eps if 'title' in ep ]
     #if 'filename' in ep:
       #try

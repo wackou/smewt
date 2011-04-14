@@ -25,7 +25,6 @@ from pygoo import MemoryObjectGraph
 from smewt.base import Media, Task, SmewtException, textutils
 from smewt.base.utils import tolist
 from smewt.media import Series, Subtitle, SubtitleNotFoundError
-import guessit.language
 import periscope
 import sys, os.path
 
@@ -33,6 +32,9 @@ import itertools
 import logging
 
 log = logging.getLogger('smewt.subtitletask')
+
+import guessit.language
+languageMap = guessit.language._language_map
 
 # TODO: should be renamed SeriesSubtitleTask
 class SubtitleTaskPeriscope(Task):
@@ -75,7 +77,7 @@ class SubtitleTaskPeriscope(Task):
 
 
         if not subs:
-            raise SmewtException('Could not find any subs for %s' % self.episode)
+            raise SmewtException('Could not find any %s subs for %s' % (self.language, epdesc))
 
         # TODO: choose best subtitle smartly
         if len(subs) > 1:
@@ -119,7 +121,6 @@ class SubtitleTaskPeriscope(Task):
             if not files:
                 log.error('Cannot write subtitle file for %s because it doesn\'t have an attached file')
 
-            languageMap = guessit.language._language_map
             filetmpl = files[0].filename.rsplit('.', 1)[0] + '.' + languageMap[self.language] + '%s.srt'
 
             filename = filetmpl % ''

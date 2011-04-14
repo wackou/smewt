@@ -132,6 +132,29 @@ h1 {
  color: #333333;
 }
 
+.boxlink {
+ margin-left: 20px;
+ margin-bottom: 20px;
+}
+
+.boxlink a {
+ font: 13px Verdana, sans-serif;
+ text-decoration: none;
+ border: 1px solid #778;
+ padding-left: 5px;
+ padding-right: 5px;
+ padding-top: 2px;
+ padding-bottom: 2px;
+ background: #DDE;
+ color: #448;
+}
+
+.boxlink a:hover {
+ color: #000;
+ background: #AAE;
+ border-color: #227;
+}
+
 .rightshifted {
  margin-left: 150px;
  margin-bottom: 50px;
@@ -154,6 +177,8 @@ h1 {
  background: #AAE;
  border-color: #227;
 }
+
+
 
 .tabberlive .tabbertab {
  color: #7F7F7F;

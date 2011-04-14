@@ -107,7 +107,10 @@ class ActionFactory(Singleton):
             db = mainWidget.smewtd.database
             series = db.find_one('Series', title = title)
 
-            seriesEpisodes = set(tolist(series.episodes))
+            if 'season' in surl.args:
+                seriesEpisodes = set(ep for ep in tolist(series.episodes) if ep.season == int(surl.args['season']))
+            else:
+                seriesEpisodes = set(tolist(series.episodes))
             currentSubs = db.find_all(node_type = Subtitle,
                                       # FIXME: we shouldn't have to go to the node, but if we don't, the valid_node lambda doesn't return anything...
                                       valid_node = lambda x: toresult(list(x.metadata)) in set(ep.node for ep in seriesEpisodes),
