@@ -19,7 +19,7 @@
 #
 
 from PyQt4.QtCore import QSettings, QVariant
-from pygoo import MemoryObjectGraph, Equal
+from pygoo import MemoryObjectGraph, Equal, ontology
 import smewt
 from smewt.media import Series, Episode, Movie
 from smewt.base import utils, Collection, Media
@@ -39,6 +39,21 @@ class VersionedMediaGraph(MemoryObjectGraph):
             result.lastModified = time.time()
 
         return result
+
+    def __getattr__(self, name):
+        # if attr is not found and starts with an upper case letter, it might be the name
+        # of one of the registered classes. In that case, return a function that would instantiate
+        # such an object in this graph
+        if name[0].isupper() and name in ontology.class_names():
+            def inst(basenode = None, **kwargs):
+                result = super(VersionedMediaGraph, self).__getattr__(name)(basenode, **kwargs)
+                if isinstance(result, Media):
+                    result.lastModified = time.time()
+                return result
+
+            return inst
+
+        raise AttributeError, name
 
 
 def validEpisode(filename):
