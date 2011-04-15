@@ -47,7 +47,7 @@ class TestEpisodeSubtitle(TestCase):
             videofile = g.Media(filename = datafile(video), metadata = ep)
 
             subtask = SubtitleTaskPeriscope(ep, lang)
-            sub = subtask.downloadSubtitleText()
+            sub = subtask.downloadEpisodeSubtitleText()
 
             self.assert_(self.subtitlesEqual(sub, open(datafile(subfile)).read()))
 

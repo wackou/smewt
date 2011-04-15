@@ -24,7 +24,7 @@ from PyQt4.QtCore import SIGNAL, Qt, QObject
 from pygoo import MemoryObjectGraph
 from smewt.base import Media, Task, SmewtException, textutils
 from smewt.base.utils import tolist
-from smewt.media import Series, Subtitle, SubtitleNotFoundError
+from smewt.media import Movie, Series, Episode, Subtitle, SubtitleNotFoundError
 import periscope
 import sys, os.path
 
@@ -38,37 +38,27 @@ languageMap = guessit.language._language_map
 
 # TODO: should be renamed SeriesSubtitleTask
 class SubtitleTaskPeriscope(Task):
-    """Tries to download a subtitle for the given episode. If force = True, it will
-    download it and overwrite a previous subtitle.
+    """Tries to download a subtitle for the given episode or movie. If
+    force = True, it will download it and overwrite a previous subtitle.
 
-    #episode is a dict with keys: 'series', 'season' and 'episodeNumber'.
-    episode is an Episode instance
+    metadata is the object for which to download the subtitle (Movie or Episode).
 
     TODO: should look at all the available subs, remove duplicates, and keep all those
     remaining, maybe numbered to distinguish them."""
-    def __init__(self, episode, language, subfile = None, force = False):
+    def __init__(self, metadata, language, subfile = None, force = False):
         super(SubtitleTaskPeriscope, self).__init__()
-        self.episode = episode
+        self.metadata = metadata
         self.language = language
         self.subfile = subfile
         self.force = force
 
-        log.info('Creating SubtitleTaskPeriscope for episode %dx%02d from series: %s' % (episode['season'], episode['episodeNumber'], episode['series']))
+        log.info('Creating SubtitleTaskPeriscope for %s' % metadata)
 
 
-    def downloadSubtitleText(self):
+    def downloadPeriscopeSubtitleText(self, filepath, desc):
         subdl = periscope.Periscope()
 
-        ep = self.episode
-        epdesc = 'episode %dx%02d of %s' % (self.episode.season, self.episode.episodeNumber, self.episode.series.title)
-
-        log.info('Trying to download %s subtitle for %s' % (languageMap[self.language], epdesc))
-
-        files = tolist(self.episode.get('files', []))
-        if files:
-            filepath = files[0].filename
-        else:
-            filepath = '%s %dx%02d %s' % (ep.series.title, ep.season, ep.episodeNumber, ep.get('title', ''))
+        log.info('Trying to download %s subtitle for %s' % (languageMap[self.language], desc))
 
         subs = subdl.listSubtitles(filepath, [self.language])
 
@@ -77,7 +67,7 @@ class SubtitleTaskPeriscope(Task):
 
 
         if not subs:
-            raise SmewtException('Could not find any %s subs for %s' % (languageMap[self.language], epdesc))
+            raise SmewtException('Could not find any %s subs for %s' % (languageMap[self.language], desc))
 
         # TODO: choose best subtitle smartly
         if len(subs) > 1:
@@ -93,9 +83,9 @@ class SubtitleTaskPeriscope(Task):
         if sub:
             result = open(sub["subtitlepath"]).read()
             os.remove(sub["subtitlepath"])
-            log.debug('Successfully downloaded %s subtitle for %s' % (languageMap[self.language], epdesc))
+            log.debug('Successfully downloaded %s subtitle for %s' % (languageMap[self.language], desc))
         else:
-            raise SmewtException(u'Could not complete download for sub of %s' % epdesc)
+            raise SmewtException(u'Could not complete download for sub of %s' % desc)
 
         if os.path.exists(subpath + '.bak'):
             os.rename(subpath + '.bak', subpath)
@@ -103,8 +93,38 @@ class SubtitleTaskPeriscope(Task):
         return result
 
 
+    def downloadEpisodeSubtitleText(self):
+        ep = self.metadata
+        desc = 'episode %dx%02d of %s' % (ep.season, ep.episodeNumber, ep.series.title)
+
+        files = tolist(ep.get('files', []))
+        if files:
+            filepath = files[0].filename
+        else:
+            filepath = '%s %dx%02d %s' % (ep.series.title, ep.season, ep.episodeNumber, ep.get('title', ''))
+
+        return self.downloadPeriscopeSubtitleText(filepath, desc)
+
+
+    def downloadMovieSubtitleText(self):
+        desc = 'movie ' + self.metadata.title
+
+        files = tolist(self.metadata.get('files', []))
+        if files:
+            filepath = files[0].filename
+        else:
+            filepath = '%s.avi' % self.metadata.title
+
+        return self.downloadPeriscopeSubtitleText(filepath, desc)
+
+
     def perform(self):
-        subtext = self.downloadSubtitleText()
+        if self.metadata.isinstance(Episode):
+            subtext = self.downloadEpisodeSubtitleText()
+        elif self.metadata.isinstance(Movie):
+            subtext = self.downloadMovieSubtitleText()
+        else:
+            raise SmewtException('Unknown type for downloading subtitle: %s' % self.metadata.__class__.__name__)
 
         if self.subfile is not None:
             if not os.path.isfile(self.subfile) or self.force:
@@ -117,7 +137,7 @@ class SubtitleTaskPeriscope(Task):
 
         else:
             # find an appropriate filename
-            files = tolist(self.episode.get('files', []))
+            files = tolist(self.metadata.get('files', []))
             if not files:
                 log.error('Cannot write subtitle file for %s because it doesn\'t have an attached file')
 
@@ -135,7 +155,7 @@ class SubtitleTaskPeriscope(Task):
             open(filename, 'w').write(subtext)
 
             # update the found subs with this one
-            db = self.episode.graph()
-            sub = db.Subtitle(metadata = self.episode, language = self.language)
+            db = self.metadata.graph()
+            sub = db.Subtitle(metadata = self.metadata, language = self.language)
             subfile = db.Media(filename = filename, metadata = sub)
 

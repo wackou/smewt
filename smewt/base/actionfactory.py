@@ -101,33 +101,55 @@ class ActionFactory(Singleton):
             mainWidget.externalProcess.startDetached(action, args)
 
         elif surl.actionType == 'getsubtitles':
-            title = surl.args['title']
-            language = surl.args['language']
+            if surl.args['type'] == 'episode':
+                title = surl.args['title']
+                language = surl.args['language']
 
-            db = mainWidget.smewtd.database
-            series = db.find_one('Series', title = title)
+                db = mainWidget.smewtd.database
+                series = db.find_one('Series', title = title)
 
-            if 'season' in surl.args:
-                seriesEpisodes = set(ep for ep in tolist(series.episodes) if ep.season == int(surl.args['season']))
+                if 'season' in surl.args:
+                    seriesEpisodes = set(ep for ep in tolist(series.episodes) if ep.season == int(surl.args['season']))
+                else:
+                    seriesEpisodes = set(tolist(series.episodes))
+                currentSubs = db.find_all(node_type = Subtitle,
+                                          # FIXME: we shouldn't have to go to the node, but if we don't, the valid_node lambda doesn't return anything...
+                                          valid_node = lambda x: toresult(list(x.metadata)) in set(ep.node for ep in seriesEpisodes),
+                                          language = language)
+
+
+                alreadyGood = set(s.metadata for s in currentSubs)
+
+                episodes = [ ep for ep in seriesEpisodes if ep not in alreadyGood ]
+
+                if episodes:
+                    for ep in episodes:
+                        subtask = SubtitleTaskPeriscope(ep, language)
+                        mainWidget.smewtd.taskManager.add(subtask)
+                else:
+                    from guessit.language import _language_map as lmap
+                    log.info('All videos already have %s subtitles!' % lmap[language])
+
+            elif surl.args['type'] == 'movie':
+                title = surl.args['title']
+                language = surl.args['language']
+
+                db = mainWidget.smewtd.database
+                movie = db.find_one('Movie', title = title)
+
+                # check if we already have it
+                for sub in tolist(movie.get('subtitles')):
+                    if sub.language == language:
+                        from guessit.language import _language_map as lmap
+                        log.info('Movie already has a %s subtitle' % lmap[language])
+                        return
+
+                subtask = SubtitleTaskPeriscope(movie, language)
+                mainWidget.smewtd.taskManager.add(subtask)
+
+
             else:
-                seriesEpisodes = set(tolist(series.episodes))
-            currentSubs = db.find_all(node_type = Subtitle,
-                                      # FIXME: we shouldn't have to go to the node, but if we don't, the valid_node lambda doesn't return anything...
-                                      valid_node = lambda x: toresult(list(x.metadata)) in set(ep.node for ep in seriesEpisodes),
-                                      language = language)
-
-
-            alreadyGood = set(s.metadata for s in currentSubs)
-
-            episodes = [ ep for ep in seriesEpisodes if ep not in alreadyGood ]
-
-            if episodes:
-                for ep in episodes:
-                    subtask = SubtitleTaskPeriscope(ep, language)
-                    mainWidget.smewtd.taskManager.add(subtask)
-            else:
-                from guessit.language import _language_map as lmap
-                log.info('All videos already have %s subtitles!' % lmap[language])
+                log.error('Don\'t know how to fetch subtitles for type: %s' % surl.args['type'])
 
 
 

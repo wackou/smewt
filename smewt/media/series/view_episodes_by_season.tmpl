@@ -21,9 +21,9 @@ seasons = defaultdict(lambda: [])
 #series = allseries[0]
 seriesName = series.title
 poster = pathToUrl(series.get('loresImage'))
-englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'en' })
-frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'fr' })
-spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'language': 'es' })
+englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': seriesName, 'language': 'en' })
+frenchSubsLink  = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': seriesName, 'language': 'fr' })
+spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': seriesName, 'language': 'es' })
 if displaySynopsis:
     displayStyle = 'inline'
 else:
