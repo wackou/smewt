@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Smewg -->
-<!-- Saved: 2011-02-21, 01:05:09 -->
+<!-- Saved: 2011-04-08, 05:30:38 -->
 <!-- Copyright (C) 2011 Nicolas Wack, wackou@gmail.com -->
 <Project version="4.6">
   <Language>en</Language>
@@ -115,6 +115,12 @@
     <Source>MANIFEST.in</Source>
     <Source>ACKNOWLEDGMENTS</Source>
     <Source>smewt/gui/aboutdialog.py</Source>
+    <Source>bin/logview.py</Source>
+    <Source>bin/logview-0.1/tables.py</Source>
+    <Source>bin/logview-0.1/qt.py</Source>
+    <Source>bin/logview-0.1/logview.py</Source>
+    <Source>bin/python</Source>
+    <Source>smewt/base/subtitletaskperiscope.py</Source>
   </Sources>
   <Forms>
   </Forms>
