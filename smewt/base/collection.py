@@ -24,8 +24,7 @@ import time, os
 from PyQt4.QtCore import QObject, SIGNAL, QVariant, QSettings
 from pygoo import MemoryObjectGraph, ontology
 
-from smewt.base import utils, Media, Metadata
-from smewt.base import ImportTask, SubtitleTask
+from smewt.base import utils, Media, Metadata, ImportTask
 from smewt.taggers import EpisodeTagger, MovieTagger
 from smewt.base.textutils import toUtf8
 

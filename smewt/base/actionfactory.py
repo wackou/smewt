@@ -23,7 +23,6 @@ from smewtexception import SmewtException
 from smewt.base.utils import tolist, toresult
 from mediaobject import Media, Metadata
 from subtitletask import SubtitleTask
-from subtitletaskperiscope import SubtitleTaskPeriscope
 from smewt.media import Series, Subtitle
 import os, sys, time, logging
 
@@ -43,13 +42,14 @@ class Singleton(object):
 # by tvsubtitles, opensubtitles, etc...
 class ActionFactory(Singleton):
     def __init__(self):
-        self.subtitleProviders = []
         self.registerPlugins()
 
     def registerPlugins(self):
+
         # subs += opensubtitles
-        from smewt.media.subtitle.subtitle_tvsubtitles_provider import TVSubtitlesProvider
-        self.subtitleProviders.append(TVSubtitlesProvider())
+        # player += smplayer vlc open
+        # ...
+        pass
 
     def dispatch(self, mainWidget, surl):
         if surl.actionType == 'play':
@@ -124,7 +124,7 @@ class ActionFactory(Singleton):
 
                 if episodes:
                     for ep in episodes:
-                        subtask = SubtitleTaskPeriscope(ep, language)
+                        subtask = SubtitleTask(ep, language)
                         mainWidget.smewtd.taskManager.add(subtask)
                 else:
                     from guessit.language import _language_map as lmap
@@ -144,7 +144,7 @@ class ActionFactory(Singleton):
                         log.info('Movie already has a %s subtitle' % lmap[language])
                         return
 
-                subtask = SubtitleTaskPeriscope(movie, language)
+                subtask = SubtitleTask(movie, language)
                 mainWidget.smewtd.taskManager.add(subtask)
 
 

@@ -20,7 +20,7 @@
 
 from smewttest import *
 from smewt.media.subtitle.subtitle_tvsubtitles_provider import TVSubtitlesProvider
-from smewt.base.subtitletaskperiscope import SubtitleTaskPeriscope
+from smewt.base.subtitletask import SubtitleTask
 
 
 def datafile(filename):
@@ -46,7 +46,7 @@ class TestEpisodeSubtitle(TestCase):
             ep = g.Episode(series = g.Series(title = series), **ep)
             videofile = g.Media(filename = datafile(video), metadata = ep)
 
-            subtask = SubtitleTaskPeriscope(ep, lang)
+            subtask = SubtitleTask(ep, lang)
             sub = subtask.downloadEpisodeSubtitleText()
 
             self.assert_(self.subtitlesEqual(sub, open(datafile(subfile)).read()))

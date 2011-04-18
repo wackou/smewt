@@ -120,7 +120,6 @@
     <Source>bin/logview-0.1/qt.py</Source>
     <Source>bin/logview-0.1/logview.py</Source>
     <Source>bin/python</Source>
-    <Source>smewt/base/subtitletaskperiscope.py</Source>
   </Sources>
   <Forms>
   </Forms>
