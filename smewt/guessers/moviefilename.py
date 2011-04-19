@@ -52,7 +52,9 @@ class MovieFilename(GraphAction):
         # put the result of guessit in a form that smewt understands
         movie = query.Movie(confidence = averageConfidence, **movieMetadata)
 
-        log.debug('Found filename information from %s: %s' % (media.filename, movie))
+        msg = u'Found filename information from %s:' % media.filename
+        msg += str(movie).decode('utf-8')
+        log.debug(msg)
 
         result = foundMetadata(query, movie)
         #result.display_graph()
