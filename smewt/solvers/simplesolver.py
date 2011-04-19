@@ -76,7 +76,8 @@ class SimpleSolver(Solver):
         # 1- get a node that looks like it could be our potential candidate
         baseGuess, confidence = None, -1
         for md in metadata:
-            if md.is_unique() and md.get('confidence') > confidence:
+            #if md.is_unique() and md.get('confidence') > confidence:
+            if md.get('confidence') > confidence:
                 baseGuess, confidence = md, md.get('confidence')
 
         if baseGuess is None:
