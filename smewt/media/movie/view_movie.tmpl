@@ -131,7 +131,7 @@ qtitle = movie.title.replace('\'', '\\\'')
 
 #if movieName == 'Unknown':
 <p>&nbsp;</p>
-  #for f, url in [ (f, SmewtUrl('action', 'play', { 'filename1': f.filename })) for f in movie.get('files', []) ]:
+  #for f, url in [ (f, SmewtUrl('action', 'play', { 'filename1': f.filename })) for f in tolist(movie.get('files')) ]:
 
     <div class="singlefile"><a href="$url"><i>$f.filename</i></a></div>
   #end for
