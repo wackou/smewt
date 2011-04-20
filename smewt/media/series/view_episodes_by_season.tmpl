@@ -135,7 +135,7 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'sea
       <a href="$spanishSubsLink">Get missing Spanish subtitles</a>
     </div>
 
-  #for ep in [ ep for ep in eps if 'title' in ep ]
+  #for ep in [ ep for ep in eps if 'title' in ep and ep.get('episodeNumber', -1) != -1 ]
     #if 'filename' in ep:
       #try
         <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title </a>
