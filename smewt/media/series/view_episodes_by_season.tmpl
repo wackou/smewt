@@ -124,6 +124,8 @@ for season, eps in seasons.items():
   <h2>Season $seasonNumber</h2>
   <p>
 
+  #if seriesName != 'Unknown':
+
   <%
 englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'season': seasonNumber, 'language': 'en' })
 frenchSubsLink  = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'season': seasonNumber, 'language': 'fr' })
@@ -174,6 +176,28 @@ extras = [ { 'title': f,
   #for ep in extras
     <div class="episode"><a href="$ep.url"><i>$ep.title</i></a></div>
   #end for
+
+
+    #else
+    <!-- series == unknown -->
+
+<%
+files = []
+for ep in tolist(series.get('episodes')):
+    files += [ f.filename for f in tolist(ep.files) ]
+
+unknownFiles = [ { 'title': f,
+                   'url': SmewtUrl('action', 'play', { 'filename1': f })
+                   }
+                   for f in files ]
+
+%>
+
+    #for ep in unknownFiles:
+        <div class="episode"><a href="$ep.url"><i>$ep.title</i></a></div>
+    #end for
+
+    #end if
   </p></div>
 #end for
 
