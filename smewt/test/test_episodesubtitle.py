@@ -21,6 +21,7 @@
 from smewttest import *
 from smewt.media.subtitle.subtitle_tvsubtitles_provider import TVSubtitlesProvider
 from smewt.base.subtitletask import SubtitleTask
+import chardet
 
 
 def datafile(filename):
@@ -52,9 +53,19 @@ class TestEpisodeSubtitle(TestCase):
             self.assert_(self.subtitlesEqual(sub, open(datafile(subfile)).read()))
 
 
+    def canonicalForm(self, encodedText):
+        result = encodedText.replace('\r\n', '\n')
+        encoding = chardet.detect(result)['encoding']
+
+        # small hack as it seems chardet is not perfect :-)
+        if encoding.lower().startswith('iso-8859'):
+            encoding = 'iso-8859-1'
+
+        return result.decode(encoding)
+
     def subtitlesEqual(self, sub1, sub2):
-        sub1 = sub1.replace('\r\n', '\n')
-        sub2 = sub2.replace('\r\n', '\n')
+        sub1 = self.canonicalForm(sub1)
+        sub2 = self.canonicalForm(sub2)
 
         # why doesn't this work?
         #        import tempfile
@@ -74,18 +85,21 @@ class TestEpisodeSubtitle(TestCase):
         subfile1 = '/tmp/sub1.srt'
         subfile2 = '/tmp/sub2.srt'
 
-        open(subfile1, 'w').write(sub1)
-        open(subfile2, 'w').write(sub2)
+        open(subfile1, 'w').write(sub1.encode('utf-8'))
+        open(subfile2, 'w').write(sub2.encode('utf-8'))
         import subprocess
         diffp = subprocess.Popen([ 'diff', subfile1, subfile2 ], stdout = subprocess.PIPE)
         diff, _ = diffp.communicate()
 
-        os.remove(subfile1)
-        os.remove(subfile2)
 
+        # keep only the lines that are actual diff, not part of `diff` syntax
+        realdiff = filter(lambda l: l and (l[0] == '<' or l[0] == '>'), diff.split('\n'))
 
-        # 19 = length of a diff chunk on a file with more than a 1000 lines (4+1+4 +1 +4+1+4)
-        realdiff = filter(lambda l: len(l) > 19, diff.split('\n'))
+        # remove those diffs that correspond to different indices of the sentences
+        realdiff = filter(lambda l: len(l) > 6, realdiff)
+
+        for i in realdiff:
+            print i
 
         # 50 = completely arbitrary ;-)
         if len(realdiff) > 50:
