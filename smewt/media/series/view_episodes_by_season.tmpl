@@ -16,9 +16,6 @@ seasons = defaultdict(lambda: [])
 
 seriesName = series.title
 poster = pathToUrl(series.get('loresImage'))
-englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': seriesName, 'language': 'en' })
-frenchSubsLink  = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': seriesName, 'language': 'fr' })
-spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': seriesName, 'language': 'es' })
 if displaySynopsis:
     displayStyle = 'inline'
 else:
@@ -127,9 +124,9 @@ for season, eps in seasons.items():
   #if seriesName != 'Unknown':
 
   <%
-englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'season': seasonNumber, 'language': 'en' })
-frenchSubsLink  = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'season': seasonNumber, 'language': 'fr' })
-spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': seriesName, 'season': seasonNumber, 'language': 'es' })
+englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': seriesName, 'season': seasonNumber, 'language': 'en' })
+frenchSubsLink  = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': seriesName, 'season': seasonNumber, 'language': 'fr' })
+spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': seriesName, 'season': seasonNumber, 'language': 'es' })
   %>
     <div class="boxlink">
       <a href="$englishSubsLink">Get missing English subtitles</a>
@@ -190,6 +187,8 @@ unknownFiles = [ { 'title': f,
                    'url': SmewtUrl('action', 'play', { 'filename1': f })
                    }
                    for f in files ]
+
+unknownFiles.sort(key = lambda f: f['title'])
 
 %>
 

@@ -56,38 +56,30 @@ class SubtitleTask(Task):
 
     def downloadPeriscopeSubtitleText(self, filepath, desc):
         subdl = periscope.Periscope()
+        #subdl.pluginNames = [ 'Addic7ed' ]
 
         log.info('Trying to download %s subtitle for %s' % (languageMap[self.language], desc))
 
         subs = subdl.listSubtitles(filepath, [self.language])
 
+        if not subs:
+            raise SmewtException('Could not find any %s subs for %s' % (languageMap[self.language], desc))
+
         for sub in subs :
             log.debug("Found a sub from %s in language %s, downloadable from %s" % (sub['plugin'], sub['lang'], sub['link']))
 
-
-        if not subs:
-            raise SmewtException('Could not find any %s subs for %s' % (languageMap[self.language], desc))
 
         # TODO: choose best subtitle smartly
         if len(subs) > 1:
             log.warning('Multiple subtitles found, trying to pick the best one...')
 
-        # FIXME: need to be fixed in periscope so that it can return the text directly, or at least let
-        #        us choose where it needs to be written
-        subpath = filepath.rsplit(".", 1)[0] + '.srt'
-        if os.path.exists(subpath):
-            os.rename(subpath, subpath + '.bak')
 
-        sub = subdl.attemptDownloadSubtitle(subs, [self.language])
+        sub = subdl.attemptDownloadSubtitleText(subs, [self.language])
         if sub:
-            result = open(sub["subtitlepath"]).read()
-            os.remove(sub["subtitlepath"])
+            result = sub["subtitletext"]
             log.debug('Successfully downloaded %s subtitle for %s' % (languageMap[self.language], desc))
         else:
             raise SmewtException(u'Could not complete download for sub of %s' % desc)
-
-        if os.path.exists(subpath + '.bak'):
-            os.rename(subpath + '.bak', subpath)
 
         return result
 
