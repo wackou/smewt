@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
+# Copyright (c) 2008-2011 Nicolas Wack <wackou@gmail.com>
 # Copyright (c) 2008 Ricard Marxer <email@ricardmarxer.com>
-# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,22 +19,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from __future__ import with_statement
-from PyQt4.QtCore import SIGNAL, Qt, QObject
-from pygoo import MemoryObjectGraph
-from smewt.base import Media, Task, SmewtException, textutils
+from smewt.base import Task, SmewtException
 from smewt.base.utils import tolist
-from smewt.media import Movie, Series, Episode, Subtitle, SubtitleNotFoundError
+from smewt.media import Movie, Series, Episode, Subtitle
 import periscope
 import sys, os.path
-
-import itertools
 import logging
 
 log = logging.getLogger('smewt.subtitletask')
 
 import guessit.language
 languageMap = guessit.language._language_map
+
 
 class SubtitleTask(Task):
     """Tries to download a subtitle for the given episode or movie. If
