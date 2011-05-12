@@ -17,6 +17,8 @@ poster = pathToUrl(movie.loresImage)
 def getAll(prop):
     return ', '.join(movie.get(prop) or [])
 
+year = movie.get('year', '')
+rating = movie.get('rating', '')
 director = getAll('director')
 writer = getAll('writer')
 genres = getAll('genres')
@@ -142,8 +144,8 @@ qtitle = movie.title.replace('\'', '\\\'')
 <div class="tabber">
   <div class="tabbertab">
     <h2>Overview</h2>
-    <p><b>year:</b> $movie.year</p>
-    <p><b>rating:</b> $movie.rating</p>
+    <p><b>year:</b> $year</p>
+    <p><b>rating:</b> $rating</p>
     <p><b>director:</b> $director</p>
     <p><b>writer:</b> $writer</p>
     <p><b>genres:</b> $genres</p>

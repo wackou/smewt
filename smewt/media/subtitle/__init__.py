@@ -19,4 +19,3 @@
 #
 
 from subtitleobject import Subtitle
-from subtitleprovider import SubtitleNotFoundError
