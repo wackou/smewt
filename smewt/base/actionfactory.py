@@ -112,6 +112,7 @@ class ActionFactory(Singleton):
                     seriesEpisodes = set(ep for ep in tolist(series.episodes) if ep.season == int(surl.args['season']))
                 else:
                     seriesEpisodes = set(tolist(series.episodes))
+
                 currentSubs = db.find_all(node_type = Subtitle,
                                           # FIXME: we shouldn't have to go to the node, but if we don't, the valid_node lambda doesn't return anything...
                                           valid_node = lambda x: toresult(list(x.metadata)) in set(ep.node for ep in seriesEpisodes),
@@ -120,7 +121,7 @@ class ActionFactory(Singleton):
 
                 alreadyGood = set(s.metadata for s in currentSubs)
 
-                episodes = [ ep for ep in seriesEpisodes if ep not in alreadyGood ]
+                episodes = seriesEpisodes - alreadyGood
 
                 if episodes:
                     for ep in episodes:
