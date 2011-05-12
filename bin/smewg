@@ -98,6 +98,7 @@ class SmewtGui(QMainWindow):
         importMenu.addSeparator()
         importMenu.addAction(self.updateCollectionAction)
         importMenu.addAction(self.rescanCollectionAction)
+        importMenu.addAction(self.clearCollectionAction)
 
         helpMenu = self.menuBar().addMenu('Help')
         helpMenu.addAction(self.aboutAction)
@@ -245,6 +246,11 @@ class SmewtGui(QMainWindow):
         self.rescanCollectionAction.setStatusTip('Rescan the collection')
         self.connect(self.rescanCollectionAction,  SIGNAL('triggered()'),
                      self.mainWidget.rescanCollection)
+
+        self.clearCollectionAction = QAction('Clear collection', self)
+        self.clearCollectionAction.setStatusTip('Clear the collection')
+        self.connect(self.clearCollectionAction,  SIGNAL('triggered()'),
+                     self.mainWidget.clearCollection)
 
         # for single app to bring up the window we need a signal that can go through threads
         self.connect(self, SIGNAL('bringUp()'),

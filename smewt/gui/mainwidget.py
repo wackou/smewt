@@ -25,7 +25,7 @@ from smewt.media import Series, Episode, Movie
 from smewt.base import ActionFactory
 from smewt.base.taskmanager import Task, TaskManager
 from PyQt4.QtCore import SIGNAL, SLOT, QVariant, QProcess, QSettings, pyqtSignature
-from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QSizePolicy
+from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QSizePolicy, QMessageBox
 from PyQt4.QtWebKit import QWebView, QWebPage
 from smewt.media import series, movie, speeddial
 import logging
@@ -141,6 +141,17 @@ class MainWidget(QWidget):
 
     def rescanCollection(self):
         self.smewtd.rescanCollections()
+
+    def clearCollection(self):
+        result = QMessageBox.warning(self,
+                                     'Clear collection',
+                                     'Are you sure you want to clear the whole collection?\n' +
+                                     'Warning: this cannot be undone',
+                                     QMessageBox.Ok | QMessageBox.Cancel)
+
+        if result == QMessageBox.Ok:
+            self.smewtd.clearDB()
+            self.speedDial()
 
     def selectSeriesFolders(self):
         d = CollectionFoldersPage(self,

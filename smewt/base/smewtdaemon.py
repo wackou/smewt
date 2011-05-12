@@ -115,6 +115,12 @@ class SmewtDaemon(object):
         log.info('Saving database...')
         self.database.save(unicode(QSettings().value('database_file').toString()))
 
+    def clearDB(self):
+        log.info('Clearing database...')
+        self.database.clear()
+        self.database.save(unicode(QSettings().value('database_file').toString()))
+
+
     def quit(self):
         log.info('SmewtDaemon quitting...')
         self.taskManager.finishNow()
