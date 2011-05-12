@@ -90,6 +90,7 @@ class SmewtGui(QMainWindow):
 
         # create menubar
         mainMenu = self.menuBar().addMenu('Main')
+        mainMenu.addAction(self.logviewAction)
         mainMenu.addAction(self.clearCacheAction)
         mainMenu.addSeparator()
         mainMenu.addAction(self.quitAction)
@@ -164,6 +165,10 @@ class SmewtGui(QMainWindow):
 
 
     def createActions(self):
+        self.logviewAction = QAction('Show log', self)
+        self.connect(self.logviewAction, SIGNAL('triggered()'),
+                     self.viewLog)
+
         self.clearCacheAction = QAction('Clear internet cache', self)
         self.connect(self.clearCacheAction, SIGNAL('triggered()'),
                      self.clearCache)
@@ -275,6 +280,11 @@ class SmewtGui(QMainWindow):
         # do this now instead of at the very beginning so that our GUI can be setup faster
         cache.load(utils.smewtUserPath(smewt.APP_NAME + '.cache'))
         self.mainWidget.smewtd.updateCollections()
+
+    def viewLog(self):
+        # FIXME: this won't work in release mode
+        logview = os.path.join(os.path.split(__file__)[0], 'logview.py 2>&1 >/dev/null &')
+        os.system(logview)
 
     def clearCache(self):
         cache.clear()
