@@ -50,7 +50,7 @@ class EpisodeFilename(GraphAction):
 
         # put the result of guessit in a form that smewt understands
         series = query.Series(title = episodeMetadata.pop('series'))
-        episode = query.Episode(confidence = averageConfidence, series = series, **episodeMetadata)
+        episode = query.Episode(allow_incomplete = True, confidence = averageConfidence, series = series, **episodeMetadata)
 
         result = foundMetadata(query, episode)
         #result.display_graph()

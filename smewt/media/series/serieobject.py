@@ -34,6 +34,9 @@ class Series(Metadata):
 
     #converters = { 'episodeList': lambda x:x } #parseEpisodeList }
 
+    def niceString(self):
+        return 'series %s' % self.title
+
 
 class Episode(Metadata):
 
@@ -52,4 +55,7 @@ class Episode(Metadata):
     unique = [ 'series', 'season', 'episodeNumber' ]
 
     converters = {}
+
+    def niceString(self):
+        return 'episode %dx%02d of %s' % (self.season, self.episodeNumber, self.series.niceString())
 

@@ -17,11 +17,14 @@ poster = pathToUrl(movie.loresImage)
 def getAll(prop):
     return ', '.join(movie.get(prop) or [])
 
+year = movie.get('year', '')
+rating = movie.get('rating', '')
 director = getAll('director')
 writer = getAll('writer')
 genres = getAll('genres')
-englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': movieName, 'language': 'en' })
-frenchSubsLink = SmewtUrl('action', 'getsubtitles', { 'title': movieName, 'language': 'fr' })
+englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'movie', 'title': movieName, 'language': 'en' })
+frenchSubsLink  = SmewtUrl('action', 'getsubtitles', { 'type': 'movie', 'title': movieName, 'language': 'fr' })
+spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'movie', 'title': movieName, 'language': 'es' })
 
 playLink = None
 files = []
@@ -115,22 +118,22 @@ qtitle = movie.title.replace('\'', '\\\'')
   <h1>$movieName</h1>
 
 #if movieName != 'Unknown':
-  <!--
-  <a href="$englishSubsLink">Get missing English subtitles</a>
-  <a href="$frenchSubsLink">Get missing French subtitles</a>
-  -->
   #if playLink:
     <a href="$playLink">Play Movie</a>
     #for s in subtitles
        <a href="$s.url"><img src="file://$s.languageImage" /></a>
     #end for
   #end if
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="$englishSubsLink">Get missing English subtitles</a>
+  <a href="$frenchSubsLink">Get missing French subtitles</a>
+  <a href="$spanishSubsLink">Get missing Spanish subtitles</a>
 #end if
 </div>
 
 #if movieName == 'Unknown':
 <p>&nbsp;</p>
-  #for f, url in [ (f, SmewtUrl('action', 'play', { 'filename1': f.filename })) for f in movie.get('files', []) ]:
+  #for f, url in [ (f, SmewtUrl('action', 'play', { 'filename1': f.filename })) for f in tolist(movie.get('files')) ]:
 
     <div class="singlefile"><a href="$url"><i>$f.filename</i></a></div>
   #end for
@@ -141,8 +144,8 @@ qtitle = movie.title.replace('\'', '\\\'')
 <div class="tabber">
   <div class="tabbertab">
     <h2>Overview</h2>
-    <p><b>year:</b> $movie.year</p>
-    <p><b>rating:</b> $movie.rating</p>
+    <p><b>year:</b> $year</p>
+    <p><b>rating:</b> $rating</p>
     <p><b>director:</b> $director</p>
     <p><b>writer:</b> $writer</p>
     <p><b>genres:</b> $genres</p>

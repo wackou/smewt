@@ -18,6 +18,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import sys
+print sys.path
+
 from smewttest import *
 import glob
 
@@ -43,6 +46,10 @@ tests = '''
     title: Sin City
     year: 2005
 
+Battle Royale (2000)/Battle.Royale.(Batoru.Rowaiaru).(2000).(Special.Edition).CD1of2.DVDRiP.XviD-[ZeaL].avi:
+    title: Battle Royale
+    year: 2000
+
 /data/Movies/Borat (2006)/Borat.(2006).R5.PROPER.REPACK.DVDRip.XviD-PUKKA.avi:
     title: "Borat: Cultural Learnings of America for Make Benefit Glorious Nation of Kazakhstan"
     year: 2006
@@ -54,10 +61,6 @@ tests = '''
 Butch Cassidy and the Sundance Kid (1969)/Butch_Cassidy_And_The_Sundance_Kid_(1969).avi:
     title: Butch Cassidy and the Sundance Kid
     year: 1969
-
-Brazil (1985)/Brazil_Criterion_Edition_(1985).CD1.avi:
-    title: Brazil
-    year: 1985
 
 Batman Begins (2005)/Batman Begins.2005.HDDVDRIP.720p.AC3.5.1.x264-Audiofixed.mkv:
     title: Batman Begins
@@ -87,10 +90,6 @@ Futurama - Into The Wild Green Yonder (2009)/Futurama.Into.The.Wild.Green.Yonder
     title: "Futurama: Into the Wild Green Yonder"
     year: 2009
 
-Battle Royale (2000)/Battle.Royale.(Batoru.Rowaiaru).(2000).(Special.Edition).CD1of2.DVDRiP.XviD-[ZeaL].avi:
-    title: Battle Royale
-    year: 2000
-
 Dude Where's My Car? (2000)/Dude.Where's.My.Car.(2000).BDRip.720p.DTS.X264-HiS@SiLUHD.mkv:
     title: Dude, Where’s My Car?
     year: 2000
@@ -103,6 +102,10 @@ Comme une Image (2004)/Comme.Une.Image.FRENCH.DVDRiP.XViD-NTK.par-www.divx-overn
 
 
 failtests = '''
+Brazil (1985)/Brazil_Criterion_Edition_(1985).CD1.avi:
+    title: Brazil
+    year: 1985
+
 Chat noir, chat blanc (1998)/Chat noir, Chat blanc - Emir Kusturica (VO - VF - sub FR - Chapters).mkv:
     title: Chat noir, chat blanc
     year: 1998

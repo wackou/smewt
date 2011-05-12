@@ -20,6 +20,7 @@
 
 from smewt.base import GraphAction, Media, Metadata, SmewtException
 from smewt.base.mediaobject import foundMetadata
+from smewt.base.utils import tolist
 from smewt.media import Movie
 from smewt.guessers.guesser import Guesser
 from guessit.movie import guess_movie_filename
@@ -47,12 +48,18 @@ class MovieFilename(GraphAction):
 
         movieMetadata = guess_movie_filename(media.filename)
 
+        # FIXME: this is a temporary hack waiting for the pygoo and ontology refactoring
+        if len(tolist(movieMetadata.get('language', None))) > 1:
+            movieMetadata['language'] = movieMetadata['language'][0]
+
         averageConfidence = sum(movieMetadata.confidence(prop) for prop in movieMetadata) / len(movieMetadata)
 
         # put the result of guessit in a form that smewt understands
         movie = query.Movie(confidence = averageConfidence, **movieMetadata)
 
-        log.debug('Found filename information from %s: %s' % (media.filename, movie))
+        msg = u'Found filename information from %s:' % media.filename
+        msg += str(movie).decode('utf-8')
+        log.debug(msg)
 
         result = foundMetadata(query, movie)
         #result.display_graph()

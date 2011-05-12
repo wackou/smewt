@@ -31,6 +31,7 @@ class ImportTask(Task):
         self.collection = collection
         self.taggerType = taggerType
         self.filename = filename
+        self.description = 'Importing %s' % filename
 
     def perform(self):
         query = MemoryObjectGraph()

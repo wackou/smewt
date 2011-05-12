@@ -919,8 +919,10 @@ def main():
     app.exec_()
 
 if __name__ == '__main__':
+    '''
     root = logging.getLogger()
     h = logging.FileHandler('logview.log', 'w')
     root.addHandler(h)
     root.setLevel(logging.DEBUG)
+    '''
     main()
