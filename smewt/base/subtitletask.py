@@ -46,6 +46,7 @@ class SubtitleTask(Task):
         self.language = language
         self.subfile = subfile
         self.force = force
+        self.description = 'Downloading subtitle for %s' % metadata.niceString()
 
         log.info('Creating SubtitleTask for %s' % metadata)
 

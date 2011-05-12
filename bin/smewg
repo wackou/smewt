@@ -66,11 +66,13 @@ class StatusWidget(QWidget):
         layout.addStretch()
 
         self.progressBar = QProgressBar()
-
         layout.addWidget(self.progressBar)
 
+        # don't show progess bar initially
+        self.progressBar.hide()
+
         self.setLayout(layout)
-        return
+
 
 class SmewtGui(QMainWindow):
 
@@ -155,10 +157,11 @@ class SmewtGui(QMainWindow):
         self.setCentralWidget(self.tabWidget)
 
         self.statusWidget = StatusWidget()
-        self.statusBar().addPermanentWidget(self.statusWidget)
-
+        self.statusBar().addPermanentWidget(self.statusWidget, 0)
 
         self.mainWidget.smewtd.taskManager.progressChanged.connect(self.progressChanged)
+        self.mainWidget.smewtd.taskManager.displayStatusBar.connect(self.displayStatusBar)
+
 
     def createActions(self):
         self.clearCacheAction = QAction('Clear internet cache', self)
@@ -344,17 +347,23 @@ class SmewtGui(QMainWindow):
         self.hide()
         event.ignore()
 
-    def progressChanged(self,  tagged,  total):
+    def progressChanged(self, tagged, total):
         from threading import current_thread
         log.debug('Received signal in thread %d' % current_thread().ident)
 
         if total == 0:
             log.debug('Resetting progress bar')
             self.statusWidget.progressBar.reset()
+            self.statusWidget.progressBar.hide()
+            self.statusBar().clearMessage()
         else:
             log.debug('Setting progress bar to %d/%d' % (tagged, total))
             self.statusWidget.progressBar.setMaximum(total)
             self.statusWidget.progressBar.setValue(tagged)
+            self.statusWidget.progressBar.show()
+
+    def displayStatusBar(self, msg):
+        self.statusBar().showMessage(msg, 60000)
 
 
     def about(self):

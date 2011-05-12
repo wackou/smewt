@@ -49,6 +49,9 @@ class Metadata(BaseObject):
 
     valid = []
 
+    def niceString(self):
+        return str(self)
+
 
 class Media(BaseObject):
     schema = { 'filename': unicode,
@@ -80,6 +83,9 @@ class Media(BaseObject):
             if ext in exts:
                 return name
         return 'unknown type'
+
+    def niceString(self):
+        return str(self)
 
 
 def foundMetadata(query, result, link = True):

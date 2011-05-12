@@ -55,6 +55,12 @@ class ActionFactory(Singleton):
         if surl.actionType == 'play':
             # FIXME: this should be handled properly with media player plugins
 
+            # play action should be a list of (Metadata, sub), where sub is possibly None
+            # then we would look into the available graphs where such a Metadata has files,
+            # and choose the one on the fastest media (ie: local before nfs before tcp)
+            # it should also choose subtitles the same way, so we could even imagine reading
+            # the video from one location and the subs from another
+
             # find list of all files to be played
             args = []
             nfile = 1
