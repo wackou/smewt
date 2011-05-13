@@ -44,6 +44,7 @@ smewg = open('bin/smewg').read()
 
 #smewg = re.sub('\nMAIN_LOGGING_LEVEL =.*', '\nMAIN_LOGGING_LEVEL = logging.WARNING', smewg)
 smewg = re.sub('\nMAIN_LOGGING_LEVEL =.*', '\nMAIN_LOGGING_LEVEL = logging.INFO', smewg)
+smewg = re.sub('\nLOGGING_TCP_PORT =.*', '\nLOGGING_TCP_PORT = 9020', smewg)
 
 logfunc = [ l for l in open('utils/slogging.py') if l[0] != '#' ]
 smewg = smewg.replace('''from utils.slogging import setupLogging

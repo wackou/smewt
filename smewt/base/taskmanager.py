@@ -58,6 +58,7 @@ def worker(taskManager):
 
             # TODO: need to have timeout on the tasks, eg: 5 seconds
             # TODO: need to be able to stop task immediately
+            taskManager.displayStatusBar.emit(task.description)
             task.perform()
 
         except Exception, e:
@@ -76,6 +77,7 @@ class TaskManager(QtCore.QObject):
 
     The TaskManager can be controlled asynchronously, as it runs the tasks in a separate thread."""
 
+    displayStatusBar = QtCore.pyqtSignal(QtCore.QString)
     progressChanged = QtCore.pyqtSignal(int, int)
 
     def __init__(self):

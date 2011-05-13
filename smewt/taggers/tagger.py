@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import Media
+from smewt.base import Media, Metadata
 
 class Tagger(object):
     def __init__(self):
@@ -28,3 +28,4 @@ class Tagger(object):
     def cleanup(self, result):
         for o in result.find_all(Media):
             o.matches = []
+            del o.confidence

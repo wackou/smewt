@@ -107,6 +107,7 @@ def smewtUserDirectoryUrl(*args):
     return pathToUrl(smewtUserDirectory(*args))
 
 
+# FIXME: once we depend on GuessIt, import this function directly from there
 def splitPath(path):
     result = []
     while True:
@@ -200,7 +201,7 @@ def dirwalk(directory, validFiles = ['*'], recursive = True):
 
     Patterns can either be strings used for globbing or filter functions that return
     True if the file needs to be considered."""
-    for root, dirs, files in os.walk(directory):
+    for root, dirs, files in os.walk(directory, followlinks = True):
         for file in files:
             filename = os.path.join(root, file)
             if matchFile(filename, validFiles):

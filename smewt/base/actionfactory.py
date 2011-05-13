@@ -20,9 +20,10 @@
 
 from PyQt4.QtCore import SIGNAL, QObject
 from smewtexception import SmewtException
+from smewt.base.utils import tolist, toresult
 from mediaobject import Media, Metadata
 from subtitletask import SubtitleTask
-from smewt.media import Series
+from smewt.media import Series, Subtitle
 import os, sys, time, logging
 
 
@@ -41,17 +42,24 @@ class Singleton(object):
 # by tvsubtitles, opensubtitles, etc...
 class ActionFactory(Singleton):
     def __init__(self):
-        self.subtitleProviders = []
         self.registerPlugins()
 
     def registerPlugins(self):
+
         # subs += opensubtitles
-        from smewt.media.subtitle.subtitle_tvsubtitles_provider import TVSubtitlesProvider
-        self.subtitleProviders.append(TVSubtitlesProvider())
+        # player += smplayer vlc open
+        # ...
+        pass
 
     def dispatch(self, mainWidget, surl):
         if surl.actionType == 'play':
             # FIXME: this should be handled properly with media player plugins
+
+            # play action should be a list of (Metadata, sub), where sub is possibly None
+            # then we would look into the available graphs where such a Metadata has files,
+            # and choose the one on the fastest media (ie: local before nfs before tcp)
+            # it should also choose subtitles the same way, so we could even imagine reading
+            # the video from one location and the subs from another
 
             # find list of all files to be played
             args = []
@@ -99,12 +107,58 @@ class ActionFactory(Singleton):
             mainWidget.externalProcess.startDetached(action, args)
 
         elif surl.actionType == 'getsubtitles':
-            title = surl.args['title']
-            language = surl.args['language']
+            if surl.args['type'] == 'episode':
+                title = surl.args['title']
+                language = surl.args['language']
 
-            for provider in self.subtitleProviders:
-                subTask = SubtitleTask(mainWidget.smewtd.database, provider, title, language)
-                mainWidget.smewtd.taskManager.add(subTask)
+                db = mainWidget.smewtd.database
+                series = db.find_one('Series', title = title)
+
+                if 'season' in surl.args:
+                    seriesEpisodes = set(ep for ep in tolist(series.episodes) if ep.season == int(surl.args['season']))
+                else:
+                    seriesEpisodes = set(tolist(series.episodes))
+
+                currentSubs = db.find_all(node_type = Subtitle,
+                                          # FIXME: we shouldn't have to go to the node, but if we don't, the valid_node lambda doesn't return anything...
+                                          valid_node = lambda x: toresult(list(x.metadata)) in set(ep.node for ep in seriesEpisodes),
+                                          language = language)
+
+
+                alreadyGood = set(s.metadata for s in currentSubs)
+
+                episodes = seriesEpisodes - alreadyGood
+
+                if episodes:
+                    for ep in episodes:
+                        subtask = SubtitleTask(ep, language)
+                        mainWidget.smewtd.taskManager.add(subtask)
+                else:
+                    from guessit.language import _language_map as lmap
+                    log.info('All videos already have %s subtitles!' % lmap[language])
+
+            elif surl.args['type'] == 'movie':
+                title = surl.args['title']
+                language = surl.args['language']
+
+                db = mainWidget.smewtd.database
+                movie = db.find_one('Movie', title = title)
+
+                # check if we already have it
+                for sub in tolist(movie.get('subtitles')):
+                    if sub.language == language:
+                        from guessit.language import _language_map as lmap
+                        log.info('Movie already has a %s subtitle' % lmap[language])
+                        return
+
+                subtask = SubtitleTask(movie, language)
+                mainWidget.smewtd.taskManager.add(subtask)
+
+
+            else:
+                log.error('Don\'t know how to fetch subtitles for type: %s' % surl.args['type'])
+
+
 
         else:
             raise SmewtException('Unknown action type: %s' % surl.actionType)

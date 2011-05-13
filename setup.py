@@ -45,17 +45,20 @@ if sys.platform == 'linux2':
     class SmewtInstall(install):
         def run(self):
             install.run(self)
-            print 'Processing triggers for menu ...'
-            subprocess.call(['xdg-desktop-menu', 'install', '/usr/share/applications/falafelton-smewt.desktop'])
-            subprocess.call(['update-menus'])
-
-    DATA_FILES = [('/usr/share/applications' , [ 'packaging/linux/falafelton-smewt.desktop' ]),
-                  ('/usr/share/icons/hicolor/scalable/apps' , [ 'smewt/icons/smewt.svg' ])]
+            print 'Processing triggers for menu...'
+            subprocess.call(['xdg-desktop-menu', 'install', 'packaging/linux/falafelton-smewt.desktop'])
+            subprocess.call(['xdg-icon-resource', 'install', '--size', '128', 'smewt/icons/falafelton-smewt_128x128.png', 'falafelton-smewt'])
+            if os.path.exists('/usr/bin/update-menus'):
+                # Debian
+                subprocess.call(['update-menus'])
+            elif os.path.exists('/usr/bin/update-desktop-database'):
+                # Ubuntu
+                subprocess.call(['update-desktop-database'])
 
     # only try install icon and menu entry if we are root
+    # (ie: do not do it when we install stuff in a virtualenv)
     if os.geteuid() == 0:
-        args.update(dict(cmdclass = { 'install': SmewtInstall },
-                         data_files = DATA_FILES))
+        args.update(dict(cmdclass = { 'install': SmewtInstall }))
 
 
 if sys.platform == 'darwin':

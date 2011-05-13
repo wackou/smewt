@@ -24,8 +24,7 @@ from smewt.base.textutils import toUtf8
 from smewt.media import Episode, Series, Subtitle
 from smewt.taggers.tagger import Tagger
 from smewt.guessers import *
-from smewt.solvers import *
-from pygoo import MemoryObjectGraph
+from smewt.solvers import SimpleSolver
 import logging
 
 log = logging.getLogger('smewt.taggers.episodetagger')
@@ -34,7 +33,8 @@ class EpisodeTagger(Tagger):
 
     def perform(self, query):
         log.info('EpisodeTagger tagging episode: %s' % toUtf8(query.find_one(Media).filename))
-        filenameMetadata = SolvingChain(EpisodeFilename(), MergeSolver(Episode)).solve(query)
+        filenameMetadata = SolvingChain(EpisodeFilename()).solve(query)
+
         log.info('EpisodeTagger found info from filename: %s' % filenameMetadata.find_one(Episode))
         result = SolvingChain(EpisodeTVDB(), SimpleSolver(Episode)).solve(filenameMetadata)
 

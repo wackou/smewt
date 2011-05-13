@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import Media, Metadata
+from smewt.base import Media, Metadata, SmewtException
 from smewt.solvers.solver import Solver
 from smewt.base.textutils import levenshtein
 import logging
@@ -69,14 +69,15 @@ class SimpleSolver(Solver):
     def perform(self, query):
         self.checkValid(query)
 
-        #query.display_graph()
+        #query.display_graph('SimpleSolver query')
 
         metadata = query.find_all(node_type = self.type)
 
         # 1- get a node that looks like it could be our potential candidate
         baseGuess, confidence = None, -1
         for md in metadata:
-            if md.is_unique() and md.get('confidence') > confidence:
+            #if md.is_unique() and md.get('confidence') > confidence:
+            if md.get('confidence') > confidence:
                 baseGuess, confidence = md, md.get('confidence')
 
         if baseGuess is None:

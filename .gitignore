@@ -1,6 +1,7 @@
 *.pyc
 Smewg.e4q
 Smewg.e4t
+logview.log
 
 .waf-*
 .ropeproject

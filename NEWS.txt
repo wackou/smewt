@@ -6,6 +6,24 @@
 News
 ====
 
+0.?
+-----
+
+*Release date: ???*
+
+* Fixed size and position of Smewt window on first launch on weird geometry
+  setups (ex: dual-screen, very small screens, ...)
+
+
+0.2.2
+-----
+
+*Release date: 4-Mar-2011*
+
+* Fixed installing Smewt on Ubuntu; there were issues with the menu
+  entries before
+
+
 0.2.1
 -----
 

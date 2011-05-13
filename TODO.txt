@@ -1,11 +1,170 @@
 
-- delete old stuff
+FEATURES:
+---------
+
+- status bar should show the task currently run, ie which file is being imported or which subtitle is being downloaded
+- generate the thumbnails for the speeddial from the actual views content (ie: not some pre-generated thumbnails)
+- tasks should be interruptible (so that exit works instantly instead of waiting for current task to complete)
 - player detection in windows/linux
+
+IDEAS:
+------
+
+- for the UI for sharing files:
+  when browsing a remote collection, the user should see an "import" button on a movie or episode view which would
+  then add the metadata information immediately to our collection graph. The media object would have a location
+  attribute which is the URL where it can be accessed. We can then have a background thread that scans for those
+  files which are on remote collections (ie: remote share, external hard disk, friend's files, etc...) and import
+  them automatically (actually, we could even have a full-fledged gtalk/jingle client that runs as a separate
+  process due to its C++ nature (bindings would be tedious and process separation is good))
+
+  We can also have an emule client which is able to fetch ed2k:// urls.
+
+  -> downloader plugins register themselves (ed2k, jingle/gtalk, http, ...) specifying which URL type(s) they
+     support (smewt://friend, smewt://nfsshare, ed2k://, http://, ...)
+
+  -> a background thread has general download rules that specify which files should be duplicated in the graph
+     (ed2k:// -> file://) and scans for files to copy and generate a download task for it using the adequate
+     downloader. Specific events can also be generated explicitly (nfsshare:// -> file://, for offline viewing)
+     by the user. A download task marks the media object as being downloaded right now, which allows to restart
+     the downloader plugin on it automatically between sessions.
+
+  -> the downloader plugins then process the list of files until the smewt daemon tells it to.
+
+  -> a specialized downloader plugin would be one which deals with external processes, it should define an API to
+     communicate with the main smewt process.
+
+  -> actually, smewt defines 2 types of download plugin: thread-based ones and process-based ones: ones are
+     used if the plugin is written in python, as the API is much simpler (ie: pure python) while the others define
+     a socket-based API (eg: Json-RPC) which allow to have an external process (more isolation, better scheduling,
+     allows different languages (eg: C++/Qt) and better shutdown sequence (eg: send a shutdown message to the
+     download plugin instead of killing its thread)
+
+     those plugins need to define an API for signalling events back to the main thread in the smewg client, eg:
+     download progress, download finished, error signalling (no more space, file already downloaded, source
+     unavailable (friend disconnected), ... All the methods that send events to the plugin (PyQt signal for thread
+     api, json-rpc calls for process api) should be slots in the python/Qt API.
+
+  -> a downloader plugin needs to be instantiated before it can be used to submit jobs. This is the moment where
+     it checks if an external process is already available or if we should start up one now.
+     It provides a "isActive()" method that returns whether the plugin could instantiate itself.
+     When "shutdown()" is called, it sends a signal to the process to terminate itself, but does not wait for
+     the complete shutdown of the external process (it should wait for a shutdown ACK, though)
+
+  -> same as the metadata importer background threads, we can have a media importer background thread that generates
+     download tasks (which talk directly to the download plugins) in the TaskManager
+
+
+
+------
+
+Every media file on a user's HDD is an object in a graph. There are metadata objects coming from other sources
+(eg: tvdb, ...) which a user can link to his media objects.
+An ImportTask then consists in duplicating the metadata objects from the external source to one's own graph.
+This is also the way we browse a friend's collection
+
+SmewtDaemon maintains a list of active graphs known to it at a given moment (ie: main user's collection, online
+friends, MG guesser, ...) and allows to copy elements between those graphs (actually: from the other graphs into the
+user graph: importing MD from a guessed collection to one's own, importing media objects from friends's collection
+(including the change of url from file:// to smewt://friend/ and the state of media file to SHOULD_START_DOWNLOAD)
+or from a tvu.org plugin (when importing from tvu, we also generate MD import task, which will complete first but
+so that smewt is already able to show info about that movie/series while it is still downloading. We can even show
+the status and download progress.
+-> global data graph
+
+A media file needs to have 1 id hash (eg: skein) but can have multiple location files (ie: file://, http://, ...)
+It has a state, which can be either: INACTIVE, SHOULD_COPY(dest) (using whichever source is available and assigned to
+it (ie: the downloader plugin)), IS_COPYING (reset between sessions to SHOULD_COPY), SHOULD_IMPORT_METADATA,
+IS_IMPORTING_METADATA (reset between sessions to SHOULD_COPY),
+
+A subtitleTask consists in duplicating the SubDL('http://abc.srt') external media in one's own graph.
+An friend/emule download consists in duplicating the smewt:// or ed2k:// URL in one's own graph
+
+----------------
+
+tvu.org.ru plugin that is a view on a http:// url, and scans the page and embeds a qt widget or some jquery thing to
+download the corresponding rss with ed2k:// file (ie: youtube downloader but for tvu.org.ru)
+
+in the UI, there should always be a combobox allowing to choose from which currently loaded graphs (collections) we
+should display the data (ie: All, Main, friend, ...)
+-> for media in Main graph, display a play button
+-> for media in other graphs, display an import button (or an import progress display if import is currently underway)
+
+------------------
+
+Notes when merging the task manager branch:
+- we need to remove gui tasks from there, as the task manager belongs to the headless smewt daemon.
+  the changes in the collection should be notified using signals from the collection itself rather than by tasks
+  informing of their completion. (thus we can listen only to signals that concern the view that is currently active)
+- the task manager needs to also deal with download tasks, which cannot be expected to be synchronous (it is ok to wait
+  10 seconds for downloading a subtitle but irrealistic to wait 10 hours for a file download)
+- as asynchronous tasks then take very little time to submit, they should be treated with priority (we can submit right
+  away to emule without waiting for the 200 metadata import tasks to finish)
+
+
+-> there are 2 types of tasks for the task manager:
+  - synchronous, which have a single process() method that is called by the TM
+  - asynchronous, which return immediately but signal when they are finished. This signal is only intended for the TM
+    bookkeeping, views should be based on graph status update rather.
+
+class RemoteGraph(MemoryObjectGraph):
+    """a graph which can update itself with the data from a remote source"""
+
+list of databases locally loadable:
+Smewt.database
+friend/wackou@gmail.com.database
+friend/...
+external_hdd/my_hdd.database
+
+(collections that smewtd can open)
+
+SmewtDaemon tasks:
+- maintain the DB in an available state (ie: the user's main collection)
+- maintain a list of currently open graphs (eg: main, external hdd, friends, ...) and allow some operations on them
+  in a global way (eg: a semwtd.db.find_all() that works on all graphs combined)
+- maintain the TaskManager running
+- maintain the import media and import metadata background checker threads that add tasks in the TaskManager if required
+- respond to queries for views
+
+----------------------------------
+
+- taskmanager, smewtdaemon refactoring, and plugins capability
+- pygoo refactoring
+
+
+- when importing a file in the collection, run lots of hash possible (sha1, md5, ed2k, ...) in parallel, so we only have to read the file once
+
+note for pygoo:
+- make sure when we assign a variable which is not in the schema, that it is either of a basetype or an object that lives in a graph (ie: BaseObject)
+
+
+periscope shoudl have a cachedmethod that is nicely available to the plugins
+
+TODO: need to move the release data to the media object (right now it is in the metadata object)
+
+- for logview: it would be nice to have
+  - multiline cells (ie: stack trace)
+  - load/save to be able to send bug reports
+
+
+
+
+
+
+BUGFIXES:
+---------
+
 - collection folder is ugly slow on windows (some only?)
 - taskbar icon doesn't appear in all windows (confirmed?)
-- tasks should be interruptible (so that exit works instantly instead of waiting for current task to complete)
+- moviefilename and episodefilename should add some MD to media, not metadata (eg: guessit.video info)
+- in Tagger.cleanup(), the check to matches should be unnecesary, we shouldn't use that anymore
 
-- clean collection (ie: remove files which don't exist anymore)
+
+MISCELLANEOUS:
+--------------
+
+- delete old stuff
+- clean python imports (ie: no 'from PyQt4.QtCore import *')
 - make smewt pylint and pychecker (http://www.blog.pythonlibrary.org/2011/01/26/pychecker-python-code-analysis/) compliant, as much as possible
 
 
@@ -20,4 +179,3 @@
 
 
 
-- clean python imports (ie: no 'from PyQt4.QtCore import *')
