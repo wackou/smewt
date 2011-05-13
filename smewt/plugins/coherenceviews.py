@@ -261,8 +261,8 @@ def groupByProperty(items, prop, getProperty = None, default = 'Other'):
   return sorted(groups.items(), key=lambda x: x[0] if x[0] is not default else LAST_KEY)
 
 def is_available(x):
-  return any([os.path.isfile(f.filename) for f in tolist(x.files)])
-
+  return any([os.path.isfile(f.filename) for f in tolist(x.get('files', []))])
+    
 def moviesByProperty(store, database, prop, parent_id=-1, only_available=True, getProperty = None, default='Other'):
   moviesItems = lambda db: tolist(db.find_all('Movie'))
   if only_available:
@@ -392,8 +392,8 @@ if __name__ == '__main__':
 
   store = FakeStore()
   
-  advSeries(store, database)
-  allSeries(store, database)
+  #advSeries(store, database)
+  #allSeries(store, database)
   allMovies(store, database)
   moviesByProperty(store, database, 'genres')
   moviesByProperty(store, database, 'director')

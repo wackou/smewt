@@ -62,15 +62,22 @@ class MediaStore(BackendStore):
 
         self.root_container = Container(self, self.name, -1)
         
+        self.warning("Adding all series")
         self.add_container('All series', lambda pid: advSeries(self, self.smewt_db, parent_id=pid))
+        self.warning("Adding all movies")
         self.add_container('All movies', lambda pid: allMovies(self, self.smewt_db, parent_id=pid))
+        self.warning("Adding movies by genre")
         self.add_container('Movies by genre', lambda pid: moviesByProperty(self, self.smewt_db, 'genres', parent_id=pid))
+        self.warning("Adding movies by year")
         self.add_container('Movies by year', lambda pid: moviesByProperty(self, self.smewt_db, 'year', getProperty = lambda x: [x.get('year', None)], parent_id=pid))
+        self.warning("Adding movies by director")
         self.add_container('Movies by director', lambda pid: moviesByProperty(self, self.smewt_db, 'director', parent_id=pid))
+        self.warning("Adding movies by cast")
         self.add_container('Movies by cast', lambda pid: moviesByProperty(self, self.smewt_db, 'cast', getProperty = lambda x: [act.split('--')[0] for act in x.get('cast', [])], parent_id=pid))
         
         louie.send('Coherence.UPnP.Backend.init_completed', None, backend=self)
-
+        self.warning("End of __init__")
+  
     def add_container(self, name, childrenMethod):
         cont = Container(self, name, self.root_container.get_id())
         cont.add_children(childrenMethod(cont.id))
