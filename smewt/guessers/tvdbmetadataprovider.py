@@ -25,7 +25,8 @@ from smewt.base import textutils
 from smewt.base.utils import smewtDirectory, smewtUserDirectory
 from pygoo import MemoryObjectGraph
 
-from PyQt4.QtCore import SIGNAL, QObject, QUrl
+from PyQt4.QtCore import SIGNAL, QObject, QUrl, Qt
+from PyQt4.QtGui import QImage
 
 import os, sys, re, logging
 from urllib2 import urlopen
@@ -111,40 +112,39 @@ class TVDBMetadataProvider(object):
 
         return result
 
+    def savePoster(self, posterUrl, localId):
+        imageDir = smewtUserDirectory('images')
+
+        hiresFilename = os.path.join(imageDir, '%s_hires.jpg' % localId)
+        open(hiresFilename, 'wb').write(urlopen(posterUrl).read())
+
+        # lores = 80px high
+        loresFilename = os.path.join(imageDir, '%s_lores.jpg' % localId)
+        image = QImage()
+        image.load(hiresFilename)
+        image.scaledToHeight(80, Qt.SmoothTransformation).save(loresFilename)
+
+        return loresFilename, hiresFilename
 
     @cachedmethod
     def getSeriesPoster(self, tvdbID):
-        """Return the low- and high-resolution posters (if available) of an tvdb object."""
-        imageDir = smewtUserDirectory('images')
+        """Return the low- and high-resolution posters of a tvdb object."""
         noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
 
-        loresFilename, hiresFilename = None, None
-
         urls = self.tvdb.get_show_image_choices(tvdbID)
-        posters = [url for url in urls if url[1]=='poster']
-        if len(posters)>0:
-            loresURL = posters[0][0]
-            loresFilename = os.path.join(imageDir, '%s_lores.jpg' % tvdbID)
-            open(loresFilename, 'wb').write(urlopen(loresURL).read())
+        posters = [url for url in urls if url[1] == 'poster']
+        if posters:
+            return self.savePoster(posters[0][0], 'series_%s' % tvdbID)
 
-            if len(posters)>1:
-              hiresURL = posters[1][0]
-              hiresFilename = os.path.join(imageDir, '%s_hires.jpg' % tvdbID)
-              open(hiresFilename, 'wb').write(urlopen(hiresURL).read())
         else:
             log.warning('Could not find poster for tvdb ID %s' % tvdbID)
             return (noposter, noposter)
-
-        return (loresFilename, hiresFilename)
 
 
     @cachedmethod
     def getMoviePoster(self, movieId):
         """Return the low- and high-resolution posters (if available) of an tvdb object."""
-        imageDir = smewtUserDirectory('images')
         noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
-
-        loresFilename, hiresFilename = None, None
 
         m = self.tmdb.getMovieInfo(movieId)
 
@@ -156,20 +156,13 @@ class TVDBMetadataProvider(object):
                       posters.append(value)
 
 
-        if len(posters)>0:
-            loresURL = posters[0]
-            loresFilename = os.path.join(imageDir, '%s_lores.jpg' % movieId)
-            open(loresFilename, 'wb').write(urlopen(loresURL).read())
+        if posters:
+            return self.savePoster(posters[0], 'movie_%s' % movieId)
 
-            if len(posters)>1:
-              hiresURL = posters[1]
-              hiresFilename = os.path.join(imageDir, '%s_hires.jpg' % movieId)
-              open(hiresFilename, 'wb').write(urlopen(hiresURL).read())
         else:
             log.warning('Could not find poster for tmdb ID %s' % movieId)
             return (noposter, noposter)
 
-        return (loresFilename, hiresFilename)
 
 
     def startEpisode(self, episode):

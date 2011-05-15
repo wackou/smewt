@@ -88,9 +88,9 @@ def smewtUserPath(*args):
     userdir = unicode(settings.value('user_dir').toString())
     if not userdir:
         if sys.platform == 'win32':
-            userdir = os.path.join(os.environ['USERPROFILE'], 'Application Data', 'Smewt')
+            userdir = os.path.join(os.environ['USERPROFILE'], 'Application Data', smewt.APP_NAME)
         else:
-            userdir = os.path.dirname(unicode(settings.fileName()))
+            userdir = os.path.join(os.path.dirname(unicode(settings.fileName())), smewt.APP_NAME)
 
         settings.setValue('user_dir',  QVariant(userdir))
 

@@ -25,7 +25,7 @@ from smewt.media import Series, Episode, Movie
 from smewt.base import ActionFactory
 from smewt.base.taskmanager import Task, TaskManager
 from PyQt4.QtCore import SIGNAL, SLOT, QVariant, QProcess, QSettings, pyqtSignature
-from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QSizePolicy, QMessageBox
+from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QSizePolicy, QMessageBox, QImage, QPainter, QApplication
 from PyQt4.QtWebKit import QWebView, QWebPage
 from smewt.media import series, movie, speeddial
 import logging
@@ -169,32 +169,73 @@ class MainWidget(QWidget):
     def mergeCollection(self, result):
         self.collection += result
 
+
     def refreshCollectionView(self):
         surl = self.smewtUrl
 
+        html = self.renderSmewtUrl(self.smewtUrl)
+        self.collectionView.page().mainFrame().setHtml(html)
+
+        # FIXME: looks like it isn't working, like for refreshing speeddial after thumbnails have been regenerated
+        #self.collectionView.triggerPageAction(QWebPage.ReloadAndBypassCache)
+
+        # insert listener object for objects inside the JS environment that need to
+        # interact directly with smewtd or the database (eg: toggle synopsis setting, watched checkboxes, ...)
+        self.connect(self.collectionView.page().mainFrame(), SIGNAL('javaScriptWindowObjectCleared()'),
+                     self.connectJavaScript)
+
+
+        #self.takeScreenshot().save("/tmp/smewt_screenshot.png")
+
+
+    def renderSmewtUrl(self, surl):
+        if isinstance(surl, basestring):
+            surl = SmewtUrl(url = surl)
+
+        log.debug('Rendering URL: %s' % surl)
+
         if surl.mediaType == 'speeddial':
             html = speeddial.view.render(surl, self.smewtd.database)
-            self.collectionView.page().mainFrame().setHtml(html)
 
         elif surl.mediaType == 'series':
             html = series.view.render(surl, self.smewtd.database)
-            #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
-            #print html[:4000]
-            self.collectionView.page().mainFrame().setHtml(html)
-            # insert listener object for synopsis toggle button
-            self.connect(self.collectionView.page().mainFrame(), SIGNAL('javaScriptWindowObjectCleared()'),
-                         self.connectJavaScript)
 
         elif surl.mediaType == 'movie':
             html = movie.view.render(surl,  self.smewtd.database)
-            #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
-            self.collectionView.page().mainFrame().setHtml(html)
-            # insert listener object for checkboxes inside the JS environment
-            self.connect(self.collectionView.page().mainFrame(), SIGNAL('javaScriptWindowObjectCleared()'),
-                         self.connectJavaScript)
 
         else:
             raise SmewtException('MainWidget: Invalid media type: %s' % surl.mediaType)
+
+        #open('/tmp/smewt.html',  'w').write(html.encode('utf-8'))
+        return html
+
+
+
+    def webpageScreenshot(self, html):
+        """Take a screenshot of a given html document and return it as a QImage."""
+        # see http://www.blogs.uni-osnabrueck.de/rotapken/2008/12/03/create-screenshots-of-a-web-page-using-python-and-qtwebkit/
+        size = self.size()
+        #size = self.collectionView.page().viewportSize() # seems to be wrongly initialized sometimes...
+        webpage = QWebPage()
+        webpage.setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
+        webpage.setViewportSize(size)
+        webpage.mainFrame().setHtml(html)
+
+        # need to wait for the different elements to have loaded completely
+        while QApplication.hasPendingEvents():
+            QApplication.processEvents()
+
+        image = QImage(size, QImage.Format_ARGB32)
+        painter = QPainter(image)
+        webpage.mainFrame().render(painter)
+        painter.end()
+
+        return image
+
+
+    def takeScreenshot(self):
+        return self.webpageScreenshot(self.collectionView.page().mainFrame().toHtml())
+
 
     def connectJavaScript(self):
         self.collectionView.page().mainFrame().addToJavaScriptWindowObject('mainWidget', self)
