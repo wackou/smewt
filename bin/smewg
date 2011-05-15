@@ -50,7 +50,8 @@ from PyQt4.QtGui import QApplication, QMainWindow, QWidget, QStatusBar, QProgres
 from PyQt4.QtCore import SIGNAL, QSize, Qt, QSettings, QVariant, QPoint, QSize, QObject, QTimer
 from smewt.gui import MainWidget, FeedWatchWidget, AboutDialog
 from smewt.base import cache, utils
-from smewt.base.utils import smewtDirectory
+from smewt.base.utils import smewtDirectory, smewtUserDirectory
+
 from os.path import join
 
 log = logging.getLogger('smewg')
@@ -91,6 +92,7 @@ class SmewtGui(QMainWindow):
         # create menubar
         mainMenu = self.menuBar().addMenu('Main')
         mainMenu.addAction(self.logviewAction)
+        mainMenu.addAction(self.regenerateThumbnailsAction)
         mainMenu.addAction(self.clearCacheAction)
         mainMenu.addSeparator()
         mainMenu.addAction(self.quitAction)
@@ -131,6 +133,8 @@ class SmewtGui(QMainWindow):
         settings = QSettings()
         configured = settings.value('configured').toBool()
 
+        self.checkSpeedDialThumbnails()
+
         if not configured:
             settings.setValue('configured', True)
         else:
@@ -168,6 +172,10 @@ class SmewtGui(QMainWindow):
         self.logviewAction = QAction('Show log', self)
         self.connect(self.logviewAction, SIGNAL('triggered()'),
                      self.viewLog)
+
+        self.regenerateThumbnailsAction = QAction('Refresh speed dial', self)
+        self.connect(self.regenerateThumbnailsAction, SIGNAL('triggered()'),
+                     self.regenerateSpeedDialThumbnails)
 
         self.clearCacheAction = QAction('Clear internet cache', self)
         self.connect(self.clearCacheAction, SIGNAL('triggered()'),
@@ -285,6 +293,32 @@ class SmewtGui(QMainWindow):
         # FIXME: this won't work in release mode
         logview = os.path.join(os.path.split(__file__)[0], 'logview.py 2>&1 >/dev/null &')
         os.system(logview)
+
+    thumbnails = { 'smewt://media/speeddial/': 'speeddial.png',
+                   'smewt://media/series/all': 'allseries.png',
+                   'smewt://media/movie/all':  'allmovies.png',
+                   'smewt://media/movie/recent': 'recentmovies.png',
+                   'smewt://media/series/suggestions': 'episodesuggestions.png',
+                   'smewt://media/movie/spreadsheet': 'moviespreadsheet.png',
+                   }
+
+    def regenerateSpeedDialThumbnails(self):
+        log.info('Regenerating thumbnails for the speed dial...')
+        thumbsDir = smewtUserDirectory('speeddial')
+        for url, filename in SmewtGui.thumbnails.items():
+            screenshot = self.mainWidget.webpageScreenshot(self.mainWidget.renderSmewtUrl(url))
+            screenshot.scaledToWidth(200, Qt.SmoothTransformation).save(os.path.join(thumbsDir, filename))
+
+        if self.mainWidget.smewtUrl.mediaType == 'speeddial':
+            # also refresh our view then
+            self.mainWidget.refreshCollectionView()
+
+
+    def checkSpeedDialThumbnails(self):
+        if any(not os.path.exists(os.path.join(smewtUserDirectory('speeddial'), filename)) for filename in SmewtGui.thumbnails.values()):
+            # if any single thumbnail is missing, we regenerate them all anyway
+            # could probably be optimized but is it really worth doing?
+            self.regenerateSpeedDialThumbnails()
 
     def clearCache(self):
         cache.clear()

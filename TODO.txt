@@ -158,6 +158,7 @@ BUGFIXES:
 - taskbar icon doesn't appear in all windows (confirmed?)
 - moviefilename and episodefilename should add some MD to media, not metadata (eg: guessit.video info)
 - in Tagger.cleanup(), the check to matches should be unnecesary, we shouldn't use that anymore
+- refresh speed dial recreates the thumbnails but doesn't manage to tell the view to reload by bypassing cache
 
 
 MISCELLANEOUS:

@@ -38,7 +38,7 @@ class SmewtUrl:
             url = str(url).replace('smewt://', 'http://')
             self.spath = urlparse(url)
         else:
-            raise SmewtException('SmewtUrl: you need to specify either a string url or the components of the SmewtUrl you want to build')
+            raise SmewtException('SmewtUrl: you need to specify as kwargs either a string url or the components of the SmewtUrl you want to build')
 
         # set member vars in function of url type
         self.mediaType = self.viewType = self.actionType = None

@@ -169,11 +169,16 @@ class MainWidget(QWidget):
     def mergeCollection(self, result):
         self.collection += result
 
+
     def refreshCollectionView(self):
         surl = self.smewtUrl
 
         html = self.renderSmewtUrl(self.smewtUrl)
         self.collectionView.page().mainFrame().setHtml(html)
+
+        # FIXME: looks like it isn't working, like for refreshing speeddial after thumbnails have been regenerated
+        #self.collectionView.triggerPageAction(QWebPage.ReloadAndBypassCache)
+
         # insert listener object for objects inside the JS environment that need to
         # interact directly with smewtd or the database (eg: toggle synopsis setting, watched checkboxes, ...)
         self.connect(self.collectionView.page().mainFrame(), SIGNAL('javaScriptWindowObjectCleared()'),
@@ -184,6 +189,9 @@ class MainWidget(QWidget):
 
 
     def renderSmewtUrl(self, surl):
+        if isinstance(surl, basestring):
+            surl = SmewtUrl(url = surl)
+
         log.debug('Rendering URL: %s' % surl)
 
         if surl.mediaType == 'speeddial':
@@ -206,7 +214,8 @@ class MainWidget(QWidget):
     def webpageScreenshot(self, html):
         """Take a screenshot of a given html document and return it as a QImage."""
         # see http://www.blogs.uni-osnabrueck.de/rotapken/2008/12/03/create-screenshots-of-a-web-page-using-python-and-qtwebkit/
-        size = self.collectionView.page().viewportSize()
+        size = self.size()
+        #size = self.collectionView.page().viewportSize() # seems to be wrongly initialized sometimes...
         webpage = QWebPage()
         webpage.setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
         webpage.setViewportSize(size)
