@@ -48,9 +48,18 @@ class MovieFilename(GraphAction):
 
         movieMetadata = guess_movie_info(media.filename)
 
+        for lang in ('language', 'subtitleLanguage'):
+            value = tolist(movieMetadata.get(lang))
+            if len(value) > 1:
+                movieMetadata[lang] = [ l.lng2() for l in value ]
+            elif value:
+                movieMetadata[lang] = value[0].lng2()
+
+
         # FIXME: this is a temporary hack waiting for the pygoo and ontology refactoring
         if len(tolist(movieMetadata.get('language', None))) > 1:
             movieMetadata['language'] = movieMetadata['language'][0]
+
 
         averageConfidence = sum(movieMetadata.confidence(prop) for prop in movieMetadata) / len(movieMetadata)
 
