@@ -22,7 +22,7 @@
 from smewt.base import GraphAction, Media, Metadata, SmewtException
 from smewt.base.mediaobject import foundMetadata
 from smewt.media import Episode, Series
-from guessit.episode import guess_episode_filename
+from guessit import guess_episode_info
 import logging
 
 log = logging.getLogger('smewt.guessers.episodefilename')
@@ -44,7 +44,7 @@ class EpisodeFilename(GraphAction):
 
         media = query.find_one(Media)
 
-        episodeMetadata = guess_episode_filename(media.filename)
+        episodeMetadata = guess_episode_info(media.filename)
 
         averageConfidence = sum(episodeMetadata.confidence(prop) for prop in episodeMetadata) / len(episodeMetadata)
 

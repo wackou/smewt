@@ -24,6 +24,7 @@ from smewt.base.utils import tolist, toresult
 from mediaobject import Media, Metadata
 from subtitletask import SubtitleTask
 from smewt.media import Series, Subtitle
+from guessit import Language
 import os, sys, time, logging
 
 
@@ -134,8 +135,7 @@ class ActionFactory(Singleton):
                         subtask = SubtitleTask(ep, language)
                         mainWidget.smewtd.taskManager.add(subtask)
                 else:
-                    from guessit.language import _language_map as lmap
-                    log.info('All videos already have %s subtitles!' % lmap[language])
+                    log.info('All videos already have %s subtitles!' % Language(language).english_name())
 
             elif surl.args['type'] == 'movie':
                 title = surl.args['title']
@@ -147,8 +147,7 @@ class ActionFactory(Singleton):
                 # check if we already have it
                 for sub in tolist(movie.get('subtitles')):
                     if sub.language == language:
-                        from guessit.language import _language_map as lmap
-                        log.info('Movie already has a %s subtitle' % lmap[language])
+                        log.info('Movie already has a %s subtitle' % Language(language).english_name())
                         return
 
                 subtask = SubtitleTask(movie, language)

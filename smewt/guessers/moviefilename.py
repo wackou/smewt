@@ -23,7 +23,7 @@ from smewt.base.mediaobject import foundMetadata
 from smewt.base.utils import tolist
 from smewt.media import Movie
 from smewt.guessers.guesser import Guesser
-from guessit.movie import guess_movie_filename
+from guessit import guess_movie_info
 import re
 import logging
 
@@ -46,7 +46,7 @@ class MovieFilename(GraphAction):
         self.checkValid(query)
         media = query.find_one(node_type = Media)
 
-        movieMetadata = guess_movie_filename(media.filename)
+        movieMetadata = guess_movie_info(media.filename)
 
         # FIXME: this is a temporary hack waiting for the pygoo and ontology refactoring
         if len(tolist(movieMetadata.get('language', None))) > 1:

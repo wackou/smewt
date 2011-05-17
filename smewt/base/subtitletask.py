@@ -28,8 +28,7 @@ import logging
 
 log = logging.getLogger('smewt.subtitletask')
 
-import guessit.language
-languageMap = guessit.language._language_map
+from guessit import Language
 
 
 class SubtitleTask(Task):
@@ -43,7 +42,7 @@ class SubtitleTask(Task):
     def __init__(self, metadata, language, subfile = None, force = False):
         super(SubtitleTask, self).__init__()
         self.metadata = metadata
-        self.language = language
+        self.language = Language(language)
         self.subfile = subfile
         self.force = force
         self.description = 'Downloading subtitle for %s' % metadata.niceString()
@@ -55,12 +54,12 @@ class SubtitleTask(Task):
         subdl = periscope.Periscope()
         #subdl.pluginNames = [ 'Addic7ed' ]
 
-        log.info('Trying to download %s subtitle for %s' % (languageMap[self.language], desc))
+        log.info('Trying to download %s subtitle for %s' % (self.language.english_name(), desc))
 
-        subs = subdl.listSubtitles(filepath, [self.language])
+        subs = subdl.listSubtitles(filepath, [self.language.lng2()])
 
         if not subs:
-            raise SmewtException('Could not find any %s subs for %s' % (languageMap[self.language], desc))
+            raise SmewtException('Could not find any %s subs for %s' % (self.language.english_name(), desc))
 
         for sub in subs :
             log.debug("Found a sub from %s in language %s, downloadable from %s" % (sub['plugin'], sub['lang'], sub['link']))
@@ -71,10 +70,10 @@ class SubtitleTask(Task):
             log.warning('Multiple subtitles found, trying to pick the best one...')
 
 
-        sub = subdl.attemptDownloadSubtitleText(subs, [self.language])
+        sub = subdl.attemptDownloadSubtitleText(subs, [self.language.lng2()])
         if sub:
             result = sub["subtitletext"]
-            log.debug('Successfully downloaded %s subtitle for %s' % (languageMap[self.language], desc))
+            log.debug('Successfully downloaded %s subtitle for %s' % (self.language.english_name(), desc))
         else:
             raise SmewtException(u'Could not complete download for sub of %s' % desc)
 
@@ -129,7 +128,7 @@ class SubtitleTask(Task):
             if not files:
                 log.error('Cannot write subtitle file for %s because it doesn\'t have an attached file')
 
-            filetmpl = files[0].filename.rsplit('.', 1)[0] + '.' + languageMap[self.language] + '%s.srt'
+            filetmpl = files[0].filename.rsplit('.', 1)[0] + '.' + self.language.english_name() + '%s.srt'
 
             filename = filetmpl % ''
             i = 2
@@ -144,6 +143,6 @@ class SubtitleTask(Task):
 
             # update the found subs with this one
             db = self.metadata.graph()
-            sub = db.Subtitle(metadata = self.metadata, language = self.language)
+            sub = db.Subtitle(metadata = self.metadata, language = self.language.lng2())
             subfile = db.Media(filename = filename, metadata = sub)
 
