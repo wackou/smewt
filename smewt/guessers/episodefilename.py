@@ -20,7 +20,7 @@
 #
 
 from smewt.base import GraphAction, Media, Metadata, SmewtException
-from smewt.base.utils import tolist
+from smewt.base.utils import guessitToPygoo
 from smewt.base.mediaobject import foundMetadata
 from smewt.media import Episode, Series
 from guessit import guess_episode_info
@@ -46,14 +46,7 @@ class EpisodeFilename(GraphAction):
         media = query.find_one(Media)
 
         episodeMetadata = guess_episode_info(media.filename)
-
-        for lang in ('language', 'subtitleLanguage'):
-            value = tolist(episodeMetadata.get(lang))
-            if len(value) > 1:
-                episodeMetadata[lang] = [ l.lng2() for l in value ]
-            elif value:
-                episodeMetadata[lang] = value[0].lng2()
-
+        episodeMetadata = guessitToPygoo(episodeMetadata)
 
         averageConfidence = sum(episodeMetadata.confidence(prop) for prop in episodeMetadata) / len(episodeMetadata)
 

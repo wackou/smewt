@@ -20,7 +20,7 @@
 
 from smewt.base import GraphAction, Media, Metadata, SmewtException
 from smewt.base.mediaobject import foundMetadata
-from smewt.base.utils import tolist
+from smewt.base.utils import tolist, guessitToPygoo
 from smewt.media import Movie
 from smewt.guessers.guesser import Guesser
 from guessit import guess_movie_info
@@ -47,14 +47,7 @@ class MovieFilename(GraphAction):
         media = query.find_one(node_type = Media)
 
         movieMetadata = guess_movie_info(media.filename)
-
-        for lang in ('language', 'subtitleLanguage'):
-            value = tolist(movieMetadata.get(lang))
-            if len(value) > 1:
-                movieMetadata[lang] = [ l.lng2() for l in value ]
-            elif value:
-                movieMetadata[lang] = value[0].lng2()
-
+        movieMetadata = guessitToPygoo(movieMetadata)
 
         # FIXME: this is a temporary hack waiting for the pygoo and ontology refactoring
         if len(tolist(movieMetadata.get('language', None))) > 1:

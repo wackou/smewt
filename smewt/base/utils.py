@@ -181,6 +181,24 @@ def guessCountryCode(filename):
     return [ 'unknown' ]
 
 
+def guessitToPygoo(guess):
+    for lang in ('language', 'subtitleLanguage'):
+        value = tolist(guess.get(lang))
+        if len(value) > 1:
+            guess[lang] = [ l.lng2() for l in value ]
+        elif value:
+            guess[lang] = value[0].lng2()
+
+    value = tolist(guess.get('date'))
+    if len(value) > 1:
+        guess['date'] = [ d.isoformat() for d in value ]
+    elif value:
+        guess['date'] = value[0].isoformat()
+
+    return guess
+
+
+
 def matchFile(filename, validFiles = ['*']):
     for validFile in validFiles:
         # if validFile is a string pattern, do filename matching
