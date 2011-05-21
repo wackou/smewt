@@ -250,6 +250,10 @@ class MainWidget(QWidget):
     def updateWatched(self, title, watched):
         self.smewtd.database.find_one(Movie, title = unicode(title)).watched = watched
 
+    @pyqtSignature("QString, int")
+    def lastSeasonWatched(self, series, season):
+        self.smewtd.database.find_one(Series, title = unicode(series)).lastSeasonWatched = season
+
     @pyqtSignature("QString, QString, QString")
     def addComment(self, title, author, comment):
         g = self.smewtd.database
