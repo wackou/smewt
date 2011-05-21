@@ -29,3 +29,5 @@ class Tagger(object):
         for o in result.find_all(Media):
             o.matches = []
             del o.confidence
+        for o in result.find_all(Metadata):
+            del o.confidence
