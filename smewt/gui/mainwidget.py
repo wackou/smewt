@@ -65,6 +65,8 @@ class MainWidget(QWidget):
         if baseUrl == '':
             baseUrl = 'smewt://media/speeddial/'
         self.setSmewtUrl(baseUrl)
+        # somehow it looks like this refresh is necessary otherwise our main widget doesn't get inserted in the javascript
+        self.refreshCollectionView()
 
         self.externalProcess = QProcess()
 
