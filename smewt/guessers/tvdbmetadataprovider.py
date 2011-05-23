@@ -187,9 +187,7 @@ class TVDBMetadataProvider(object):
         except ValueError, e:
           language = matching_series[0][2]
           series = matching_series[0][0] 
-        
-        print series
-        
+                
         eps = self.getEpisodes(series, language)
 
         try:
