@@ -49,17 +49,22 @@ class TVDBMetadataProvider(object):
     def getSeries(self, name):
         """Get the TVDBPy series object given its name."""
         results = self.tvdb.get_matching_shows(name)
-        for id, name in results:
+        '''
+        for id, name, lang in results:
             # FIXME: that doesn't look correct: either yield or no for
             return id
         raise SmewtException("EpisodeTVDB: Could not find series '%s'" % name)
-
+        '''
+        if len(results)==0:
+          raise SmewtException("EpisodeTVDB: Could not find series '%s'" % name)
+        
+        return results
 
     @cachedmethod
-    def getEpisodes(self, series):
+    def getEpisodes(self, series, language):
         """From a given TVDBPy series object, return a graph containing its information
         as well as its episodes nodes."""
-        show, episodes = self.tvdb.get_show_and_episodes(series)
+        show, episodes = self.tvdb.get_show_and_episodes(series, language=language)
 
         # TODO: debug to see if this is the correct way to access the series' title
         result = MemoryObjectGraph()
@@ -170,8 +175,22 @@ class TVDBMetadataProvider(object):
             raise SmewtException("TVDBMetadataProvider: Episode doesn't contain 'series' field: %s", md)
 
         name = episode.series.title
-        series = self.getSeries(name)
-        eps = self.getEpisodes(series)
+        matching_series = self.getSeries(name)
+        
+        # First try to find the English version 
+        # TODO: here we should try to find the series with an explicit language (given by guessit)
+        language = 'en'
+        series = None
+        try:
+          ind = zip(*matching_series)[2].index(language)
+          series = matching_series[ind][0]
+        except ValueError, e:
+          language = matching_series[0][2]
+          series = matching_series[0][0] 
+        
+        print series
+        
+        eps = self.getEpisodes(series, language)
 
         try:
             lores, hires = self.getSeriesPoster(series)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 thetvdb.com Python API
 (c) 2009 James Smith (http://loopj.com)
@@ -158,22 +159,22 @@ class TheTVDB(object):
     def get_matching_shows(self, show_name):
         """Get a list of shows matching show_name."""
         get_args = urllib.urlencode({"seriesname": show_name}, doseq=True)
-        url = "%s/GetSeries.php?%s" % (self.base_url, get_args)
+        url = "%s/GetSeries.php?%s&language=all" % (self.base_url, get_args)
         data = urllib.urlopen(url)
         show_list = []
 
         if data:
             try:
                 tree = ET.parse(data)
-                show_list = [(show.findtext("seriesid"), show.findtext("SeriesName")) for show in tree.getiterator("Series")]
+                show_list = [(show.findtext("seriesid"), show.findtext("SeriesName"), show.findtext("language")) for show in tree.getiterator("Series")]
             except SyntaxError:
                 pass
 
         return show_list
 
-    def get_show(self, show_id):
+    def get_show(self, show_id, language='en'):
         """Get the show object matching this show_id."""
-        url = "%s/series/%s/" % (self.base_key_url, show_id)
+        url = "%s/series/%s/%s.xml" % (self.base_key_url, show_id, language)
         data = urllib.urlopen(url)
         
         show = None
@@ -187,9 +188,9 @@ class TheTVDB(object):
         
         return show
 
-    def get_episode(self, episode_id):
+    def get_episode(self, episode_id, language='en'):
         """Get the episode object matching this episode_id."""
-        url = "%s/episodes/%s/" % (self.base_key_url, episode_id)
+        url = "%s/episodes/%s/%s.xml" % (self.base_key_url, episode_id, language)
         data = urllib.urlopen(url)
         
         episode = None
@@ -203,9 +204,9 @@ class TheTVDB(object):
         
         return episode
     
-    def get_show_and_episodes(self, show_id):
+    def get_show_and_episodes(self, show_id, language='en'):
         """Get the show object and all matching episode objects for this show_id."""
-        url = "%s/series/%s/all/" % (self.base_key_url, show_id)
+        url = "%s/series/%s/all/%s.xml" % (self.base_key_url, show_id, language)
         data = urllib.urlopen(url)
         
         show_and_episodes = None
