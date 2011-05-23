@@ -21,6 +21,7 @@
 from smewttest import *
 from smewt.media.subtitle.subtitle_tvsubtitles_provider import TVSubtitlesProvider
 from smewt.base.subtitletask import SubtitleTask
+from guessit import guess_episode_info
 import chardet
 
 
@@ -38,8 +39,7 @@ class TestEpisodeSubtitle(TestCase):
             lang =  subdata['language']
             subfile = subdata['result']
 
-            from guessit import episode
-            ep = episode.guess_episode_filename(video)
+            ep = guess_episode_info(video)
 
             series = ep.pop('series')
 

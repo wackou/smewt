@@ -2,8 +2,6 @@
 FEATURES:
 ---------
 
-- status bar should show the task currently run, ie which file is being imported or which subtitle is being downloaded
-- generate the thumbnails for the speeddial from the actual views content (ie: not some pre-generated thumbnails)
 - tasks should be interruptible (so that exit works instantly instead of waiting for current task to complete)
 - player detection in windows/linux
 

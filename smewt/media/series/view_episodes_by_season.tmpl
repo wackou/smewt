@@ -6,7 +6,7 @@ from itertools import groupby
 from collections import defaultdict
 from smewt import SmewtUrl, Media
 from smewt.media import Episode, Series, Subtitle
-from smewt.base.utils import pathToUrl, smewtDirectoryUrl, guessCountryCode, tolist
+from smewt.base.utils import pathToUrl, smewtDirectoryUrl, tolist
 from smewt.base import SmewtException
 
 import os, os.path
@@ -82,6 +82,8 @@ for md in episodes.values():
 for season, eps in seasons.items():
     seasons[season] = sorted(eps, key = lambda x: x['episodeNumber'])
 
+lastSeasonWatched = series.get('lastSeasonWatched', 0)
+
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -89,6 +91,15 @@ for season, eps in seasons.items():
 
 <head>
     <title>single serie display</title>
+
+    <script type="text/javascript">
+        var tabberOptions = { 'onClick': function(args) {
+                                            var t = args.tabber;
+                                            var i = args.index;
+                                            mainWidget.lastSeasonWatched("$(seriesName)", t.tabs[i].headingText.split(' ')[1]);
+                                            } };
+    </script>
+
     <script type="text/javascript" src="file://$(import_dir)/3rdparty/tabber.js"></script>
     <script type="text/javascript" src="file://$(import_dir)/3rdparty/styler.js"></script>
     <link rel="stylesheet" href="file://$(import_dir)/series/series.css" type="text/css">
@@ -117,7 +128,11 @@ for season, eps in seasons.items():
 
 <div class="tabber">
 #for seasonNumber, eps in seasons.items():
-  <div class="tabbertab">
+  #if seasonNumber == lastSeasonWatched:
+    <div class="tabbertab tabbertabdefault">
+  #else
+    <div class="tabbertab">
+  #end if
   <h2>Season $seasonNumber</h2>
   <p>
 

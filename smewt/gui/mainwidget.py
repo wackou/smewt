@@ -65,6 +65,8 @@ class MainWidget(QWidget):
         if baseUrl == '':
             baseUrl = 'smewt://media/speeddial/'
         self.setSmewtUrl(baseUrl)
+        # somehow it looks like this refresh is necessary otherwise our main widget doesn't get inserted in the javascript
+        self.refreshCollectionView()
 
         self.externalProcess = QProcess()
 
@@ -247,6 +249,10 @@ class MainWidget(QWidget):
     @pyqtSignature("QString, bool")
     def updateWatched(self, title, watched):
         self.smewtd.database.find_one(Movie, title = unicode(title)).watched = watched
+
+    @pyqtSignature("QString, int")
+    def lastSeasonWatched(self, series, season):
+        self.smewtd.database.find_one(Series, title = unicode(series)).lastSeasonWatched = season
 
     @pyqtSignature("QString, QString, QString")
     def addComment(self, title, author, comment):

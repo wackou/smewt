@@ -83,7 +83,7 @@ class SimpleSolver(Solver):
         if baseGuess is None:
             raise SmewtException('SimpleSolver could not find base guess')
 
-        if confidence < 0.9:
+        if confidence < 0.6:
             log.warning('Base guess for %s looks shady, confidence = %f: %s' % (query.find_one(Media).filename, confidence, baseGuess))
             #return self.found(query, None)
 

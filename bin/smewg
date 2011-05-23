@@ -94,7 +94,8 @@ class SmewtGui(QMainWindow):
         # create menubar
         mainMenu = self.menuBar().addMenu('Main')
         mainMenu.addAction(self.logviewAction)
-        mainMenu.addAction(self.regenerateThumbnailsAction)
+        # done every time we start the application, as it seems there's no way to tell webkit to reload them
+        #mainMenu.addAction(self.regenerateThumbnailsAction)
         mainMenu.addAction(self.clearCacheAction)
         mainMenu.addSeparator()
         mainMenu.addAction(self.quitAction)
@@ -138,7 +139,7 @@ class SmewtGui(QMainWindow):
         settings = QSettings()
         configured = settings.value('configured').toBool()
 
-        self.checkSpeedDialThumbnails()
+        self.regenerateSpeedDialThumbnails()
 
         if not configured:
             settings.setValue('configured', True)
