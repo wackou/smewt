@@ -180,7 +180,9 @@ class TVDBMetadataProvider(object):
         # Try first with the languages from guessit, and then with english
         languages = tolist(episode.get('language', [])) + ['en']
 
-        # Sort the series by id (big assumption here, that )
+        # Sort the series by id (stupid heuristic about most popular series 
+        #                        might have been added sooner to the db and the db id
+        #                        follows the insertion order)
         # TODO: we should do something smarter like comparing series name distance, 
         #       episodes count and/or episodes names
         matching_series.sort(key=lambda x: int(x[0]))
