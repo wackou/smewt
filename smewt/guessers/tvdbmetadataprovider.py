@@ -177,21 +177,25 @@ class TVDBMetadataProvider(object):
         name = episode.series.title
         matching_series = self.getSeries(name)
 
+        # Try first with the languages from guessit, and then with english
         languages = tolist(episode.get('language', [])) + ['en']
-        
-        # First try to find the English version 
-        # TODO: here we should try to find the series with an explicit language (given by guessit)
+
+        # Sort the series by id (big assumption here, that )
+        # TODO: we should do something smarter like comparing series name distance, 
+        #       episodes count and/or episodes names
+        matching_series.sort(key=lambda x: int(x[0]))
+
         series = None
         language = 'en'
         for lang in languages:
-          try:
-            language = lang
-            ind = zip(*matching_series)[2].index(lang)
-            series = matching_series[ind][0]
-            break
-          except ValueError, e:
-            language = matching_series[0][2]
-            series = matching_series[0][0] 
+            try:
+                language = lang
+                ind = zip(*matching_series)[2].index(lang)
+                series = matching_series[ind][0]
+                break
+            except ValueError, e:
+                language = matching_series[0][2]
+                series = matching_series[0][0] 
           
         eps = self.getEpisodes(series, language)
 
