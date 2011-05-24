@@ -22,7 +22,7 @@ from smewt.base import cachedmethod, utils, SmewtException, Media
 from smewt.guessers.guesser import Guesser
 from smewt.media import Episode, Series, Movie
 from smewt.base import textutils
-from smewt.base.utils import smewtDirectory, smewtUserDirectory
+from smewt.base.utils import tolist, smewtDirectory, smewtUserDirectory
 from pygoo import MemoryObjectGraph
 
 from PyQt4.QtCore import SIGNAL, QObject, QUrl, Qt
@@ -176,18 +176,24 @@ class TVDBMetadataProvider(object):
 
         name = episode.series.title
         matching_series = self.getSeries(name)
+
+        languages = tolist(episode.get('language', [])) + ['en']
         
+        print 'langs: ', languages
         # First try to find the English version 
         # TODO: here we should try to find the series with an explicit language (given by guessit)
-        language = 'en'
         series = None
-        try:
-          ind = zip(*matching_series)[2].index(language)
-          series = matching_series[ind][0]
-        except ValueError, e:
-          language = matching_series[0][2]
-          series = matching_series[0][0] 
-                
+        language = 'en'
+        for lang in languages:
+          try:
+            language = lang
+            ind = zip(*matching_series)[2].index(lang)
+            series = matching_series[ind][0]
+            break
+          except ValueError, e:
+            language = matching_series[0][2]
+            series = matching_series[0][0] 
+          
         eps = self.getEpisodes(series, language)
 
         try:
