@@ -179,7 +179,6 @@ class TVDBMetadataProvider(object):
 
         languages = tolist(episode.get('language', [])) + ['en']
         
-        print 'langs: ', languages
         # First try to find the English version 
         # TODO: here we should try to find the series with an explicit language (given by guessit)
         series = None
