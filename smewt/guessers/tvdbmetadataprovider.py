@@ -175,6 +175,8 @@ class TVDBMetadataProvider(object):
             raise SmewtException("TVDBMetadataProvider: Episode doesn't contain 'series' field: %s", md)
 
         name = episode.series.title
+        name = name.replace(',', ' ')
+        
         matching_series = self.getSeries(name)
 
         # Try first with the languages from guessit, and then with english
@@ -185,7 +187,8 @@ class TVDBMetadataProvider(object):
         #                        follows the insertion order)
         # TODO: we should do something smarter like comparing series name distance, 
         #       episodes count and/or episodes names
-        matching_series.sort(key=lambda x: int(x[0]))
+        #print '\n'.join(['%s %s --> %f [%s] %s' % (x[1], name, textutils.levenshtein(x[1], name), x[2], x[0]) for x in matching_series])
+        matching_series.sort(key=lambda x: (textutils.levenshtein(x[1], name), int(x[0])))
 
         series = None
         language = 'en'
