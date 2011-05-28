@@ -30,6 +30,7 @@ from PyQt4.QtWebKit import QWebView, QWebPage
 from smewt.media import series, movie, speeddial
 import logging
 import time
+import sys
 from os.path import join, dirname, splitext
 from smewt.taggers import EpisodeTagger, MovieTagger
 from smewt.base import SmewtDaemon
@@ -224,8 +225,12 @@ class MainWidget(QWidget):
         webpage.mainFrame().setHtml(html)
 
         # need to wait for the different elements to have loaded completely
-        while QApplication.hasPendingEvents():
+        if sys.platform != 'darwin':
+            while QApplication.hasPendingEvents():
+                QApplication.processEvents()
+        else:
             QApplication.processEvents()
+
 
         image = QImage(size, QImage.Format_ARGB32)
         painter = QPainter(image)

@@ -134,11 +134,14 @@ class SmewtGui(QMainWindow):
         settings = QSettings()
         configured = settings.value('configured').toBool()
 
-        self.regenerateSpeedDialThumbnails()
-
         if not configured:
+            self.regenerateSpeedDialThumbnails()
             settings.setValue('configured', True)
         else:
+            # regenerate thumbnails once everything is setup, otherwise it seems somehow
+            # we can;t get the correct window size for taking the screenshot
+            QTimer.singleShot(1000, self.regenerateSpeedDialThumbnails)
+
             # only start the update of the collections once our GUI is fully setup
             # do not rescan as it would be too long and we might delete some files that
             # are on an unaccessible network share or an external HDD
