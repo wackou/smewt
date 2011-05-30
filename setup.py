@@ -10,7 +10,9 @@ install_requires = [
     # List your project dependencies here.
     # For more details, see:
     # http://packages.python.org/distribute/setuptools.html#declaring-dependencies
-    'pygoo>=0.1.3',
+    'pygoo>=0.1.4',
+    'guessit>=0.2',
+    'BeautifulSoup', # for periscope
     'cheetah',
     'lxml',
     'feedparser'
@@ -65,16 +67,16 @@ if sys.platform == 'darwin':
     # py2app data
     OPTIONS = { 'argv_emulation': True,
                 'iconfile': 'smewt/icons/smewt.icns',
-                'packages': [ 'smewt', 'Cheetah', 'lxml' ],
+                'packages': [ 'smewt', 'Cheetah', 'lxml', 'guessit' ],
                 'frameworks': [ '/Developer/Applications/Qt/plugins/iconengines/libqsvgicon.dylib' ],
-                'includes': [ 'sip', 'PyQt4', 'PyQt4.QtCore', 'PyQt4.QtGui', 'PyQt4.QtNetwork', 'PyQt4.QtWebKit',  'PyQt4.QtXml', 'PyQt4.QtSvg' ],
+                'includes': [ 'sip', 'PyQt4', 'PyQt4.QtCore', 'PyQt4.QtGui', 'PyQt4.QtNetwork', 'PyQt4.QtWebKit',  'PyQt4.QtXml', 'PyQt4.QtSvg', 'ntpath' ],
                 'excludes': [ 'PyQt4.QtDesigner', 'PyQt4.QtOpenGL', 'PyQt4.QtScript',
                               'PyQt4.QtSql', 'PyQt4.QtTest' ] # 'PyQt4.phonon'
                 }
 
     args.update(dict(# for py2app
                      name = 'Smewt',
-                     app = ['bin/smewg.py'],
+                     app = [ 'bin/smewg.py' ],
                      options = { 'py2app': OPTIONS,
                                  'plist': dict(CFBundleIdentifier = 'com.smewt.Smewt')
                                  },

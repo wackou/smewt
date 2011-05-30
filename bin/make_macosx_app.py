@@ -22,7 +22,7 @@ qt_plugpath=plugins
         os.system("find %s/Contents/plugins -type f -exec install_name_tool -change %s.framework/Versions/4/%s @executable_path/../Frameworks/%s.framework/Versions/4/%s {} ';'" % (APPDIR, MODULE, MODULE, MODULE, MODULE))
 
 
-    os.system("find %s/ -name \"*_debug\" -exec rm {} ';'" % APPDIR)
+    os.system("find %s/ -name \"*_debug*\" -exec rm {} ';'" % APPDIR)
 
 
 def build_dmg():
@@ -49,11 +49,16 @@ def build_dmg():
 
     print 'All done! The final DMG is in %s' % DMG_NAME
 
+def prepare():
+    os.system('mv smewt/test /tmp')
+
 def cleanup():
     os.system('rm bin/smewg.py')
+    os.system('mv /tmp/test smewt/')
 
 
 if __name__ == '__main__':
+    prepare()
     build_macosx_app()
     build_dmg()
     cleanup()
