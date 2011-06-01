@@ -111,7 +111,7 @@ if sys.platform == 'win32':
                                              'includes': [ 'sip',
                                                            'PyQt4.QtNetwork',
                                                            'Cheetah.DummyTransaction',
-                                                           'lxml', 'lxml._elementpath'
+                                                           'lxml', 'lxml._elementpath', 'smewt.3rdparty.periscope'
                                                            ] }}))
 
 
