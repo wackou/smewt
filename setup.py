@@ -136,8 +136,11 @@ if sys.platform == 'win32':
                                              'includes': [ 'sip',
                                                            'PyQt4.QtNetwork',
                                                            'Cheetah.DummyTransaction',
-                                                           'lxml', 'lxml._elementpath', 'smewt.3rdparty.periscope'
-                                                           ] }}))
+                                                           'lxml', 'lxml._elementpath'
+                                                           ],
+                                             'packages': [ 'smewt.3rdparty.periscope',
+                                                           'BeautifulSoup' ]
+                                             }}))
 
 
 setup(**args)

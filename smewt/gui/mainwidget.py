@@ -225,7 +225,7 @@ class MainWidget(QWidget):
         webpage.mainFrame().setHtml(html)
 
         # need to wait for the different elements to have loaded completely
-        if sys.platform != 'darwin':
+        if sys.platform == 'linux2':
             while QApplication.hasPendingEvents():
                 QApplication.processEvents()
         else:
