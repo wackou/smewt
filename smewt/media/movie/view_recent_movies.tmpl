@@ -46,8 +46,8 @@ movies = sorted([ { 'title': m.title,
 # keep only the 4 most recent movies
 movies = movies[:4]
 
-from smewt.base.utils import smewtDirectory
-import_dir = smewtDirectory('smewt', 'media')
+from smewt.base.utils import smewtDirectoryUrl
+import_dir = smewtDirectoryUrl('smewt', 'media')
 
 %>
 
