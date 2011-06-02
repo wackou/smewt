@@ -105,7 +105,32 @@ if sys.platform == 'win32':
     # add the open.exe utility program
     allfiles.append(('.', [ 'packaging\\win32\\open.exe' ]))
 
+    from py2exe.build_exe import py2exe as build_exe
+    import guessit
+
+    class SmewtMediaCollector(build_exe):
+        """Extension that copies smewt missing data."""
+        def copy_extensions(self, extensions):
+            """Copy the missing extensions."""
+            build_exe.copy_extensions(self, extensions)
+
+            # Create the media subdir where the
+            # Python files are collected.
+            media = 'guessit' # os.path.join('guessit')
+            full = os.path.join(self.collect_dir, media)
+            if not os.path.exists(full):
+                self.mkpath(full)
+
+            # Copy the media files to the collection dir.
+            # Also add the copied file to the list of compiled
+            # files so it will be included in zipfile.
+            for f in glob.glob(guessit.__path__[0] + '/*.txt'):
+                name = os.path.basename(f)
+                self.copy_file(f, os.path.join(full, name))
+                self.compiled_files.append(os.path.join(media, name))
+
     args.update(dict(windows = ['bin/smewg'],
+                     cmdclass = { 'py2exe': SmewtMediaCollector },
                      data_files = allfiles,
                      options = { 'py2exe': { 'dll_excludes': 'MSVCP90.dll',
                                              'includes': [ 'sip',
