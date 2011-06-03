@@ -31,6 +31,7 @@ def clear():
     globalCache = {}
 
 def load(filename):
+    return
     log.info('Cache: loading cache from %s' % filename)
     global globalCache
     try:
@@ -41,6 +42,7 @@ def load(filename):
         log.error('Cache: cache file is corrupted... Please remove it.')
 
 def save(filename):
+    return
     log.info('Cache: saving cache to %s' % filename)
     cPickle.dump(globalCache, open(filename, 'wb'))
 
