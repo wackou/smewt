@@ -6,13 +6,25 @@
 News
 ====
 
-0.?
------
+0.3
+---
 
-*Release date: ???*
+*Release date: 3-Jun-2011*
+
+* Much better filename guessers thanks to the fact we are now using
+  GuessIt
+
+* Subtitles download now work for both tv shows and movies, thanks to
+  the Periscope library
 
 * Fixed size and position of Smewt window on first launch on weird geometry
   setups (ex: dual-screen, very small screens, ...)
+
+* Remembers last season that you were watching from a tv show when
+  revisiting its view
+
+* Lots more of small fixes here and there that contribute to a much
+  smoother experience!
 
 
 0.2.2

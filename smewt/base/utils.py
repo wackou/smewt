@@ -68,7 +68,8 @@ def makedir(path):
 def pathToUrl(path):
     if sys.platform == 'win32':
         # perform some drive letter trickery
-        return 'localhost/%s:/%s' % (path[0], path[3:])
+        result = 'localhost/%s:/%s' % (path[0], path[3:])
+        return result.replace('\\', '/')
 
     return path
 
@@ -78,7 +79,7 @@ def smewtDirectory(*args):
     # big fat hack so that smewt still works when "compiled" with py2exe
     result = result.replace('library.zip\\', '')
 
-    return result
+    return os.path.abspath(result)
 
 def smewtDirectoryUrl(*args):
     return pathToUrl(smewtDirectory(*args))

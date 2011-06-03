@@ -34,8 +34,8 @@ for serieName, eps in groupby(episodes, lambda ep: ep.series.title):
 # sort our suggestions to show the last scanned ones first
 suggest = sorted(suggest.items(), key = lambda eps: -tolist(eps[1][0].files)[0].lastModified)
 
-from smewt.base.utils import smewtDirectory
-import_dir = smewtDirectory('smewt', 'media')
+from smewt.base.utils import smewtDirectoryUrl
+import_dir = smewtDirectoryUrl('smewt', 'media')
 
 %>
 

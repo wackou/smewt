@@ -19,7 +19,7 @@
 #
 
 
-__version__ = '0.3-dev'
+__version__ = '0.4-dev'
 
 import logging
 
@@ -30,6 +30,12 @@ class NullHandler(logging.Handler):
 h = NullHandler()
 logging.getLogger("smewt").addHandler(h)
 
+
+# add our 3rd party libraries path in front of the python path, so that those
+# modules get imported with preference to the system ones
+import sys, os.path
+spath = os.path.join(os.path.split(__file__)[0], '3rdparty')
+sys.path = [ spath ] + sys.path
 
 from base import SmewtException, SmewtUrl, SolvingChain, cachedmethod, EventServer, cache, utils, textutils
 from base.mediaobject import Media, Metadata
