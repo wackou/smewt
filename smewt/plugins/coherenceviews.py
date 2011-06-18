@@ -3,12 +3,12 @@
 
 import urllib, time, logging, itertools, os.path
 
-from smewt.base.utils import tolist
-
 from coherence.backend import BackendItem, BackendStore
 from coherence.upnp.core import DIDLLite
 from coherence.upnp.core import utils as coherence_utils
+from coherence.upnp.core.DIDLLite import simple_dlna_tags
 
+from smewt.base.utils import tolist
 #import smewt
 #from smewt.media import Series, Episode, Movie
 #from smewt.base import utils, Collection, Media
@@ -28,13 +28,14 @@ LAST_KEY = 'ZZZZZZZ'
 CONTAINER_COUNT = 1000
 
 class Container(BackendItem):
-
     logCategory = 'smewt_media_store'
 
-    def __init__(self, store, name, parent_id):
+    def __init__(self, store, name, parent_id, image=None):
         self.id = store.new_item(self)
         self.parent_id = parent_id
         self.name = name
+        self.image = image
+        self.cover = image
         self.mimetype = 'directory'
         self.store = store
         self.update_id = 0
@@ -61,6 +62,34 @@ class Container(BackendItem):
     def get_item(self, parent_id=None):
         item = DIDLLite.Container(self.id, self.parent_id, self.name)
         item.childCount = self.get_child_count()
+
+        if self.image and os.path.isfile(self.image):
+            external_url = '%s/%d@%d' % (self.store.urlbase, self.id, self.parent_id,)
+            
+            mimetype,_ = mimetypes.guess_type(self.image, strict=False)
+            if mimetype in ('image/jpeg','image/png'):
+                if mimetype == 'image/jpeg':
+                    dlna_pn = 'DLNA.ORG_PN=JPEG_TN'
+                else:
+                    dlna_pn = 'DLNA.ORG_PN=PNG_TN'
+
+                dlna_tags = simple_dlna_tags[:]
+                dlna_tags[3] = 'DLNA.ORG_FLAGS=00f00000000000000000000000000000'
+                
+                _, ext = os.path.splitext(self.image)
+                item.albumArtURI = ''.join((external_url,'?cover',ext))
+                
+                hash_from_path = str(id(self.image))
+                new_res = DIDLLite.Resource(external_url+'?attachment='+hash_from_path,
+                    'http-get:*:%s:%s' % (mimetype, ';'.join([dlna_pn]+dlna_tags)))
+                new_res.size = os.path.getsize(self.image)
+                item.res.append(new_res)
+                if not hasattr(item, 'attachments'):
+                    item.attachments = {}
+                item.attachments[hash_from_path] = coherence_utils.StaticFile(self.image)
+        
+            self.location = self.image
+
         return item
 
     def get_name(self):
@@ -68,18 +97,24 @@ class Container(BackendItem):
 
     def get_id(self):
         return self.id
+        
+    def get_cover(self):
+        return self.cover
 
 class VideoFileItem(BackendItem):
     logCategory = 'smewt_media_store'
 
-    def __init__(self, store, media, name, parent_id):
+    def __init__(self, store, media, name, parent_id, image = None):
         self.id = store.new_item(self)
         self.store = store
         self.media = media
         self.name = name
+        self.image = image
+        self.cover = image
         self.parent_id = parent_id
         self.item = self.create_item()
-        
+        self.caption = None
+
     def create_item(self):
         item = DIDLLite.VideoItem(self.id, self.parent_id, self.get_name())
 
@@ -103,6 +138,49 @@ class VideoFileItem(BackendItem):
         
         self.location = filename
         
+        if self.image and os.path.isfile(self.image):
+            mimetype,_ = mimetypes.guess_type(self.image, strict=False)
+            if mimetype in ('image/jpeg','image/png'):
+                if mimetype == 'image/jpeg':
+                    dlna_pn = 'DLNA.ORG_PN=JPEG_TN'
+                else:
+                    dlna_pn = 'DLNA.ORG_PN=PNG_TN'
+
+                dlna_tags = simple_dlna_tags[:]
+                dlna_tags[3] = 'DLNA.ORG_FLAGS=00f00000000000000000000000000000'
+                
+                hash_from_path = str(id(self.image))
+                
+                _, ext = os.path.splitext(self.image)
+                item.albumArtURI = ''.join((external_url,'?cover',ext))
+                
+                new_res = DIDLLite.Resource(external_url+'?attachment='+hash_from_path,
+                                            'http-get:*:%s:%s' % (mimetype, ';'.join([dlna_pn]+dlna_tags)))
+                new_res.size = os.path.getsize(self.image)
+                item.res.append(new_res)
+                if not hasattr(item, 'attachments'):
+                    item.attachments = {}
+                    
+                item.attachments[hash_from_path] = coherence_utils.StaticFile(self.image)
+
+        for subtitle in tolist(self.media.get('subtitles')):
+          for subfile in tolist(subtitle.files):
+            subfilename = subfile.filename
+            if os.path.isfile(subfilename):
+              # check for a subtitles file
+              hash_from_path = str(id(subfilename))
+              mimetype = 'smi/caption'
+              new_res = DIDLLite.Resource(external_url+'?attachment='+hash_from_path,
+                                          'http-get:*:%s:%s' % (mimetype, '*'))
+              new_res.size = os.path.getsize(subfilename)
+              self.caption = new_res.data
+              
+              item.res.append(new_res)
+              if not hasattr(item, 'attachments'):
+                  item.attachments = {}
+              
+              item.attachments[hash_from_path] = coherence_utils.StaticFile(subfilename)
+        
         return item
         
     def get_children(self,start=0, request_count=0):
@@ -120,19 +198,19 @@ class VideoFileItem(BackendItem):
     def get_name(self):
         return self.name
 
-    def get_cover(self):
-        return self.cover
-
 class VideoItem(BackendItem):
     logCategory = 'smewt_media_store'
 
-    def __init__(self, store, media, name, parent_id):
+    def __init__(self, store, media, name, parent_id, image = None):
         self.id = store.new_item(self)
         self.store = store
         self.media = media
         self.name = name
+        self.image = image
+        self.cover = image
         self.parent_id = parent_id
         self.item = self.create_item()
+        self.caption = None
         
     def create_item(self):
         item = DIDLLite.VideoItem(self.id, self.parent_id, self.get_name())
@@ -158,7 +236,30 @@ class VideoItem(BackendItem):
           
           # FIXME: Handle correctly multifile videos
           self.location = filename
-          
+        
+        if self.image and os.path.isfile(self.image):
+            mimetype,_ = mimetypes.guess_type(self.image, strict=False)
+            if mimetype in ('image/jpeg','image/png'):
+                if mimetype == 'image/jpeg':
+                    dlna_pn = 'DLNA.ORG_PN=JPEG_TN'
+                else:
+                    dlna_pn = 'DLNA.ORG_PN=PNG_TN'
+
+                dlna_tags = simple_dlna_tags[:]
+                dlna_tags[3] = 'DLNA.ORG_FLAGS=00f00000000000000000000000000000'
+                
+                hash_from_path = str(id(self.image))
+                _, ext = os.path.splitext(self.image)
+                item.albumArtURI = ''.join((external_url,'?cover',ext))
+
+                new_res = DIDLLite.Resource(external_url+'?attachment='+hash_from_path,
+                                            'http-get:*:%s:%s' % (mimetype, ';'.join([dlna_pn]+dlna_tags)))
+                new_res.size = os.path.getsize(self.image)
+                item.res.append(new_res)
+                if not hasattr(item, 'attachments'):
+                    item.attachments = {}
+                item.attachments[hash_from_path] = coherence_utils.StaticFile(self.image)
+        
         for subtitle in tolist(self.media.get('subtitles')):
           for subfile in tolist(subtitle.files):
             subfilename = subfile.filename
@@ -169,6 +270,8 @@ class VideoItem(BackendItem):
               new_res = DIDLLite.Resource(external_url+'?attachment='+hash_from_path,
                                           'http-get:*:%s:%s' % (mimetype, '*'))
               new_res.size = os.path.getsize(subfilename)
+              self.caption = new_res.data
+              
               item.res.append(new_res)
               if not hasattr(item, 'attachments'):
                   item.attachments = {}
@@ -199,7 +302,8 @@ def recursiveContainer(store, items, view_funcs, prefix='', parent_id=-1):
     nameMethod = lambda x: x
     sortItems = lambda x: x
     if len(view_funcs) > 0:
-      nameMethod = view_funcs[0].get('name', lambda x: x)
+      nameMethod = view_funcs[0].get('name', lambda x: '[unknown]')
+      imageMethod = view_funcs[0].get('image', lambda x: None)
       sortItems = view_funcs[0].get('sortItems', lambda x: x)
       itemClass = view_funcs[0].get('item', None)
       
@@ -212,19 +316,19 @@ def recursiveContainer(store, items, view_funcs, prefix='', parent_id=-1):
           files = tolist(i.files)
           if len(files)>0 and 'title' in i and i.title == 'Unknown':
             # These unguessed files are matched to a movie named 'Unknown'
-            unknown = Container(store, 'Unknown', parent_id)
+            unknown = Container(store, '[unknown]', parent_id, image = imageMethod(i))
             #print '%s%s [%d]' % (prefix, unicode('Unknown'), unknown.id, )
             for f in tolist(i.files):
-              newitem = VideoFileItem(store, f, unicode(os.path.basename(f.filename)), parent_id)
+              newitem = VideoFileItem(store, f, unicode(os.path.basename(f.filename)), parent_id, image = imageMethod(i))
               #print '  %s%s [%d]' % (prefix, unicode(os.path.basename(f.filename)), newitem.id, )
               unknown.add_child(newitem)
           else:
             # These are the normal files
-            newitem = VideoItem(store, i, unicode(nameMethod(i)), parent_id)
+            newitem = VideoItem(store, i, unicode(nameMethod(i)), parent_id, image = imageMethod(i))
             #print '%s%s [%d]' % (prefix, unicode(nameMethod(i)), newitem.id, )
             children.append(newitem)
         else:
-          newitem = itemClass(store, i, unicode(nameMethod(i)), parent_id)
+          newitem = itemClass(store, i, unicode(nameMethod(i)), parent_id, image = imageMethod(i))
           #print '%s%s [%d]' % (prefix, unicode(nameMethod(i)), newitem.id, )
           children.append(newitem)
           
@@ -238,7 +342,7 @@ def recursiveContainer(store, items, view_funcs, prefix='', parent_id=-1):
     
     children = []
     for k, v in group:
-      cont = Container(store, unicode(nameMethod(k)), parent_id)
+      cont = Container(store, unicode(nameMethod(k)), parent_id, image = imageMethod(k))
       #print '%s%s [%d]' % (prefix, unicode(nameMethod(k)), cont.id, )
       cont.add_children( recursiveContainer(store, list(v), view_funcs[1:], parent_id = cont.id, prefix = ' ' + prefix) )
       children.append(cont)
@@ -275,7 +379,7 @@ def moviesByProperty(store, database, prop, parent_id=-1, only_available=True, g
   },
   {
     'sortItems': lambda items: sorted(items, key = lambda i: i.title),
-    'name': lambda k: k.title if 'title' in k else 'UNKNOWN'
+    'name': lambda k: k.title if 'title' in k else '[unknown]'
   }
   ]
 
@@ -291,7 +395,8 @@ def allSeries(store, database, parent_id=-1, only_available=True):
   {
     'sortItems': lambda items: sorted(items, key = lambda i: i.series.title),
     'groupItems': lambda sortedItems: itertools.groupby(sortedItems, key=lambda i: i.series),
-    'name': lambda k: k.title if 'title' in k else 'UNKNOWN'
+    'name': lambda k: k.title if 'title' in k else '[unknown]',
+    'image': lambda k: k.hiresImage if 'hiresImage' in k else None
   },
   {
     'sortItems': lambda items: sorted(items, key = lambda i: i.season),
@@ -315,7 +420,8 @@ def allMovies(store, database, parent_id=-1, only_available=True):
   moviesViews = [
   {
     'sortItems': lambda items: sorted(items, key = lambda i: i.title),
-    'name': lambda k: k.title if 'title' in k else '[unknown]'
+    'name': lambda k: k.title if 'title' in k else '[unknown]',
+    'image': lambda k: k.hiresImage if 'hiresImage' in k else None
   }
   ]
   
@@ -333,7 +439,8 @@ def advSeries(store, database, parent_id=-1, only_available=True):
   {
     'sortItems': lambda items: sorted(items, key = lambda i: tolist(i.metadata)[0].series.title),
     'groupItems': lambda sortedItems: itertools.groupby(sortedItems, key=lambda i: tolist(i.metadata)[0].series),
-    'name': lambda k: k.title if 'title' in k else 'UNKNOWN'
+    'name': lambda k: k.title if 'title' in k else '[unknown]',
+    'image': lambda k: k.hiresImage if 'hiresImage' in k else None
   },
   {
     'sortItems': lambda items: sorted(items, key = lambda i: tolist(i.metadata)[0].season),
