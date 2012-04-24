@@ -186,9 +186,9 @@ def guessitToPygoo(guess):
     for lang in ('language', 'subtitleLanguage'):
         value = tolist(guess.get(lang))
         if len(value) > 1:
-            guess[lang] = [ l.lng2() for l in value ]
+            guess[lang] = [ l.alpha2 for l in value ]
         elif value:
-            guess[lang] = value[0].lng2()
+            guess[lang] = value[0].alpha2
 
     value = tolist(guess.get('date'))
     if len(value) > 1:
