@@ -8,6 +8,8 @@ from smewt import SmewtUrl, Media
 from smewt.media import Episode, Series, Subtitle
 from smewt.base.utils import pathToUrl, smewtDirectoryUrl, tolist
 from smewt.base import SmewtException
+from smewt.base.actionfactory import PlayAction
+import guessit
 
 import os, os.path
 import_dir = smewtDirectoryUrl('smewt', 'media')
@@ -52,20 +54,13 @@ for ep in tolist(series.episodes):
                 mediaFilename = [ f.filename for f in tolist(files) ] # if subtitleFilename.startswith(os.path.splitext(f.filename)[0]) ]
                 mediaFilename = mediaFilename[0] # FIXME: check len == 1 all the time
 
-                languageFiles[subtitle.language] += [ (mediaFilename, subtitleFilename) ]
+                # FIXME: subtitle.language should be a guessit.Language, data model needs to be fixed
+                languageFiles[guessit.Language(subtitle.language)] += [ (mediaFilename, subtitleFilename) ]
 
     # prepare links for playing movie with subtitles
     for lang, sfiles in languageFiles.items():
-        nfile = 1
-        args = {}
-
-        for (mediaFilename, subtitleFilename) in sorted(sfiles):
-            args['filename%d' % nfile] = mediaFilename
-            args['subtitle%d' % nfile] = subtitleFilename
-            nfile += 1
-
-        subtitles.append( {'languageImage': flags_dir + '/%s.png' % (lang,),
-                           'url': SmewtUrl('action', 'play', args)} )
+        subtitles.append({'languageImage': flags_dir + '/%s.png' % lang.alpha2,
+                          'url': PlayAction(sfiles).url()})
 
     subtitles.sort(key = lambda x: x['languageImage'])
 

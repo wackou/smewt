@@ -48,10 +48,10 @@ class EpisodeTagger(Tagger):
         # import subtitles correctly
         if media.type() == 'subtitle':
             subs = []
-            for language in utils.guessCountryCode(media.filename):
-                log.info('Found %s sub in file %s' % (toUtf8(language), toUtf8(media.filename)))
+            for language in utils.guessCountryCodes(media.filename):
+                log.info('Found %s sub in file %s' % (toUtf8(language.english_name), toUtf8(media.filename)))
                 subs += [ result.Subtitle(metadata = media.metadata,
-                                          language = language) ]
+                                          language = language.alpha2) ]
 
             media.metadata = subs
 

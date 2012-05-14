@@ -49,9 +49,9 @@ class MovieTagger(Tagger):
             # FIXME: problem for vobsubs: as a media points to a single metadata object, we cannot
             # represent a .sub for 3 different languages...
             subs = []
-            for language in utils.guessCountryCode(media.filename):
+            for language in utils.guessCountryCodes(media.filename):
                 subs += [ result.Subtitle(metadata = media.metadata,
-                                          language = language) ]
+                                          language = language.alpha2) ]
 
             media.metadata = subs
 

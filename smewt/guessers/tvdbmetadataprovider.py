@@ -24,6 +24,7 @@ from smewt.media import Episode, Series, Movie
 from smewt.base import textutils
 from smewt.base.utils import tolist, smewtDirectory, smewtUserDirectory
 from pygoo import MemoryObjectGraph
+import guessit
 
 from PyQt4.QtCore import SIGNAL, QObject, QUrl, Qt, QSettings
 from PyQt4.QtGui import QImage
@@ -205,6 +206,12 @@ class TVDBMetadataProvider(object):
             except ValueError, e:
                 language = matching_series[0][2]
                 series = matching_series[0][0]
+
+        # TODO: at the moment, overwrite the detected language with the one
+        #       from the settings. It would be better to use the detected
+        #       language if it was more reliable (see previous TODO)...
+        language = str(QSettings().value('gui/language', 'en').toString())
+        language = guessit.Language(language).alpha2
 
         eps = self.getEpisodes(series, language)
 

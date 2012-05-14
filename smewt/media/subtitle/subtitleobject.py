@@ -30,6 +30,9 @@ class Subtitle(Metadata):
 
     typename = 'Subtitle'
 
+    # TODO: language should be a guessit.Language, but we would need first
+    #       to have support for the converters attribute by pygoo (not
+    #       implemented yet)
     schema = { 'metadata': Metadata,
                'language': unicode }
 

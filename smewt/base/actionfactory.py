@@ -21,6 +21,7 @@
 from PyQt4.QtCore import SIGNAL, QObject
 from smewtexception import SmewtException
 from smewt.base.utils import tolist, toresult
+from smewt.base.smewturl import SmewtUrl
 from mediaobject import Media, Metadata
 from subtitletask import SubtitleTask
 from smewt.media import Series, Subtitle
@@ -37,6 +38,24 @@ class Singleton(object):
             cls._the_instance = object.__new__(cls)
         return cls._the_instance
 
+
+class PlayAction(object):
+    def __init__(self, files=None):
+        self.files = files or []
+
+    def addFileWithSubtitle(mediaFilename, subtitleFilename):
+        self.files.append((mediaFilename, subtitleFilename))
+
+    def url(self):
+        nfile = 1
+        args = {}
+
+        for (mediaFilename, subtitleFilename) in sorted(self.files):
+            args['filename%d' % nfile] = mediaFilename
+            args['subtitle%d' % nfile] = subtitleFilename
+            nfile += 1
+
+        return SmewtUrl('action', 'play', args)
 
 # TODO: actions in the ActionFactory should be registered as plugins that
 # can provide certain types of service, ie: getsubtitles action may be filled

@@ -24,6 +24,7 @@
 import sys, os, os.path, fnmatch,  errno
 from PyQt4.QtCore import QSettings, QVariant
 import smewt
+import guessit
 from guessit.fileutils import split_path
 from pygoo.utils import tolist, toresult
 
@@ -140,20 +141,10 @@ def guessCountryCodes(filename):
     # try to guess language from filename
     langs = [ lang.lower() for lang in filename.split('.') ]
 
-    languages = { 'english': 'en',
-                  'french': 'fr',
-                  'francais': 'fr',
-                  u'fran\xe7ais': 'fr',
-                  'spanish': 'es',
-                  'espanol': 'es',
-                  u'espa\xf1ol': 'es'
-                  }
-
     if len(langs) >= 3:
-        l = langs[-2].lower()
-        for lang, code in languages.items():
-            if l[-2:] == lang[:2] or l[-3:] == lang[:3] or l[-len(lang):] == lang:
-                return [ code ]
+        lang = guessit.Language(langs[-2].lower())
+        if lang:
+            return [ lang ]
 
     # try to look inside the .idx, if it exists
     langs = set()
@@ -161,12 +152,12 @@ def guessCountryCodes(filename):
         lines = open(filename[:-3] + 'idx').readlines()
         for l in lines:
             if l[:3] == 'id:':
-                langs.add(l[4:6])
+                langs.add(guessit.Language(l[4:6]))
 
     if langs:
         return list(langs)
 
-    return [ 'unknown' ]
+    return [ guessit.Language('unknown') ]
 
 
 def guessitToPygoo(guess):
