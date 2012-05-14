@@ -24,7 +24,7 @@ from collections import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from smewt.base.textutils import toUtf8
-from smewt.base import utils
+from guessit.fileutils import split_path
 
 class DirSelector(QWidget):
     def __init__(self, focusDir = QDir.currentPath(), parent = None, folders = [], recursiveSelection = True):
@@ -68,7 +68,7 @@ class DirSelector(QWidget):
 
 
     def expandPathNode(self, fullpath):
-        spath = utils.splitPath(fullpath)
+        spath = split_path(fullpath)
         for i in range(len(spath)):
             self.tree.expand(self.model.index(os.path.join(*spath[:i+1])))
 

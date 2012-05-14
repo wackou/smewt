@@ -24,6 +24,7 @@
 import sys, os, os.path, fnmatch,  errno
 from PyQt4.QtCore import QSettings, QVariant
 import smewt
+from guessit.fileutils import split_path
 from pygoo.utils import tolist, toresult
 
 class MethodID(object):
@@ -108,27 +109,13 @@ def smewtUserDirectoryUrl(*args):
     return pathToUrl(smewtUserDirectory(*args))
 
 
-# FIXME: once we depend on GuessIt, import this function directly from there
-def splitPath(path):
-    result = []
-    while True:
-        head, tail = os.path.split(path)
-        if head == '/' and tail == '':
-            return [ '/' ] + result
-        if len(head) == 3 and head[1:] == ':\\' and tail == '':
-            return [ head ] + result
-        if head == '' and tail == '':
-            return result
-        result = [ tail ] + result
-        path = head
-
 def commonRoot(pathlist):
     if not pathlist:
         return []
 
-    root = splitPath(pathlist[0])
+    root = split_path(pathlist[0])
     for path in pathlist[1:]:
-        for i, dir in enumerate(splitPath(path)):
+        for i, dir in enumerate(split_path(path)):
             try:
                 if root[i] != dir:
                     root = root[:i]
@@ -136,16 +123,16 @@ def commonRoot(pathlist):
             except IndexError:
                 break
         else:
-            root = root[:len(splitPath(path))]
+            root = root[:len(split_path(path))]
 
     return os.path.join(*root)
 
 def parentDirectory(path):
-    parentDir = splitPath(path)[:-1]
+    parentDir = split_path(path)[:-1]
     return os.path.join(*parentDir)
 
-
-def guessCountryCode(filename):
+# TODO: Use enzyme for this
+def guessCountryCodes(filename):
     '''Given a subtitle filename, tries to guess which languages it contains.
     As a subtitle file can contain multiple subtitles, this function returns a list
     of found languages.'''
