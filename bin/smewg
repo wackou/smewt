@@ -343,7 +343,10 @@ class SmewtGui(QMainWindow):
         cache.clear()
         cacheFile = utils.smewtUserPath(smewt.APP_NAME + '.cache')
         log.info('Deleting cache file: %s' % cacheFile)
-        os.remove(cacheFile)
+        try:
+            os.remove(cacheFile)
+        except OSError:
+            pass
 
     def quit(self):
         log.info('SmewtGui quitting...')
