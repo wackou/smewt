@@ -48,10 +48,9 @@ if MAIN_LOGGING_LEVEL == logging.DEBUG:
 
 from PyQt4.QtGui import QApplication, QMainWindow, QWidget, QStatusBar, QProgressBar, QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox, QToolBar, QKeySequence
 from PyQt4.QtCore import SIGNAL, QSize, Qt, QSettings, QVariant, QPoint, QSize, QObject, QTimer
-from smewt.gui import MainWidget, FeedWatchWidget, AboutDialog
+from smewt.gui import MainWidget, FeedWatchWidget, AboutDialog, SettingsDialog
 from smewt.base import cache, utils
 from smewt.base.utils import smewtDirectory, smewtUserDirectory
-
 from os.path import join
 
 log = logging.getLogger('smewg')
@@ -93,6 +92,7 @@ class SmewtGui(QMainWindow):
 
         # create menubar
         mainMenu = self.menuBar().addMenu('Main')
+        mainMenu.addAction(self.settingsAction)
         mainMenu.addAction(self.logviewAction)
         # done every time we start the application, as it seems there's no way to tell webkit to reload them
         #mainMenu.addAction(self.regenerateThumbnailsAction)
@@ -178,6 +178,10 @@ class SmewtGui(QMainWindow):
 
 
     def createActions(self):
+        self.settingsAction = QAction('Settings', self)
+        self.connect(self.settingsAction, SIGNAL('triggered()'),
+                     self.showSettings)
+
         self.logviewAction = QAction('Show log', self)
         self.connect(self.logviewAction, SIGNAL('triggered()'),
                      self.viewLog)
@@ -307,6 +311,9 @@ class SmewtGui(QMainWindow):
         # do this now instead of at the very beginning so that our GUI can be setup faster
         cache.load(utils.smewtUserPath(smewt.APP_NAME + '.cache'))
         self.mainWidget.smewtd.updateCollections()
+
+    def showSettings(self):
+        SettingsDialog().exec_()
 
     def viewLog(self):
         # FIXME: this won't work in release mode
