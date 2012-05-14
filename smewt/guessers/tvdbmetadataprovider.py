@@ -25,7 +25,7 @@ from smewt.base import textutils
 from smewt.base.utils import tolist, smewtDirectory, smewtUserDirectory
 from pygoo import MemoryObjectGraph
 
-from PyQt4.QtCore import SIGNAL, QObject, QUrl, Qt
+from PyQt4.QtCore import SIGNAL, QObject, QUrl, Qt, QSettings
 from PyQt4.QtGui import QImage
 
 import os, sys, re, logging
@@ -57,7 +57,7 @@ class TVDBMetadataProvider(object):
         '''
         if len(results)==0:
           raise SmewtException("EpisodeTVDB: Could not find series '%s'" % name)
-        
+
         return results
 
     @cachedmethod
@@ -99,6 +99,7 @@ class TVDBMetadataProvider(object):
 
         result = MemoryObjectGraph()
         movie = result.Movie(title = unicode(m['name']))
+        movie.original_title = m['original_name']
 
         if m.get('released'):
             movie.set('year', datetime.datetime.strptime(m['released'], '%Y-%m-%d').year)
@@ -171,21 +172,24 @@ class TVDBMetadataProvider(object):
 
 
     def startEpisode(self, episode):
+        tmdb.config['lang'] = str(QSettings().value('gui/language', 'en').toString())
+        tmdb.update_config()
+
         if episode.get('series') is None:
             raise SmewtException("TVDBMetadataProvider: Episode doesn't contain 'series' field: %s", md)
 
         name = episode.series.title
         name = name.replace(',', ' ')
-        
+
         matching_series = self.getSeries(name)
 
         # Try first with the languages from guessit, and then with english
         languages = tolist(episode.get('language', [])) + ['en']
 
-        # Sort the series by id (stupid heuristic about most popular series 
+        # Sort the series by id (stupid heuristic about most popular series
         #                        might have been added sooner to the db and the db id
         #                        follows the insertion order)
-        # TODO: we should do something smarter like comparing series name distance, 
+        # TODO: we should do something smarter like comparing series name distance,
         #       episodes count and/or episodes names
         #print '\n'.join(['%s %s --> %f [%s] %s' % (x[1], name, textutils.levenshtein(x[1], name), x[2], x[0]) for x in matching_series])
         matching_series.sort(key=lambda x: (textutils.levenshtein(x[1], name), int(x[0])))
@@ -200,8 +204,8 @@ class TVDBMetadataProvider(object):
                 break
             except ValueError, e:
                 language = matching_series[0][2]
-                series = matching_series[0][0] 
-          
+                series = matching_series[0][0]
+
         eps = self.getEpisodes(series, language)
 
         try:
@@ -215,6 +219,9 @@ class TVDBMetadataProvider(object):
             return MemoryObjectGraph()
 
     def startMovie(self, movieName):
+        tmdb.config['lang'] = str(QSettings().value('gui/language', 'en').toString())
+        tmdb.update_config()
+
         try:
             movieTvdb = self.getMovie(movieName)
             result = self.getMovieData(movieTvdb)

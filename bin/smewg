@@ -80,7 +80,7 @@ class SmewtGui(QMainWindow):
     def __init__(self):
         super(SmewtGui, self).__init__()
         self.setWindowTitle('Smewg - An Ordinary Smewt Gui')
-        
+
         self.plugins = []
 
         self.readWindowSettings()
@@ -285,7 +285,7 @@ class SmewtGui(QMainWindow):
         self.coherenceAction = QAction('Activate coherence plugin', self)
         self.connect(self.coherenceAction, SIGNAL('triggered()'),
                      self.coherenceActivate)
-                     
+
     def bringUpWindow(self):
         self.setVisible(True)
         self.setWindowState(sgui.windowState() & ~Qt.WindowMinimized);
@@ -351,9 +351,9 @@ class SmewtGui(QMainWindow):
         log.debug('Deactivating plugins...')
         for plugin in self.plugins:
           plugin.deactivate()
-        
+
         log.debug('Finished deactivating plugins')
-        
+
         self.writeWindowSettings()
         self.mainWidget.quit()
 
@@ -362,7 +362,7 @@ class SmewtGui(QMainWindow):
 
         log.info('Quitting application...')
         QApplication.instance().quit()
-        
+
     def readWindowSettings(self):
         settings = QSettings()
         rect = QApplication.desktop().availableGeometry(self)
@@ -465,7 +465,7 @@ if __name__ == '__main__':
     app.exec_()
 
     log.info('Exiting')
-    
+
     # FIXME: must remove.  This is needed when activating the Coherence plugin.
     log.warn('Killing application...')
     os.kill(os.getpid(), 9)

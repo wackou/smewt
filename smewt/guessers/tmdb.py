@@ -14,12 +14,17 @@ __version__ = "0.2b"
 
 config = {}
 config['apikey'] = "a8b9f96dde091408a03cb4c78477bd14"
+config['lang'] = 'en'
 
 config['urls'] = {}
-config['urls']['movie.search'] = "http://api.themoviedb.org/2.1/Movie.search/en/xml/%(apikey)s/%%s" % (config)
-config['urls']['movie.getInfo'] = "http://api.themoviedb.org/2.1/Movie.getInfo/en/xml/%(apikey)s/%%s" % (config)
-config['urls']['media.getInfo'] = "http://api.themoviedb.org/2.1/Media.getInfo/en/xml/%(apikey)s/%%s/%%s" % (config)
 
+def update_config():
+    global config
+    config['urls']['movie.search'] = "http://api.themoviedb.org/2.1/Movie.search/%(lang)s/xml/%(apikey)s/%%s" % (config)
+    config['urls']['movie.getInfo'] = "http://api.themoviedb.org/2.1/Movie.getInfo/%(lang)s/xml/%(apikey)s/%%s" % (config)
+    config['urls']['media.getInfo'] = "http://api.themoviedb.org/2.1/Media.getInfo/%(lang)s/xml/%(apikey)s/%%s/%%s" % (config)
+
+update_config()
 
 import os
 import struct
