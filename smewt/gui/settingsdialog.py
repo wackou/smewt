@@ -21,8 +21,15 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import QObject, SIGNAL, QSettings
 import smewt
+import guessit
 from smewt.base.utils import smewtDirectory
 from smewt.base import cache
+
+
+def guiLanguage():
+    language = str(QSettings().value('gui/language', 'en').toString())
+    return guessit.Language(language)
+
 
 class SettingsDialog(QDialog):
     def __init__(self, *args):
@@ -34,8 +41,11 @@ class SettingsDialog(QDialog):
         self.layout = QVBoxLayout()
 
 
-        self.lang_edit = QLineEdit(QSettings().value('gui/language', 'en').toString())
-        self.layout.addWidget(self.lang_edit)
+        hlayout = QHBoxLayout()
+        hlayout.addWidget(QLabel('GUI Language:'))
+        self.lang_edit = QLineEdit(guiLanguage().alpha2)
+        hlayout.addWidget(self.lang_edit)
+        self.layout.addLayout(hlayout)
 
         hlayout = QHBoxLayout()
         self.ok_button = QPushButton('OK')
@@ -55,6 +65,6 @@ class SettingsDialog(QDialog):
 
 
     def saveSettings(self):
-        QSettings().setValue('gui/language', self.lang_edit.text())
+        QSettings().setValue('gui/language', guessit.Language(str(self.lang_edit.text())).lang)
         cache.clear()
         self.accept()

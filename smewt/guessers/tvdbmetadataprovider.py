@@ -39,6 +39,11 @@ import datetime
 
 log = logging.getLogger('smewt.guessers.tvdbmetadataprovider')
 
+def guiLanguage():
+    language = str(QSettings().value('gui/language', 'en').toString())
+    return guessit.Language(language)
+
+
 class TVDBMetadataProvider(object):
     def __init__(self):
         super(TVDBMetadataProvider, self).__init__()
@@ -173,7 +178,7 @@ class TVDBMetadataProvider(object):
 
 
     def startEpisode(self, episode):
-        tmdb.config['lang'] = str(QSettings().value('gui/language', 'en').toString())
+        tmdb.config['lang'] = guiLanguage().alpha2
         tmdb.update_config()
 
         if episode.get('series') is None:
@@ -210,8 +215,7 @@ class TVDBMetadataProvider(object):
         # TODO: at the moment, overwrite the detected language with the one
         #       from the settings. It would be better to use the detected
         #       language if it was more reliable (see previous TODO)...
-        language = str(QSettings().value('gui/language', 'en').toString())
-        language = guessit.Language(language).alpha2
+        language = guiLanguage().alpha2
 
         eps = self.getEpisodes(series, language)
 
@@ -226,7 +230,7 @@ class TVDBMetadataProvider(object):
             return MemoryObjectGraph()
 
     def startMovie(self, movieName):
-        tmdb.config['lang'] = str(QSettings().value('gui/language', 'en').toString())
+        tmdb.config['lang'] = guiLanguage().alpha2
         tmdb.update_config()
 
         try:
