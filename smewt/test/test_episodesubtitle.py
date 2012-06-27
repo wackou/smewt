@@ -64,6 +64,7 @@ class TestEpisodeSubtitle(TestCase):
         return result.decode(encoding)
 
     def subtitlesEqual(self, sub1, sub2):
+        # FIXME: use PySRT to load the subfiles and compare them
         sub1 = self.canonicalForm(sub1)
         sub2 = self.canonicalForm(sub2)
 

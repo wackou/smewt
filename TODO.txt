@@ -136,8 +136,6 @@ note for pygoo:
 - make sure when we assign a variable which is not in the schema, that it is either of a basetype or an object that lives in a graph (ie: BaseObject)
 
 
-periscope shoudl have a cachedmethod that is nicely available to the plugins
-
 TODO: need to move the release data to the media object (right now it is in the metadata object)
 
 - for logview: it would be nice to have

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008-2011 Nicolas Wack <wackou@gmail.com>
+# Copyright (c) 2008-2012 Nicolas Wack <wackou@gmail.com>
 # Copyright (c) 2008 Ricard Marxer <email@ricardmarxer.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 #
 
 from smewt.base import Task, SmewtException
-from smewt.base.utils import tolist
+from smewt.base.utils import tolist, smewtUserPath
 from smewt.media import Movie, Series, Episode, Subtitle
-import periscope
+import subliminal
 import sys, os.path
 import logging
 
@@ -50,99 +50,82 @@ class SubtitleTask(Task):
         log.info('Creating SubtitleTask for %s' % metadata)
 
 
-    def downloadPeriscopeSubtitleText(self, filepath, desc):
-        subdl = periscope.Periscope()
-        #subdl.pluginNames = [ 'Addic7ed' ]
-
-        log.info('Trying to download %s subtitle for %s' % (self.language.english_name, desc))
-
-        subs = subdl.listSubtitles(filepath, [self.language.alpha2])
+    def downloadSubtitle(self, videoFilename, subtitleFilename):
+        # list all available subtitles
+        lang = self.language.alpha2
+        services = None # ['opensubtitles'] # FIXME: temporary for debugging, faster than querying all the services
+        subs = subliminal.list_subtitles(videoFilename, [lang],
+                                         services = services,
+                                         cache_dir = smewtUserPath('subliminal_cache',
+                                                                   createdir=True))
 
         if not subs:
-            raise SmewtException('Could not find any %s subs for %s' % (self.language.english_name, desc))
+            raise SmewtException('No subtitles could be found for file: %s' % videoFilename)
 
-        for sub in subs :
-            log.debug("Found a sub from %s in language %s, downloadable from %s" % (sub['plugin'], sub['lang'], sub['link']))
+        video, subs = subs.items()[0]
 
+        # set the correct filenames for the subs to be downloaded
+        for s in subs:
+            s.path = subtitleFilename
 
-        # TODO: choose best subtitle smartly
-        if len(subs) > 1:
-            log.warning('Multiple subtitles found, trying to pick the best one...')
+        # TODO: pick the best subtitle from this list
 
-
-        sub = subdl.attemptDownloadSubtitleText(subs, [self.language.alpha2])
-        if sub:
-            result = sub["subtitletext"]
-            log.debug('Successfully downloaded %s subtitle for %s' % (self.language.english_name, desc))
-        else:
-            raise SmewtException(u'Could not complete download for sub of %s' % desc)
-
-        return result
+        # download the subtitle
+        task = subliminal.tasks.DownloadTask(videoFilename, subs)
+        return subliminal.core.consume_task(task)
 
 
-    def downloadEpisodeSubtitleText(self):
-        ep = self.metadata
-        desc = 'episode %dx%02d of %s' % (ep.season, ep.episodeNumber, ep.series.title)
+    def findAvailableFilename(self, template):
+        i = 1
+        filename = template % ''
+        while os.path.exists(filename):
+            i += 1
+            filename = template % i
 
-        files = tolist(ep.get('files', []))
-        if files:
-            filepath = files[0].filename
-        else:
-            filepath = '%s %dx%02d %s' % (ep.series.title, ep.season, ep.episodeNumber, ep.get('title', ''))
-
-        return self.downloadPeriscopeSubtitleText(filepath, desc)
-
-
-    def downloadMovieSubtitleText(self):
-        desc = 'movie ' + self.metadata.title
-
-        files = tolist(self.metadata.get('files', []))
-        if files:
-            filepath = files[0].filename
-        else:
-            filepath = '%s.avi' % self.metadata.title
-
-        return self.downloadPeriscopeSubtitleText(filepath, desc)
+        return filename
 
 
     def perform(self):
-        if self.metadata.isinstance(Episode):
-            subtext = self.downloadEpisodeSubtitleText()
-        elif self.metadata.isinstance(Movie):
-            subtext = self.downloadMovieSubtitleText()
-        else:
-            raise SmewtException('Unknown type for downloading subtitle: %s' % self.metadata.__class__.__name__)
+        obj = self.metadata
 
+        if not obj.isinstance(Episode) and not obj.isinstance(Movie):
+            raise SmewtException('Unknown type for downloading subtitle: %s' % obj.__class__.__name__)
+
+        files = tolist(self.metadata.get('files', []))
+        if not files:
+            raise SmewtException('Cannot write subtitle file for %s because it doesn\'t have an attached file')
+
+        # find an appropriate filename
+        videoFilename = files[0].filename
+        filetmpl = '%s.%s' % (os.path.splitext(videoFilename)[0],
+                              self.language.english_name) + '%s.srt'
+
+        subFilename = self.findAvailableFilename(filetmpl)
         if self.subfile is not None:
             if not os.path.isfile(self.subfile) or self.force:
-                # TODO: instead of self.force, maybe write all of them but numbered
-                with open(subFilename, 'w') as f:
-                    f.write(subtext)
-                log.info('Found subtitle for %s' % ep.files.filename)
+                subFilename = self.subfile
             else:
-                log.warning('\'%s\' already exists. Not overwriting it...' % subFilename)
+                log.warning('%s already exists. Not overwriting it...' % self.subfile)
+                return
 
-        else:
-            # find an appropriate filename
-            files = tolist(self.metadata.get('files', []))
-            if not files:
-                log.error('Cannot write subtitle file for %s because it doesn\'t have an attached file')
+        # download subtitle
+        result = self.downloadSubtitle(videoFilename, subFilename)
 
-            filetmpl = files[0].filename.rsplit('.', 1)[0] + '.' + self.language.english_name + '%s.srt'
+        if not result:
+            raise SmewtException('Could not download subtitle for %s' % videoFilename)
 
-            filename = filetmpl % ''
-            i = 2
-            while os.path.exists(filename):
-                filename = filetmpl % i
-                i += 1
+        # TODO: make sure the file actually exists on disk
+        if not os.path.exists(subFilename):
+            raise SmewtException('There seems to have been a problem during the subtitle download')
 
-            if sys.platform != 'win32':
-                subtext = subtext.replace('\r\n', '\n')
+        # normalize subtitle file end-of-lines
+        if sys.platform != 'win32':
+            subtext = open(subFilename).read().replace('\r\n', '\n')
+            with open(subFilename, 'w') as subfile:
+                subfile.write(subtext)
 
-            open(filename, 'w').write(subtext)
-
-            # update the found subs with this one
-            db = self.metadata.graph()
-            sub = db.Subtitle(metadata = self.metadata, language = self.language.alpha2)
-            subfile = db.Media(filename = filename, metadata = sub)
-
+        # update the found subs with this one
+        db = self.metadata.graph()
+        # FIXME: the following 2 lines should happen in a transaction
+        sub = db.Subtitle(metadata = self.metadata, language = self.language.alpha2)
+        subfile = db.Media(filename = subFilename, metadata = sub)

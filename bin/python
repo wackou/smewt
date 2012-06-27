@@ -23,6 +23,6 @@ BASEPATH=${THISFILE%/*}
 BASEPATH=${BASEPATH%/*}
 BASEPATH=${BASEPATH%/*}
 
-export PYTHONPATH=$BASEPATH/smewt:$BASEPATH/pygoo:$BASEPATH/guessit:$BASEPATH/periscope
+export PYTHONPATH=$BASEPATH/smewt:$BASEPATH/pygoo:$BASEPATH/guessit
 #echo $PYTHONPATH
 python $@

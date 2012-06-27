@@ -11,8 +11,8 @@ install_requires = [
     # For more details, see:
     # http://packages.python.org/distribute/setuptools.html#declaring-dependencies
     'pygoo>=0.1.4',
-    'guessit>=0.2',
-    'BeautifulSoup', # for periscope
+    'guessit>=0.4.2',
+    'subliminal>=0.6.1',
     'cheetah',
     'lxml',
     'feedparser'
@@ -138,8 +138,7 @@ if sys.platform == 'win32':
                                                            'Cheetah.DummyTransaction',
                                                            'lxml', 'lxml._elementpath'
                                                            ],
-                                             'packages': [ 'smewt.3rdparty.periscope',
-                                                           'BeautifulSoup' ]
+                                             'packages': [ 'BeautifulSoup' ]
                                              }}))
 
 
