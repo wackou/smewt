@@ -19,7 +19,8 @@
 #
 
 from pygoo import BaseObject
-from smewt.base import Metadata
+from guessit.patterns import video_exts
+from smewt.base import Metadata, utils
 
 
 
@@ -39,6 +40,15 @@ class Movie(Metadata):
     order = [ 'title', 'year' ]
 
     converters = {}
+
+    def niceString(self):
+        return 'movie %s' % self.title
+
+    @staticmethod
+    def isValidMovie(filename):
+        extPatterns = [ '*.' + ext for ext in video_exts ]
+        return utils.matchFile(filename, extPatterns) #and getsize(filename) > 600 * 1024 * 1024
+
 
 
 class Comment(BaseObject):

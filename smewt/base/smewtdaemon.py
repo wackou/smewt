@@ -21,11 +21,12 @@
 from PyQt4.QtCore import QSettings, QVariant
 from pygoo import MemoryObjectGraph, Equal, ontology
 import smewt
-from smewt.media import Series, Episode, Movie
+from smewt.media import Series, Episode, Movie, Subtitle
 from smewt.base import utils, Collection, Media
 from smewt.base.taskmanager import Task, TaskManager
 from os.path import join, dirname, splitext, getsize
 from smewt.taggers import EpisodeTagger, MovieTagger
+from guessit.patterns import subtitle_exts, video_exts
 import time, logging
 
 
@@ -57,12 +58,6 @@ class VersionedMediaGraph(MemoryObjectGraph):
         raise AttributeError, name
 
 
-def validEpisode(filename):
-    return utils.matchFile(filename, [ '*.avi', '*.ogm', '*.mkv' ]) #and getsize(filename) < 600 * 1024 * 1024
-
-def validMovie(filename):
-    return utils.matchFile(filename, [ '*.avi', '*.ogm', '*.mkv' ]) #and getsize(filename) > 600 * 1024 * 1024
-
 
 class SmewtDaemon(object):
     def __init__(self, progressCallback = None):
@@ -77,16 +72,18 @@ class SmewtDaemon(object):
 
         # get our collections: series and movies for now
         self.episodeCollection = Collection(name = 'Series',
-                                           # episodes are videos < 600MB and/or subtitles
-                                           validFiles = [ validEpisode, '*.idx', '*.sub', '*.srt' ],
-                                           mediaTagger = EpisodeTagger,
-                                           dataGraph = self.database,
-                                           taskManager = self.taskManager)
+                                            # import episodes and their subtitles too
+                                            validFiles = [ Episode.isValidEpisode,
+                                                           Subtitle.isValidSubtitle ],
+                                            mediaTagger = EpisodeTagger,
+                                            dataGraph = self.database,
+                                            taskManager = self.taskManager)
 
 
         self.movieCollection = Collection(name = 'Movie',
-                                          # movies are videos > 600MB and/or subtitles
-                                          validFiles = [ validMovie, '*.idx', '*.sub', '*.srt' ],
+                                          # import movies and their subtitles too
+                                          validFiles = [ Movie.isValidMovie,
+                                                         Subtitle.isValidSubtitle ],
                                           mediaTagger = MovieTagger,
                                           dataGraph = self.database,
                                           taskManager = self.taskManager)
@@ -95,6 +92,9 @@ class SmewtDaemon(object):
         if total == 0:
             self.saveDB()
 
+
+    # TODO: def loadCache(filename = None), saveCache()
+    #       should be here, not in smewg.py (as it is atm)
 
     def loadDB(self):
         log.info('Loading database...')
@@ -133,4 +133,3 @@ class SmewtDaemon(object):
     def rescanCollections(self):
         self.episodeCollection.rescan()
         self.movieCollection.rescan()
-

@@ -37,6 +37,7 @@ class EpisodeFilename(GraphAction):
         super(EpisodeFilename, self).__init__()
 
     def canHandle(self, query):
+        # FIXME: we should use isinstance(media, Video) or isinstance(media, Subtitle) instead of relying on .type(), which is a deprecated method
         if query.find_one(Media).type() not in [ 'video', 'subtitle' ]:
             raise SmewtException("%s: can only handle video or subtitle media objects" % self.__class__.__name__)
 

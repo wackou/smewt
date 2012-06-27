@@ -3,7 +3,7 @@
 #
 # Smewt - A smart collection manager
 # Copyright (c) 2008 Ricard Marxer <email@ricardmarxer.com>
-# Copyright (c) 2008 Nicolas Wack <wackou@gmail.com>
+# Copyright (c) 2008-2012 Nicolas Wack <wackou@gmail.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 from pygoo import BaseObject, MemoryObjectGraph, Equal
 from smewtexception import SmewtException
 from textutils import toUtf8
+from guessit.patterns import video_exts, subtitle_exts
 
 # FIXME: this needs to be moved somewhere else...
 class Config(BaseObject):
@@ -69,14 +70,16 @@ class Media(BaseObject):
     reverse_lookup = { 'metadata': 'files',
                        'matches': 'query' }
 
-    types = { 'video': [ 'avi', 'ogm', 'mkv', 'mpg', 'mpeg' ],
-              'subtitle': [ 'idx', 'sub', 'srt' ]
+    types = { 'video': video_exts,
+              'subtitle': subtitle_exts
               }
 
 
     def ext(self):
         return self.filename.split('.')[-1]
 
+    # DEPRECATED: this has better alternatives, such as checking the class of
+    #             an object, or using BaseObject.isinstance()
     def type(self):
         ext = self.ext().lower()
         for name, exts in Media.types.items():

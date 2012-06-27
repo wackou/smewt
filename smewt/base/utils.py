@@ -27,6 +27,7 @@ import smewt
 import guessit
 from guessit.fileutils import split_path
 from pygoo.utils import tolist, toresult
+from smewt.base.smewtexception import SmewtException
 
 class MethodID(object):
     def __init__(self, filename, module, className, methodName):
@@ -184,10 +185,12 @@ def matchFile(filename, validFiles = ['*']):
         if isinstance(validFile, basestring):
             if fnmatch.fnmatch(filename, validFile):
                 return True
-        else:
-            # we assume it's a filter function that returns whether a file should be considered
+        elif callable(validFile):
+            # if it's a filter function, return whether a file should be considered
             if validFile(filename):
                 return True
+        else:
+            raise SmewtException('Argument to utils.matchFiles is not a valid filter: %s' % validFile)
 
     return False
 
@@ -199,11 +202,10 @@ def dirwalk(directory, validFiles = ['*'], recursive = True):
     Patterns can either be strings used for globbing or filter functions that return
     True if the file needs to be considered."""
     for root, dirs, files in os.walk(directory, followlinks = True):
-        for file in files:
-            filename = os.path.join(root, file)
+        for f in files:
+            filename = os.path.join(root, f)
             if matchFile(filename, validFiles):
                 yield filename
 
         if recursive is False:
             break
-

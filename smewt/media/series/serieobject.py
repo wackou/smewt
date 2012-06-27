@@ -18,7 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import Metadata
+from guessit.patterns import video_exts
+from smewt.base import Metadata, utils
 
 class Series(Metadata):
 
@@ -59,3 +60,7 @@ class Episode(Metadata):
     def niceString(self):
         return 'episode %dx%02d of %s' % (self.season, self.episodeNumber, self.series.niceString())
 
+    @staticmethod
+    def isValidEpisode(filename):
+        extPatterns = [ '*.' + ext for ext in video_exts ]
+        return utils.matchFile(filename, extPatterns) #and getsize(filename) < 600 * 1024 * 1024

@@ -18,7 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import Metadata
+from guessit.patterns import subtitle_exts
+from smewt.base import Metadata, utils
 
 
 class Subtitle(Metadata):
@@ -45,3 +46,9 @@ class Subtitle(Metadata):
     unique = [ 'metadata', 'language' ]
 
     converters = {}
+
+
+    @staticmethod
+    def isValidSubtitle(filename):
+        extPatterns = [ '*.' + ext for ext in subtitle_exts ]
+        return utils.matchFile(filename, extPatterns)

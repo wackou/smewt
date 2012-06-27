@@ -151,10 +151,14 @@ class ActionFactory(Singleton):
 
                 if episodes:
                     for ep in episodes:
+                        # FIXME: instead of creating the tasks ourselves, first create
+                        #        the complete list and pass it to subliminal, which can
+                        #        then reuse the connections to the services for better
+                        #        behavior
                         subtask = SubtitleTask(ep, language)
                         mainWidget.smewtd.taskManager.add(subtask)
                 else:
-                    log.info('All videos already have %s subtitles!' % Language(language).english_name())
+                    log.info('All videos already have %s subtitles!' % Language(language).english_name)
 
             elif surl.args['type'] == 'movie':
                 title = surl.args['title']
@@ -166,7 +170,7 @@ class ActionFactory(Singleton):
                 # check if we already have it
                 for sub in tolist(movie.get('subtitles')):
                     if sub.language == language:
-                        log.info('Movie already has a %s subtitle' % Language(language).english_name())
+                        log.info('Movie already has a %s subtitle' % Language(language).english_name)
                         return
 
                 subtask = SubtitleTask(movie, language)
