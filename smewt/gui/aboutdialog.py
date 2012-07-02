@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2011 Nicolas Wack <wackou@gmail.com>
+# Copyright (c) 2011 Nicolas Wack <wackou@smewt.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -65,10 +65,10 @@ class AboutDialog(QDialog):
         authorsTab.setHtml('Smewt is developed by:'
                            '<dl>'
                            '<dt><b>Nicolas Wack</b></dt>'
-                           '<dd><a href="mailto:wackou@gmail.com">wackou@gmail.com</a><br/>'
+                           '<dd><a href="mailto:wackou@smewt.com">wackou@smewt.com</a><br/>'
                            'Project Founder, Lead Developer</dd>'
                            '<dt><b>Ricard Marxer</b></dt>'
-                           '<dd><a href="mailto:email@ricardmarxer.com">email@ricardmarxer.com</a><br/>'
+                           '<dd><a href="mailto:rikrd@smewt.com">rikrd@smewt.com</a><br/>'
                            'Lead Developer</dd>'
                            '</dl>')
                            

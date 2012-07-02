@@ -29,7 +29,7 @@ args = dict(name = 'smewt',
             classifiers = [], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
             keywords = 'smewt pygoo media manager video collection',
             author = 'Nicolas Wack, Ricard Marxer',
-            author_email = 'wackou@gmail.com',
+            author_email = 'wackou@smewt.com',
             url = 'http://www.smewt.com/',
             license = 'GPLv3',
             packages = find_packages(exclude = [ 'ez_setup', 'examples', 'tests', 'utils' ]),

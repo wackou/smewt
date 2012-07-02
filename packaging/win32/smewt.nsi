@@ -1,5 +1,5 @@
 ;Smewt main installer
-;Written by Nicolas Wack <wackou@gmail.com>
+;Written by Nicolas Wack <wackou@smewt.com>
 ;
 ;Inspired by:
 ;NSIS Modern User Interface

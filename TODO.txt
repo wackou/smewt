@@ -110,7 +110,7 @@ class RemoteGraph(MemoryObjectGraph):
 
 list of databases locally loadable:
 Smewt.database
-friend/wackou@gmail.com.database
+friend/wackou@smewt.com.database
 friend/...
 external_hdd/my_hdd.database
 
