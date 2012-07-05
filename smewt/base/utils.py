@@ -84,6 +84,10 @@ def smewtDirectory(*args):
 
     return os.path.abspath(result)
 
+def smewtMedia(*args):
+    args = ('smewt', 'media') + args
+    return smewtDirectory(*args)
+
 def smewtDirectoryUrl(*args):
     return pathToUrl(smewtDirectory(*args))
 

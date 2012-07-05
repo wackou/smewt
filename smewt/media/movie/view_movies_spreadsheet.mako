@@ -1,16 +1,28 @@
-#set allmovies = $movies
 
-<%
+<%!
 from smewt import SmewtUrl
 
-movies = sorted([ { 'title': m.title,
-                    'qtitle': m.title.replace('\'', '\\\''),
+class SDict(dict):
+    def __getattr__(self, attr):
+        try:
+            return dict.__getattr__(self, attr)
+        except AttributeError:
+            return self[attr]
+%>
+
+<%
+allmovies = context['movies']
+
+movies = sorted([ SDict({ 'title': m.title,
+                    'qtitle': m.title,
                     'year': m.get('year', ''),
                     'rating': m.get('rating') or '-',
                     'genres': ', '.join(m.get('genres') or []) or '-',
                     'watched': 'checked' if m.get('watched') else '',
                     'url': SmewtUrl('media', 'movie/single', { 'title': m.title }),
-                    'poster': m.loresImage } for m in allmovies ], key = lambda x: x['title'])
+                    'poster': m.loresImage })
+                    for m in allmovies ],
+                    key = lambda x: x['title'])
 
 from smewt.base.utils import smewtDirectoryUrl
 import_dir = smewtDirectoryUrl('smewt', 'media')
@@ -20,17 +32,15 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
 <html>
 <head>
   <title>All movies view</title>
-   <link rel="stylesheet" href="file://$(import_dir)/movie/movies.css">
+   <link rel="stylesheet" href="file://${import_dir}/movie/movies.css">
 
         <style type="text/css" title="currentStyle">
-            @import "file://$(import_dir)/3rdparty/dataTables/media/css/demos.css";
+            @import "file://${import_dir}/3rdparty/dataTables/media/css/demos.css";
         </style>
 
-    <script type="text/javascript" language="javascript" src="file://$(import_dir)/3rdparty/dataTables/media/js/jquery.js"></script>
-    <script type="text/javascript" language="javascript" src="file://$(import_dir)/3rdparty/dataTables/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" src="file://${import_dir}/3rdparty/dataTables/media/js/jquery.js"></script>
+    <script type="text/javascript" language="javascript" src="file://${import_dir}/3rdparty/dataTables/media/js/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf-8">
-    #raw
-
         function updateAll(form, w, url) {
             mainWidget.updateWatched(url, form[w].checked);
         }
@@ -41,7 +51,6 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
             $('#example').before('<p>&nbsp;</p>');
 
         } );
-    #end raw
         </script>
 
 </head>
@@ -52,7 +61,7 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
 
 <div id="wrapper">
     <div id="header">
-        $title MOVIES
+        ${title} MOVIES
     </div>
 
     <div id="container"><form>
@@ -62,9 +71,17 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
         <tr><th>Title</th><th>Year</th><th>Rating</th><th>Genres</th><th>Watched</th></tr>
       </thead>
       <tbody>
-      #for i, m in enumerate(movies):
-        <tr><td><a href="$m.url">$m.title</a></td><td class="center">$m.year</td><td class="center">$m.rating</td><td>$m.genres</td><td class="center"><input type="checkbox" id="w$(i)" name="watched"  onClick="updateAll(this.form, 'w$(i)', '$m.qtitle')" $m.watched /></td></tr>
-      #end for
+      %for m in movies:
+        <tr>
+          <td><a href="${m.url}">${m.title}</a></td>
+          <td class="center">${m.year}</td>
+          <td class="center">${m.rating}</td>
+          <td>${m.genres}</td>
+          <td class="center">
+            <input type="checkbox" id="w${loop.index}" name="watched"  onClick="updateAll(this.form, 'w${loop.index}', '${m.qtitle}')" ${m.watched} />
+          </td>
+        </tr>
+      %endfor
       </tbody>
       <tfoot>
         <tr><th>Title</th><th>Year</th><th>Rating</th><th>Genres</th><th>Watched</th></tr>
