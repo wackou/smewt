@@ -56,7 +56,7 @@ class SmewtUrl:
         except ValueError:
             raise SmewtException("SmewtUrl: incomplete url '%s'" % self)
 
-        # TODO: in python 2.6 use parse_qs
+        # FIXME: in python 2.6 use parse_qs
         if self.spath.query:
             self.args = dict([ kv.split('=') for kv in self.spath.query.split('&') ])
             for key, value in self.args.items():

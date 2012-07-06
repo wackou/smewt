@@ -41,17 +41,20 @@ def render_mako(url, collection):
         except ValueError:
             config = collection.Config(displaySynopsis = True)
 
-        return t.render_unicode(series = collection.find_one(Series, title=url.args['title']),
-                                displaySynopsis = config.displaySynopsis)
+        data = { 'series': collection.find_one(Series, title=url.args['title']),
+                 'displaySynopsis': config.displaySynopsis }
 
     elif url.viewType == 'all':
-        return t.render(series = collection.find_all(Series))
+        data = { 'series': collection.find_all(Series) }
 
     elif url.viewType == 'suggestions':
-        return t.render(episodes=[ ep for ep in collection.find_all(Episode) if 'lastViewed' in ep ])
+        data = { 'episodes': [ ep for ep in collection.find_all(Episode) if 'lastViewed' in ep ] }
 
     else:
         raise SmewtException('Invalid view type: %s' % url.viewType)
+
+    data['url'] = url
+    return t.render_unicode(**data)
 
 
 def render(url, collection):

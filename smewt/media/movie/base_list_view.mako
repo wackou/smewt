@@ -36,8 +36,29 @@
 </style>
 </%block>
 
-
 <div class="container-fluid">
+
+
+<%block name="navbar">
+<%
+from guessit.fileutils import split_path
+from smewt import SmewtUrl
+
+url = context['url']
+path = split_path(url.spath.path)
+%>
+
+<ul class="breadcrumb">
+  <li>
+    <a href="${SmewtUrl('media', 'speeddial/')}">media</a> <span class="divider">/</span>
+  </li>
+  <li>
+    <a href="${SmewtUrl('media', path[1] + '/')}">${path[1]}</a> <span class="divider">/</span>
+  </li>
+  <li class="active">${path[2]}</li>
+</ul>
+</%block>
+
   <div id="header">
     <%block name="list_header"/>
   </div>
