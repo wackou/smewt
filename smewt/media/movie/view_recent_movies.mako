@@ -1,15 +1,8 @@
 <%!
 from smewt import SmewtUrl
-from smewt.base.utils import tolist, pathToUrl
+from smewt.base.utils import tolist, pathToUrl, SDict
 from smewt.base.textutils import toUtf8
 import datetime
-
-class SDict(dict):
-    def __getattr__(self, attr):
-        try:
-            return dict.__getattr__(self, attr)
-        except AttributeError:
-            return self[attr]
 
 def getComments(md):
     results = []

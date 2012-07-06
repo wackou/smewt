@@ -176,3 +176,8 @@ MISCELLANEOUS:
 
 
 
+----------------------
+
+move Config object out of mediaobject.py, add Qt capabilities directly
+
+

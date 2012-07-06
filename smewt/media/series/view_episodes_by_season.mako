@@ -3,21 +3,14 @@ from itertools import groupby
 from collections import defaultdict
 from smewt import SmewtUrl, Media
 from smewt.media import Episode, Series, Subtitle
-from smewt.base.utils import pathToUrl, smewtDirectoryUrl, tolist
+from smewt.base.utils import pathToUrl, smewtMediaUrl, tolist, SDict
 from smewt.base import SmewtException
 from smewt.base.actionfactory import PlayAction
 import guessit
 
 import os, os.path
-import_dir = smewtDirectoryUrl('smewt', 'media')
-flags_dir = smewtDirectoryUrl('smewt', 'media', 'common', 'images', 'flags')
-
-class SDict(dict):
-    def __getattr__(self, attr):
-        try:
-            return dict.__getattr__(self, attr)
-        except AttributeError:
-            return self[attr]
+import_dir = smewtMediaUrl()
+flags_dir = smewtMediaUrl('common', 'images', 'flags')
 
 %>
 

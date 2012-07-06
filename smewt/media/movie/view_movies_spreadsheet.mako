@@ -1,13 +1,7 @@
 
 <%!
 from smewt import SmewtUrl
-
-class SDict(dict):
-    def __getattr__(self, attr):
-        try:
-            return dict.__getattr__(self, attr)
-        except AttributeError:
-            return self[attr]
+from smewt.base.utils import SDict, pathToUrl
 %>
 
 <%
