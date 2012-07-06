@@ -29,6 +29,17 @@ from guessit.fileutils import split_path
 from pygoo.utils import tolist, toresult
 from smewt.base.smewtexception import SmewtException
 
+
+class SDict(dict):
+    """Dictionary class that also allows read-only attribute-like access
+    to the dictionary values."""
+    def __getattr__(self, attr):
+        try:
+            return dict.__getattr__(self, attr)
+        except AttributeError:
+            return self[attr]
+
+
 class MethodID(object):
     def __init__(self, filename, module, className, methodName):
         self.filename = filename

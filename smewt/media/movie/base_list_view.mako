@@ -1,7 +1,6 @@
 <%inherit file="base.mako"/>
 
-<%def name="wells_list(objs)">
-
+<%block name="list_style">
 <style>
 #header {
  margin: 10px 0 20px 0;
@@ -35,7 +34,20 @@
 }
 
 </style>
+</%block>
 
+
+<div class="container-fluid">
+  <div id="header">
+    <%block name="list_header"/>
+  </div>
+
+  ${next.body()}
+
+</div>
+
+
+<%def name="wells_list(objs)">
 
   %for i, obj in enumerate(objs):
     %if i % 2 == 0:
@@ -58,10 +70,8 @@
   %endfor
 
   ## close the last line if not done already
-  %if len(movies) % 2 == 1:
+  %if len(objs) % 2 == 1:
     </div>
   %endif
 
 </%def>
-
-${self.body()}

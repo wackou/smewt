@@ -1,66 +1,30 @@
+<%inherit file="base_list_view.mako"/>
+
 <%!
 from smewt import SmewtUrl
-from smewt.base.utils import pathToUrl, smewtDirectoryUrl
+from smewt.base.utils import SDict, pathToUrl
 
-import_dir = smewtDirectoryUrl('smewt', 'media', 'series')
-
-class SDict(dict):
-    def __getattr__(self, attr):
-        try:
-            return dict.__getattr__(self, attr)
-        except AttributeError:
-            return self[attr]
 %>
 
 <%
-allseries = context['series']
-series = sorted([ SDict({ 'title': s.title,
-                    'url': SmewtUrl('media', 'series/single', { 'title': s.title }),
-                    'poster': pathToUrl(s.get('loresImage')) })
-                    for s in allseries ],
-                    key = lambda x: x['title'])
-
-
+series = sorted([ SDict(title = s.title,
+                        url = SmewtUrl('media', 'series/single', { 'title': s.title }),
+                        poster = pathToUrl(s.loresImage))
+                  for s in context['series'] ],
+                key = lambda x: x.title)
 %>
 
-<html>
-<head>
-  <title>All series view</title>
-  <link rel="stylesheet" href="${import_dir}/series.css">
-</head>
+<%block name="list_header">
+  ALL SERIES
+</%block>
 
-<body>
 
-<div id="wrapper">
-    <div id="header">
-        ALL SERIES
-    </div>
-    <div id="container">
+%if series:
 
-    %if series:
-        <div id="left-side">
-      %for s in series[::2]:
-        <div class="series">
-          <img src="${s.poster}" />
-          <a href='${s.url}'>${s.title}</a>
-        </div>
-      %endfor
-    </div>
+  ${parent.wells_list(series)}
 
-    <div id="right-side">
-      %for s in series[1::2]:
-        <div class="series">
-          <img src="${s.poster}" />
-          <a href='${s.url}'>${s.title}</a>
-        </div>
-      %endfor
-    </div>
-    %else:
-      <p>There are no episodes in your library. Make sure you go into <b>Collection -> Select series folders</b> to tell Smewt where to look for them.</p>
-    %endif
+%else:
 
-  </div>
-</div>
+  <p>There are no episodes in your library. Make sure you go into <b>Collection -> Select series folders</b> to tell Smewt where to look for them.</p>
 
-</body>
-</html>
+%endif
