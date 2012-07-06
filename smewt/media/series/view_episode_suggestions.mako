@@ -44,7 +44,7 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
 <html>
 <head>
   <title>Episodes suggestions</title>
-  <link rel="stylesheet" href="file://${import_dir}/series/series.css">
+  <link rel="stylesheet" href="${import_dir}/series/series.css">
 </head>
 
 <body>
@@ -64,7 +64,7 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
             url = SmewtUrl('media', 'series/single', { 'title': s.title })
             poster = pathToUrl(s.get('loresImage'))
           %>
-          <img src="file://${poster}" />
+          <img src="${poster}" />
           <a href='${url}'>${s.title}</a>
         </div>
 

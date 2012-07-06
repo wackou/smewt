@@ -50,30 +50,30 @@ import_dir = smewtUserDirectoryUrl('speeddial')
       <tbody>
         <tr>
           <td class="center"><a href="smewt://media/series/all">
-                             <img src="file://${import_dir}/allseries.png" width="200" /></a>
+                             <img src="${import_dir}/allseries.png" width="200" /></a>
                              <p>Series Posters</p></td>
 
           <td class="center"><a href="smewt://media/movie/all">
-                            <img src="file://${import_dir}/allmovies.png" width="200" /></a>
+                            <img src="${import_dir}/allmovies.png" width="200" /></a>
                             <p>Movie Posters</p></td>
 
           <td class="center"><a href="smewt://media/movie/recent">
-                             <img src="file://${import_dir}/recentmovies.png" width="200" /></a>
+                             <img src="${import_dir}/recentmovies.png" width="200" /></a>
                              <p>Recently Watched Movies</p></td>
 
         </tr>
         <tr>
           <td class="center"><a href="smewt://media/series/suggestions">
-                             <img src="file://${import_dir}/episodesuggestions.png" width="200" /></a>
+                             <img src="${import_dir}/episodesuggestions.png" width="200" /></a>
                              <p>Episode Suggestions</p></td>
 
           <td class="center"><a href="smewt://media/movie/spreadsheet">
-                             <img src="file://${import_dir}/moviespreadsheet.png" width="200" /></a>
+                             <img src="${import_dir}/moviespreadsheet.png" width="200" /></a>
                              <p>All Movies</p></td>
 
           <!--
           <td class="center"><a href="smewt://feedwatcher">
-                             <img src="file://${import_dir}/feedwatcher_200x150.png" width="200" /></a>
+                             <img src="${import_dir}/feedwatcher_200x150.png" width="200" /></a>
                              <p>Feed Watcher</p></td>
            -->
         </tr>

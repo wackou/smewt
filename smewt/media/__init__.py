@@ -19,29 +19,26 @@
 #
 
 from mako.template import Template
+from mako.lookup import TemplateLookup
 from mako import exceptions
 from smewt.base.utils import smewtMedia
 
 RELOAD_TEMPLATES = True
-DEBUG_TEMPLATES = False
+DEBUG_TEMPLATES = True
 
 _tmpl_cache = {}
 
+lookup = TemplateLookup(directories=[ smewtMedia('common'),
+                                      smewtMedia('speeddial'),
+                                      smewtMedia('movie'),
+                                      smewtMedia('series')
+                                      ],
+                        strict_undefined=False,
+                        filesystem_checks=RELOAD_TEMPLATES)
+
 def get_mako_template(namespace, tmap, name):
     filename = tmap[name]
-    if RELOAD_TEMPLATES:
-        t = Template(filename=smewtMedia(namespace, filename),
-                     strict_undefined=False)
-        _tmpl_cache[(namespace, name)] = t
-        return t
-    else:
-        if (namespace, name) in _tmpl_cache:
-            return _tmpl_cache[(namespace, name)]
-        else:
-            t = Template(filename=smewtMedia(namespace, filename),
-                         strict_undefined=True)
-            _tmpl_cache[(namespace, name)] = t
-            return t
+    return lookup.get_template(filename)
 
 
 def render_mako_template(render_func, url, collection):

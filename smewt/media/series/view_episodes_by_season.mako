@@ -106,9 +106,9 @@ lastSeasonWatched = series.get('lastSeasonWatched', 0)
                                             } };
     </script>
 
-    <script type="text/javascript" src="file://${import_dir}/3rdparty/tabber.js"></script>
-    <script type="text/javascript" src="file://${import_dir}/3rdparty/styler.js"></script>
-    <link rel="stylesheet" href="file://${import_dir}/series/series.css" type="text/css">
+    <script type="text/javascript" src="${import_dir}/3rdparty/tabber.js"></script>
+    <script type="text/javascript" src="${import_dir}/3rdparty/styler.js"></script>
+    <link rel="stylesheet" href="${import_dir}/series/series.css" type="text/css">
 
     <script type="text/javascript" charset="utf-8">
         function toggleSynopsis() {
@@ -121,7 +121,7 @@ lastSeasonWatched = series.get('lastSeasonWatched', 0)
 
 <body>
 
-<img src="file://${poster}" height="130px" width:"auto"/>
+<img src="${poster}" height="130px" width:"auto"/>
 
 <div class="rightshifted">
   <h1>${seriesName}</h1>
@@ -162,7 +162,7 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
       %endtry
 
       %for s in ep['subtitleUrls']:
-           <a href="${s.url}"><img src="file://${s.languageImage}" /></a>
+           <a href="${s.url}"><img src="${s.languageImage}" /></a>
       %endfor
 
       %if 'synopsis' in ep:

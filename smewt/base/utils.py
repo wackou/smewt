@@ -71,10 +71,10 @@ def makedir(path):
 def pathToUrl(path):
     if sys.platform == 'win32':
         # perform some drive letter trickery
-        result = 'localhost/%s:/%s' % (path[0], path[3:])
-        return result.replace('\\', '/')
+        path = 'localhost/%s:/%s' % (path[0], path[3:])
+        path = path.replace('\\', '/')
 
-    return path
+    return 'file://' + path
 
 def smewtDirectory(*args):
     result = os.path.join(currentPath(), '..', '..', *args)
@@ -84,12 +84,15 @@ def smewtDirectory(*args):
 
     return os.path.abspath(result)
 
+def smewtDirectoryUrl(*args):
+    return pathToUrl(smewtDirectory(*args))
+
 def smewtMedia(*args):
     args = ('smewt', 'media') + args
     return smewtDirectory(*args)
 
-def smewtDirectoryUrl(*args):
-    return pathToUrl(smewtDirectory(*args))
+def smewtMediaUrl(*args):
+    return pathToUrl(smewtMedia(*args))
 
 def smewtUserPath(*args, **kwargs):
     settings = QSettings()

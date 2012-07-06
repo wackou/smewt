@@ -32,14 +32,14 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
 <html>
 <head>
   <title>All movies view</title>
-   <link rel="stylesheet" href="file://${import_dir}/movie/movies.css">
+   <link rel="stylesheet" href="${import_dir}/movie/movies.css">
 
         <style type="text/css" title="currentStyle">
-            @import "file://${import_dir}/3rdparty/dataTables/media/css/demos.css";
+            @import "${import_dir}/3rdparty/dataTables/media/css/demos.css";
         </style>
 
-    <script type="text/javascript" language="javascript" src="file://${import_dir}/3rdparty/dataTables/media/js/jquery.js"></script>
-    <script type="text/javascript" language="javascript" src="file://${import_dir}/3rdparty/dataTables/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" src="${import_dir}/3rdparty/dataTables/media/js/jquery.js"></script>
+    <script type="text/javascript" language="javascript" src="${import_dir}/3rdparty/dataTables/media/js/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf-8">
         function updateAll(form, w, url) {
             mainWidget.updateWatched(url, form[w].checked);

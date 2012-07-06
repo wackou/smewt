@@ -40,20 +40,20 @@ def render_mako(url, collection):
         return t.render_unicode(movie=collection.find_one(Movie, title = url.args['title']))
 
     elif url.viewType == 'all':
-        return t.render(movies=collection.find_all(Movie))
+        return t.render_unicode(movies=collection.find_all(Movie))
 
     elif url.viewType == 'spreadsheet':
-        return t.render(title='ALL', movies=collection.find_all(Movie))
+        return t.render_unicode(title='ALL', movies=collection.find_all(Movie))
 
     elif url.viewType == 'unwatched':
-        return t.render(movies=[ m for m in collection.find_all(node_type = Movie)
-                                 if not m.get('watched') ],
-                        title='UNWATCHED')
+        return t.render_unicode(movies=[ m for m in collection.find_all(node_type = Movie)
+                                         if not m.get('watched') ],
+                                title='UNWATCHED')
 
     elif url.viewType == 'recent':
-        return t.render(movies=[ m for m in collection.find_all(node_type = Movie)
-                                 if m.get('lastViewed') is not None ],
-                        title='RECENT')
+        return t.render_unicode(movies=[ m for m in collection.find_all(node_type = Movie)
+                                         if m.get('lastViewed') is not None ],
+                                title='RECENT')
 
     else:
         raise SmewtException('Invalid view type: %s' % url.viewType)

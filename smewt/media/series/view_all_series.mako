@@ -26,7 +26,7 @@ series = sorted([ SDict({ 'title': s.title,
 <html>
 <head>
   <title>All series view</title>
-  <link rel="stylesheet" href="file://${import_dir}/series.css">
+  <link rel="stylesheet" href="${import_dir}/series.css">
 </head>
 
 <body>
@@ -41,7 +41,7 @@ series = sorted([ SDict({ 'title': s.title,
         <div id="left-side">
       %for s in series[::2]:
         <div class="series">
-          <img src="file://${s.poster}" />
+          <img src="${s.poster}" />
           <a href='${s.url}'>${s.title}</a>
         </div>
       %endfor
@@ -50,7 +50,7 @@ series = sorted([ SDict({ 'title': s.title,
     <div id="right-side">
       %for s in series[1::2]:
         <div class="series">
-          <img src="file://${s.poster}" />
+          <img src="${s.poster}" />
           <a href='${s.url}'>${s.title}</a>
         </div>
       %endfor

@@ -95,10 +95,10 @@ qtitle = movie.title
 
 <head>
 <title>single movie display</title>
-<script type="text/javascript" src="file://${import_dir}/3rdparty/tabber.js"></script>
-<link rel="stylesheet" href="file://${import_dir}/movie/movies.css" type="text/css">
+<script type="text/javascript" src="${import_dir}/3rdparty/tabber.js"></script>
+<link rel="stylesheet" href="${import_dir}/movie/movies.css" type="text/css">
 
-  <script type="text/javascript" language="javascript" src="file://${import_dir}/3rdparty/dataTables/media/js/jquery.js"></script>
+  <script type="text/javascript" language="javascript" src="${import_dir}/3rdparty/dataTables/media/js/jquery.js"></script>
 
   <script type="text/javascript" charset="utf-8">
     function addComment(form, id, url) {
@@ -110,7 +110,7 @@ qtitle = movie.title
 
 <body>
 
-<img src="file://${poster}" />
+<img src="${poster}" />
 
 <div class="rightshifted">
   <h1>${movieName}</h1>
@@ -119,7 +119,7 @@ qtitle = movie.title
   %if playLink:
     <a href="${playLink}">Play Movie</a>
     %for s in subtitles:
-       <a href="${s['url']}"><img src="file://${s['languageImage']}" /></a>
+       <a href="${s['url']}"><img src="${s['languageImage']}" /></a>
     %endfor
   %endif
   &nbsp;&nbsp;&nbsp;&nbsp;

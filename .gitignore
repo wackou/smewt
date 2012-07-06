@@ -9,3 +9,6 @@ logview.log
 build
 dist
 smewt.egg-info
+
+smewt/test/*/*.avi
+smewt/test/*/*.srt

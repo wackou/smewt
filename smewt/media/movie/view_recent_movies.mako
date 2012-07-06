@@ -1,6 +1,6 @@
 <%!
 from smewt import SmewtUrl
-from smewt.base.utils import tolist
+from smewt.base.utils import tolist, pathToUrl
 from smewt.base.textutils import toUtf8
 import datetime
 
@@ -51,7 +51,7 @@ movies = sorted([ SDict({ 'title': m.title,
                     'watched': 'checked' if m.get('watched') else '',
                     'comments': getComments(m),
                     'url': SmewtUrl('media', 'movie/single', { 'title': m.title }),
-                    'poster': m.loresImage }) for m in allmovies ], key = lambda x: -x['lastViewed'])
+                    'poster': pathToUrl(m.loresImage) }) for m in allmovies ], key = lambda x: -x['lastViewed'])
 
 # keep only the 4 most recent movies
 movies = movies[:4]
@@ -64,9 +64,9 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
 <html>
 <head>
   <title>Recent movies view</title>
-  <link rel="stylesheet" href="file://${import_dir}/movie/movies.css">
+  <link rel="stylesheet" href="${import_dir}/movie/movies.css">
 
-  <script type="text/javascript" language="javascript" src="file://${import_dir}/3rdparty/dataTables/media/js/jquery.js"></script>
+  <script type="text/javascript" language="javascript" src="${import_dir}/3rdparty/dataTables/media/js/jquery.js"></script>
 
   <script type="text/javascript" charset="utf-8">
     function addComment(form, id, url) {
@@ -88,7 +88,7 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
       %for m in movies:
       %if loop.index % 2 == 0:
         <div class="commentbox">
-          <img src="file://${m.poster}" />
+          <img src="${m.poster}" />
           <a href='${m.url}'>${m.title}</a>
           <div class="comments">
           <p>Last viewed ${m.lastViewedString}</p>
@@ -113,7 +113,7 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
       %for m in movies:
       %if loop.index % 2 == 1:
         <div class="commentbox">
-          <img src="file://${m.poster}" />
+          <img src="${m.poster}" />
           <a href='${m.url}'>${m.title}</a>
           <div class="comments">
           <p>Last viewed ${m.lastViewedString}</p>
