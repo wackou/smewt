@@ -13,7 +13,7 @@ install_requires = [
     'pygoo>=0.1.4',
     'guessit>=0.4.2',
     'subliminal>=0.6.1',
-    'cheetah',
+    'mako>=0.7',
     'lxml',
     'feedparser'
 ]
@@ -67,7 +67,7 @@ if sys.platform == 'darwin':
     # py2app data
     OPTIONS = { 'argv_emulation': True,
                 'iconfile': 'smewt/icons/smewt.icns',
-                'packages': [ 'smewt', 'Cheetah', 'lxml', 'guessit' ],
+                'packages': [ 'smewt', 'mako', 'lxml', 'guessit' ],
                 'frameworks': [ '/Developer/Applications/Qt/plugins/iconengines/libqsvgicon.dylib' ],
                 'includes': [ 'sip', 'PyQt4', 'PyQt4.QtCore', 'PyQt4.QtGui', 'PyQt4.QtNetwork', 'PyQt4.QtWebKit',  'PyQt4.QtXml', 'PyQt4.QtSvg', 'ntpath' ],
                 'excludes': [ 'PyQt4.QtDesigner', 'PyQt4.QtOpenGL', 'PyQt4.QtScript',
@@ -135,7 +135,7 @@ if sys.platform == 'win32':
                      options = { 'py2exe': { 'dll_excludes': 'MSVCP90.dll',
                                              'includes': [ 'sip',
                                                            'PyQt4.QtNetwork',
-                                                           'Cheetah.DummyTransaction',
+                                                           'mako', # FIXME: necessary?
                                                            'lxml', 'lxml._elementpath'
                                                            ],
                                              'packages': [ 'BeautifulSoup' ]

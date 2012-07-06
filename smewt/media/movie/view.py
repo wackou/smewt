@@ -18,20 +18,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from mako.template import Template
-from mako import exceptions
 from pygoo import MemoryObjectGraph, ontology
 from smewt.base import SmewtException, Media
+from smewt.media import get_mako_template, render_mako_template
 from movieobject import Movie
 from smewt.base.utils import smewtDirectory, smewtMedia
 ontology.import_class('Movie')
 
-RELOAD_TEMPLATES = True
-DEBUG_TEMPLATES = True
 
-_tmpl_cache = {}
-
-def get_mako_template(name):
+def render_mako(url, collection):
     tmap = { 'single': 'view_movie.mako',
              'all': 'view_all_movies.mako',
              'spreadsheet': 'view_movies_spreadsheet.mako',
@@ -39,22 +34,7 @@ def get_mako_template(name):
              'recent': 'view_recent_movies.mako'
              }
 
-    filename = tmap[name]
-    if RELOAD_TEMPLATES:
-        t = Template(filename=smewtMedia('movie', filename))
-        _tmpl_cache[name] = t
-        return t
-    else:
-        if name in _tmpl_cache:
-            return _tmpl_cache[name]
-        else:
-            t = Template(filename=smewtMedia('movie', filename),
-                         strict_undefined=True)
-            _tmpl_cache[name] = t
-            return t
-
-def render_mako(url, collection):
-    t = get_mako_template(url.viewType)
+    t = get_mako_template('movie', tmap, url.viewType)
 
     if url.viewType == 'single':
         return t.render_unicode(movie=collection.find_one(Movie, title = url.args['title']))
@@ -80,14 +60,4 @@ def render_mako(url, collection):
 
 
 def render(url, collection):
-    '''This function always receive an URL and a full graph of all the collection as metadata input.
-    This is the place to put some logic before the html rendering is done, such as filtering out
-    items we don't want to display, or shape the data so that it's more suited for html rendering, etc...'''
-
-    try:
-        result = render_mako(url, collection)
-        if DEBUG_TEMPLATES:
-            open('/tmp/view.html', 'w').write(result.encode('utf-8'))
-        return result
-    except:
-        return exceptions.html_error_template().render()
+    return render_mako_template(render_mako, url, collection)

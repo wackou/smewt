@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Nicolas Wack <wackou@smewt.com>
+# Copyright (c) 2008-2012 Nicolas Wack <wackou@smewt.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +17,42 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+from mako.template import Template
+from mako import exceptions
+from smewt.base.utils import smewtMedia
+
+RELOAD_TEMPLATES = True
+DEBUG_TEMPLATES = False
+
+_tmpl_cache = {}
+
+def get_mako_template(namespace, tmap, name):
+    filename = tmap[name]
+    if RELOAD_TEMPLATES:
+        t = Template(filename=smewtMedia(namespace, filename),
+                     strict_undefined=False)
+        _tmpl_cache[(namespace, name)] = t
+        return t
+    else:
+        if (namespace, name) in _tmpl_cache:
+            return _tmpl_cache[(namespace, name)]
+        else:
+            t = Template(filename=smewtMedia(namespace, filename),
+                         strict_undefined=True)
+            _tmpl_cache[(namespace, name)] = t
+            return t
+
+
+def render_mako_template(render_func, url, collection):
+    try:
+        result = render_func(url, collection)
+        if DEBUG_TEMPLATES:
+            open('/tmp/view.html', 'w').write(result.encode('utf-8'))
+        return result
+    except:
+        return exceptions.html_error_template().render()
+
 
 from series import *
 from movie import *

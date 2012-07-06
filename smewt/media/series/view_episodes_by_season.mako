@@ -1,7 +1,4 @@
-#set series = $series
-#set displaySynopsis = $displaySynopsis
-
-<%
+<%!
 from itertools import groupby
 from collections import defaultdict
 from smewt import SmewtUrl, Media
@@ -14,6 +11,20 @@ import guessit
 import os, os.path
 import_dir = smewtDirectoryUrl('smewt', 'media')
 flags_dir = smewtDirectoryUrl('smewt', 'media', 'common', 'images', 'flags')
+
+class SDict(dict):
+    def __getattr__(self, attr):
+        try:
+            return dict.__getattr__(self, attr)
+        except AttributeError:
+            return self[attr]
+
+%>
+
+<%
+series = context['series']
+displaySynopsis = context['displaySynopsis']
+
 seasons = defaultdict(lambda: [])
 
 seriesName = series.title
@@ -24,10 +35,10 @@ else:
     displayStyle = 'none'
 
 # First prepare the episodes
-episodes = {}
+episodes = SDict()
 
 for ep in tolist(series.episodes):
-    md = dict(ep.literal_items())
+    md = SDict(ep.literal_items())
 
 
     # FIXME: we should do sth smarter here, such as ask the user, or at least warn him
@@ -59,8 +70,8 @@ for ep in tolist(series.episodes):
 
     # prepare links for playing movie with subtitles
     for lang, sfiles in languageFiles.items():
-        subtitles.append({'languageImage': flags_dir + '/%s.png' % lang.alpha2,
-                          'url': PlayAction(sfiles).url()})
+        subtitles.append(SDict({'languageImage': flags_dir + '/%s.png' % lang.alpha2,
+                                'url': PlayAction(sfiles).url()}))
 
     subtitles.sort(key = lambda x: x['languageImage'])
 
@@ -91,47 +102,45 @@ lastSeasonWatched = series.get('lastSeasonWatched', 0)
         var tabberOptions = { 'onClick': function(args) {
                                             var t = args.tabber;
                                             var i = args.index;
-                                            mainWidget.lastSeasonWatched("$(seriesName)", t.tabs[i].headingText.split(' ')[1]);
+                                            mainWidget.lastSeasonWatched("${seriesName}", t.tabs[i].headingText.split(' ')[1]);
                                             } };
     </script>
 
-    <script type="text/javascript" src="file://$(import_dir)/3rdparty/tabber.js"></script>
-    <script type="text/javascript" src="file://$(import_dir)/3rdparty/styler.js"></script>
-    <link rel="stylesheet" href="file://$(import_dir)/series/series.css" type="text/css">
+    <script type="text/javascript" src="file://${import_dir}/3rdparty/tabber.js"></script>
+    <script type="text/javascript" src="file://${import_dir}/3rdparty/styler.js"></script>
+    <link rel="stylesheet" href="file://${import_dir}/series/series.css" type="text/css">
 
     <script type="text/javascript" charset="utf-8">
-    #raw
         function toggleSynopsis() {
             toggleByName('synopsis');
             mainWidget.toggleSynopsis(isToggled('synopsis'));
         }
-    #end raw
     </script>
 
 </head>
 
 <body>
 
-<img src="file://$poster" height="130px" width:"auto"/>
+<img src="file://${poster}" height="130px" width:"auto"/>
 
 <div class="rightshifted">
-  <h1>$seriesName</h1>
+  <h1>${seriesName}</h1>
 
   <a href="javascript:toggleSynopsis()">Toggle synopsis</a>
 </div>
 
 
 <div class="tabber">
-#for seasonNumber, eps in seasons.items():
-  #if seasonNumber == lastSeasonWatched:
+%for seasonNumber, eps in seasons.items():
+  %if seasonNumber == lastSeasonWatched:
     <div class="tabbertab tabbertabdefault">
-  #else
+  %else:
     <div class="tabbertab">
-  #end if
-  <h2>Season $seasonNumber</h2>
+  %endif
+  <h2>Season ${seasonNumber}</h2>
   <p>
 
-  #if seriesName != 'Unknown':
+  %if seriesName != 'Unknown':
 
   <%
 englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': seriesName, 'season': seasonNumber, 'language': 'en' })
@@ -139,29 +148,29 @@ frenchSubsLink  = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
 spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': seriesName, 'season': seasonNumber, 'language': 'es' })
   %>
     <div class="boxlink">
-      <a href="$englishSubsLink">Get missing English subtitles</a>
-      <a href="$frenchSubsLink">Get missing French subtitles</a>
-      <a href="$spanishSubsLink">Get missing Spanish subtitles</a>
+      <a href="${englishSubsLink}">Get missing English subtitles</a>
+      <a href="${frenchSubsLink}">Get missing French subtitles</a>
+      <a href="${spanishSubsLink}">Get missing Spanish subtitles</a>
     </div>
 
-  #for ep in [ ep for ep in eps if 'title' in ep and ep.get('episodeNumber', -1) != -1 ]
-    #if 'filename' in ep:
-      #try
-        <div class="episode"><a href="$ep.url">$ep.episodeNumber - $ep.title </a>
-      #except
-        <div class="episode"> ? - $ep.title
-      #end try
+  %for ep in [ ep for ep in eps if 'title' in ep and ep.get('episodeNumber', -1) != -1 ]:
+    %if 'filename' in ep:
+      %try:
+        <div class="episode"><a href="${ep.url}">${ep.episodeNumber} - ${ep.title} </a>
+      %except:
+        <div class="episode"> ? - ${ep.title}
+      %endtry
 
-      #for s in ep['subtitleUrls']
-           <a href="$s.url"><img src="file://$s.languageImage" /></a>
-      #end for
+      %for s in ep['subtitleUrls']:
+           <a href="${s.url}"><img src="file://${s.languageImage}" /></a>
+      %endfor
 
-      #if 'synopsis' in ep:
-        <div name="synopsis" style="display:$displayStyle"><p>$ep.synopsis</p></div>
-      #end if
+      %if 'synopsis' in ep:
+        <div name="synopsis" style="display:${displayStyle}"><p>${ep.synopsis}</p></div>
+      %endif
       </div>
-    #end if
-  #end for
+    %endif
+  %endfor
 
 <%
 import os.path
@@ -177,15 +186,15 @@ extras = [ { 'title': f,
              for f in files ]
 %>
 
-  #if extras
+  %if extras:
     <div class="extras">Extras / Untitled / Metadata unknown</div>
-  #end if
-  #for ep in extras
-    <div class="episode"><a href="$ep.url"><i>$ep.title</i></a></div>
-  #end for
+  %endif
+  %for ep in extras:
+    <div class="episode"><a href="${ep.url}"><i>${ep.title}</i></a></div>
+  %endfor
 
 
-    #else
+    %else:
     <!-- series == unknown -->
 
 <%
@@ -202,13 +211,13 @@ unknownFiles.sort(key = lambda f: f['title'])
 
 %>
 
-    #for ep in unknownFiles:
-        <div class="episode"><a href="$ep.url"><i>$ep.title</i></a></div>
-    #end for
+    %for ep in unknownFiles:
+        <div class="episode"><a href="${ep.url}"><i>${ep.title}</i></a></div>
+    %endfor
 
-    #end if
+    %endif
   </p></div>
-#end for
+%endfor
 
 </body>
 </html>

@@ -1,16 +1,18 @@
-#set episodes = $episodes
-
-<%
+<%!
 from smewt import SmewtUrl
 from smewt.base.utils import tolist, pathToUrl
 from smewt.base.textutils import toUtf8
 from itertools import groupby
 import datetime
+%>
+
+<%
+episodes = context['episodes']
 
 # map of series to list of episodes
 suggest = {}
 
-epsiodeCount = 3
+episodeCount = 3
 
 # first find the last viewed episode for each season
 episodes = sorted(episodes, key = lambda ep: ep.series.title)
@@ -28,7 +30,7 @@ for serieName, eps in groupby(episodes, lambda ep: ep.series.title):
 
     # find only more recent episode to watch
     if s:
-        keep = sorted(s, key = lambda ep: (ep.season, ep.episodeNumber))[:epsiodeCount]
+        keep = sorted(s, key = lambda ep: (ep.season, ep.episodeNumber))[:episodeCount]
         suggest[keep[0].series] = keep
 
 # sort our suggestions to show the last scanned ones first
@@ -42,7 +44,7 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
 <html>
 <head>
   <title>Episodes suggestions</title>
-  <link rel="stylesheet" href="file://$(import_dir)/series/series.css">
+  <link rel="stylesheet" href="file://${import_dir}/series/series.css">
 </head>
 
 <body>
@@ -55,34 +57,36 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
 
     <div id="center-side">
 
-    #if suggest
-      #for s, eps in suggest
+    %if suggest:
+      %for s, eps in suggest:
         <div class="series">
-        #set url = SmewtUrl('media', 'series/single', { 'title': s.title })
-        #set poster = pathToUrl(s.get('loresImage'))
-          <img src="file://$poster" />
-          <a href='$url'>$s.title</a>
+          <%
+            url = SmewtUrl('media', 'series/single', { 'title': s.title })
+            poster = pathToUrl(s.get('loresImage'))
+          %>
+          <img src="file://${poster}" />
+          <a href='${url}'>${s.title}</a>
         </div>
 
-        #for ep in eps
+        %for ep in eps:
         <div class="suggest">
-          #set url = SmewtUrl('action', 'play', { 'filename1': tolist(ep.files)[0].filename })
-          #if 'title' in ep:
-            <a href="$url">$ep.episodeNumber - $ep.title </a>
-          #else
-            <a href="$url">$ep.episodeNumber - <i>Unknown</i> </a>
-          #end if
-            #if 'synopsis' in ep:
-              <p>$ep.synopsis</p>
-            #end if
+          <% url = SmewtUrl('action', 'play', { 'filename1': tolist(ep.files)[0].filename }) %>
+          %if 'title' in ep:
+            <a href="${url}">${ep.episodeNumber} - ${ep.title} </a>
+          %else:
+            <a href="${url}">${ep.episodeNumber} - <i>Unknown</i> </a>
+          %endif
+            %if 'synopsis' in ep:
+              <p>${ep.synopsis}</p>
+            %endif
         </div>
-        #end for
-      #end for
-    #else
+        %endfor
+      %endfor
+    %else:
       <p>No episode suggestions are available at this moment.</p>
 
       <p>When you start watching series, this view will show you the most recent episodes that you haven't seen yet, sorted by series .</p>
-    #end if
+    %endif
     </div>
     </div>
 

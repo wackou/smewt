@@ -18,18 +18,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from Cheetah.Template import Template
-from smewt.base.utils import smewtDirectory
+from smewt.media import get_mako_template, render_mako_template
+
+def render_mako(url, collection):
+    tmap = { 'speeddial': 'speeddial.mako'
+             }
+
+    t = get_mako_template('speeddial', tmap, 'speeddial')
+
+    return t.render(info=None)
 
 def render(url, collection):
-    '''This function always receive an URL and a full graph of all the collection as metadata input.
-    This is the place to put some logic before the html rendering is done, such as filtering out
-    items we don't want to display, or shape the data so that it's more suited for html rendering, etc...'''
-    t = Template(file = smewtDirectory('smewt', 'media', 'speeddial', 'speeddial.html'),
-                 searchList = { 'info': None })
-
-    return t.respond()
-
-
-
-
+    return render_mako_template(render_mako, url, collection)
