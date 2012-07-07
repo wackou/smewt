@@ -40,5 +40,8 @@ ${next.body()}
 <script src="${media('js/libs/bootstrap/bootstrap.min.js')}"></script>
 
 <script src="${media('js/script.js')}"></script>
+
+<%block name="scripts"/>
+
 </body>
 </html>
