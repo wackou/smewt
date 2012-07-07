@@ -10,8 +10,6 @@ from smewt.base import SmewtException
 from smewt.base.actionfactory import PlayAction
 import guessit
 
-import os
-import os.path
 import_dir = smewtMediaUrl()
 flags_dir = smewtMediaUrl('common', 'images', 'flags')
 
@@ -21,24 +19,19 @@ flags_dir = smewtMediaUrl('common', 'images', 'flags')
 series = context['series']
 displaySynopsis = context['displaySynopsis']
 
-seasons = defaultdict(lambda: [])
-
-seriesName = series.title
 poster = pathToUrl(series.get('hiresImage'))
 if displaySynopsis:
     displayStyle = 'inline'
 else:
     displayStyle = 'none'
 
-# First prepare the episodes
-episodes = SDict()
-
-new_eps = defaultdict(list)
+# First prepare the episodes, grouping them by season
+episodes = defaultdict(list)
 for ep in tolist(series.episodes):
-   new_eps[ep.season].append(ep)
+   episodes[ep.season].append(ep)
 
-for season, eps in new_eps.items():
-   new_eps[season] = sorted(eps, key=lambda x:x.get('episodeNumber', 1000))
+for season, eps in episodes.items():
+   episodes[season] = sorted(eps, key=lambda x:x.get('episodeNumber', 1000))
 
 def playUrl(ep):
     # FIXME: we should do sth smarter here, such as ask the user, or at least warn him
@@ -71,56 +64,6 @@ def getSubtitleLink(subtitle):
    return SDict({ 'languageImage': flags_dir + '/%s.png' % guessit.Language(subtitle.language).alpha2,
                   'url': PlayAction(sfiles).url()})
 
-for ep in tolist(series.episodes):
-    md = SDict(ep.literal_items())
-
-
-    # FIXME: we should do sth smarter here, such as ask the user, or at least warn him
-    files = ep.get('files')
-    if not files:
-        # dirty fix so we don't crash if the episode has no associated video file:
-        md['filename'] = ''
-    elif isinstance(files, list):
-        md['filename'] = files[0].filename
-    else:
-        md['filename'] = files.filename
-
-    md['url'] = SmewtUrl('action', 'play', { 'filename1': md['filename'] })
-    md['subtitleUrls'] = []
-
-    languageFiles = defaultdict(lambda: [])
-    subtitles = []
-
-    if files:
-        for subtitle in tolist(ep.get('subtitles')):
-            for subfile in tolist(subtitle.files):
-                subtitleFilename = subfile.filename
-                # we shouldn't need to check that they start with the same prefix anymore, as the taggers/guessers should have mapped them correctly
-                mediaFilename = [ f.filename for f in tolist(files) ] # if subtitleFilename.startswith(os.path.splitext(f.filename)[0]) ]
-                mediaFilename = mediaFilename[0] # FIXME: check len == 1 all the time
-
-                # FIXME: subtitle.language should be a guessit.Language, data model needs to be fixed
-                languageFiles[guessit.Language(subtitle.language)] += [ (mediaFilename, subtitleFilename) ]
-
-    # prepare links for playing movie with subtitles
-    for lang, sfiles in languageFiles.items():
-        subtitles.append(SDict({'languageImage': flags_dir + '/%s.png' % lang.alpha2,
-                                'url': PlayAction(sfiles).url()}))
-
-    subtitles.sort(key = lambda x: x['languageImage'])
-
-    md['subtitleUrls'] = subtitles
-
-    if 'title' not in md:
-        md['title'] = md['filename']
-
-    episodes[(ep.season, ep.episodeNumber)] = md
-
-for md in episodes.values():
-    seasons[ md['season'] ].append( md )
-
-for season, eps in seasons.items():
-    seasons[season] = sorted(eps, key = lambda x: x['episodeNumber'])
 
 lastSeasonWatched = series.get('lastSeasonWatched', 0)
 
@@ -160,7 +103,7 @@ function toggleSynopsis() {
       <img src="${poster}" height="130px" width:"auto"/>
     </div>
     <div class="span10">
-      <h1>${seriesName}</h1>
+      <h1>${series.title}</h1>
       <div class="btn" onclick="toggleSynopsis()">Toggle synopsis</div>
     </div>
   </div>
@@ -228,12 +171,12 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
 ## TODO: activate tab for which seasonNumber == lastSeasonWatched:
 <div class="tabbable"> <!-- Only required for left/right tabs -->
   <ul class="nav nav-tabs" id="seasontabs">
-    %for season, eps in new_eps.items():
+    %for season, eps in episodes.items():
     ${make_season_tab_header(loop.index, season)}
     %endfor
   </ul>
   <div class="tab-content">
-    %for season, eps in new_eps.items():
+    %for season, eps in episodes.items():
     ${make_season_tab(loop.index, series.title, season, eps)}
     %endfor
   </div>
@@ -244,7 +187,7 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
 
 ############ OLD STUFF STILL NOT PORTED
 
-%if seriesName != 'Unknown':
+%if series.title != 'Unknown':
 
 
 ### Unknown episodes
