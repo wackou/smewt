@@ -19,7 +19,7 @@
 #
 
 from guessit.patterns import video_exts
-from smewt.base import Metadata, utils
+from smewt.base import Metadata, utils, SmewtUrl
 
 class Series(Metadata):
 
@@ -64,3 +64,16 @@ class Episode(Metadata):
     def isValidEpisode(filename):
         extPatterns = [ '*.' + ext for ext in video_exts ]
         return utils.matchFile(filename, extPatterns) #and getsize(filename) < 600 * 1024 * 1024
+
+    def playUrl(self):
+        # FIXME: we should do sth smarter here, such as ask the user, or at least warn him
+        files = self.get('files')
+        if not files:
+            # dirty fix so we don't crash if the episode has no associated video file:
+            filename = ''
+        elif isinstance(files, list):
+            filename = files[0].filename
+        else:
+            filename = files.filename
+
+        return SmewtUrl('action', 'play', { 'filename1': filename })

@@ -21,7 +21,7 @@ series = sorted([ SDict(title = s.title,
 
 %if series:
 
-  ${parent.wells_list(series)}
+  ${parent.make_title_list(series)}
 
 %else:
 

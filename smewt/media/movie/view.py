@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Nicolas Wack <wackou@smewt.com>
+# Copyright (c) 2008-2012 Nicolas Wack <wackou@smewt.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,11 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from pygoo import MemoryObjectGraph, ontology
-from smewt.base import SmewtException, Media
+from pygoo import ontology
+from smewt.base import SmewtException
 from smewt.media import get_mako_template, render_mako_template
 from movieobject import Movie
-from smewt.base.utils import smewtDirectory, smewtMedia
 ontology.import_class('Movie')
 
 

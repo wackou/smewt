@@ -51,12 +51,11 @@ class AboutDialog(QDialog):
         aboutTab.setOpenExternalLinks(True)
         aboutTab.setHtml('<p><b>A Smart media manager</b></p>'
                          ''
-                         '<p>&copy;2008-2011 by the Smewt developers<br/>'
+                         '<p>&copy;2008-2012 by the Smewt developers</p>'
                          '<a href="http://www.smewt.com">http://www.smewt.com</a><br/>'
-                         '<a href="irc://irc.freenode.net/smewt">#smewt</a> on <a href="http://freenode.net">Freenode</a></p>'
                          ''
                          '<p>Smewt is licensed under the <a href="http://www.gnu.org/licenses/gpl-3.0.txt">GPLv3</a> license.</p>'
-                         '<p>Please use <a href="http://code.google.com/p/smewt/">http://code.google.com/p/smewt/</a> to report bugs.</p>')
+                         '<p>Please use <a href="https://github.com/wackou/smewt/issues">https://github.com/wackou/smewt/issues</a> to report bugs.</p>')
 
         authorsTab = QTextBrowser()
         authorsTab.setFrameShape(QFrame.NoFrame)
@@ -71,7 +70,7 @@ class AboutDialog(QDialog):
                            '<dd><a href="mailto:rikrd@smewt.com">rikrd@smewt.com</a><br/>'
                            'Lead Developer</dd>'
                            '</dl>')
-                           
+
 
         thanksTab = QTextBrowser()
         thanksTab.setFrameShape(QFrame.NoFrame)
@@ -87,7 +86,7 @@ class AboutDialog(QDialog):
                           '<dd>for the <a href="http://famfamfam.com/lab/icons/flags/">flag icons</a></dd>'
                           '<dt><b><a href="http://www.davehylands.com/">Dave Hylands</a></b></dt>'
                           '<dd>for the <a href="http://www.davehylands.com/Software/Open/">open.exe</a> utility on Windows</dd>')
-                          
+
 
         tabs.addTab(aboutTab, 'About')
         tabs.addTab(authorsTab, 'Authors')
@@ -105,4 +104,3 @@ class AboutDialog(QDialog):
         layout.addLayout(closeLayout)
 
         self.setLayout(layout)
-        

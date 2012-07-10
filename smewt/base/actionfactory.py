@@ -18,13 +18,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import SIGNAL, QObject
+from PyQt4.QtCore import QObject
 from smewtexception import SmewtException
 from smewt.base.utils import tolist, toresult
 from smewt.base.smewturl import SmewtUrl
-from mediaobject import Media, Metadata
+from mediaobject import Media
 from subtitletask import SubtitleTask
-from smewt.media import Series, Subtitle
 from guessit import Language
 import os, sys, time, logging
 
@@ -43,7 +42,7 @@ class PlayAction(object):
     def __init__(self, files=None):
         self.files = files or []
 
-    def addFileWithSubtitle(mediaFilename, subtitleFilename):
+    def addFileWithSubtitle(self, mediaFilename, subtitleFilename):
         self.files.append((mediaFilename, subtitleFilename))
 
     def url(self):
@@ -139,7 +138,7 @@ class ActionFactory(Singleton):
                 else:
                     seriesEpisodes = set(tolist(series.episodes))
 
-                currentSubs = db.find_all(node_type = Subtitle,
+                currentSubs = db.find_all(node_type = 'Subtitle',
                                           # FIXME: we shouldn't have to go to the node, but if we don't, the valid_node lambda doesn't return anything...
                                           valid_node = lambda x: toresult(list(x.metadata)) in set(ep.node for ep in seriesEpisodes),
                                           language = language)

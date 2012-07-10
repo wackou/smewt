@@ -21,7 +21,7 @@ movies = sorted([ SDict(title = m.title,
 
 %if movies:
 
-  ${parent.wells_list(movies)}
+  ${parent.make_title_list(movies)}
 
 %else:
 

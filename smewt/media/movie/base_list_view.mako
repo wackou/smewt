@@ -1,6 +1,8 @@
-<%inherit file="base.mako"/>
+<%inherit file="base_style.mako"/>
 
-<%block name="list_style">
+<%block name="style">
+${parent.style()}
+
 <style>
 #header {
  margin: 10px 0 20px 0;
@@ -12,52 +14,12 @@
  color: #333333;
 }
 
-.title {
- margin-top: 30px;
- padding-left: 10px;
-}
-
-.title a {
- text-decoration: none;
- font: bold 24px Verdana, sans-serif;
- color: #448;
-}
-
-.well {
- padding: 10px;
-}
-
-.well img {
- position: relative;
- height: 90px;
- float: left;
-}
-
 </style>
 </%block>
 
 <div class="container-fluid">
 
-
-<%block name="navbar">
-<%
-from guessit.fileutils import split_path
-from smewt import SmewtUrl
-
-url = context['url']
-path = split_path(url.spath.path)
-%>
-
-<ul class="breadcrumb">
-  <li>
-    <a href="${SmewtUrl('media', 'speeddial/')}">media</a> <span class="divider">/</span>
-  </li>
-  <li>
-    <a href="${SmewtUrl('media', path[1] + '/')}">${path[1]}</a> <span class="divider">/</span>
-  </li>
-  <li class="active">${path[2]}</li>
-</ul>
-</%block>
+  ${parent.make_navbar(context['url'])}
 
   <div id="header">
     <%block name="list_header"/>
@@ -68,7 +30,7 @@ path = split_path(url.spath.path)
 </div>
 
 
-<%def name="wells_list(objs)">
+<%def name="make_title_list(objs)">
 
   %for i, obj in enumerate(objs):
     %if i % 2 == 0:
@@ -76,13 +38,7 @@ path = split_path(url.spath.path)
     %endif
 
     <div class="span6">
-      <div class="well">
-        <div class="row-fluid">
-          <div class="span2">
-          <img src="${obj.poster}" /></div>
-          <div class="span10 title">
-            <a href="${obj.url}">${obj.title}</a></div></div>
-      </div>
+      ${parent.make_title_box(obj.poster, obj.title, obj.url)}
     </div>
 
     %if i % 2 == 1:

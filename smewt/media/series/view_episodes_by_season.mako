@@ -33,36 +33,8 @@ for ep in tolist(series.episodes):
 for season, eps in episodes.items():
    episodes[season] = sorted(eps, key=lambda x:x.get('episodeNumber', 1000))
 
-def playUrl(ep):
-    # FIXME: we should do sth smarter here, such as ask the user, or at least warn him
-    files = ep.get('files')
-    if not files:
-        # dirty fix so we don't crash if the episode has no associated video file:
-        filename = ''
-    elif isinstance(files, list):
-        filename = files[0].filename
-    else:
-        filename = files.filename
-
-    return SmewtUrl('action', 'play', { 'filename1': filename })
 
 import os.path
-
-def getSubtitleLink(subtitle):
-   sfiles = []
-   for subfile in tolist(subtitle.files):
-       subtitleFilename = subfile.filename
-       # we shouldn't need to check that they start with the same prefix anymore, as
-       # the taggers/guessers should have mapped them correctly
-       mediaFilename = [ f.filename for f in tolist(subtitle.metadata.get('files'))
-                         if subtitleFilename.startswith(os.path.splitext(f.filename)[0])
-                         ]
-       mediaFilename = mediaFilename[0] # FIXME: check len == 1 all the time
-
-       sfiles += [ (mediaFilename, subtitleFilename) ]
-
-   return SDict({ 'languageImage': flags_dir + '/%s.png' % guessit.Language(subtitle.language).alpha2,
-                  'url': PlayAction(sfiles).url()})
 
 
 lastSeasonWatched = series.get('lastSeasonWatched', 0)
@@ -112,7 +84,7 @@ function toggleSynopsis() {
 
 <%def name="make_subtitle_link(subtitle)">
   <%
-  sublink = getSubtitleLink(subtitle)
+  sublink = subtitle.subtitleLink()
   %>
   <a href="${sublink.url}"><img src="${sublink.languageImage}" /></a>
 </%def>
@@ -120,7 +92,7 @@ function toggleSynopsis() {
 <%def name="make_episode(ep)">
 <div class="well">
       <div class="episode">
-        <a href="${playUrl(ep)}">${ep.get('episodeNumber', '?')} -
+        <a href="${ep.playUrl()}">${ep.get('episodeNumber', '?')} -
           ${ep.get('title', tolist(ep.get('files'))[0].get('filename'))} </a>
 
       ## TODO: subtitleUrls
