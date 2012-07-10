@@ -18,12 +18,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from pygoo import MemoryObjectGraph
-from smewt.base import SmewtException, Media, Config
+from smewt.base import SmewtException, Config
 from serieobject import Series, Episode
 from smewt.media import get_mako_template, render_mako_template
-from smewt.media.subtitle.subtitleobject import Subtitle
-from smewt.base.utils import smewtDirectory
 
 
 def render_mako(url, collection):

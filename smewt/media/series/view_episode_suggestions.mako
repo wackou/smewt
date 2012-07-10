@@ -1,3 +1,5 @@
+<%inherit file="base.mako"/>
+
 <%!
 from smewt import SmewtUrl
 from smewt.base.utils import tolist, pathToUrl
@@ -21,17 +23,18 @@ for serieName, eps in groupby(episodes, lambda ep: ep.series.title):
     eps = list(eps)
     lastViewed = max(eps, key = lambda ep: ep.lastViewed)
 
-
     # then look if we have a more recent one which we haven't watched yet
     s = []
-    for ep in lastViewed.series.episodes:
+    for ep in tolist(lastViewed.series.episodes):
         if 'title' in ep and (ep.season, ep.episodeNumber) >= (lastViewed.season, lastViewed.episodeNumber):
             s.append(ep)
+
 
     # find only more recent episode to watch
     if s:
         keep = sorted(s, key = lambda ep: (ep.season, ep.episodeNumber))[:episodeCount]
         suggest[keep[0].series] = keep
+
 
 # sort our suggestions to show the last scanned ones first
 suggest = sorted(suggest.items(), key = lambda eps: -tolist(eps[1][0].files)[0].lastModified)
