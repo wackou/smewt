@@ -1,4 +1,4 @@
-<%inherit file="base.mako"/>
+<%inherit file="base_episode.mako"/>
 
 <%!
 from itertools import groupby
@@ -82,30 +82,6 @@ function toggleSynopsis() {
 
   <br>
 
-<%def name="make_subtitle_link(subtitle)">
-  <%
-  sublink = subtitle.subtitleLink()
-  %>
-  <a href="${sublink.url}"><img src="${sublink.languageImage}" /></a>
-</%def>
-
-<%def name="make_episode(ep)">
-<div class="well">
-      <div class="episode">
-        <a href="${ep.playUrl()}">${ep.get('episodeNumber', '?')} -
-          ${ep.get('title', tolist(ep.get('files'))[0].get('filename'))} </a>
-
-      ## TODO: subtitleUrls
-      %for subtitle in sorted(tolist(ep.get('subtitles')), key=lambda s: s.language):
-        ${make_subtitle_link(subtitle)}
-      %endfor
-
-      %if 'synopsis' in ep:
-        <div name="synopsis" style="display:${displayStyle}"><p>${ep.synopsis}</p></div>
-      %endif
-      </div>
-</div>
-</%def>
 
 <%def name="make_season_tab_header(tabid, season, active=False)">
     <li${' class="active"' if active else ''}><a href="#tab${tabid}" data-toggle="tab">Season ${season}</a></li>
@@ -132,7 +108,7 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
       ${make_subtitle_download_links(series, season)}
 
       %for ep in eps:
-      ${make_episode(ep)}
+      ${parent.make_episode_box(ep)}
       %endfor
     </div>
 </%def>

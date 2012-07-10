@@ -1,4 +1,4 @@
-<%inherit file="base.mako"/>
+<%inherit file="base_episode.mako"/>
 
 <%!
 from smewt import SmewtUrl
@@ -61,28 +61,16 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
     <div id="center-side">
 
     %if suggest:
-      %for s, eps in suggest:
-        <div class="series">
-          <%
+        %for s, eps in suggest:
+        <%
             url = SmewtUrl('media', 'series/single', { 'title': s.title })
             poster = pathToUrl(s.get('loresImage'))
-          %>
-          <img src="${poster}" />
-          <a href='${url}'>${s.title}</a>
-        </div>
+        %>
+
+        ${parent.make_title_box(poster, s.title, url)}
 
         %for ep in eps:
-        <div class="suggest">
-          <% url = SmewtUrl('action', 'play', { 'filename1': tolist(ep.files)[0].filename }) %>
-          %if 'title' in ep:
-            <a href="${url}">${ep.episodeNumber} - ${ep.title} </a>
-          %else:
-            <a href="${url}">${ep.episodeNumber} - <i>Unknown</i> </a>
-          %endif
-            %if 'synopsis' in ep:
-              <p>${ep.synopsis}</p>
-            %endif
-        </div>
+          ${parent.make_episode_box(ep)}
         %endfor
       %endfor
     %else:

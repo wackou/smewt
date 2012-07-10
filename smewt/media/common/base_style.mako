@@ -18,7 +18,15 @@
  padding: 10px;
 }
 
+/*
 .well img {
+ position: relative;
+ height: 90px;
+ float: left;
+}
+*/
+
+.poster img {
  position: relative;
  height: 90px;
  float: left;
@@ -33,7 +41,7 @@
 <div class="well">
   <div class="row-fluid">
     <div class="span2">
-    <img src="${img}" /></div>
+    <img src="${img}" class="poster" /></div>
     <div class="span10 title">
   <a href="${url}">${title}</a></div></div>
 </div>
