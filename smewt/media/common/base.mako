@@ -39,7 +39,7 @@ logfile.flush()
 	<script src="${media('js/libs/less-1.3.0.min.js')}"></script>
 	 -->
 
-	<link rel="stylesheet" href="${media('less/style.css')}">
+	<link rel="stylesheet" href="${media('css/style.css')}">
 
 	<script src="${media('js/libs/modernizr-2.5.3-respond-1.1.0.min.js')}"></script>
 </head>

@@ -87,7 +87,7 @@ path = split_path(url.spath.path)
 
 ## Always have the breadcrumb navigation on top
 ## requires that the template is always passed the url in its context
-<div class="container-fluid" style="margin-top: 10px;">
+<div class="container-fluid" >
   ${make_navbar(context['url'])}
 </div>
 

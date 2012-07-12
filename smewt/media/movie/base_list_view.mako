@@ -1,22 +1,5 @@
 <%inherit file="base_style.mako"/>
 
-<%block name="style">
-${parent.style()}
-
-<style>
-#header {
- margin: 10px 0 20px 0;
- background-color: #F0F0F0;
- padding-top: 10px;
- padding-bottom: 10px;
- text-align: center;
- font: bold 18px Verdana, sans-serif;
- color: #333333;
-}
-
-</style>
-</%block>
-
 <div class="container-fluid">
 
   ${next.body()}
