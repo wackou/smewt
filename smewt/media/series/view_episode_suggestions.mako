@@ -44,34 +44,25 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
 
 %>
 
-<html>
-<head>
-  <title>Episodes suggestions</title>
-  <link rel="stylesheet" href="${import_dir}/series/series.css">
-</head>
+<div class="container-fluid">
 
-<body>
-
-<div id="wrapper">
-    <div id="header">
-        EPISODES SUGGESTIONS
-    </div>
-    <div id="container">
-
-    <div id="center-side">
+  ${parent.make_header('EPISODES SUGGESTIONS')}
 
     %if suggest:
         %for s, eps in suggest:
-        <%
-            url = SmewtUrl('media', 'series/single', { 'title': s.title })
-            poster = pathToUrl(s.get('loresImage'))
-        %>
+            <div class="row-fluid"><div class="span12">
+            <%
+              url = SmewtUrl('media', 'series/single', { 'title': s.title })
+              poster = pathToUrl(s.get('loresImage'))
+            %>
+            ${parent.make_title_box(poster, s.title, url)}
+            </div></div>
 
-        ${parent.make_title_box(poster, s.title, url)}
-
-        %for ep in eps:
-          ${parent.make_episode_box(ep)}
-        %endfor
+            %for ep in eps:
+                <div class="row-fluid"><div class="span12">
+                ${parent.make_episode_box(ep)}
+                </div></div>
+            %endfor
       %endfor
     %else:
       <p>No episode suggestions are available at this moment.</p>
@@ -82,6 +73,4 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
     </div>
 
 </div>
-
-</body>
-</html>
+</div>

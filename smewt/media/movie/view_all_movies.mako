@@ -14,10 +14,7 @@ movies = sorted([ SDict(title = m.title,
                 key = lambda x: x.title)
 %>
 
-<%block name="list_header">
-  ALL MOVIES
-</%block>
-
+${parent.make_header('ALL MOVIES')}
 
 %if movies:
 

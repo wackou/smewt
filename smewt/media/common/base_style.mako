@@ -3,6 +3,16 @@
 <%block name="style">
 <style>
 
+#header {
+ margin: 0 0 20px 0;
+ background-color: #F0F0F0;
+ padding-top: 10px;
+ padding-bottom: 10px;
+ text-align: center;
+ font: bold 18px Verdana, sans-serif;
+ color: #333333;
+}
+
 .title {
  margin-top: 30px;
  padding-left: 10px;
@@ -35,6 +45,11 @@
 </style>
 </%block>
 
+<%def name="make_header(title)">
+  <div id="header">
+    ${title}
+  </div>
+</%def>
 
 <%def name="make_title_box(img, title, url)">
 
@@ -68,5 +83,13 @@ path = split_path(url.spath.path)
   <li class="active">${path[2]}</li>
 </ul>
 </%def>
+
+
+## Always have the breadcrumb navigation on top
+## requires that the template is always passed the url in its context
+<div class="container-fluid" style="margin-top: 10px;">
+  ${make_navbar(context['url'])}
+</div>
+
 
 ${next.body()}

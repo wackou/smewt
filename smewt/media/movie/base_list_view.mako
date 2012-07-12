@@ -19,12 +19,6 @@ ${parent.style()}
 
 <div class="container-fluid">
 
-  ${parent.make_navbar(context['url'])}
-
-  <div id="header">
-    <%block name="list_header"/>
-  </div>
-
   ${next.body()}
 
 </div>
