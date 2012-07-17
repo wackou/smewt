@@ -1,7 +1,15 @@
+<%inherit file="base_style.mako"/>
+
 
 <%!
 from smewt import SmewtUrl
-from smewt.base.utils import SDict, pathToUrl
+from smewt.base.utils import SDict, pathToUrl, smewtDirectoryUrl, smewtMediaUrl
+
+dataTables = smewtDirectoryUrl('smewt', 'media', '3rdparty', 'DataTables-1.9.2', 'media')
+
+def media(filename):
+    return smewtMediaUrl('common', filename)
+
 %>
 
 <%
@@ -18,49 +26,32 @@ movies = sorted([ SDict({ 'title': m.title,
                     for m in allmovies ],
                     key = lambda x: x['title'])
 
-from smewt.base.utils import smewtDirectoryUrl
-import_dir = smewtDirectoryUrl('smewt', 'media')
-
 %>
 
-<html>
-<head>
-  <title>All movies view</title>
-   <link rel="stylesheet" href="${import_dir}/movie/movies.css">
+<%block name="style">
+  ${parent.style()}
+  <link rel="stylesheet" type="text/css" href="${dataTables}/css/DT_bootstrap.css">
+</%block>
 
-        <style type="text/css" title="currentStyle">
-            @import "${import_dir}/3rdparty/dataTables/media/css/demos.css";
-        </style>
-
-    <script type="text/javascript" language="javascript" src="${import_dir}/3rdparty/dataTables/media/js/jquery.js"></script>
-    <script type="text/javascript" language="javascript" src="${import_dir}/3rdparty/dataTables/media/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" charset="utf-8">
+<%block name="scripts">
+    <script src="${dataTables}/js/jquery.dataTables.js"></script>
+    <script src="${dataTables}/js/DT_bootstrap.js"></script>
+    <script>
         function updateAll(form, w, url) {
             mainWidget.updateWatched(url, form[w].checked);
         }
-
-        $(document).ready(function() {
-            $('#example').dataTable({});
-            $('#example').css('width', '100%');
-            $('#example').before('<p>&nbsp;</p>');
-
-        } );
-        </script>
-
-</head>
+    </script>
+</%block>
 
 
 
-<body>
+<div class="container-fluid">
 
-<div id="wrapper">
-    <div id="header">
-        ${title} MOVIES
-    </div>
+  ${parent.make_header('MOVIES')}
 
-    <div id="container"><form>
+  <form>
 
-    <table id="example" class="display">
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="example">
       <thead>
         <tr><th>Title</th><th>Year</th><th>Rating</th><th>Genres</th><th>Watched</th></tr>
       </thead>
@@ -82,8 +73,5 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
       </tfoot>
     </table>
 
-  </form></div>
+  </form>
 </div>
-
-</body>
-</html>

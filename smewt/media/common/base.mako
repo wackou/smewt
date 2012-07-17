@@ -4,6 +4,7 @@ from smewt.base.utils import smewtMedia, smewtMediaUrl
 def media(filename):
     return smewtMediaUrl('common', filename)
 
+# FIXME: remove me!!
 logfile = open('/tmp/makolog.txt', 'w')
 logfile.write('-'*100)
 logfile.flush()
