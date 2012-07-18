@@ -45,7 +45,7 @@ lastSeasonWatched = series.get('lastSeasonWatched', 0)
 
 <%block name="scripts">
 
-## for toggleByName
+## for toggleByName. FIXME: could we not use jquery for that?
 <script type="text/javascript" src="${import_dir}/3rdparty/styler.js"></script>
 
 <script type="text/javascript">
@@ -61,40 +61,15 @@ function toggleSynopsis() {
 
 </%block>
 
-<style>
-.well {
- padding: 10px;
- margin-bottom: 10px;
-}
-</style>
 
-<div class="container-fluid">
-
-  <div class="row-fluid">
-    <div class="span2">
-      <img src="${poster}" height="130px" width:"auto"/>
-    </div>
-    <div class="span10">
-      <h1>${series.title}</h1>
-      <div class="btn" onclick="toggleSynopsis()">Toggle synopsis</div>
-    </div>
-  </div>
-
-  <br>
-
-
-<%def name="make_season_tab_header(tabid, season, active=False)">
-    <li${' class="active"' if active else ''}><a href="#tab${tabid}" data-toggle="tab">Season ${season}</a></li>
-</%def>
-
-
-<%def name="make_subtitle_download_links(series, season)">
+<%def name="make_subtitle_download_links(series)">
 <%
-englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': series, 'season': season, 'language': 'en' })
-frenchSubsLink  = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': series, 'season': season, 'language': 'fr' })
-spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': series, 'season': season, 'language': 'es' })
+englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': series, 'language': 'en' })
+frenchSubsLink  = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': series, 'language': 'fr' })
+spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': series, 'language': 'es' })
 %>
     <div class="row-fluid">
+      Subtitles:
       <div class="btn"><a href="${englishSubsLink}">Get missing English subtitles</a></div>
       <div class="btn"><a href="${frenchSubsLink}">Get missing French subtitles</a></div>
       <div class="btn"><a href="${spanishSubsLink}">Get missing Spanish subtitles</a></div>
@@ -103,10 +78,32 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
 
 </%def>
 
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span2">
+      <img src="${poster}" height="130px" width:"auto"/>
+    </div>
+    <div class="span10">
+      <br>
+      Display: <div class="btn" onclick="toggleSynopsis()">Toggle synopsis</div>
+    </div>
+    <br><br><br>
+    <div class="span10">
+      ${make_subtitle_download_links(series)}
+    </div>
+  </div>
+
+  <br>
+
+
+
+<%def name="make_season_tab_header(tabid, season, active=False)">
+    <li${' class="active"' if active else ''}><a href="#tab${tabid}" data-toggle="tab">Season ${season}</a></li>
+</%def>
+
+
 <%def name="make_season_tab(tabid, series, season, eps)">
     <div class="tab-pane" id="tab${tabid}">
-      ${make_subtitle_download_links(series, season)}
-
       %for ep in eps:
       ${parent.make_episode_box(ep)}
       %endfor

@@ -14,8 +14,6 @@ movies = sorted([ SDict(title = m.title,
                 key = lambda x: x.title)
 %>
 
-${parent.make_header('ALL MOVIES')}
-
 %if movies:
 
   ${parent.make_title_list(movies)}

@@ -47,8 +47,6 @@ movies = sorted([ SDict({ 'title': m.title,
 
 <div class="container-fluid">
 
-  ${parent.make_header('MOVIES')}
-
   <form>
 
     <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="example">

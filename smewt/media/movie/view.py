@@ -39,10 +39,11 @@ def render_mako(url, collection):
         data = { 'movie': collection.find_one(Movie, title = url.args['title']) }
 
     elif url.viewType == 'all':
-        data = { 'movies': collection.find_all(Movie) }
+        data = { 'title': 'ALL MOVIES',
+                 'movies': collection.find_all(Movie) }
 
     elif url.viewType == 'spreadsheet':
-        data = { 'title': 'ALL',
+        data = { 'title': 'MOVIE LIST',
                  'movies': collection.find_all(Movie) }
 
     elif url.viewType == 'unwatched':

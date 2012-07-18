@@ -6,8 +6,8 @@
 #header {
  margin: 0 0 20px 0;
  background-color: #F0F0F0;
- padding-top: 10px;
- padding-bottom: 10px;
+ padding-top: 6px;
+ padding-bottom: 6px;
  text-align: center;
  font: bold 18px Verdana, sans-serif;
  color: #333333;
@@ -26,6 +26,7 @@
 
 .well {
  padding: 10px;
+ margin-bottom: 10px;
 }
 
 /*
@@ -65,7 +66,7 @@
 
 
 
-<%def name="make_navbar(url)">
+<%def name="make_navbar(url, title=None)">
 <%
 from guessit.fileutils import split_path
 from smewt import SmewtUrl
@@ -73,22 +74,34 @@ from smewt import SmewtUrl
 path = split_path(url.spath.path)
 %>
 
-<ul class="breadcrumb">
-  <li>
-    <a href="${SmewtUrl('media', 'speeddial/')}">media</a> <span class="divider">/</span>
-  </li>
-  <li>
-    <a href="${SmewtUrl('media', path[1] + '/')}">${path[1]}</a> <span class="divider">/</span>
-  </li>
-  <li class="active">${path[2]}</li>
-</ul>
+<div class="row-fluid">
+  <div class="span4">
+    %if title:
+    ${make_header(title)}
+    %else:
+    ${make_header(path[-1])}
+    %endif
+  </div>
+
+  <div class="span8">
+    <ul class="breadcrumb">
+      <li>
+        <a href="${SmewtUrl('media', 'speeddial/')}">media</a> <span class="divider">/</span>
+      </li>
+      <li>
+        <a href="${SmewtUrl('media', path[1] + '/')}">${path[1]}</a> <span class="divider">/</span>
+      </li>
+      <li class="active">${path[2]}</li>
+    </ul>
+  </div>
+</div>
 </%def>
 
 
 ## Always have the breadcrumb navigation on top
 ## requires that the template is always passed the url in its context
 <div class="container-fluid" >
-  ${make_navbar(context['url'])}
+  ${make_navbar(context['url'], context.get('title'))}
 </div>
 
 

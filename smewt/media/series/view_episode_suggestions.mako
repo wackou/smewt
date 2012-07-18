@@ -46,8 +46,6 @@ import_dir = smewtDirectoryUrl('smewt', 'media')
 
 <div class="container-fluid">
 
-  ${parent.make_header('EPISODES SUGGESTIONS')}
-
     %if suggest:
         %for s, eps in suggest:
             <div class="row-fluid"><div class="span12">

@@ -14,8 +14,6 @@ series = sorted([ SDict(title = s.title,
                 key = lambda x: x.title)
 %>
 
-${parent.make_header('ALL SERIES')}
-
 
 %if series:
 
