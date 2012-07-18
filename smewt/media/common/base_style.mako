@@ -3,6 +3,10 @@
 <%block name="style">
 <style>
 
+body {
+ padding-top: 10px;
+}
+
 #header {
  margin: 0 0 20px 0;
  background-color: #F0F0F0;
@@ -14,8 +18,8 @@
 }
 
 .title {
- margin-top: 30px;
- padding-left: 10px;
+ //margin-top: 30px;
+ padding-left: 20px;
 }
 
 .title a {
@@ -28,14 +32,6 @@
  padding: 10px;
  margin-bottom: 10px;
 }
-
-/*
-.well img {
- position: relative;
- height: 90px;
- float: left;
-}
-*/
 
 .poster img {
  position: relative;
@@ -56,10 +52,14 @@
 
 <div class="well">
   <div class="row-fluid">
-    <div class="span2">
-    <img src="${img}" class="poster" /></div>
-    <div class="span10 title">
-  <a href="${url}">${title}</a></div></div>
+    <table><tbody><tr><td>
+      <img src="${img}" class="poster" />
+    </td><td>
+    <div class="title">
+      <a href="${url}">${title}</a>
+    </div>
+    </td></tr></tbody></table>
+  </div>
 </div>
 
 </%def>

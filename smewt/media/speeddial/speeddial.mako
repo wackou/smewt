@@ -51,11 +51,11 @@ import_dir = smewtUserDirectoryUrl('speeddial')
         <tr>
           <td class="center"><a href="smewt://media/series/all">
                              <img src="${import_dir}/allseries.png" width="200" /></a>
-                             <p>Series Posters</p></td>
+                             <p>Series</p></td>
 
           <td class="center"><a href="smewt://media/movie/all">
                             <img src="${import_dir}/allmovies.png" width="200" /></a>
-                            <p>Movie Posters</p></td>
+                            <p>Movies</p></td>
 
           <td class="center"><a href="smewt://media/movie/recent">
                              <img src="${import_dir}/recentmovies.png" width="200" /></a>
@@ -69,7 +69,7 @@ import_dir = smewtUserDirectoryUrl('speeddial')
 
           <td class="center"><a href="smewt://media/movie/spreadsheet">
                              <img src="${import_dir}/moviespreadsheet.png" width="200" /></a>
-                             <p>All Movies</p></td>
+                             <p>Movie List</p></td>
 
           <!--
           <td class="center"><a href="smewt://feedwatcher">
