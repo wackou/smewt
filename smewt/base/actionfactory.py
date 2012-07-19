@@ -18,7 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import QObject
 from smewtexception import SmewtException
 from smewt.base.utils import tolist, toresult
 from smewt.base.smewturl import SmewtUrl

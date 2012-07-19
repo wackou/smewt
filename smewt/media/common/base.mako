@@ -41,7 +41,6 @@ logfile.flush()
 	 -->
 
 	<link rel="stylesheet" href="${media('css/style.css')}">
-
 	<script src="${media('js/libs/modernizr-2.5.3-respond-1.1.0.min.js')}"></script>
 </head>
 <body>

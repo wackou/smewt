@@ -62,12 +62,13 @@ class Subtitle(Metadata):
         sfiles = []
         for subfile in tolist(self.files):
             subtitleFilename = subfile.filename
+            videoFiles = tolist(self.metadata.get('files'))
             # we shouldn't need to check that they start with the same prefix anymore, as
             # the taggers/guessers should have mapped them correctly
-            mediaFilename = [ f.filename for f in tolist(self.metadata.get('files'))
+            mediaFilename = [ f.filename for f in videoFiles
                               if subtitleFilename.startswith(os.path.splitext(f.filename)[0])
                               ]
-            mediaFilename = mediaFilename[0] # FIXME: check len == 1 all the time
+            mediaFilename = mediaFilename[0] if mediaFilename else ''
 
             sfiles += [ (mediaFilename, subtitleFilename) ]
 

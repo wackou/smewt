@@ -44,6 +44,7 @@ lastSeasonWatched = series.get('lastSeasonWatched', 0)
 
 
 <%block name="scripts">
+${parent.scripts()}
 
 ## for toggleByName. FIXME: could we not use jquery for that?
 <script type="text/javascript" src="${import_dir}/3rdparty/styler.js"></script>
@@ -51,7 +52,7 @@ lastSeasonWatched = series.get('lastSeasonWatched', 0)
 <script type="text/javascript">
 // Select first tab by default
 // TODO: should select the one for lastSeasonWatched
-$(function() { $('#seasontabs a:first').tab('show'); });
+$('#seasontabs a:first').tab('show');
 
 function toggleSynopsis() {
     toggleByName('synopsis');
@@ -97,8 +98,8 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
 
 
 
-<%def name="make_season_tab_header(tabid, season, active=False)">
-    <li${' class="active"' if active else ''}><a href="#tab${tabid}" data-toggle="tab">Season ${season}</a></li>
+<%def name="make_season_tab_header(tabid, season)">
+    <li><a href="#tab${tabid}" data-toggle="tab">Season ${season}</a></li>
 </%def>
 
 
@@ -109,8 +110,6 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
       %endfor
     </div>
 </%def>
-
-## $('#myTab a:first').tab('show'); // Select first tab
 
 
 ## TODO: activate tab for which seasonNumber == lastSeasonWatched:
@@ -130,7 +129,7 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
 </div>
 
 
-############ OLD STUFF STILL NOT PORTED
+############ FIXME: OLD STUFF STILL NOT PORTED
 
 %if series.title != 'Unknown':
 

@@ -36,7 +36,9 @@ def render_mako(url, collection):
     t = get_mako_template('movie', tmap, url.viewType)
 
     if url.viewType == 'single':
-        data = { 'movie': collection.find_one(Movie, title = url.args['title']) }
+        movie = collection.find_one(Movie, title = url.args['title'])
+        data = { 'title': movie.title,
+                 'movie': movie }
 
     elif url.viewType == 'all':
         data = { 'title': 'MOVIES',

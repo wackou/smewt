@@ -1,6 +1,5 @@
 <%inherit file="base.mako"/>
 
-<%block name="style">
 <style>
 
 body {
@@ -40,7 +39,7 @@ body {
 }
 
 </style>
-</%block>
+<%block name="style"/>
 
 <%def name="make_header(title)">
   <div id="header">
@@ -103,6 +102,15 @@ path = split_path(url.spath.path)
 <div class="container-fluid" >
   ${make_navbar(context['url'], context.get('title'))}
 </div>
+
+
+
+<%def name="make_subtitle_link(subtitle)">
+  <%
+  sublink = subtitle.subtitleLink()
+  %>
+  <a href="${sublink.url}"><img src="${sublink.languageImage}" /></a>
+</%def>
 
 
 ${next.body()}
