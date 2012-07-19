@@ -20,8 +20,6 @@
 #
 
 from pygoo import BaseObject, MemoryObjectGraph, Equal
-from smewtexception import SmewtException
-from textutils import toUtf8
 from guessit.patterns import video_exts, subtitle_exts
 
 # FIXME: this needs to be moved somewhere else...

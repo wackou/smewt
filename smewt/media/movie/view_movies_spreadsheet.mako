@@ -20,7 +20,7 @@ movies = sorted([ SDict({ 'title': m.title,
                     'year': m.get('year', ''),
                     'rating': m.get('rating') or '-',
                     'genres': ', '.join(m.get('genres') or []) or '-',
-                    'watched': 'checked' if m.get('watched') else '',
+                    'watched': 'checked' if m.get('watched') or m.get('lastViewed') else '',
                     'url': SmewtUrl('media', 'movie/single', { 'title': m.title }),
                     'poster': m.loresImage })
                     for m in allmovies ],

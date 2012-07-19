@@ -82,22 +82,21 @@ qtitle = movie.title
 
 %>
 
-<div class="well">
 %if comments:
   %for author, atime, comment in comments:
     <p>Comment by <b>${author}</b> at ${atime}:<br/>
-    <div class="comment"><pre>${comment}</pre></div> </p>
+    <pre>${comment}</pre> </p>
   %endfor
 %else:
   <p><em>No Comments yet</em></p>
 %endif
 
 <form>
-  <textarea rows="4" columns="80" name="text"></textarea>
+  <textarea rows="4" style="width:60%;" columns="80" name="text"></textarea>
+  <br>
   <button type="button" onClick="addComment(this.form, 'text', '${qtitle}')">Post new comment</button>
 </form>
 
-</div>
 </%def>
 
 

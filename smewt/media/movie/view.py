@@ -50,7 +50,7 @@ def render_mako(url, collection):
 
     elif url.viewType == 'unwatched':
         data = { 'movies': [ m for m in collection.find_all(node_type = Movie)
-                             if not m.get('watched') ],
+                             if not m.get('watched') and not m.get('lastViewed') ],
                  'title': 'UNWATCHED' }
 
     elif url.viewType == 'recent':
