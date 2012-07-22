@@ -106,6 +106,11 @@ allfiles = tolist(movie.get('files'))
 for sub in tolist(movie.get('subtitles')):
     allfiles += tolist(sub.get('files'))
 
+# remove duplicates, eg: subfiles appearing more than once as they contain multiple
+# languages such as .idx/.sub files
+allfiles = set(allfiles)
+
+
 files = [ (f,
            SmewtUrl('action', 'play', { 'filename1': f.filename }),
            time.ctime(f.lastModified)) for f in allfiles ]

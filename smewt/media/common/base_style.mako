@@ -90,7 +90,7 @@ path = split_path(url.spath.path)
       <li>
         <a href="${SmewtUrl('media', path[1] + '/')}">${path[1]}</a> <span class="divider">/</span>
       </li>
-      <li class="active">${path[2]}</li>
+      <li class="active">${path[-1]}</li>
     </ul>
   </div>
 </div>

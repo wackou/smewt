@@ -26,7 +26,8 @@ def render_mako(url, collection):
 
     t = get_mako_template('speeddial', tmap, 'speeddial')
 
-    return t.render(info=None)
+    return t.render_unicode(title='SPEED DIAL',
+                            url=url)
 
 def render(url, collection):
     return render_mako_template(render_mako, url, collection)

@@ -1,39 +1,28 @@
-<html>
-<head>
-  <title>All movies view</title>
+<%inherit file="base_style.mako"/>
 
-  <style type="text/css">
+<%block name="style">
+${parent.style()}
 
-  td.center {
-    text-align: center;
-  }
+<style type="text/css">
 
-  td {
-    padding: 24px;
-    padding-bottom: 18px;
-    background-color: #BBBBBB;
-  }
-
-  #header {
-    text-align: center;
-    font: bold 24px Verdana, sans-serif;
-    color: #333333;
-  }
-
-  p {
+p {
     text-decoration: none;
     font: bold 20px Verdana, sans-serif;
     color: #448;
-  }
+}
 
-  body {
-    background-color: #EEEEEE;
-  }
+.well {
+    background-color: #BBBBBB;
+    text-align: center;
+}
 
+.well img {
+    margin: 10px;
+}
 
-  </style>
+</style>
+</%block>
 
-</head>
 
 <%!
 from smewt.base.utils import smewtDirectoryUrl, smewtUserDirectoryUrl
@@ -41,42 +30,49 @@ smewt_dir = smewtDirectoryUrl('smewt', 'media', 'speeddial')
 import_dir = smewtUserDirectoryUrl('speeddial')
 %>
 
-<body>
-  <div id="header">Smewt Dial</div>
+<div class="container-fluid">
+  <div class="row-fluid">
 
-    <div id="speeddial"><form>
+    <div class="span4"><div class="well">
+      <a href="smewt://media/series/all">
+      <img src="${import_dir}/allseries.png" width="200" /></a>
+      <p>Series</p>
+    </div></div>
 
-    <table id="layout" class="display" align="center" cellspacing="24">
-      <tbody>
-        <tr>
-          <td class="center"><a href="smewt://media/series/all">
-                             <img src="${import_dir}/allseries.png" width="200" /></a>
-                             <p>Series</p></td>
+    <div class="span4"><div class="well">
+      <a href="smewt://media/movie/all">
+      <img src="${import_dir}/allmovies.png" width="200" /></a>
+      <p>Movies</p>
+    </div></div>
 
-          <td class="center"><a href="smewt://media/movie/all">
-                            <img src="${import_dir}/allmovies.png" width="200" /></a>
-                            <p>Movies</p></td>
+    <div class="span4"><div class="well">
+      <a href="smewt://media/movie/recent">
+      <img src="${import_dir}/recentmovies.png" width="200" /></a>
+      <p>Recently Watched Movies</p>
+    </div></div>
 
-          <td class="center"><a href="smewt://media/movie/recent">
-                             <img src="${import_dir}/recentmovies.png" width="200" /></a>
-                             <p>Recently Watched Movies</p></td>
+  </div>
+  <div class="row-fluid">
 
-        </tr>
-        <tr>
-          <td class="center"><a href="smewt://media/series/suggestions">
-                             <img src="${import_dir}/episodesuggestions.png" width="200" /></a>
-                             <p>Episode Suggestions</p></td>
+    <div class="span4"><div class="well">
+      <a href="smewt://media/series/suggestions">
+      <img src="${import_dir}/episodesuggestions.png" width="200" /></a>
+      <p>Episode Suggestions</p>
+    </div></div>
 
-          <td class="center"><a href="smewt://media/movie/spreadsheet">
-                             <img src="${import_dir}/moviespreadsheet.png" width="200" /></a>
-                             <p>Movie List</p></td>
+    <div class="span4"><div class="well">
+      <a href="smewt://media/movie/spreadsheet">
+      <img src="${import_dir}/moviespreadsheet.png" width="200" /></a>
+      <p>Movie List</p>
+    </div></div>
 
-          <!--
-          <td class="center"><a href="smewt://feedwatcher">
-                             <img src="${import_dir}/feedwatcher_200x150.png" width="200" /></a>
-                             <p>Feed Watcher</p></td>
-           -->
-        </tr>
+    <!--
+    <div class="span4"><div class="well">
+      <a href="smewt://feedwatcher">
+      <img src="${import_dir}/feedwatcher_200x150.png" width="200" /></a>
+      <p>Feed Watcher</p>
+    </div></div>
+    -->
 
-      </tbody>
-    </table>
+    </div>
+</div>
