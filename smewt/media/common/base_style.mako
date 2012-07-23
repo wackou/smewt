@@ -49,7 +49,7 @@ body {
 
 <%def name="make_poster_title(img, title, url)">
     <table><tbody><tr><td>
-      <img src="${img}" class="poster" />
+      <div class="poster"><img src="${img}" /></div>
     </td><td>
     <div class="title">
       <a href="${url}">${title}</a>
