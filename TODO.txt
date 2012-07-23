@@ -181,3 +181,5 @@ MISCELLANEOUS:
 move Config object out of mediaobject.py, add Qt capabilities directly
 
 Bootstrap themes: http://bootswatch.com/
+
+- remove tabber.js and other unused css/js files

@@ -3,39 +3,38 @@
 <style>
 
 body {
- padding-top: 10px;
+    padding-top: 10px;
 }
 
 #header {
- margin: 0 0 20px 0;
- background-color: #F0F0F0;
- padding-top: 6px;
- padding-bottom: 6px;
- text-align: center;
- font: bold 18px Verdana, sans-serif;
- color: #333333;
+    margin: 0 0 20px 0;
+    background-color: #F0F0F0;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    text-align: center;
+    font: bold 18px Verdana, sans-serif;
+    color: #333333;
 }
 
 .title {
- //margin-top: 30px;
- padding-left: 20px;
+    padding-left: 20px;
 }
 
 .title a {
- text-decoration: none;
- font: bold 24px Verdana, sans-serif;
- color: #448;
+    text-decoration: none;
+    font: bold 24px Verdana, sans-serif;
+    color: #448;
 }
 
 .well {
- padding: 10px;
- margin-bottom: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
 .poster img {
- position: relative;
- height: 90px;
- float: left;
+    position: relative;
+    height: 90px;
+    float: left;
 }
 
 </style>
@@ -47,10 +46,8 @@ body {
   </div>
 </%def>
 
-<%def name="make_title_box(img, title, url)">
 
-<div class="well">
-  <div class="row-fluid">
+<%def name="make_poster_title(img, title, url)">
     <table><tbody><tr><td>
       <img src="${img}" class="poster" />
     </td><td>
@@ -58,6 +55,14 @@ body {
       <a href="${url}">${title}</a>
     </div>
     </td></tr></tbody></table>
+</%def>
+
+
+<%def name="make_title_box(img, title, url)">
+
+<div class="well">
+  <div class="row-fluid">
+    ${make_poster_title(img, title, url)}
   </div>
 </div>
 

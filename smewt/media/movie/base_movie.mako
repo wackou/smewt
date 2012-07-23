@@ -63,7 +63,7 @@ ${parent.scripts()}
   </script>
 </%block>
 
-<%def name="make_movie_comments(movie)">
+<%def name="make_movie_comments(movie, comment_box_width='60%')">
 <%
 def getComments(md):
     results = []
@@ -92,7 +92,7 @@ qtitle = movie.title
 %endif
 
 <form>
-  <textarea rows="4" style="width:60%;" columns="80" name="text"></textarea>
+  <textarea rows="4" style="width:${comment_box_width};" columns="80" name="text"></textarea>
   <br>
   <button type="button" onClick="addComment(this.form, 'text', '${qtitle}')">Post new comment</button>
 </form>

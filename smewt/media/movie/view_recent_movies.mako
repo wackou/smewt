@@ -1,19 +1,10 @@
+<%inherit file="base_movie.mako"/>
+
 <%!
 from smewt import SmewtUrl
-from smewt.base.utils import tolist, pathToUrl, SDict
+from smewt.base.utils import tolist, pathToUrl, SDict, smewtDirectoryUrl
 from smewt.base.textutils import toUtf8
 import datetime
-
-def getComments(md):
-    results = []
-
-    for comment in tolist(md.get('comments')):
-        results += [ (comment.author,
-                      datetime.datetime.fromtimestamp(comment.date).ctime(),
-                      comment.text) ]
-
-    return sorted(results, key = lambda x: x[1])
-
 
 def lastViewedString(m):
     lastViewed = datetime.datetime.fromtimestamp(m.lastViewed).date()
@@ -29,106 +20,54 @@ def lastViewedString(m):
 
     return 'on ' + datestr
 
+
+import_dir = smewtDirectoryUrl('smewt', 'media')
 %>
 
 <%
-allmovies = context['movies']
-
 movies = sorted([ SDict({ 'title': m.title,
-                    'qtitle': m.title,
-                    'year': m.year,
-                    'rating': m.get('rating') or '-',
-                    'genres': ', '.join(m.get('genres') or []) or '-',
-                    'lastViewed': m.lastViewed,
-                    'lastViewedString': lastViewedString(m),
-                    'watched': 'checked' if m.get('watched') else '',
-                    'comments': getComments(m),
-                    'url': SmewtUrl('media', 'movie/single', { 'title': m.title }),
-                    'poster': pathToUrl(m.loresImage) }) for m in allmovies ], key = lambda x: -x['lastViewed'])
+                          'movie': m,
+                          'lastViewed': m.lastViewed,
+                          'url': SmewtUrl('media', 'movie/single', { 'title': m.title }),
+                          'poster': pathToUrl(m.loresImage) })
+                  for m in context['movies'] ],
+                key = lambda x: -x['lastViewed'])
 
 # keep only the 4 most recent movies
 movies = movies[:4]
 
-from smewt.base.utils import smewtDirectoryUrl
-import_dir = smewtDirectoryUrl('smewt', 'media')
 
 %>
 
-<html>
-<head>
-  <title>Recent movies view</title>
-  <link rel="stylesheet" href="${import_dir}/movie/movies.css">
 
-  <script type="text/javascript" language="javascript" src="${import_dir}/3rdparty/dataTables/media/js/jquery.js"></script>
+<%def name="recent_movie_box(m)">
+      <div class="well">
+        ${parent.make_poster_title(m.poster, m.title, m.url)}
 
-  <script type="text/javascript" charset="utf-8">
-    function addComment(form, id, url) {
-        mainWidget.addComment(url, 'Me', form[id].value);
-    }
-  </script>
+        <p>Last viewed ${lastViewedString(m.movie)}</p>
 
-</head>
+        ${parent.make_movie_comments(m.movie, comment_box_width='98%')}
+      </div>
+</%def>
 
-<body>
 
-<div id="wrapper">
-    <div id="header">
-        RECENTLY WATCHED MOVIES
-    </div>
-    <div id="container"><form>
 
-        <div id="left-side">
-      %for m in movies:
-      %if loop.index % 2 == 0:
-        <div class="commentbox">
-          <img src="${m.poster}" />
-          <a href='${m.url}'>${m.title}</a>
-          <div class="comments">
-          <p>Last viewed ${m.lastViewedString}</p>
-          %if m.comments:
-            %for author, time, comment in m.comments:
-              <p>Comment by <b>${author}</b> at ${time}:<br/>
-              <div class="comment"><pre>${comment}</pre></div> </p>
-            %endfor
-          %else:
-            <p><em>No Comments yet</em></p>
-          %endif
+<div class="container-fluid">
+  <div class="row-fluid">
 
-          <textarea rows="4" columns="80" name="text${loop.index}"></textarea>
-          <button type="button" onClick="addComment(this.form, 'text${loop.index}', '${m.qtitle}')">Post new comment</button>
-          </div>
-        </div>
-      %endif
+    ## Left column
+    <div class="span6">
+      %for m in movies[::2]:
+        ${recent_movie_box(m)}
       %endfor
     </div>
 
-    <div id="right-side">
-      %for m in movies:
-      %if loop.index % 2 == 1:
-        <div class="commentbox">
-          <img src="${m.poster}" />
-          <a href='${m.url}'>${m.title}</a>
-          <div class="comments">
-          <p>Last viewed ${m.lastViewedString}</p>
-          %if m.comments:
-            %for author, time, comment in m.comments:
-              <p>Comment by <b>${author}</b> at ${time}:<br/>
-              <div class="comment"><pre>${comment}</pre></div> </p>
-            %endfor
-          %else:
-            <p><em>No Comments yet</em></p>
-          %endif
-
-          <textarea rows="4" columns="80" name="text${loop.index}"></textarea>
-          <button type="button" onClick="addComment(this.form, 'text${loop.index}', '${m.qtitle}')">Post new comment</button>
-          </div>
-        </div>
-      %endif
+    ## Right column
+    <div class="span6">
+      %for m in movies[1::2]:
+        ${recent_movie_box(m)}
       %endfor
     </div>
 
-  </form></div>
+  </div>
 </div>
-
-</body>
-</html>
