@@ -155,10 +155,15 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
     ${make_season_tab_header(0, '??')}
   </ul>
   <div class="tab-content">
-    %for ep in tolist(series.get('episodes')):
-      %for f in tolist(ep.files):
+    <%
+    files = []
+    for ep in tolist(series.get('episodes')):
+        for f in tolist(ep.files):
+            files.append(f)
+    files = sorted(files, key=lambda f: f.filename)
+    %>
+    %for f in files:
         ${parent.make_media_box(f)}
-      %endfor
     %endfor
   </div>
 </div>
