@@ -38,8 +38,8 @@ for season, eps in episodes.items():
 
 # find extras by season
 for ep in [ ep for ep in tolist(series.episodes) if ep.get('episodeNumber', -1) <= 0 and ep.get('files') ]:
-    for f in ep.files:
-      extras[ep.season].append(f)
+    for f in tolist(ep.files):
+        extras[ep.season].append(f)
 
 
 import os.path
