@@ -144,10 +144,10 @@ files = []
 for ep in eps:
     files += [ f.filename for f in tolist(ep.files) ]
 
-extras = [ { 'title': f,
-             'url': SmewtUrl('action', 'play', { 'filename1': f })
-             }
-             for f in files ]
+extras = [ SDict({ 'title': f,
+                   'url': SmewtUrl('action', 'play', { 'filename1': f })
+                   })
+           for f in files ]
 %>
 
   %if extras:
@@ -166,10 +166,10 @@ files = []
 for ep in tolist(series.get('episodes')):
     files += [ f.filename for f in tolist(ep.files) ]
 
-unknownFiles = [ { 'title': f,
-                   'url': SmewtUrl('action', 'play', { 'filename1': f })
-                   }
-                   for f in files ]
+unknownFiles = [ SDict({ 'title': f,
+                         'url': SmewtUrl('action', 'play', { 'filename1': f })
+                         })
+                 for f in files ]
 
 unknownFiles.sort(key = lambda f: f['title'])
 
