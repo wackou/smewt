@@ -27,11 +27,19 @@ else:
 
 # First prepare the episodes, grouping them by season
 episodes = defaultdict(list)
-for ep in tolist(series.episodes):
-   episodes[ep.season].append(ep)
+extras = defaultdict(list)
+
+# find episodes by season
+for ep in [ ep for ep in tolist(series.episodes) if ep.get('episodeNumber', -1) > 0 ]:
+    episodes[ep.season].append(ep)
 
 for season, eps in episodes.items():
-   episodes[season] = sorted(eps, key=lambda x:x.get('episodeNumber', 1000))
+    episodes[season] = sorted(eps, key=lambda x:x.get('episodeNumber', 1000))
+
+# find extras by season
+for ep in [ ep for ep in tolist(series.episodes) if ep.get('episodeNumber', -1) <= 0 and ep.get('files') ]:
+    for f in ep.files:
+      extras[ep.season].append(f)
 
 
 import os.path
@@ -103,11 +111,22 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
 </%def>
 
 
-<%def name="make_season_tab(tabid, series, season, eps)">
+<%def name="make_season_tab(tabid, series, season, eps, extras)">
     <div class="tab-pane" id="tab${tabid}">
       %for ep in eps:
       ${parent.make_episode_box(ep)}
       %endfor
+
+      %if extras:
+        <br>
+        <h1>Extras / Untitled / Metadata unknown</h1>
+        <br>
+        %for f in extras:
+          ${parent.make_media_box(f)}
+        %endfor
+
+      %endif
+
     </div>
 </%def>
 
@@ -115,13 +134,14 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
 ## TODO: activate tab for which seasonNumber == lastSeasonWatched:
 <div class="tabbable"> <!-- Only required for left/right tabs -->
   <ul class="nav nav-tabs" id="seasontabs">
-    %for season, eps in episodes.items():
-    ${make_season_tab_header(loop.index, season)}
+    <% seasons = sorted(set(episodes.keys()) | set(extras.keys())) %>
+    %for season in seasons:
+      ${make_season_tab_header(loop.index, season)}
     %endfor
   </ul>
   <div class="tab-content">
-    %for season, eps in episodes.items():
-    ${make_season_tab(loop.index, series.title, season, eps)}
+    %for season in seasons:
+      ${make_season_tab(loop.index, series.title, season, episodes[season], extras[season])}
     %endfor
   </div>
 </div>
@@ -131,35 +151,7 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
 
 ############ FIXME: OLD STUFF STILL NOT PORTED
 
-%if series.title != 'Unknown':
-
-
-### Unknown episodes
-
-<%
-import os.path
-eps = [ ep for ep in tolist(series.get('episodes')) if ep.episodeNumber == -1 and ep.get('files') ]
-
-files = []
-for ep in eps:
-    files += [ f.filename for f in tolist(ep.files) ]
-
-extras = [ SDict({ 'title': f,
-                   'url': SmewtUrl('action', 'play', { 'filename1': f })
-                   })
-           for f in files ]
-%>
-
-  %if extras:
-    <div class="extras">Extras / Untitled / Metadata unknown</div>
-  %endif
-  %for ep in extras:
-    <div class="episode"><a href="${ep.url}"><i>${ep.title}</i></a></div>
-  %endfor
-
-
-%else:
-<!-- series == unknown -->
+%if series.title == 'Unknown':
 
 <%
 files = []
