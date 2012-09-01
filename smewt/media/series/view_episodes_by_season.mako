@@ -131,6 +131,8 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
 </%def>
 
 
+%if series.title != 'Unknown':
+
 ## TODO: activate tab for which seasonNumber == lastSeasonWatched:
 <div class="tabbable"> <!-- Only required for left/right tabs -->
   <ul class="nav nav-tabs" id="seasontabs">
@@ -146,29 +148,21 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
   </div>
 </div>
 
+%else: ## series.title == 'Unknown'
+
+<div class="tabbable"> <!-- Only required for left/right tabs -->
+  <ul class="nav nav-tabs" id="seasontabs">
+    ${make_season_tab_header(0, '??')}
+  </ul>
+  <div class="tab-content">
+    %for ep in tolist(series.get('episodes')):
+      %for f in tolist(ep.files):
+        ${parent.make_media_box(f)}
+      %endfor
+    %endfor
+  </div>
 </div>
 
-
-############ FIXME: OLD STUFF STILL NOT PORTED
-
-%if series.title == 'Unknown':
-
-<%
-files = []
-for ep in tolist(series.get('episodes')):
-    files += [ f.filename for f in tolist(ep.files) ]
-
-unknownFiles = [ SDict({ 'title': f,
-                         'url': SmewtUrl('action', 'play', { 'filename1': f })
-                         })
-                 for f in files ]
-
-unknownFiles.sort(key = lambda f: f['title'])
-
-%>
-
-    %for ep in unknownFiles:
-        <div class="episode"><a href="${ep.url}"><i>${ep.title}</i></a></div>
-    %endfor
-
 %endif
+
+</div>
