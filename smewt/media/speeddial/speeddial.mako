@@ -34,13 +34,13 @@ import_dir = smewtUserDirectoryUrl('speeddial')
   <div class="row-fluid">
 
     <div class="span4"><div class="well">
-      <a href="smewt://media/series/all">
+      <a href="smewt://media/series">
       <img src="${import_dir}/allseries.png" width="200" /></a>
       <p>Series</p>
     </div></div>
 
     <div class="span4"><div class="well">
-      <a href="smewt://media/movie/all">
+      <a href="smewt://media/movie">
       <img src="${import_dir}/allmovies.png" width="200" /></a>
       <p>Movies</p>
     </div></div>

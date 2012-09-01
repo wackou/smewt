@@ -64,7 +64,7 @@ class MainWidget(QWidget):
         self.index = 0
         baseUrl = QSettings().value('base_url').toString()
         if baseUrl == '':
-            baseUrl = 'smewt://media/speeddial/'
+            baseUrl = 'smewt://media'
         self.setSmewtUrl(baseUrl)
         # somehow it looks like this refresh is necessary otherwise our main widget doesn't get inserted in the javascript
         self.refreshCollectionView()
@@ -101,7 +101,7 @@ class MainWidget(QWidget):
         self.setSmewtUrl(None, self.index + 1)
 
     def speedDial(self):
-        self.setSmewtUrl(SmewtUrl('media', 'speeddial/'))
+        self.setSmewtUrl(SmewtUrl('media'))
 
     def setSmewtUrl(self, url, index = None):
         if index is not None:
@@ -126,6 +126,8 @@ class MainWidget(QWidget):
             log.warning('Exception:\n%s' % ''.join(traceback.format_exception(*sys.exc_info())))
 
             # In case of error, return to the home screen
+            # FIXME: if we have an error while trying to show the speeddial,
+            #        this will make us go into an infinite loop...
             log.warning('Returning to Speed Dial view')
             self.speedDial()
 
@@ -197,7 +199,7 @@ class MainWidget(QWidget):
 
         log.debug('Rendering URL: %s' % surl)
 
-        if surl.mediaType == 'speeddial':
+        if not surl.mediaType or surl.mediaType == 'speeddial':
             html = speeddial.view.render(surl, self.smewtd.database)
 
         elif surl.mediaType == 'series':
@@ -284,10 +286,10 @@ class MainWidget(QWidget):
 
         elif url.startsWith('smewt://'):
             surl = SmewtUrl(url = url)
-            if surl.mediaType:
+            if surl.urlType == 'media':
                 self.setSmewtUrl(surl)
 
-            elif surl.actionType:
+            elif surl.urlType == 'action':
                 ActionFactory().dispatch(self, surl)
 
             else:

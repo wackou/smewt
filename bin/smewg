@@ -321,8 +321,8 @@ class SmewtGui(QMainWindow):
         os.system(logview)
 
     thumbnails = { 'smewt://media/speeddial/': 'speeddial.png',
-                   'smewt://media/series/all': 'allseries.png',
-                   'smewt://media/movie/all':  'allmovies.png',
+                   'smewt://media/series': 'allseries.png',
+                   'smewt://media/movie':  'allmovies.png',
                    'smewt://media/movie/recent': 'recentmovies.png',
                    'smewt://media/series/suggestions': 'episodesuggestions.png',
                    'smewt://media/movie/spreadsheet': 'moviespreadsheet.png',

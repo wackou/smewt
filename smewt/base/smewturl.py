@@ -25,8 +25,10 @@ import textutils
 
 class SmewtUrl:
     def __init__(self, type=None, path=None, args = {}, url = None):
-        if type and path and not url:
-            if path[0] != '/': path = '/' + path
+        if type and url is None:
+            if path is None:
+                path = ''
+            if path and path[0] != '/': path = '/' + path
             args = textutils.toUtf8(args)
             self.spath = ParseResult('http', type, path, '', urlencode(args), None)
 
@@ -45,7 +47,11 @@ class SmewtUrl:
 
         try:
             if self.spath.netloc == 'media':
-                self.mediaType, self.viewType = self.spath.path.split('/')[1:]
+                parts = self.spath.path.split('/')[1:]
+                if parts:
+                    self.mediaType = parts[0]
+                if len(parts) > 1:
+                    self.viewType = parts[1]
             elif self.spath.netloc == 'action':
                 self.actionType, = self.spath.path.split('/')[1:]
             elif self.spath.netloc == 'feedwatcher':
@@ -61,6 +67,10 @@ class SmewtUrl:
             self.args = dict([ kv.split('=') for kv in self.spath.query.split('&') ])
             for key, value in self.args.items():
                 self.args[unquote_plus(key)] = unquote_plus(value).decode('utf-8')
+
+    @property
+    def urlType(self):
+        return self.spath.netloc
 
     def __str__(self):
         return urlunparse(self.spath).replace('http://', 'smewt://')

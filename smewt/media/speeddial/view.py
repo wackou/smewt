@@ -18,13 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.media import get_mako_template, render_mako_template
+from smewt.media import lookup, render_mako_template
 
 def render_mako(url, collection):
-    tmap = { 'speeddial': 'speeddial.mako'
-             }
-
-    t = get_mako_template('speeddial', tmap, 'speeddial')
+    t = lookup.get_template('speeddial.mako')
 
     return t.render_unicode(title='SPEED DIAL',
                             url=url)

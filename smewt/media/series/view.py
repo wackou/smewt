@@ -20,17 +20,10 @@
 
 from smewt.base import SmewtException, Config
 from serieobject import Series, Episode
-from smewt.media import get_mako_template, render_mako_template
+from smewt.media import lookup, render_mako_template
 
 
 def render_mako(url, collection):
-    tmap = { 'single': 'view_episodes_by_season.mako',
-             'all': 'view_all_series.mako',
-             'suggestions': 'view_episode_suggestions.mako'
-             }
-
-    t = get_mako_template('series', tmap, url.viewType)
-
     if url.viewType == 'single':
         # FIXME: this definitely doesn't belong here...
         try:
@@ -38,16 +31,19 @@ def render_mako(url, collection):
         except ValueError:
             config = collection.Config(displaySynopsis = True)
 
+        tfilename = 'view_episodes_by_season.mako'
         series = collection.find_one(Series, title=url.args['title'])
         data = { 'title': series.title,
                  'series': series,
                  'displaySynopsis': config.displaySynopsis }
 
-    elif url.viewType == 'all':
+    elif not url.viewType:
+        tfilename = 'view_all_series.mako'
         data = { 'title': 'SERIES',
                  'series': collection.find_all(Series) }
 
     elif url.viewType == 'suggestions':
+        tfilename = 'view_episode_suggestions.mako'
         data = { 'title': 'SUGGESTIONS',
                  'episodes': [ ep for ep in collection.find_all(Episode) if 'lastViewed' in ep ] }
 
@@ -55,6 +51,7 @@ def render_mako(url, collection):
         raise SmewtException('Invalid view type: %s' % url.viewType)
 
     data['url'] = url
+    t = lookup.get_template(tfilename)
     return t.render_unicode(**data)
 
 

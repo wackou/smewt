@@ -20,40 +20,36 @@
 
 from pygoo import ontology
 from smewt.base import SmewtException
-from smewt.media import get_mako_template, render_mako_template
+from smewt.media import lookup, render_mako_template
 from movieobject import Movie
 ontology.import_class('Movie')
 
 
 def render_mako(url, collection):
-    tmap = { 'single': 'view_movie.mako',
-             'all': 'view_all_movies.mako',
-             'spreadsheet': 'view_movies_spreadsheet.mako',
-             'unwatched': 'view_movies_spreadsheet.mako',
-             'recent': 'view_recent_movies.mako'
-             }
-
-    t = get_mako_template('movie', tmap, url.viewType)
-
     if url.viewType == 'single':
+        tfilename = 'view_movie.mako'
         movie = collection.find_one(Movie, title = url.args['title'])
         data = { 'title': movie.title,
                  'movie': movie }
 
-    elif url.viewType == 'all':
+    elif not url.viewType:
+        tfilename = 'view_all_movies.mako'
         data = { 'title': 'MOVIES',
                  'movies': collection.find_all(Movie) }
 
     elif url.viewType == 'spreadsheet':
+        tfilename = 'view_movies_spreadsheet.mako'
         data = { 'title': 'MOVIE LIST',
                  'movies': collection.find_all(Movie) }
 
     elif url.viewType == 'unwatched':
+        tfilename = 'view_movies_spreadsheet.mako'
         data = { 'movies': [ m for m in collection.find_all(node_type = Movie)
                              if not m.get('watched') and not m.get('lastViewed') ],
                  'title': 'UNWATCHED' }
 
     elif url.viewType == 'recent':
+        tfilename = 'view_recent_movies.mako'
         data = { 'movies': [ m for m in collection.find_all(node_type = Movie)
                              if m.get('lastViewed') is not None ],
                  'title': 'RECENT' }
@@ -62,6 +58,7 @@ def render_mako(url, collection):
         raise SmewtException('Invalid view type: %s' % url.viewType)
 
     data['url'] = url
+    t = lookup.get_template(tfilename)
     return t.render_unicode(**data)
 
 def render(url, collection):

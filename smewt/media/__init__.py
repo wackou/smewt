@@ -25,8 +25,6 @@ from smewt.base.utils import smewtMedia
 RELOAD_TEMPLATES = True
 DEBUG_TEMPLATES = True
 
-_tmpl_cache = {}
-
 lookup = TemplateLookup(directories=[ smewtMedia('common'),
                                       smewtMedia('speeddial'),
                                       smewtMedia('movie'),
@@ -34,10 +32,6 @@ lookup = TemplateLookup(directories=[ smewtMedia('common'),
                                       ],
                         strict_undefined=False,
                         filesystem_checks=RELOAD_TEMPLATES)
-
-def get_mako_template(namespace, tmap, name):
-    filename = tmap[name]
-    return lookup.get_template(filename)
 
 
 def render_mako_template(render_func, url, collection):

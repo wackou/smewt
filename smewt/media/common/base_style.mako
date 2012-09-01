@@ -76,6 +76,12 @@ from guessit.fileutils import split_path
 from smewt import SmewtUrl
 
 path = split_path(url.spath.path)
+
+crumbs = [ ('media', SmewtUrl('media')) ]
+
+for i, p in enumerate(path[1:]):
+    crumbs += [ (p, SmewtUrl('media', '/'.join(path[1:2+i]))) ]
+
 %>
 
 <div class="row-fluid">
@@ -89,13 +95,16 @@ path = split_path(url.spath.path)
 
   <div class="span8">
     <ul class="breadcrumb">
+      %for text, crumbUrl in crumbs[:-1]:
       <li>
-        <a href="${SmewtUrl('media', 'speeddial/')}">media</a> <span class="divider">/</span>
+        <a href="${crumbUrl}">${text}</a> <span class="divider">/</span>
       </li>
-      <li>
-        <a href="${SmewtUrl('media', path[1] + '/')}">${path[1]}</a> <span class="divider">/</span>
+      %endfor
+      <li class="active">${crumbs[-1][0]}
+      %if getattr(url, 'args', None):
+      &nbsp;<em>(${', '.join('%s = %s' % (k, v) for k, v in url.args.items())})</em>
+      %endif
       </li>
-      <li class="active">${path[-1]}</li>
     </ul>
   </div>
 </div>
