@@ -49,6 +49,7 @@ $('#movietabs a:first').tab('show');
     <div class="span2">
       <img src="${poster}" height="130px" width:"auto"/>
     </div>
+%if movie.title != 'Unknown':
     <div class="span10">
       <br>
       Movie:
@@ -63,16 +64,17 @@ $('#movietabs a:first').tab('show');
     <div class="span10">
       ${make_subtitle_download_links(movie)}
     </div>
+%endif
   </div>
 
   <br>
 
 
 %if movie.title == 'Unknown':
-<p>&nbsp;</p>
-  %for f, url in [ (f, SmewtUrl('action', 'play', { 'filename1': f.filename })) for f in tolist(movie.get('files')) ]:
+  <p>&nbsp;</p>
 
-    <div class="singlefile"><a href="${url}"><i>${f['filename']}</i></a></div>
+  %for f in tolist(movie.get('files')):
+    ${parent.make_media_box(f)}
   %endfor
 
 

@@ -92,6 +92,7 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
     <div class="span2">
       <img src="${poster}" height="130px" width:"auto"/>
     </div>
+%if series.title != 'Unknown':
     <div class="span10">
       <br>
       Display: <div class="btn" onclick="toggleSynopsis()">Toggle synopsis</div>
@@ -100,6 +101,7 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
     <div class="span10">
       ${make_subtitle_download_links(series)}
     </div>
+%endif
   </div>
 
   <br>

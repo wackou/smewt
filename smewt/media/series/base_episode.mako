@@ -25,16 +25,4 @@ title = '%s - %s' % (ep.get('episodeNumber', '?'),
 </%def>
 
 
-<%def name="make_media_box(f)">
-<%
-from smewt.base import SmewtUrl
-%>
-<div class="well">
-  <a href="${SmewtUrl('action', 'play', {'filename1': f.filename })}">${f.filename}</a>
-
-</div>
-
-</%def>
-
-
 ${next.body()}
