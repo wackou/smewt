@@ -99,7 +99,7 @@ spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title
     </div>
     <br><br><br>
     <div class="span10">
-      ${make_subtitle_download_links(series)}
+      ${make_subtitle_download_links(series.title)}
     </div>
 %endif
   </div>

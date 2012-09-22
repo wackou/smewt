@@ -21,10 +21,9 @@
 
 from smewt.base import Task, SmewtException, Metadata
 from smewt.base.utils import tolist, smewtUserPath
-from smewt.media import Movie, Series, Episode, Subtitle
+from smewt.media import Movie, Episode
 from guessit import Language
-from subliminal.core import key_subtitles, create_download_tasks
-from subliminal.api import get_defaults
+from subliminal.core import get_defaults, key_subtitles, create_download_tasks
 from subliminal.language import language_list
 import subliminal
 import sys, os.path
@@ -61,7 +60,7 @@ class SubtitleTask(Task):
         self.force = force
         self.description = 'Downloading multiple %s subtitles' % self.language.english_name
 
-        log.info('Creating MultiSubtitleTask')
+        log.info('Creating SubtitleTask (%s) for %s' % (language, list(metadata)[0].get('title', '?')))
 
 
     def downloadSubtitles(self, requested):
