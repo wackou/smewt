@@ -43,7 +43,6 @@ logging.getLogger().addHandler(logging.handlers.SocketHandler('localhost', LOGGI
 # we most likely never want this to be on debug mode, as it spits out way too much information
 if MAIN_LOGGING_LEVEL == logging.DEBUG:
     logging.getLogger('pygoo').setLevel(logging.INFO)
-    logging.getLogger('imdbpy').setLevel(logging.INFO)
 
 
 from PyQt4.QtGui import QApplication, QMainWindow, QWidget, QStatusBar, QProgressBar, QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox, QToolBar, QKeySequence

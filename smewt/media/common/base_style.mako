@@ -120,13 +120,6 @@ for i, p in enumerate(path[1:]):
 </%def>
 
 
-## Always have the breadcrumb navigation on top
-## requires that the template is always passed the url in its context
-<div class="container-fluid" >
-  ${make_navbar(context['url'], context.get('title'))}
-</div>
-
-
 
 <%def name="make_subtitle_link(subtitle)">
   <%
@@ -135,5 +128,46 @@ for i, p in enumerate(path[1:]):
   <a href="${sublink.url}"><img src="${sublink.languageImage}" /></a>
 </%def>
 
+<%def name="navlink(title, target)">
+  <%
+  targetlink = 'smewt://media/' + target
+  active = (context['url'] == targetlink)
+  %>
+  <li
+      %if active:
+      class="active"
+      %endif:
+      ><a href="${targetlink}">${title}</a></li>
+</%def>
 
-${next.body()}
+<div class="container-fluid" >
+  <div class="row-fluid">
+    <div class="span2">
+
+      ## Main navigation list
+      <ul class="nav nav-list">
+        <li class="nav-header">General</li>
+        ${navlink('Speed dial', 'speeddial')}
+        <li class="nav-header">Movies</li>
+        ${navlink('All', 'movie')}
+        ${navlink('Table', 'movie/spreadsheet')}
+        ${navlink('Recent', 'movie/recent')}
+        <li class="nav-header">Series</li>
+        ${navlink('All', 'series')}
+        ${navlink('Suggestions', 'series/suggestions')}
+      </ul>
+
+    </div>
+    <div class="span10">
+
+      ## Always have the breadcrumb navigation on top
+      ## requires that the template is always passed the url in its context
+      <div class="container-fluid" >
+        ${make_navbar(context['url'], context.get('title'))}
+      </div>
+
+      ${next.body()}
+
+    </div>
+  </div>
+</div>

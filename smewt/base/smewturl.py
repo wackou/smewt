@@ -77,3 +77,13 @@ class SmewtUrl:
 
     def __unicode__(self):
         return urlunparse(self.spath).replace('http://', 'smewt://')
+
+    def __eq__(self, other):
+        if isinstance(other, str):
+            return str(self) == other
+        elif isinstance(other, unicode):
+            return unicode(self) == other
+        elif isinstance(other, SmewtUrl):
+            return str(self) == str(other)
+        else:
+            return False
