@@ -37,6 +37,10 @@ body {
     float: left;
 }
 
+.sidenav {
+    position: fixed;
+}
+
 </style>
 <%block name="style"/>
 
@@ -145,7 +149,7 @@ for i, p in enumerate(path[1:]):
     <div class="span2 sidebar">
 
       ## Main navigation list
-      <ul class="nav nav-list sidenav">
+      <ul class="nav nav-list span2 sidenav">
         <li class="nav-header">General</li>
         ${navlink('Speed dial', 'speeddial')}
         <li class="nav-header">Movies</li>
