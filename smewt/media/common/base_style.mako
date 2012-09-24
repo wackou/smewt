@@ -142,10 +142,10 @@ for i, p in enumerate(path[1:]):
 
 <div class="container-fluid" >
   <div class="row-fluid">
-    <div class="span2">
+    <div class="span2 sidebar">
 
       ## Main navigation list
-      <ul class="nav nav-list">
+      <ul class="nav nav-list sidenav">
         <li class="nav-header">General</li>
         ${navlink('Speed dial', 'speeddial')}
         <li class="nav-header">Movies</li>
@@ -171,3 +171,10 @@ for i, p in enumerate(path[1:]):
     </div>
   </div>
 </div>
+
+<%block name="scripts">
+  ${parent.scripts()}
+  <script>
+    $('.sidenav').affix();
+  </script>
+</%block>
