@@ -31,6 +31,9 @@ extras = defaultdict(list)
 
 # find episodes by season
 for ep in [ ep for ep in tolist(series.episodes) if ep.get('episodeNumber', -1) > 0 ]:
+    epfiles = ep.get('files')
+    if not epfiles:
+        continue
     episodes[ep.season].append(ep)
 
 for season, eps in episodes.items():
