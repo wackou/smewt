@@ -19,21 +19,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt import SmewtException, SmewtUrl, Media, Metadata
+from smewt import SmewtException, SmewtUrl
 from smewt.gui.collectionfolderspage import CollectionFoldersPage
-from smewt.media import Series, Episode, Movie
-from smewt.base import ActionFactory
-from smewt.base.taskmanager import Task, TaskManager
-from PyQt4.QtCore import SIGNAL, SLOT, QVariant, QProcess, QSettings, pyqtSignature
-from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QSizePolicy, QMessageBox, QImage, QPainter, QApplication
+from smewt.media import Series, Movie
+from smewt.base import ActionFactory, SmewtDaemon
+from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings, pyqtSignature
+from PyQt4.QtGui import QWidget, QVBoxLayout, QFileDialog, QMessageBox, QImage, QPainter, QApplication
 from PyQt4.QtWebKit import QWebView, QWebPage
 from smewt.media import series, movie, speeddial
+from guessit.language import Language
 import logging
 import time
 import sys
-from os.path import join, dirname, splitext
-from smewt.taggers import EpisodeTagger, MovieTagger
-from smewt.base import SmewtDaemon
 
 log = logging.getLogger('smewt.gui.mainwidget')
 
@@ -248,6 +245,15 @@ class MainWidget(QWidget):
 
     def connectJavaScript(self):
         self.collectionView.page().mainFrame().addToJavaScriptWindowObject('mainWidget', self)
+
+    @pyqtSignature("QString")
+    def setDefaultSubtitleLanguage(self, sublang):
+        sublang = str(sublang)
+        try:
+            lang = Language(sublang, strict=True)
+            self.smewtd.database.find_one('Config').defaultSubtitleLanguage = lang.alpha2
+        except ValueError:
+            pass
 
     @pyqtSignature("bool")
     def toggleSynopsis(self, synopsis):

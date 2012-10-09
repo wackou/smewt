@@ -126,11 +126,10 @@ class ActionFactory(Singleton):
 
         elif surl.actionType == 'getsubtitles':
             if surl.args['type'] == 'episode':
-                title = surl.args['title']
-                language = surl.args['language']
-
                 db = mainWidget.smewtd.database
-                series = db.find_one('Series', title = title)
+                title = surl.args['title']
+                language = surl.args.get('language') or db.find_one('Config').defaultSubtitleLanguage or 'en'
+                series = db.find_one('Series', title=title)
 
                 if 'season' in surl.args:
                     seriesEpisodes = set(ep for ep in tolist(series.episodes) if ep.season == int(surl.args['season']))

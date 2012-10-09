@@ -8,10 +8,14 @@ from smewt.media import Episode, Series, Subtitle
 from smewt.base.utils import pathToUrl, smewtMediaUrl, tolist, SDict
 from smewt.base import SmewtException
 from smewt.base.actionfactory import PlayAction
+from guessit.language import ALL_LANGUAGES
 import guessit
 
 import_dir = smewtMediaUrl()
 flags_dir = smewtMediaUrl('common', 'images', 'flags')
+
+langs = sorted(l.english_name.replace("'", "") for l in ALL_LANGUAGES)
+langs_repr = '["' + '","'.join(langs) + '"]'
 
 %>
 
@@ -69,24 +73,28 @@ function toggleSynopsis() {
     toggleByName('synopsis');
     mainWidget.toggleSynopsis(isToggled('synopsis'));
 }
+
+function sublangChanged(t) {
+    var s = $("#sublang");
+    mainWidget.setDefaultSubtitleLanguage(s.val());
+}
+
+
 </script>
 
 </%block>
 
 
 <%def name="make_subtitle_download_links(series)">
-<%
-englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': series, 'language': 'en' })
-frenchSubsLink  = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': series, 'language': 'fr' })
-spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': series, 'language': 'es' })
-%>
-    <div class="row-fluid">
-      Subtitles:
-      <div class="btn"><a href="${englishSubsLink}">Get missing English subtitles</a></div>
-      <div class="btn"><a href="${frenchSubsLink}">Get missing French subtitles</a></div>
-      <div class="btn"><a href="${spanishSubsLink}">Get missing Spanish subtitles</a></div>
-      <br><br>
-    </div>
+<% subsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': series }) %>
+
+ <div class="row-fluid">
+
+   Subtitles: Look for <input id="sublang" type="text" class="span2" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='${langs_repr}' onKeyUp="return sublangChanged()" onChange="return sublangChanged()" value="${defaultSubtitleLanguage}" /> subtitles.
+
+   <div class="btn"><a href="${subsLink}">Download!</a></div>
+   <br><br>
+ </div>
 
 </%def>
 

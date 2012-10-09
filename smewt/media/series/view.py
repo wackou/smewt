@@ -21,7 +21,7 @@
 from smewt.base import SmewtException, Config
 from serieobject import Series, Episode
 from smewt.media import lookup, render_mako_template
-
+from guessit.language import Language
 
 def render_mako(url, collection):
     if url.viewType == 'single':
@@ -33,9 +33,15 @@ def render_mako(url, collection):
 
         tfilename = 'view_episodes_by_season.mako'
         series = collection.find_one(Series, title=url.args['title'])
+        sublang = ''
+        if config.get('defaultSubtitleLanguage'):
+            sublang = Language(config.defaultSubtitleLanguage).english_name
+
         data = { 'title': series.title,
                  'series': series,
-                 'displaySynopsis': config.displaySynopsis }
+                 'displaySynopsis': config.displaySynopsis,
+                 'defaultSubtitleLanguage': sublang
+                 }
 
     elif not url.viewType:
         tfilename = 'view_all_series.mako'
