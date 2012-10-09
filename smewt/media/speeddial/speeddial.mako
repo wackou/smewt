@@ -34,15 +34,15 @@ import_dir = smewtUserDirectoryUrl('speeddial')
   <div class="row-fluid">
 
     <div class="span4"><div class="well">
-      <a href="smewt://media/series">
-      <img src="${import_dir}/allseries.png" width="200" /></a>
-      <p>Series</p>
-    </div></div>
-
-    <div class="span4"><div class="well">
       <a href="smewt://media/movie">
       <img src="${import_dir}/allmovies.png" width="200" /></a>
       <p>Movies</p>
+    </div></div>
+
+    <div class="span4"><div class="well">
+      <a href="smewt://media/movie/spreadsheet">
+      <img src="${import_dir}/moviespreadsheet.png" width="200" /></a>
+      <p>Movie List</p>
     </div></div>
 
     <div class="span4"><div class="well">
@@ -55,15 +55,15 @@ import_dir = smewtUserDirectoryUrl('speeddial')
   <div class="row-fluid">
 
     <div class="span4"><div class="well">
-      <a href="smewt://media/series/suggestions">
-      <img src="${import_dir}/episodesuggestions.png" width="200" /></a>
-      <p>Episode Suggestions</p>
+      <a href="smewt://media/series">
+      <img src="${import_dir}/allseries.png" width="200" /></a>
+      <p>Series</p>
     </div></div>
 
     <div class="span4"><div class="well">
-      <a href="smewt://media/movie/spreadsheet">
-      <img src="${import_dir}/moviespreadsheet.png" width="200" /></a>
-      <p>Movie List</p>
+      <a href="smewt://media/series/suggestions">
+      <img src="${import_dir}/episodesuggestions.png" width="200" /></a>
+      <p>Episode Suggestions</p>
     </div></div>
 
     <!--
