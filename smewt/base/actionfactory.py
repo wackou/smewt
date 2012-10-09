@@ -24,6 +24,7 @@ from smewt.base.smewturl import SmewtUrl
 from mediaobject import Media
 from subtitletask import SubtitleTask
 from guessit import Language
+from guess_language import guessLanguage
 import os, sys, time, logging
 
 
@@ -70,6 +71,21 @@ class ActionFactory(Singleton):
         pass
 
     def dispatch(self, mainWidget, surl):
+        db = mainWidget.smewtd.database
+
+        def getEpisodesAndSubs(language, series, season=None):
+            if season:
+                seriesEpisodes = set(ep for ep in tolist(series.episodes) if ep.season == int(season))
+            else:
+                seriesEpisodes = set(tolist(series.episodes))
+
+            currentSubs = db.find_all(node_type='Subtitle',
+                                      # FIXME: we shouldn't have to go to the node, but if we don't, the valid_node lambda doesn't return anything...
+                                      valid_node=lambda x: toresult(list(x.metadata)) in set(ep.node for ep in seriesEpisodes),
+                                      language=language)
+            return seriesEpisodes, currentSubs
+
+
         if surl.actionType == 'play':
             # FIXME: this should be handled properly with media player plugins
 
@@ -124,23 +140,39 @@ class ActionFactory(Singleton):
             log.debug('launching %s with args = %s' % (action, str(args)))
             mainWidget.externalProcess.startDetached(action, args)
 
+        elif surl.actionType == 'detectsubtitles':
+            if surl.args.get('type') != 'episode':
+                log.warning('Subtitle language has not been implemented for type: %s' % surl.args.get('type'))
+                return
+
+            title = surl.args['title']
+            series = db.find_one('Series', title=title)
+
+            seriesEpisodes, currentSubs = getEpisodesAndSubs('un', series, surl.args.get('season'))
+
+            for sub in currentSubs:
+                def extractText(subtext):
+                    lines = [ l.strip() for l in subtext.split('\n') ]
+                    lines = [ l for l in lines if l and l[0] not in '0123456789' ]
+                    return '\n'.join(lines)
+
+                filename = tolist(sub.get('files'))[0].filename
+                subtext = extractText(open(filename).read())
+                lang = Language(guessLanguage(subtext))
+                sub.language = lang.alpha2
+                log.info('Guessed language: %s for file: %s' % (lang.english_name, filename))
+
+            if currentSubs:
+                mainWidget.refreshCollectionView()
+
+
         elif surl.actionType == 'getsubtitles':
             if surl.args['type'] == 'episode':
-                db = mainWidget.smewtd.database
                 title = surl.args['title']
-                language = surl.args.get('language') or db.find_one('Config').defaultSubtitleLanguage or 'en'
                 series = db.find_one('Series', title=title)
+                language = surl.args.get('language') or db.find_one('Config').defaultSubtitleLanguage or 'en'
 
-                if 'season' in surl.args:
-                    seriesEpisodes = set(ep for ep in tolist(series.episodes) if ep.season == int(surl.args['season']))
-                else:
-                    seriesEpisodes = set(tolist(series.episodes))
-
-                currentSubs = db.find_all(node_type = 'Subtitle',
-                                          # FIXME: we shouldn't have to go to the node, but if we don't, the valid_node lambda doesn't return anything...
-                                          valid_node = lambda x: toresult(list(x.metadata)) in set(ep.node for ep in seriesEpisodes),
-                                          language = language)
-
+                seriesEpisodes, currentSubs = getEpisodesAndSubs(language, series, surl.args.get('season'))
 
                 alreadyGood = set(s.metadata for s in currentSubs)
 
@@ -156,7 +188,6 @@ class ActionFactory(Singleton):
                 title = surl.args['title']
                 language = surl.args['language']
 
-                db = mainWidget.smewtd.database
                 movie = db.find_one('Movie', title = title)
 
                 # check if we already have it

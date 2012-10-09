@@ -86,13 +86,18 @@ function sublangChanged(t) {
 
 
 <%def name="make_subtitle_download_links(series)">
-<% subsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': series }) %>
+<%
+subsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': series })
+detectSubsLink = SmewtUrl('action', 'detectsubtitles', { 'type': 'episode', 'title': series })
+%>
 
  <div class="row-fluid">
 
    Subtitles: Look for <input id="sublang" type="text" class="span2" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='${langs_repr}' onKeyUp="return sublangChanged()" onChange="return sublangChanged()" value="${defaultSubtitleLanguage}" /> subtitles.
 
    <div class="btn"><a href="${subsLink}">Download!</a></div>
+   ||
+   <div class="btn"><a href="${detectSubsLink}">Detect subtitle language</a></div>
    <br><br>
  </div>
 
