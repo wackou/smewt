@@ -93,7 +93,7 @@ detectSubsLink = SmewtUrl('action', 'detectsubtitles', { 'type': 'episode', 'tit
 
  <div class="row-fluid">
 
-   Subtitles: Look for <input id="sublang" type="text" class="span2" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='${langs_repr}' onKeyUp="return sublangChanged()" onChange="return sublangChanged()" value="${defaultSubtitleLanguage}" /> subtitles.
+   Look for subtitles in <input id="sublang" type="text" class="span2" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='${langs_repr}' onKeyUp="return sublangChanged()" onChange="return sublangChanged()" value="${defaultSubtitleLanguage}" />
 
    <div class="btn"><a href="${subsLink}">Download!</a></div>
    ||

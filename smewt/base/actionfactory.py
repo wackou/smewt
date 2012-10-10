@@ -158,6 +158,15 @@ class ActionFactory(Singleton):
 
                 filename = tolist(sub.get('files'))[0].filename
                 subtext = extractText(open(filename).read())
+                try:
+                    subtext = unicode(subtext, 'utf-8')
+                except UnicodeDecodeError:
+                    log.info('Subtitle not utf-8, trying latin-1...')
+                    subtext = unicode(subtext, 'latin-1')
+                except UnicodeDecodeError:
+                    log.warn('Error: can\'t decode sub for file: %s' % filename)
+                    continue
+
                 lang = Language(guessLanguage(subtext))
                 sub.language = lang.alpha2
                 log.info('Guessed language: %s for file: %s' % (lang.english_name, filename))
