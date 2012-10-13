@@ -23,11 +23,14 @@
 # filename- and network-related functions
 import sys, os, os.path, fnmatch,  errno
 from PyQt4.QtCore import QSettings, QVariant
-import smewt
-import guessit
+from guessit.language import Language, guess_language, UNDETERMINED
 from guessit.fileutils import split_path
 from pygoo.utils import tolist, toresult
 from smewt.base.smewtexception import SmewtException
+import smewt
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class SDict(dict):
@@ -152,6 +155,30 @@ def parentDirectory(path):
     parentDir = split_path(path)[:-1]
     return os.path.join(*parentDir)
 
+
+def extractText(subtext):
+    """Take a subtitle text as input and remove the lines that start with a
+    time code."""
+    lines = [ l.strip() for l in subtext.split('\n') ]
+    lines = [ l for l in lines if l and l[0] not in '0123456789' ]
+    return '\n'.join(lines)
+
+
+def readFile(filename):
+    """Read a file from disk, and return it as a unicode string."""
+    text = open(filename).read()
+    try:
+        text = unicode(text, 'utf-8')
+    except UnicodeDecodeError:
+        log.info('Subtitle not utf-8, trying latin-1...')
+        text = unicode(text, 'latin-1')
+    except UnicodeDecodeError:
+        log.warn('Error: can\'t find codec for decoding file: %s' % filename)
+        raise
+
+    return text
+
+
 # TODO: Use enzyme for this
 def guessCountryCodes(filename):
     '''Given a subtitle filename, tries to guess which languages it contains.
@@ -162,8 +189,14 @@ def guessCountryCodes(filename):
     langs = [ lang.lower() for lang in filename.split('.') ]
 
     if len(langs) >= 3:
-        lang = guessit.Language(langs[-2].lower())
+        lang = Language(langs[-2].lower())
         if lang:
+            return [ lang ]
+
+    # try to autodetect the language using the content of the subtitle
+    if langs[-1] in ('srt', 'ssa'):
+        lang = guess_language(extractText(readFile(filename)))
+        if lang != UNDETERMINED:
             return [ lang ]
 
     # try to look inside the .idx, if it exists
@@ -172,12 +205,12 @@ def guessCountryCodes(filename):
         lines = open(filename[:-3] + 'idx').readlines()
         for l in lines:
             if l[:3] == 'id:':
-                langs.add(guessit.Language(l[4:6]))
+                langs.add(Language(l[4:6]))
 
     if langs:
         return list(langs)
 
-    return [ guessit.Language('unknown') ]
+    return [ Language('unknown') ]
 
 
 def guessitToPygoo(guess):

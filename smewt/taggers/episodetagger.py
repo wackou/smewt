@@ -19,9 +19,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import SmewtException, SolvingChain, Media, Metadata, utils
+from smewt.base import SolvingChain, Media, utils
 from smewt.base.textutils import toUtf8
-from smewt.media import Episode, Series, Subtitle
+from smewt.media import Episode, Subtitle
 from smewt.taggers.tagger import Tagger
 from smewt.guessers import *
 from smewt.solvers import SimpleSolver
