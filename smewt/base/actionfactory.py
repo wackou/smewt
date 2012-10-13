@@ -139,30 +139,6 @@ class ActionFactory(Singleton):
             log.debug('launching %s with args = %s' % (action, str(args)))
             mainWidget.externalProcess.startDetached(action, args)
 
-        elif surl.actionType == 'detectsubtitles':
-            if surl.args.get('type') != 'episode':
-                log.warning('Subtitle language has not been implemented for type: %s' % surl.args.get('type'))
-                return
-
-            title = surl.args['title']
-            series = db.find_one('Series', title=title)
-
-            seriesEpisodes, currentSubs = getEpisodesAndSubs('un', series, surl.args.get('season'))
-
-            for sub in currentSubs:
-                filename = tolist(sub.get('files'))[0].filename
-                try:
-                    subtext = extractText(readFile(filename))
-                except UnicodeError:
-                    continue
-
-                lang = guess_language(subtext)
-                sub.language = lang.alpha2
-                log.info('Guessed language: %s for file: %s' % (lang.english_name, filename))
-
-            if currentSubs:
-                mainWidget.refreshCollectionView()
-
 
         elif surl.actionType == 'getsubtitles':
             if surl.args['type'] == 'episode':
