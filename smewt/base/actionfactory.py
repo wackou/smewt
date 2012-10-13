@@ -23,8 +23,7 @@ from smewt.base.utils import tolist, toresult
 from smewt.base.smewturl import SmewtUrl
 from mediaobject import Media
 from subtitletask import SubtitleTask
-from guessit import Language
-from guess_language import guessLanguage
+from guessit.language import Language, guess_language
 import os, sys, time, logging
 
 
@@ -167,7 +166,7 @@ class ActionFactory(Singleton):
                     log.warn('Error: can\'t decode sub for file: %s' % filename)
                     continue
 
-                lang = Language(guessLanguage(subtext))
+                lang = guess_language(subtext)
                 sub.language = lang.alpha2
                 log.info('Guessed language: %s for file: %s' % (lang.english_name, filename))
 
