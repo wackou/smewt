@@ -148,4 +148,3 @@ class TaskManager(QtCore.QObject):
         self.workerThread.join()
 
         log.info('TaskManager: last running task finished')
-

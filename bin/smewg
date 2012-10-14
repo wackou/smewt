@@ -475,8 +475,8 @@ if __name__ == '__main__':
 
     log.info('Exiting')
 
-    # FIXME: must remove.  This is needed when activating the Coherence plugin.
-    log.warn('Killing application...')
-    os.kill(os.getpid(), 9)
-
-    sys.exit() # why is this necessary when running from eric?
+    if sgui.plugins:
+        # FIXME: must remove or detect better. This is needed when activating the Coherence plugin.
+        print sgui.plugins
+        log.warn('Killing application...')
+        os.kill(os.getpid(), 9)
