@@ -10,7 +10,7 @@
 
 from PyQt4.QtGui import QApplication
 from smewt.base.smewtdaemon import SmewtDaemon
-from utils import slogging
+from guessit import slogging
 import sys
 import smewt
 import logging

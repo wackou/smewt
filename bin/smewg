@@ -32,8 +32,8 @@ if sys.platform == 'win32' and os.path.exists(os.path.join(os.getcwd(), 'library
     sys.stderr = open(os.path.join(userdir, 'smewt.log'), 'w')
 
 
-from utils.slogging import setupLogging
-setupLogging()
+from guessit.slogging import setupLogging
+setupLogging(colored=True)
 
 logging.getLogger().setLevel(MAIN_LOGGING_LEVEL)
 

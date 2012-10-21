@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import os.path
+import re
+import sys
 from fabric.api import *
 
 
@@ -41,22 +43,105 @@ def smewt():
 def make_release(version):
     print 'Making release', version
 
+def replace_in_file(filename, rexps):
+    with open(filename) as f:
+        text = f.read()
+    for rexp, subst in rexps:
+        text = re.sub(rexp, subst, text)
+    with open(filename, 'w') as f:
+        f.write(text)
+
 @task
-def change_version_number(version):
+def change_version_number(version, mode='dev'):
+    dev = True
+    colored_logging = True
+
+    if mode.startswith('dev'):
+        app = 'Smewt-dev'
+        port = 8358
+        logging_level = 'INFO'
+        logging_port = 9025
+
+    elif mode.startswith('rel'):
+        dev = False
+        app = 'Smewt'
+        port = 8357
+        logging_level = 'INFO'
+        logging_port = 9020
+        if sys.platform == 'darwin':
+            colored_logging = False
+
+    else:
+        print 'Error: invalid mode %s. Should be dev or release' % mode
+        sys.exit(1)
+
+
+    print 'Changing version number to %s, mode=%s' % (version, 'development' if dev else 'release')
+
     # write version number to files
-    sinit = open('smewt/__init__.py').read()
-    sinit = re.sub('__version__ =.*', '__version__ = \'%s\'' % version, sinit)
-    sinit = re.sub('APP_NAME = .*', 'APP_NAME = \'Smewt-dev\'', sinit)
-    sinit = re.sub('SINGLE_APP_PORT = .*', 'SINGLE_APP_PORT = 8358', sinit)
-    open('smewt/__init__.py', 'w').write(sinit)
+    replace_in_file('smewt/__init__.py',
+                    [ ('__version__ =.*',      "__version__ = '%s'" % version),
+                      ('APP_NAME = .*',        "APP_NAME = '%s'" % app),
+                      ('SINGLE_APP_PORT = .*', 'SINGLE_APP_PORT = %d' % port) ])
 
-    setup = open('setup.py').read()
-    setup = re.sub('      version =.*', '      version = \'%s\',' % version, setup)
-    open('setup.py', 'w').write(setup)
+    replace_in_file('setup.py',
+                    [ ('version =.*', "version = '%s'," % version) ])
 
-    nsis = open('packaging/win32/smewt.nsi').read()
-    nsis = re.sub('!define VERSION .*', '!define VERSION  \'%s\'' % version, nsis)
-    open('packaging/win32/smewt.nsi', 'w').write(nsis)
+    replace_in_file('packaging/win32/smewt.nsi',
+                    [ ('!define VERSION .*', "!define VERSION  '%s'" % version) ])
+
+    comment_patterns = [ ('\n', 'import logging.handlers'),
+                         ('\n', r'logging.getLogger\(\).addHandler\(logging.handlers.SocketHandler.*'),
+                         (' ', r'mainMenu.addAction\(self.logviewAction\)') ]
+
+    if dev:
+        # uncomment everything
+        patterns = [ ('#'+'('+p+')', r'\1') for sep, p in comment_patterns ]
+    else:
+        # comment everything, logview is too heavy for a release build
+        patterns = [ (sep+'('+p+')', sep+r'#\1') for sep, p in comment_patterns ]
+
+    replace_in_file('bin/smewg',
+                    [ ('\nMAIN_LOGGING_LEVEL =.*',
+                       '\nMAIN_LOGGING_LEVEL = logging.%s' % logging_level),
+                      ('\nLOGGING_TCP_PORT =.*',
+                       '\nLOGGING_TCP_PORT = %d' % logging_port),
+                      (r'setupLogging\(.*',
+                       'setupLogging(colored=%s)' % colored_logging) ] + patterns)
+
+
+@task
+def install(version):
+    change_version_number(version, mode='release')
+    # TODO: deactivate the virtualenv?
+    local('python setup.py install')
+
+@task
+def make_release(version, commit=False):
+    change_version_number(version, mode='release')
+    if commit:
+        local('git commit -a -m "Tagged %s release"' % version)
+        local('git tag %s' % version)
+
+        # generate and upload package to PyPI
+        local('python setup.py sdist upload')
+    else:
+        local('python setup.py sdist')
+
+    print 'Successfully made release ' + version
+    if not commit:
+        print 'No files have been committed. To commit, please call this script with the "-f" parameter.'
+
+
+@task
+def dev_mode(version, commit=False):
+    if commit:
+        local('git commit -a -m "Switched back to development version %s"' % VERSION)
+
+    print 'Successfully switched to development version ' + version
+
+    if not commit:
+        print 'No files have been committed. To commit, please call this script with the "-f" parameter.'
 
 
 # TODO: task:
