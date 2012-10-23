@@ -19,25 +19,17 @@
 #
 
 from smewt.media import lookup, render_mako_template
-from smewt.base import utils
 from smewt.plugins import tvudatasource
 from guessit.textutils import reorder_title
-import json
-import os.path
 import logging
 
 log = logging.getLogger(__name__)
 
-def render_mako(url, collection):
+def render_mako(url, collection, smewtd):
     t = lookup.get_template('tvu.mako')
 
-    tvuShowsCacheFile = os.path.join(utils.smewtUserDirectory('tvu'), 'showsid.cache')
-    try:
-        shows = json.loads(open(tvuShowsCacheFile).read())
-    except IOError:
-        shows = dict(tvudatasource.get_show_mapping())
-        open(tvuShowsCacheFile, 'w').write(json.dumps(shows))
-
+    # do not block if we don't have the full list of shows yet, show what we have
+    shows = dict(tvudatasource.get_show_mapping(only_cached=True))
 
     try:
         sid = shows[url.args['series']]
@@ -45,8 +37,14 @@ def render_mako(url, collection):
     except KeyError:
         feeds = []
 
-    return t.render_unicode(title='TVU.ORG.RU',
-                            url=url, shows=shows.keys(), feeds=feeds)
+    subscribedFeeds = [ f['url'] for f in smewtd.feedWatcher.feedList ]
 
-def render(url, collection):
-    return render_mako_template(render_mako, url, collection)
+    return t.render_unicode(title='TVU.ORG.RU',
+                            url=url, shows=shows.keys(), feeds=feeds,
+                            subscribedFeeds=subscribedFeeds)
+
+
+def render(url, collection, smewtd):
+    def rndr(url, collection):
+        return render_mako(url, collection, smewtd)
+    return render_mako_template(rndr, url, collection)

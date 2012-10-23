@@ -18,10 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt import SmewtException, SmewtUrl, EventServer
-from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QThread, QTimer, QString
+from smewt import EventServer
+from PyQt4.QtCore import SIGNAL, QProcess, QThread, QTimer, QString
 from PyQt4.QtGui import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog, QListWidget, QListView, QInputDialog, QLineEdit, QAbstractItemView, QLabel, QMessageBox, QDialog, QListWidget
-from smewt.plugins.amulefeedwatcher import AmuleFeedWatcher
+#from smewt.plugins.amulefeedwatcher import AmuleFeedWatcher
 
 
 class CheckThread(QThread):
@@ -75,10 +75,10 @@ class EpisodeSelector(QDialog):
 
 
 class FeedWatchWidget(QWidget):
-    def __init__(self):
+    def __init__(self, smewtd):
         super(FeedWatchWidget, self).__init__()
 
-        self.feedList = AmuleFeedWatcher()
+        self.feedList = smewtd.feedWatcher
         self.eventList = EventServer.events
 
         # Control buttons: check now, add feed, remove feed

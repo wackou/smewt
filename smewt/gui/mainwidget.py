@@ -206,7 +206,7 @@ class MainWidget(QWidget):
             html = movie.view.render(surl,  self.smewtd.database)
 
         elif surl.mediaType == 'tvu':
-            html = tvu.view.render(surl, self.smewtd.database)
+            html = tvu.view.render(surl, self.smewtd.database, self.smewtd)
 
         else:
             raise SmewtException('MainWidget: Invalid media type: %s' % surl.mediaType)
@@ -284,6 +284,18 @@ class MainWidget(QWidget):
     @pyqtSignature("QString")
     def feedsForSeries(self, series):
         self.setSmewtUrl('smewt://media/tvu?series=%s' % series)
+
+    @pyqtSignature("QString")
+    def subscribeToFeed(self, feedUrl):
+        url = unicode(feedUrl)
+        self.smewtd.feedWatcher.addFeed(url)
+        log.info('Subscribed to feed: %s' % url)
+
+    @pyqtSignature("QString")
+    def unsubscribeFromFeed(self, feedUrl):
+        url = unicode(feedUrl)
+        self.smewtd.feedWatcher.removeFeed(url)
+        log.info('Unsubscribed from feed: %s' % url)
 
     def linkClicked(self,  url):
         log.info('clicked on link %s', unicode(url.toString()))

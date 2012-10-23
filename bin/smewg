@@ -157,6 +157,15 @@ class SmewtGui(QMainWindow):
             # are on an unaccessible network share or an external HDD
             QTimer.singleShot(2000, self.mainWidget.smewtd.updateCollections)
 
+        if config.PLUGIN_TVU:
+            # Make sure we have TVU's show list cached, as it takes quite some
+            # time to download
+            from smewt.plugins.tvudatasource import get_show_mapping
+            from threading import Thread
+            t = Thread(target=get_show_mapping)
+            t.daemon = True
+            t.start()
+
 
 
     def showFeedWatcher(self):
@@ -168,7 +177,7 @@ class SmewtGui(QMainWindow):
 
     def createWidgets(self):
         self.mainWidget = MainWidget()
-        self.feedWatchWidget = FeedWatchWidget()
+        self.feedWatchWidget = FeedWatchWidget(self.mainWidget.smewtd)
 
         self.tabWidget = QStackedWidget()
         self.tabWidget.addWidget(self.mainWidget)
@@ -483,6 +492,5 @@ if __name__ == '__main__':
 
     if sgui.plugins:
         # FIXME: must remove or detect better. This is needed when activating the Coherence plugin.
-        print sgui.plugins
         log.warn('Killing application...')
         os.kill(os.getpid(), 9)

@@ -39,3 +39,5 @@ MAKO_FILENAME = '/tmp/view.html'
 
 # Whether to regenerate the thumbnails for the speeddial at app startup
 REGENERATE_THUMBNAILS = False
+
+PLUGIN_TVU = True

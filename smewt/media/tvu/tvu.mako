@@ -7,13 +7,20 @@ shows_repr = '["' + '","'.join(shows) + '"]'
 
 series = context['url'].args.get('series', None)
 feeds = context.get('feeds', [])
+subscribedFeeds = context['subscribedFeeds']
 
+from itertools import groupby
 from smewt.base import utils
 import guessit
 
 def flag_url(lang):
     return utils.smewtMediaUrl('common', 'images', 'flags',
                                '%s.png' % guessit.Language(lang).alpha2)
+
+def list_langs(lang):
+    if not lang:
+        return []
+    return lang.split('-')
 
 %>
 
@@ -24,6 +31,12 @@ function getFeeds() {
     mainWidget.feedsForSeries(series);
 }
 
+function subscribeToFeed(feedUrl) {
+    mainWidget.subscribeToFeed(feedUrl);
+}
+function unsubscribeFromFeed(feedUrl) {
+    mainWidget.unsubscribeFromFeed(feedUrl);
+}
 </script>
 
 <div class="container-fluid">
@@ -45,42 +58,50 @@ function getFeeds() {
   %if feeds:
   <div class="row-fluid">
     %for lang, fds in feeds:
+    %for sublang, fs in groupby(fds, key=lambda x: x[5]):
     <hr>
-    <%
-      subtitles = None
-    %>
     <p>
-      <b>Audio: <img src="${flag_url(lang)}"/>
-      %if subtitles:
-       - Subtitles: None
+      <b>Audio:
+
+      %for alang in list_langs(lang):
+        <img src="${flag_url(alang)}"/>
+      %endfor
+
+      %if sublang:
+        &nbsp;&nbsp;&nbsp; Subtitles:
+
+        %for slang in list_langs(sublang):
+          <img src="${flag_url(slang)}"/>
+        %endfor
       %endif
       </b>
     </p>
 
     <table class="table table-striped table-bordered table-hover">
       <thead><tr class="info">
-      %for h in ['Format', 'Season', 'Codec', 'Title', 'Status', 'Subtitles', 'Year', 'Link']:
+      %for h in ['Format', 'Season', 'Codec', 'Title', 'Status', 'Year', 'Link']:
       <td>${h}</td>
       %endfor
       </tr></thead>
       <tbody>
 
-        %for f in fds:
+
+        %for f in fs:
         <tr>
           %for field in f[:5]:
             <td>${field}</td>
           %endfor
-          <td>
-          %if f[5]:
-          <img src="${flag_url(f[5])}"/>
-          %endif
-          </td>
           <td>${f[6]}</td>
-          <td><div class="btn">Subscribe</div></td>
+          %if f[7] in subscribedFeeds:
+          <td><div class="btn btn-info" onclick="unsubscribeFromFeed('${f[7]}')">Subscribed!</div></td>
+          %else:
+          <td><div class="btn" onclick="subscribeToFeed('${f[7]}')">Subscribe</div></td>
+          %endif
         </tr>
         %endfor
       </tbody>
     </table>
+    %endfor
     %endfor
   </div>
   %endif

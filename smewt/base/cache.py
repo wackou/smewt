@@ -49,6 +49,11 @@ def save(filename):
 def cached_func_key(func, cls=None):
     return ('%s.%s' % (cls.__module__, cls.__name__) if cls else None, func.__name__)
 
+def has_cached_func_value(func, args, kwargs={}):
+    func_key = cached_func_key(func)
+    key = (func_key, args, tuple(sorted(kwargs.items())))
+    return key in globalCache
+
 def log_cache(key, result=None):
     if result:
         res = unicode(result)
@@ -64,10 +69,7 @@ def cachedfunc(function):
     @wraps(function)
     def cached(*args, **kwargs):
         func_key = cached_func_key(function)
-        # we need to remove the first element of args for the key, as it is the
-        # instance pointer and we don't want the cache to know which instance
-        # called it, it is shared among all instances of the same class
-        key = (func_key, args[1:], tuple(sorted(kwargs.items())))
+        key = (func_key, args, tuple(sorted(kwargs.items())))
         if key in globalCache:
             result = globalCache[key]
             log_cache(key, result)

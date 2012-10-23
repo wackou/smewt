@@ -20,14 +20,18 @@
 
 from bs4 import BeautifulSoup
 from guessit.textutils import clean_string
-from smewt.base.cache import cachedfunc
+from smewt.base.cache import cachedfunc, has_cached_func_value
 import requests
 import json
 import os.path
+import logging
+
+log = logging.getLogger(__name__)
 
 
+@cachedfunc
 def get_showlist_for_letter(l):
-    print 'Looking for shows starting with letter: %s' % l
+    log.info('Looking for shows starting with letter: %s' % l)
     url = 'http://tvu.org.ru/index.php?show=show&bst=%s' % l
     r = requests.get(url)
     # force utf-8 coding, as it seems it doesn't detect it correctly
@@ -45,14 +49,17 @@ def get_showlist_for_letter(l):
 
     return shows
 
-
-def get_show_mapping():
-    # FIXME: use sessions to share connection between all those requests
+def get_show_mapping(only_cached=False):
+    # FIXME: use a session to share the connections between all the requests
     shows = []
     for l in [ 'num' ] + list('ABCDEFGHIJKLMNOPQRSTUVWXYZ'):
-        shows.extend(get_showlist_for_letter(l))
+        if only_cached:
+            if has_cached_func_value(get_showlist_for_letter, (l,)):
+                shows.extend(get_showlist_for_letter(l))
+        else:
+            shows.extend(get_showlist_for_letter(l))
 
-    print 'Found %d TV shows' % len(shows)
+    #print 'Found %d TV shows' % len(shows)
     return shows
 
 @cachedfunc

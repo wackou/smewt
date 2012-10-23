@@ -21,12 +21,14 @@
 from PyQt4.QtCore import QSettings, QVariant
 from pygoo import MemoryObjectGraph, Equal, ontology
 import smewt
+from smewt import config
 from smewt.media import Series, Episode, Movie, Subtitle
 from smewt.base import utils, Collection, Media
 from smewt.base.taskmanager import Task, TaskManager
 from os.path import join, dirname, splitext, getsize
 from smewt.taggers import EpisodeTagger, MovieTagger
 from guessit.patterns import subtitle_exts, video_exts
+from smewt.plugins.amulefeedwatcher import AmuleFeedWatcher
 import time, logging
 
 
@@ -87,6 +89,11 @@ class SmewtDaemon(object):
                                           mediaTagger = MovieTagger,
                                           dataGraph = self.database,
                                           taskManager = self.taskManager)
+
+        # load up the feed watcher
+        if config.PLUGIN_TVU:
+            self.feedWatcher = AmuleFeedWatcher()
+
 
     def progressChanged(self, current, total):
         if total == 0:

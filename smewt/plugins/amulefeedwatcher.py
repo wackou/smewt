@@ -22,7 +22,7 @@ import feedparser
 import urllib2, re
 import subprocess
 from PyQt4.QtCore import SIGNAL, Qt, QSettings, QVariant, QAbstractListModel
-from smewt import SmewtException, EventServer
+from smewt.base import SmewtException, EventServer
 
 class AmuleFeedWatcher(QAbstractListModel):
     def __init__(self):
