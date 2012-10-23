@@ -73,6 +73,5 @@ import_dir = smewtUserDirectoryUrl('speeddial')
       <p>Feed Watcher</p>
     </div></div>
     -->
-
     </div>
 </div>

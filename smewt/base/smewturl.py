@@ -24,7 +24,9 @@ from urllib import urlencode, unquote_plus
 import textutils
 
 class SmewtUrl:
-    def __init__(self, type=None, path=None, args = {}, url = None):
+    def __init__(self, type=None, path=None, args=None, url=None):
+        if args is None:
+            args = {}
         if type and url is None:
             if path is None:
                 path = ''
@@ -64,9 +66,11 @@ class SmewtUrl:
 
         # FIXME: in python 2.6 use parse_qs
         if self.spath.query:
-            self.args = dict([ kv.split('=') for kv in self.spath.query.split('&') ])
-            for key, value in self.args.items():
-                self.args[unquote_plus(key)] = unquote_plus(value).decode('utf-8')
+            args = dict([ kv.split('=') for kv in self.spath.query.split('&') ])
+            for key, value in args.items():
+                args[unquote_plus(key)] = unquote_plus(value).decode('utf-8')
+
+        self.args = args
 
     @property
     def urlType(self):

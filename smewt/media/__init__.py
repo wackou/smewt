@@ -21,24 +21,23 @@
 from mako.lookup import TemplateLookup
 from mako import exceptions
 from smewt.base.utils import smewtMedia
-
-RELOAD_TEMPLATES = True
-DEBUG_TEMPLATES = True
+from smewt import config
 
 lookup = TemplateLookup(directories=[ smewtMedia('common'),
                                       smewtMedia('speeddial'),
                                       smewtMedia('movie'),
-                                      smewtMedia('series')
+                                      smewtMedia('series'),
+                                      smewtMedia('tvu')
                                       ],
                         strict_undefined=False,
-                        filesystem_checks=RELOAD_TEMPLATES)
+                        filesystem_checks=config.RELOAD_MAKO_TEMPLATES)
 
 
 def render_mako_template(render_func, url, collection):
     try:
         result = render_func(url, collection)
-        if DEBUG_TEMPLATES:
-            open('/tmp/view.html', 'w').write(result.encode('utf-8'))
+        if config.DEBUG_MAKO_TEMPLATES:
+            open(config.MAKO_FILENAME, 'w').write(result.encode('utf-8'))
         return result
     except:
         return exceptions.html_error_template().render()

@@ -21,6 +21,8 @@
 import sys, logging, os, os.path
 
 MAIN_LOGGING_LEVEL = logging.INFO
+LOGGING_LEVELS = [ #('smewt.base.cache', logging.DEBUG)
+                   ]
 LOGGING_TCP_PORT = 9025
 
 # when we create a py2exe, we want to redirect the output the a file ourselves,
@@ -36,6 +38,8 @@ from guessit.slogging import setupLogging
 setupLogging(colored=True)
 
 logging.getLogger().setLevel(MAIN_LOGGING_LEVEL)
+for name, level in LOGGING_LEVELS:
+    logging.getLogger(name).setLevel(level)
 
 import logging.handlers
 logging.getLogger().addHandler(logging.handlers.SocketHandler('localhost', LOGGING_TCP_PORT))
@@ -50,9 +54,10 @@ from PyQt4.QtCore import SIGNAL, QSize, Qt, QSettings, QVariant, QPoint, QSize, 
 from smewt.gui import MainWidget, FeedWatchWidget, AboutDialog, SettingsDialog
 from smewt.base import cache, utils
 from smewt.base.utils import smewtDirectory, smewtUserDirectory
+from smewt import config
 from os.path import join
 
-log = logging.getLogger('smewg')
+log = logging.getLogger(__name__)
 DEFAULT_WIDTH = 960
 DEFAULT_HEIGHT = 720
 
@@ -130,7 +135,7 @@ class SmewtGui(QMainWindow):
         self.addToolBar(navigationToolBar)
         self.createTrayIcon()
 
-        # tmp
+        # FIXME: tmp
         self.connect(self.mainWidget, SIGNAL('feedwatcher'),
                      self.showFeedWatcher)
 
@@ -143,13 +148,15 @@ class SmewtGui(QMainWindow):
             settings.setValue('configured', True)
         else:
             # regenerate thumbnails once everything is setup, otherwise it seems somehow
-            # we can;t get the correct window size for taking the screenshot
-            QTimer.singleShot(1000, self.regenerateSpeedDialThumbnails)
+            # we can't get the correct window size for taking the screenshot
+            if config.REGENERATE_THUMBNAILS:
+                QTimer.singleShot(1000, self.regenerateSpeedDialThumbnails)
 
             # only start the update of the collections once our GUI is fully setup
             # do not rescan as it would be too long and we might delete some files that
             # are on an unaccessible network share or an external HDD
-            QTimer.singleShot(2000, self.reloadCacheAndUpdateCollections)
+            QTimer.singleShot(2000, self.mainWidget.smewtd.updateCollections)
+
 
 
     def showFeedWatcher(self):
@@ -306,11 +313,6 @@ class SmewtGui(QMainWindow):
         flag = Qt.WindowFullScreen if self.fullScreenAction.isChecked() else ~Qt.WindowFullScreen
         self.setWindowState(self.windowState() ^ Qt.WindowFullScreen  )
 
-    def reloadCacheAndUpdateCollections(self):
-        # do this now instead of at the very beginning so that our GUI can be setup faster
-        cache.load(utils.smewtUserPath(smewt.APP_NAME + '.cache'))
-        self.mainWidget.smewtd.updateCollections()
-
     def showSettings(self):
         SettingsDialog().exec_()
 
@@ -365,9 +367,6 @@ class SmewtGui(QMainWindow):
 
         self.writeWindowSettings()
         self.mainWidget.quit()
-
-        # save cache
-        cache.save(utils.smewtUserPath(smewt.APP_NAME + '.cache'))
 
         log.info('Quitting application...')
         QApplication.instance().quit()
@@ -454,10 +453,14 @@ class SmewtGui(QMainWindow):
 
 if __name__ == '__main__':
     import smewt
+    import smewt.config
     app = QApplication(sys.argv)
     app.setOrganizationName(smewt.ORG_NAME)
     app.setOrganizationDomain('smewt.com')
     app.setApplicationName(smewt.APP_NAME)
+
+    if smewt.config.PERSISTENT_CACHE:
+        cache.load(utils.smewtUserPath(smewt.APP_NAME + '.cache'))
 
     sgui = SmewtGui()
 
@@ -472,6 +475,9 @@ if __name__ == '__main__':
 
     sgui.show()
     app.exec_()
+
+    if smewt.config.PERSISTENT_CACHE:
+        cache.save(utils.smewtUserPath(smewt.APP_NAME + '.cache'))
 
     log.info('Exiting')
 

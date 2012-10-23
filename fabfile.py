@@ -34,6 +34,10 @@ def profile():
     print 'Wrote profile results in /tmp/profstats'
     print 'You can visualize them with "runsnake /tmp/profstats"'
 
+@task
+def python(arg1):
+    local(py_path + 'python ' + arg1)
+
 @task(default=True)
 def smewt():
     """Run Smewt."""

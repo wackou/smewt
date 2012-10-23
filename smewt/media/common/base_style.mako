@@ -152,6 +152,8 @@ for i, p in enumerate(path[1:]):
       <ul class="nav nav-list span2 sidenav">
         <li class="nav-header">General</li>
         ${navlink('Speed dial', 'speeddial')}
+        ${navlink('Tv Underground', 'tvu')}
+        <li><a href="smewt://feedwatcher">Feed watcher</a></li>
         <li class="nav-header">Movies</li>
         ${navlink('All', 'movie')}
         ${navlink('Table', 'movie/spreadsheet')}

@@ -18,10 +18,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from functools import wraps
 import cPickle
 import logging
 
-log = logging.getLogger('smewt.base.cache')
+log = logging.getLogger(__name__)
 
 globalCache = {}
 
@@ -31,7 +32,6 @@ def clear():
     globalCache = {}
 
 def load(filename):
-    return
     log.info('Cache: loading cache from %s' % filename)
     global globalCache
     try:
@@ -42,30 +42,63 @@ def load(filename):
         log.error('Cache: cache file is corrupted... Please remove it.')
 
 def save(filename):
-    return
     log.info('Cache: saving cache to %s' % filename)
     cPickle.dump(globalCache, open(filename, 'wb'))
 
 
-def cachedmethod(function):
-    '''Makes a method use the cache. WARNING: this can NOT be used with static functions'''
+def cached_func_key(func, cls=None):
+    return ('%s.%s' % (cls.__module__, cls.__name__) if cls else None, func.__name__)
 
-    def cached(*args):
-        # removed the first element of args for the key, which is the instance pointer
-        # we don't want the cache to know which instance called it, it is shared among all
-        # instances of the same class
-        fkey = str(args[0].__class__), function.__name__
-        key = (fkey, args[1:])
+def log_cache(key, result=None):
+    if result:
+        res = unicode(result)
+        if len(res) > 200:
+            res = res[:100] + '   ...   ' + res[-100:]
+        log.debug(u'Using cached value for %s(%s,%s), returns: %s' % (key + (res,)))
+    else:
+        log.debug(u'Computing value for %s(%s,%s)' % key)
+
+def cachedfunc(function):
+    """Make a function (not a class method) use the global cache."""
+
+    @wraps(function)
+    def cached(*args, **kwargs):
+        func_key = cached_func_key(function)
+        # we need to remove the first element of args for the key, as it is the
+        # instance pointer and we don't want the cache to know which instance
+        # called it, it is shared among all instances of the same class
+        key = (func_key, args[1:], tuple(sorted(kwargs.items())))
         if key in globalCache:
-            return globalCache[key]
+            result = globalCache[key]
+            log_cache(key, result)
+            return result
 
-        result = function(*args)
-
+        log_cache(key)
+        result = function(*args, **kwargs)
         globalCache[key] = result
-
         return result
 
-    cached.__doc__ = function.__doc__
-    cached.__name__ = function.__name__
+    return cached
+
+
+def cachedmethod(function):
+    """Make a class method (not a module function) use the cache."""
+
+    @wraps(function)
+    def cached(*args, **kwargs):
+        func_key = cached_func_key(function, args[0].__class__)
+        # we need to remove the first element of args for the key, as it is the
+        # instance pointer and we don't want the cache to know which instance
+        # called it, it is shared among all instances of the same class
+        key = (func_key, args[1:], tuple(sorted(kwargs.items())))
+        if key in globalCache:
+            result = globalCache[key]
+            log_cache(key, result)
+            return result
+
+        log_cache(key)
+        result = function(*args, **kwargs)
+        globalCache[key] = result
+        return result
 
     return cached

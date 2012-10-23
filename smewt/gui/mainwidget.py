@@ -26,7 +26,7 @@ from smewt.base import ActionFactory, SmewtDaemon
 from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings, pyqtSignature
 from PyQt4.QtGui import QWidget, QVBoxLayout, QFileDialog, QMessageBox, QImage, QPainter, QApplication
 from PyQt4.QtWebKit import QWebView, QWebPage
-from smewt.media import series, movie, speeddial
+from smewt.media import series, movie, speeddial, tvu
 from guessit.language import Language
 import logging
 import time
@@ -205,6 +205,9 @@ class MainWidget(QWidget):
         elif surl.mediaType == 'movie':
             html = movie.view.render(surl,  self.smewtd.database)
 
+        elif surl.mediaType == 'tvu':
+            html = tvu.view.render(surl, self.smewtd.database)
+
         else:
             raise SmewtException('MainWidget: Invalid media type: %s' % surl.mediaType)
 
@@ -277,6 +280,10 @@ class MainWidget(QWidget):
                                text = unicode(comment))
 
         self.refreshCollectionView()
+
+    @pyqtSignature("QString")
+    def feedsForSeries(self, series):
+        self.setSmewtUrl('smewt://media/tvu?series=%s' % series)
 
     def linkClicked(self,  url):
         log.info('clicked on link %s', unicode(url.toString()))
