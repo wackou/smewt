@@ -290,12 +290,14 @@ class MainWidget(QWidget):
         url = unicode(feedUrl)
         self.smewtd.feedWatcher.addFeed(url)
         log.info('Subscribed to feed: %s' % url)
+        self.refreshCollectionView()
 
     @pyqtSignature("QString")
     def unsubscribeFromFeed(self, feedUrl):
         url = unicode(feedUrl)
         self.smewtd.feedWatcher.removeFeed(url)
         log.info('Unsubscribed from feed: %s' % url)
+        self.refreshCollectionView()
 
     def linkClicked(self,  url):
         log.info('clicked on link %s', unicode(url.toString()))

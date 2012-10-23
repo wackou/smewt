@@ -93,7 +93,7 @@ function unsubscribeFromFeed(feedUrl) {
           %endfor
           <td>${f[6]}</td>
           %if f[7] in subscribedFeeds:
-          <td><div class="btn btn-info" onclick="unsubscribeFromFeed('${f[7]}')">Subscribed!</div></td>
+          <td><div class="btn btn-success" onclick="unsubscribeFromFeed('${f[7]}')">Subscribed!</div></td>
           %else:
           <td><div class="btn" onclick="subscribeToFeed('${f[7]}')">Subscribe</div></td>
           %endif
