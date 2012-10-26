@@ -27,15 +27,20 @@ lookup = TemplateLookup(directories=[ smewtMedia('common'),
                                       smewtMedia('speeddial'),
                                       smewtMedia('movie'),
                                       smewtMedia('series'),
-                                      smewtMedia('tvu')
+                                      smewtMedia('tvu'),
+                                      smewtMedia('feeds'),
                                       ],
                         strict_undefined=False,
                         filesystem_checks=config.RELOAD_MAKO_TEMPLATES)
 
 
-def render_mako_template(render_func, url, collection):
+def render_mako_template(render_func, url, collection, smewtd=None):
     try:
-        result = render_func(url, collection)
+        if smewtd:
+            result = render_func(url, collection, smewtd)
+        else:
+            result = render_func(url, collection)
+
         if config.DEBUG_MAKO_TEMPLATES:
             open(config.MAKO_FILENAME, 'w').write(result.encode('utf-8'))
         return result

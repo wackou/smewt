@@ -22,13 +22,14 @@
 from smewt import SmewtException, SmewtUrl
 from smewt.gui.collectionfolderspage import CollectionFoldersPage
 from smewt.media import Series, Movie
-from smewt.base import ActionFactory, SmewtDaemon
-from PyQt4.QtCore import SIGNAL, QVariant, QProcess, QSettings, pyqtSignature
+from smewt.base import ActionFactory, SmewtDaemon, EventServer
+from PyQt4.QtCore import pyqtSignal, SIGNAL, QVariant, QProcess, QSettings, pyqtSignature
 from PyQt4.QtGui import QWidget, QVBoxLayout, QFileDialog, QMessageBox, QImage, QPainter, QApplication
 from PyQt4.QtWebKit import QWebView, QWebPage
-from smewt.media import series, movie, speeddial, tvu
+from smewt.media import series, movie, speeddial, tvu, feeds
 from guessit.language import Language
 import logging
+import threading
 import time
 import sys
 
@@ -39,6 +40,8 @@ maxZoomFactor = 3.0
 stepZoomFactor = 0.1
 
 class MainWidget(QWidget):
+    refresh = pyqtSignal()
+
     def __init__(self):
         super(MainWidget, self).__init__()
 
@@ -48,6 +51,9 @@ class MainWidget(QWidget):
         self.setZoomFactor(QSettings().value('zoom_factor', QVariant(1.0)).toDouble()[0])
         self.connect(self.collectionView,  SIGNAL('linkClicked(const QUrl&)'),
                      self.linkClicked)
+
+        self.refresh.connect(self.refreshCollectionView)
+        #self.connect(self, SIGNAL('refresh'), self.refreshCollectionView)
 
         layout = QVBoxLayout()
         layout.addWidget(self.collectionView)
@@ -208,6 +214,9 @@ class MainWidget(QWidget):
         elif surl.mediaType == 'tvu':
             html = tvu.view.render(surl, self.smewtd.database, self.smewtd)
 
+        elif surl.mediaType == 'feeds':
+            html = feeds.view.render(surl, self.smewtd.database, self.smewtd)
+
         else:
             raise SmewtException('MainWidget: Invalid media type: %s' % surl.mediaType)
 
@@ -290,14 +299,40 @@ class MainWidget(QWidget):
         url = unicode(feedUrl)
         self.smewtd.feedWatcher.addFeed(url)
         log.info('Subscribed to feed: %s' % url)
-        self.refreshCollectionView()
+        self.refresh.emit()
 
     @pyqtSignature("QString")
     def unsubscribeFromFeed(self, feedUrl):
         url = unicode(feedUrl)
         self.smewtd.feedWatcher.removeFeed(url)
         log.info('Unsubscribed from feed: %s' % url)
-        self.refreshCollectionView()
+        self.refresh.emit()
+
+    @pyqtSignature("QString")
+    def updateFeed(self, feedUrl):
+        url = unicode(feedUrl)
+        self.smewtd.feedWatcher.updateFeedUrl(url)
+        log.info('Updated info for feed: %s' % url)
+        self.refresh.emit()
+
+    @pyqtSignature("QString, QString")
+    def setLastUpdated(self, feedUrl, lastUpdate):
+        print 'LU', feedUrl, lastUpdate
+        url = unicode(feedUrl)
+        self.feedList.setLastUpdateUrl(url, lastUpdate)
+        # TODO: log, refresh
+
+    @pyqtSignature("")
+    def checkAllFeeds(self):
+        def bg_task():
+            self.smewtd.feedWatcher.checkAllFeeds()
+            self.refresh.emit()
+        threading.Thread(target=bg_task).start()
+
+    @pyqtSignature("")
+    def clearEventServer(self):
+        EventServer.events.clear()
+        self.refresh.emit()
 
     def linkClicked(self,  url):
         log.info('clicked on link %s', unicode(url.toString()))
@@ -320,8 +355,7 @@ class MainWidget(QWidget):
                 ActionFactory().dispatch(self, surl)
 
             else:
-                # probably feed watcher
-                self.emit(SIGNAL('feedwatcher'))
+                log.warning('Unhandled URL: %s' % url)
 
         else:
-            pass
+            log.warning('Unhandled URL: %s' % url)

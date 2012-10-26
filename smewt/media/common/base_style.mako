@@ -153,7 +153,7 @@ for i, p in enumerate(path[1:]):
         <li class="nav-header">General</li>
         ${navlink('Speed dial', 'speeddial')}
         ${navlink('Tv Underground', 'tvu')}
-        <li><a href="smewt://feedwatcher">Feed watcher</a></li>
+        ${navlink('Feeds', 'feeds')}
         <li class="nav-header">Movies</li>
         ${navlink('All', 'movie')}
         ${navlink('Table', 'movie/spreadsheet')}

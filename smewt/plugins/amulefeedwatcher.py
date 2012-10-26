@@ -20,9 +20,10 @@
 
 import feedparser
 import urllib2, re
-import subprocess
+import json
 from PyQt4.QtCore import SIGNAL, Qt, QSettings, QVariant, QAbstractListModel
 from smewt.base import SmewtException, EventServer
+
 
 class AmuleFeedWatcher(QAbstractListModel):
     def __init__(self):
@@ -43,7 +44,8 @@ class AmuleFeedWatcher(QAbstractListModel):
         return QVariant([ QVariant([ QVariant(f['url']),
                                      QVariant(f['title']),
                                      QVariant([ QVariant(float(n)) for n in f['lastUpdate'] ]),
-                                     QVariant(f['lastTitle'])
+                                     QVariant(f['lastTitle']),
+                                     QVariant(json.dumps(f['entries']))
                                      ]) for f in feedList ])
 
     def variantToFeedList(self, v):
@@ -54,6 +56,10 @@ class AmuleFeedWatcher(QAbstractListModel):
             feed['title'] = str(f.toList()[1].toString())
             feed['lastUpdate'] = [ n.toInt()[0] for n in f.toList()[2].toList() ]
             feed['lastTitle'] = unicode(f.toList()[3].toString())
+            try:
+                feed['entries'] = json.loads(str(f.toList()[4].toString()))
+            except:
+                feed['entries'] = []
             result.append(feed)
         return result
 
@@ -72,54 +78,80 @@ class AmuleFeedWatcher(QAbstractListModel):
         if lastUpdate is not specified, it will assume all episodes have already been downloaded"""
 
         url = str(url)
-        if url not in [ f['url'] for f in self.feedList ]:
-            try:
-                pfeed = feedparser.parse(url)
-                feed = { 'url': url,
-                         'title': pfeed.channel.title }
-            except AttributeError:
-                raise SmewtException('Invalid feed!')
+        if url in [ f['url'] for f in self.feedList ]:
+            return
 
-            if not lastUpdate:
-                lastUpdate = list(pfeed.entries[0].updated_parsed)
+        feed = { 'url': url }
+        self.updateFeed(feed)
+        #feed = self.getFullFeed(url)
+        if not lastUpdate:
+            lastUpdate = feed['entries'][0]['updated']
+        self.setLastUpdate(feed, lastUpdate)
 
-            self.feedList.append(feed)
-            self.setLastUpdate(feed, lastUpdate)
+        self.feedList.append(feed)
+        self.saveFeeds()
 
-            self.saveFeeds()
-
-            # FIXME: we should emit dataChanged here rather than call reset() (same goes for removeFeed)
-            self.reset()
+        # FIXME: we should emit dataChanged here rather than call reset() (same goes for removeFeed)
+        self.reset()
 
     def removeFeed(self, url):
         for f in self.feedList:
             if f['url'] == url:
                 self.feedList.remove(f)
                 self.saveFeeds()
+                # FIXME: remove, this is only needed for the Qt table model
                 self.reset()
 
     def removeFeedIndex(self, idx):
         self.removeFeed(self.feedList[idx]['url'])
 
-    def getFullFeedIndex(self, idx):
-        feed = self.feedList[idx]
-        feeds = feedparser.parse(feed['url'])
-        entries = [ { 'title': entry.title,
-                      'updated': list(entry.updated_parsed) } for entry in feeds.entries ]
+    def getFullFeed(self, feedUrl):
+        try:
+            feed = feedparser.parse(feedUrl)
+            entries = [ { 'title': entry.title,
+                          'updated': list(entry.updated_parsed) } for entry in feed.entries ]
 
-        return { 'title': feed['title'],
-                 'lastUpdate': feed['lastUpdate'],
-                 'entries': entries }
+            return { 'url': feedUrl,
+                     'title': feed.channel.title,
+                     'entries': entries }
+        except:
+            raise SmewtException('Invalid feed!')
+
+    def updateFeed(self, feed):
+        try:
+            pfeed = feedparser.parse(feed['url'])
+            entries = [ { 'title': entry.title,
+                          'updated': list(entry.updated_parsed) } for entry in pfeed.entries ]
+
+            feed.update({ 'title': pfeed.channel.title,
+                          'entries': entries })
+
+            self.saveFeeds()
+        except:
+            raise SmewtException('Invalid feed!')
+
+    def updateFeedUrl(self, url):
+        for f in self.feedList:
+            if f['url'] == url:
+                self.updateFeed(f)
+
+    def getFullFeedIndex(self, idx):
+        return self.getFullFeed(self.feedList[idx]['url'])
 
     def setLastUpdateIndex(self, index, lastUpdate):
         feed = self.feedList[index]
         self.setLastUpdate(feed, lastUpdate)
 
+    def setLastUpdateUrl(self, url, lastUpdate):
+        for feed in self.feedList:
+            if feed['url'] == url:
+                self.setLastUpdate(feed, lastUpdate)
+
     def setLastUpdate(self, feed, lastUpdate):
         feed['lastUpdate'] = lastUpdate
         # also save last ep title:
-        index = self.feedList.index(feed)
-        for f in self.getFullFeedIndex(index)['entries']:
+        # FIXME: does this still work?
+        for f in feed['entries']:
             if lastUpdate == f['updated']:
                 feed['lastTitle'] = f['title']
                 break

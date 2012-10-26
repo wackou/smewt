@@ -68,7 +68,7 @@ import_dir = smewtUserDirectoryUrl('speeddial')
 
     <!--
     <div class="span4"><div class="well">
-      <a href="smewt://feedwatcher">
+      <a href="smewt://media/feeds">
       <img src="${import_dir}/feedwatcher_200x150.png" width="200" /></a>
       <p>Feed Watcher</p>
     </div></div>

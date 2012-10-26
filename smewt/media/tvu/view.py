@@ -45,6 +45,4 @@ def render_mako(url, collection, smewtd):
 
 
 def render(url, collection, smewtd):
-    def rndr(url, collection):
-        return render_mako(url, collection, smewtd)
-    return render_mako_template(rndr, url, collection)
+    return render_mako_template(render_mako, url, collection, smewtd)

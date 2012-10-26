@@ -51,7 +51,7 @@ if MAIN_LOGGING_LEVEL == logging.DEBUG:
 
 from PyQt4.QtGui import QApplication, QMainWindow, QWidget, QStatusBar, QProgressBar, QHBoxLayout, QStackedWidget, QIcon, QSystemTrayIcon, QAction, QMenu, QMessageBox, QToolBar, QKeySequence
 from PyQt4.QtCore import SIGNAL, QSize, Qt, QSettings, QVariant, QPoint, QSize, QObject, QTimer
-from smewt.gui import MainWidget, FeedWatchWidget, AboutDialog, SettingsDialog
+from smewt.gui import MainWidget, AboutDialog, SettingsDialog
 from smewt.base import cache, utils
 from smewt.base.utils import smewtDirectory, smewtUserDirectory
 from smewt import config
@@ -135,10 +135,6 @@ class SmewtGui(QMainWindow):
         self.addToolBar(navigationToolBar)
         self.createTrayIcon()
 
-        # FIXME: tmp
-        self.connect(self.mainWidget, SIGNAL('feedwatcher'),
-                     self.showFeedWatcher)
-
         # first-run wizard
         settings = QSettings()
         configured = settings.value('configured').toBool()
@@ -167,23 +163,10 @@ class SmewtGui(QMainWindow):
             t.start()
 
 
-
-    def showFeedWatcher(self):
-        self.tabWidget.setCurrentIndex(1)
-
-    def showSpeedDial(self):
-        self.tabWidget.setCurrentIndex(0)
-        self.mainWidget.speedDial()
-
     def createWidgets(self):
         self.mainWidget = MainWidget()
-        self.feedWatchWidget = FeedWatchWidget(self.mainWidget.smewtd)
 
-        self.tabWidget = QStackedWidget()
-        self.tabWidget.addWidget(self.mainWidget)
-        self.tabWidget.addWidget(self.feedWatchWidget)
-
-        self.setCentralWidget(self.tabWidget)
+        self.setCentralWidget(self.mainWidget)
 
         self.statusWidget = StatusWidget()
         self.statusBar().addPermanentWidget(self.statusWidget, 0)
@@ -250,7 +233,7 @@ class SmewtGui(QMainWindow):
         self.homeAction = QAction(QIcon(smewtDirectory('smewt', 'icons', 'go-home.png')), 'Home (Speed Dial)', self)
         self.homeAction.setStatusTip('Return to speed dial')
         self.connect(self.homeAction, SIGNAL('triggered()'),
-                     self.showSpeedDial)
+                     self.mainWidget.speedDial)
 
 
         self.zoomInAction = QAction(QIcon(smewtDirectory('smewt', 'icons', 'zoom-in.png')), 'Zoom in', self)

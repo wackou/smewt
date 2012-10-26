@@ -56,8 +56,6 @@ class SmewtUrl:
                     self.viewType = parts[1]
             elif self.spath.netloc == 'action':
                 self.actionType, = self.spath.path.split('/')[1:]
-            elif self.spath.netloc == 'feedwatcher':
-                pass
             else:
                 raise SmewtException("SmewtUrl: invalid url type '%s'" % self.spath.netloc)
 

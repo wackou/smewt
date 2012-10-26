@@ -20,6 +20,9 @@
 
 import datetime
 from PyQt4.QtCore import Qt, QVariant, QAbstractListModel
+import logging
+
+log = logging.getLogger(__name__)
 
 class Event:
     def __init__(self, text):
@@ -27,7 +30,10 @@ class Event:
         self.text = text
 
     def __str__(self):
-        return self.timestamp.ctime() + ': ' + self.text
+        return '%s: %s' % (self.timestamp.ctime(), self.text)
+
+    def __repr__(self):
+        return str(self)
 
 class EventList(QAbstractListModel):
     def __init__(self):
@@ -43,8 +49,12 @@ class EventList(QAbstractListModel):
 
         return QVariant(str(self.events[index.row()]))
 
-    def add(self, text):
-        self.events.append(Event(text))
+
+    def clear(self):
+        self.events = []
+
+    def add(self, event):
+        self.events.append(event)
         # TODO: use dataChanged instead
         self.reset()
 
@@ -55,4 +65,5 @@ class EventServer:
 
     @staticmethod
     def publish(text):
-        EventServer.events.add(text)
+        EventServer.events.add(Event(text))
+        log.info(text)
