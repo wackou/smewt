@@ -315,12 +315,12 @@ class MainWidget(QWidget):
         log.info('Updated info for feed: %s' % url)
         self.refresh.emit()
 
-    @pyqtSignature("QString, QString")
-    def setLastUpdated(self, feedUrl, lastUpdate):
-        print 'LU', feedUrl, lastUpdate
+    @pyqtSignature("QString, int")
+    def setLastUpdated(self, feedUrl, index):
         url = unicode(feedUrl)
-        self.feedList.setLastUpdateUrl(url, lastUpdate)
-        # TODO: log, refresh
+        self.smewtd.feedWatcher.setLastUpdateUrlIndex(url, index)
+        log.info('Updated last entry for feed: %s' % url)
+        self.refresh.emit()
 
     @pyqtSignature("")
     def checkAllFeeds(self):

@@ -64,8 +64,8 @@ function updateFeed(feedUrl) {
                 </a>
                 <ul class="dropdown-menu">
                   %for fd in feedWatcher.feedList[loop.index].get('entries', []):
-                  <li><a href="smewt://media/feeds?update"
-                         onclick="mainWidget.setLastUpdated('${f['url']}');">
+                  <li><a href="#"
+                         onclick="mainWidget.setLastUpdated('${f['url']}', ${loop.index});">
                     ${clean_eptitle(fd['title'])}</a></li>
                   %endfor
                   <li><a href="#">None</a></li>

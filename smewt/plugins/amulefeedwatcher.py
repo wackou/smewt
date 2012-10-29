@@ -23,6 +23,9 @@ import urllib2, re
 import json
 from PyQt4.QtCore import SIGNAL, Qt, QSettings, QVariant, QAbstractListModel
 from smewt.base import SmewtException, EventServer
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class AmuleFeedWatcher(QAbstractListModel):
@@ -142,9 +145,10 @@ class AmuleFeedWatcher(QAbstractListModel):
         feed = self.feedList[index]
         self.setLastUpdate(feed, lastUpdate)
 
-    def setLastUpdateUrl(self, url, lastUpdate):
+    def setLastUpdateUrlIndex(self, url, index):
         for feed in self.feedList:
             if feed['url'] == url:
+                lastUpdate = feed['entries'][index]['updated']
                 self.setLastUpdate(feed, lastUpdate)
 
     def setLastUpdate(self, feed, lastUpdate):
@@ -174,13 +178,17 @@ class AmuleFeedWatcher(QAbstractListModel):
                 episodeHtml = urllib2.urlopen(ep.id).read()
                 ed2kLink = re.compile('href="(?P<url>ed2k://\|file.*?)">').search(episodeHtml).groups()[0]
                 EventServer.publish('Sending file to aMule...')
-                ok, msg = self.amuleDownload(ed2kLink)
-                if ok:
+                try:
+                    ok, msg = self.amuleDownload(ed2kLink)
+                    if not ok:
+                        raise RuntimeError('Could not send link to aMule: %s' % msg)
+
                     EventServer.publish('Successfully sent to aMule!')
                     if list(ep.updated_parsed) > lastUpdate:
                         lastUpdate = list(ep.updated_parsed)
-                else:
-                    EventServer.publish('Error while sending to aMule. %s. Will try again next time...' % msg)
+                except Exception as e:
+                    log.error('Error while sending to aMule: %s' % e)
+                    EventServer.publish('Error while sending to aMule. %s. Will try again next time...' % str(e))
 
         if lastUpdate == feed['lastUpdate']:
             EventServer.publish('No new episodes...')
