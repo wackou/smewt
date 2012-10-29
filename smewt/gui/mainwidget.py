@@ -269,6 +269,7 @@ class MainWidget(QWidget):
 
     @pyqtSignature("bool")
     def toggleSynopsis(self, synopsis):
+        log.info('Set default synopsis state to %s' % synopsis)
         self.smewtd.database.find_one('Config').displaySynopsis = synopsis
 
     @pyqtSignature("QString, bool")

@@ -21,13 +21,8 @@ langs_repr = '["' + '","'.join(langs) + '"]'
 
 <%
 series = context['series']
-displaySynopsis = context['displaySynopsis']
 
 poster = pathToUrl(series.get('hiresImage'))
-if displaySynopsis:
-    displayStyle = 'inline'
-else:
-    displayStyle = 'none'
 
 # First prepare the episodes, grouping them by season
 episodes = defaultdict(list)
