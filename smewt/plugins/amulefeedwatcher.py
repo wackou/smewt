@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Nicolas Wack <wackou@smewt.com>
+# Copyright (c) 2008-2012 Nicolas Wack <wackou@smewt.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,27 +21,16 @@
 import feedparser
 import urllib2, re
 import json
-from PyQt4.QtCore import SIGNAL, Qt, QSettings, QVariant, QAbstractListModel
+from PyQt4.QtCore import QSettings, QVariant
 from smewt.base import SmewtException, EventServer
 import logging
 
 log = logging.getLogger(__name__)
 
 
-class AmuleFeedWatcher(QAbstractListModel):
+class AmuleFeedWatcher(object):
     def __init__(self):
-        super(AmuleFeedWatcher, self).__init__()
         self.loadFeeds()
-
-    def rowCount(self, parent):
-        return len(self.feedList)
-
-    def data(self, index, role = Qt.DisplayRole):
-        if role != Qt.DisplayRole:
-            return QVariant()
-
-        f = self.feedList[index.row()]
-        return QVariant(f['title'] + '\n   -- last episode: ' + f['lastTitle'] + '\n')
 
     def feedListToQVariant(self, feedList):
         return QVariant([ QVariant([ QVariant(f['url']),
@@ -67,9 +56,11 @@ class AmuleFeedWatcher(QAbstractListModel):
         return result
 
     def loadFeeds(self):
+        # TODO: store inside graph db instead of Qt settings
         self.feedList = self.variantToFeedList(QSettings().value('feeds'))
 
     def saveFeeds(self):
+        # TODO: store inside graph db instead of Qt settings
         QSettings().setValue('feeds', self.feedListToQVariant(self.feedList))
 
     def addFeed(self, url, lastUpdate = None):
@@ -86,7 +77,6 @@ class AmuleFeedWatcher(QAbstractListModel):
 
         feed = { 'url': url }
         self.updateFeed(feed)
-        #feed = self.getFullFeed(url)
         if not lastUpdate:
             lastUpdate = feed['entries'][0]['updated']
         self.setLastUpdate(feed, lastUpdate)
@@ -94,31 +84,11 @@ class AmuleFeedWatcher(QAbstractListModel):
         self.feedList.append(feed)
         self.saveFeeds()
 
-        # FIXME: we should emit dataChanged here rather than call reset() (same goes for removeFeed)
-        self.reset()
-
     def removeFeed(self, url):
         for f in self.feedList:
             if f['url'] == url:
                 self.feedList.remove(f)
                 self.saveFeeds()
-                # FIXME: remove, this is only needed for the Qt table model
-                self.reset()
-
-    def removeFeedIndex(self, idx):
-        self.removeFeed(self.feedList[idx]['url'])
-
-    def getFullFeed(self, feedUrl):
-        try:
-            feed = feedparser.parse(feedUrl)
-            entries = [ { 'title': entry.title,
-                          'updated': list(entry.updated_parsed) } for entry in feed.entries ]
-
-            return { 'url': feedUrl,
-                     'title': feed.channel.title,
-                     'entries': entries }
-        except:
-            raise SmewtException('Invalid feed!')
 
     def updateFeed(self, feed):
         try:
@@ -130,6 +100,8 @@ class AmuleFeedWatcher(QAbstractListModel):
                           'entries': entries })
 
             self.saveFeeds()
+
+            return pfeed
         except:
             raise SmewtException('Invalid feed!')
 
@@ -137,13 +109,6 @@ class AmuleFeedWatcher(QAbstractListModel):
         for f in self.feedList:
             if f['url'] == url:
                 self.updateFeed(f)
-
-    def getFullFeedIndex(self, idx):
-        return self.getFullFeed(self.feedList[idx]['url'])
-
-    def setLastUpdateIndex(self, index, lastUpdate):
-        feed = self.feedList[index]
-        self.setLastUpdate(feed, lastUpdate)
 
     def setLastUpdateUrlIndex(self, url, index):
         for feed in self.feedList:
@@ -154,13 +119,11 @@ class AmuleFeedWatcher(QAbstractListModel):
     def setLastUpdate(self, feed, lastUpdate):
         feed['lastUpdate'] = lastUpdate
         # also save last ep title:
-        # FIXME: does this still work?
         for f in feed['entries']:
             if lastUpdate == f['updated']:
                 feed['lastTitle'] = f['title']
                 break
         self.saveFeeds()
-        self.reset()
 
 
     def amuleDownload(self, ed2kLink):
@@ -169,7 +132,7 @@ class AmuleFeedWatcher(QAbstractListModel):
 
     def downloadNewEpisodes(self, feed):
         EventServer.publish('Checking new episodes for: %s' % feed['title'])
-        f = feedparser.parse(feed['url'])
+        f = self.updateFeed(feed)
         lastUpdate = feed['lastUpdate']
 
         for ep in f.entries:
