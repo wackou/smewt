@@ -23,7 +23,7 @@ from serieobject import Series, Episode
 from smewt.media import lookup, render_mako_template
 from guessit.language import Language
 
-def render_mako(url, collection):
+def render_mako(url, collection, smewtd):
     if url.viewType == 'single':
         # FIXME: this definitely doesn't belong here...
         try:
@@ -57,9 +57,10 @@ def render_mako(url, collection):
         raise SmewtException('Invalid view type: %s' % url.viewType)
 
     data['url'] = url
+    data['smewtd'] = smewtd
     t = lookup.get_template(tfilename)
     return t.render_unicode(**data)
 
 
-def render(url, collection):
-    return render_mako_template(render_mako, url, collection)
+def render(url, collection, smewtd):
+    return render_mako_template(render_mako, url, collection, smewtd)

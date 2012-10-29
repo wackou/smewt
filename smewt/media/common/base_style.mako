@@ -72,6 +72,27 @@ body {
 
 </%def>
 
+<%def name="make_lang_selector(smewtd)">
+<%!
+from guessit.language import ALL_LANGUAGES, Language
+
+langs = sorted(l.english_name.replace("'", "") for l in ALL_LANGUAGES)
+langs_repr = '["' + '","'.join(langs) + '"]'
+%>
+
+<%
+from smewt.base import Config
+config = smewtd.database.find_one(Config)
+sublang = ''
+if config.get('defaultSubtitleLanguage'):
+    sublang = Language(config.defaultSubtitleLanguage).english_name
+
+%>
+
+
+<input id="sublang" type="text" class="span2" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='${langs_repr}' onKeyUp="return sublangChanged()" onChange="return sublangChanged()" value="${sublang}" />
+
+</%def>
 
 <%def name="make_media_box(f)">
 <%
@@ -180,7 +201,12 @@ for i, p in enumerate(path[1:]):
 
 <%block name="scripts">
   ${parent.scripts()}
-  <script>
+  <script type="text/javascript">
     $('.sidenav').affix();
+
+    function sublangChanged(t) {
+        var s = $("#sublang");
+        mainWidget.setDefaultSubtitleLanguage(s.val());
+    }
   </script>
 </%block>

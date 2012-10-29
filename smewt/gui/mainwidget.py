@@ -203,13 +203,13 @@ class MainWidget(QWidget):
         log.debug('Rendering URL: %s' % surl)
 
         if not surl.mediaType or surl.mediaType == 'speeddial':
-            html = speeddial.view.render(surl, self.smewtd.database)
+            html = speeddial.view.render(surl, self.smewtd.database, self.smewtd)
 
         elif surl.mediaType == 'series':
-            html = series.view.render(surl, self.smewtd.database)
+            html = series.view.render(surl, self.smewtd.database, self.smewtd)
 
         elif surl.mediaType == 'movie':
-            html = movie.view.render(surl,  self.smewtd.database)
+            html = movie.view.render(surl,  self.smewtd.database, self.smewtd)
 
         elif surl.mediaType == 'tvu':
             html = tvu.view.render(surl, self.smewtd.database, self.smewtd)

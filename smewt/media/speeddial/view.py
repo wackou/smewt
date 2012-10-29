@@ -20,11 +20,11 @@
 
 from smewt.media import lookup, render_mako_template
 
-def render_mako(url, collection):
+def render_mako(url, collection, smewtd):
     t = lookup.get_template('speeddial.mako')
 
     return t.render_unicode(title='SPEED DIAL',
                             url=url)
 
-def render(url, collection):
-    return render_mako_template(render_mako, url, collection)
+def render(url, collection, smewtd):
+    return render_mako_template(render_mako, url, collection, smewtd)

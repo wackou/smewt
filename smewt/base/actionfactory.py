@@ -160,7 +160,7 @@ class ActionFactory(Singleton):
 
             elif surl.args['type'] == 'movie':
                 title = surl.args['title']
-                language = surl.args['language']
+                language = surl.args.get('language') or db.find_one('Config').defaultSubtitleLanguage or 'en'
 
                 movie = db.find_one('Movie', title = title)
 

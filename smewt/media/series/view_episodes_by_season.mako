@@ -9,13 +9,11 @@ from smewt.base.utils import pathToUrl, smewtMediaUrl, tolist, SDict
 from smewt.base import SmewtException
 from smewt.base.actionfactory import PlayAction
 from guessit.language import ALL_LANGUAGES
+import os.path
 import guessit
 
 import_dir = smewtMediaUrl()
 flags_dir = smewtMediaUrl('common', 'images', 'flags')
-
-langs = sorted(l.english_name.replace("'", "") for l in ALL_LANGUAGES)
-langs_repr = '["' + '","'.join(langs) + '"]'
 
 %>
 
@@ -44,11 +42,7 @@ for ep in [ ep for ep in tolist(series.episodes) if ep.get('episodeNumber', -1) 
         extras[ep.season].append(f)
 
 
-import os.path
-
-
 lastSeasonWatched = series.get('lastSeasonWatched', 0)
-
 
 %>
 
@@ -69,12 +63,6 @@ function toggleSynopsis() {
     mainWidget.toggleSynopsis(isToggled('synopsis'));
 }
 
-function sublangChanged(t) {
-    var s = $("#sublang");
-    mainWidget.setDefaultSubtitleLanguage(s.val());
-}
-
-
 </script>
 
 </%block>
@@ -87,7 +75,8 @@ subsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': seri
 
  <div class="row-fluid">
 
-   Look for subtitles in <input id="sublang" type="text" class="span2" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='${langs_repr}' onKeyUp="return sublangChanged()" onChange="return sublangChanged()" value="${defaultSubtitleLanguage}" />
+   Look for subtitles in
+   ${parent.make_lang_selector(context['smewtd'])}
 
    <div class="btn"><a href="${subsLink}">Download!</a></div>
    <br><br>

@@ -4,12 +4,13 @@
 from collections import defaultdict
 from smewt import SmewtUrl, Media
 from smewt.media import Movie
-from smewt.base.utils import pathToUrl, smewtDirectoryUrl, tolist
+from smewt.base.utils import pathToUrl, smewtMediaUrl, tolist
 from smewt.base import SmewtException
 import os
 
-import_dir = smewtDirectoryUrl('smewt', 'media')
-flags_dir = smewtDirectoryUrl('smewt', 'media', 'common', 'images', 'flags')
+import_dir = smewtMediaUrl()
+flags_dir = smewtMediaUrl('common', 'images', 'flags')
+
 %>
 
 <%
@@ -17,18 +18,13 @@ poster = pathToUrl(movie.loresImage)
 %>
 
 <%def name="make_subtitle_download_links(movie)">
-<%
-englishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'movie', 'title': movie.title, 'language': 'en' })
-frenchSubsLink  = SmewtUrl('action', 'getsubtitles', { 'type': 'movie', 'title': movie.title, 'language': 'fr' })
-spanishSubsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'movie', 'title': movie.title, 'language': 'es' })
-%>
-    <div class="row-fluid">
-      Subtitles:
-      <div class="btn"><a href="${englishSubsLink}">Get missing English subtitles</a></div>
-      <div class="btn"><a href="${frenchSubsLink}">Get missing French subtitles</a></div>
-      <div class="btn"><a href="${spanishSubsLink}">Get missing Spanish subtitles</a></div>
+<% subsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'movie', 'title': movie.title }) %>
 
-    </div>
+Look for subtitles in
+${parent.make_lang_selector(context['smewtd'])}
+
+<div class="btn"><a href="${subsLink}">Download!</a></div>
+
 </%def>
 
 

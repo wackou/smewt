@@ -18,19 +18,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from pygoo import ontology
 from smewt.base import SmewtException
 from smewt.media import lookup, render_mako_template
 from movieobject import Movie
-ontology.import_class('Movie')
 
 
-def render_mako(url, collection):
+def render_mako(url, collection, smewtd):
     if url.viewType == 'single':
         tfilename = 'view_movie.mako'
         movie = collection.find_one(Movie, title = url.args['title'])
         data = { 'title': movie.title,
-                 'movie': movie }
+                 'movie': movie,
+                 'smewtd': smewtd }
 
     elif not url.viewType:
         tfilename = 'view_all_movies.mako'
@@ -61,5 +60,6 @@ def render_mako(url, collection):
     t = lookup.get_template(tfilename)
     return t.render_unicode(**data)
 
-def render(url, collection):
-    return render_mako_template(render_mako, url, collection)
+
+def render(url, collection, smewtd):
+    return render_mako_template(render_mako, url, collection, smewtd)
