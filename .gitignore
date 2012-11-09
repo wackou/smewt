@@ -2,6 +2,7 @@
 Smewg.e4q
 Smewg.e4t
 logview.log
+callgrind.out.*
 
 .waf-*
 .ropeproject

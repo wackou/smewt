@@ -555,8 +555,9 @@ if __name__ == '__main__':
 
             stats = yappi.get_func_stats(sort_type=yappi.SORTTYPE_TSUB)
 
-
-            with open('callgrind.test', 'w') as f:
+            filename = 'callgrind.out.%d' % os.getpid()
+            with open(filename, 'w') as f:
                 f.write(yappi_to_callgrind(stats))
+                print '\nWrote callgrind output to %s' % filename
     else:
         main()
