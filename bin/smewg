@@ -443,7 +443,7 @@ class SmewtGui(QMainWindow):
         QMessageBox.aboutQt(self)
 
 
-if __name__ == '__main__':
+def main():
     import smewt
     import smewt.config
     app = QApplication(sys.argv)
@@ -477,3 +477,86 @@ if __name__ == '__main__':
         # FIXME: must remove or detect better. This is needed when activating the Coherence plugin.
         log.warn('Killing application...')
         os.kill(os.getpid(), 9)
+
+
+def yappi_to_callgrind(stats):
+    import smewt
+    cstats = """version: 1
+creator: %s-%s
+pid: %d
+cmd:  %s
+part: 1
+
+events: Ticks
+""" % (smewt.APP_NAME, smewt.__version__,
+       os.getpid(),
+       ' '.join(sys.argv))
+
+    lines = []
+    file_ids = ['']# 'define file ID mapping' ]
+    func_ids = ['']# 'define function ID mapping' ]
+    for stat in stats:
+        absfunc, line = (stat.name.split(':') + [ 0 ])[:2]
+        if line:
+            filename, func = absfunc.rsplit('.', 1)
+        else:
+            filename, func = '', absfunc
+        file_ids += [ 'fl=(%d) %s' % (stat.index, filename) ]
+        func_ids += [ 'fn=(%d) %s' % (stat.index, func) ]
+
+    lines = file_ids + func_ids
+
+    for stat in stats:
+        absfunc, line = (stat.name.split(':') + [ 0 ])[:2]
+        func_stats = [ '',
+                       'fl=(%d)' % stat.index,
+                       'fn=(%d)' % stat.index ]
+        func_stats += [ '%s %s' % (line, int(stat.tsub * 1e6)) ]
+
+        # children functions stats
+        for child, callcount, tsub in stat.children:
+            func_stats += [ 'cfl=(%d)' % child,
+                            'cfn=(%d)' % child,
+                            'calls=%d 0' % callcount,
+                            '0 %d' % int(tsub * 1e6)
+                            ]
+
+        lines += func_stats
+
+    cstats += '\n'.join(lines)
+    return cstats
+
+
+
+if __name__ == '__main__':
+    if len(sys.argv) > 1 and sys.argv[1] == '--profile':
+        try:
+            import yappi
+
+        except ImportError:
+            print 'You need to install the yappi python module to profile Smewt!'
+            sys.exit(1)
+
+        try:
+            yappi.start(True)
+            main()
+
+        finally:
+            yappi.stop()
+
+            print '\n\nSORTED BY SUB TIME'
+            yappi.print_func_stats(sort_type=yappi.SORTTYPE_TSUB,
+                                   limit=20)
+            print '\n\nSORTED BY TOTAL TIME'
+            yappi.print_func_stats(sort_type=yappi.SORTTYPE_TTOT,
+                                   limit=20)
+            print '\n\nTHREAD STATS'
+            yappi.print_thread_stats()
+
+            stats = yappi.get_func_stats(sort_type=yappi.SORTTYPE_TSUB)
+
+
+            with open('callgrind.test', 'w') as f:
+                f.write(yappi_to_callgrind(stats))
+    else:
+        main()

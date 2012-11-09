@@ -15,24 +15,35 @@ SMEWT_ROOT = up(os.path.abspath(__file__))
 SMEWT_ROOT_PARENT = up(SMEWT_ROOT)
 
 # first add paths to local smewt and pygoo repositories
-relative_modules = [ 'smewt',
-                     #'pygoo',
-                     'guessit',
-                     'subliminal'
-                     ]
+import_modules = [ '.',
+                   '3rdparty/pygoo',
+                   '3rdparty/guessit',
+                   '3rdparty/subliminal'
+                   ]
 
-py_path = [ os.path.join(SMEWT_ROOT_PARENT, module)
-            for module in relative_modules ]
+py_path = [ os.path.join(SMEWT_ROOT, module)
+            for module in import_modules ]
 
 py_path = 'PYTHONPATH=%s:$PYTHONPATH ' % (':'.join(py_path))
 
+@task
+def update_yappi():
+    try:
+        import yappi
+        local('pip uninstall --yes yappi')
+    except ImportError:
+        pass
+
+    with lcd('../yappi'):
+        local('rm -fr dist')
+        local('python setup.py sdist')
+
+    local('pip install ../yappi/dist/*.gz')
 
 @task
 def profile():
-    """Run Smewt and profile it, write the resulting data into /tmp/profstats."""
-    local(py_path + 'python -m cProfile -o /tmp/profstats bin/smewg')
-    print 'Wrote profile results in /tmp/profstats'
-    print 'You can visualize them with "runsnake /tmp/profstats"'
+    """Run Smewt and profile it, print the resulting data to stdout."""
+    local(py_path + 'python bin/smewg --profile')
 
 @task
 def python(arg1):
@@ -139,6 +150,7 @@ def make_release(version, commit=False):
 
 @task
 def dev_mode(version, commit=False):
+    change_version_number(version, mode='dev')
     if commit:
         local('git commit -a -m "Switched back to development version %s"' % VERSION)
 
