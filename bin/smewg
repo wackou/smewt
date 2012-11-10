@@ -479,54 +479,6 @@ def main():
         os.kill(os.getpid(), 9)
 
 
-def yappi_to_callgrind(stats):
-    import smewt
-    cstats = """version: 1
-creator: %s-%s
-pid: %d
-cmd:  %s
-part: 1
-
-events: Ticks
-""" % (smewt.APP_NAME, smewt.__version__,
-       os.getpid(),
-       ' '.join(sys.argv))
-
-    lines = []
-    file_ids = ['']# 'define file ID mapping' ]
-    func_ids = ['']# 'define function ID mapping' ]
-    for stat in stats:
-        absfunc, line = (stat.name.split(':') + [ 0 ])[:2]
-        if line:
-            filename, func = absfunc.rsplit('.', 1)
-        else:
-            filename, func = '', absfunc
-        file_ids += [ 'fl=(%d) %s' % (stat.index, filename) ]
-        func_ids += [ 'fn=(%d) %s' % (stat.index, func) ]
-
-    lines = file_ids + func_ids
-
-    for stat in stats:
-        absfunc, line = (stat.name.split(':') + [ 0 ])[:2]
-        func_stats = [ '',
-                       'fl=(%d)' % stat.index,
-                       'fn=(%d)' % stat.index ]
-        func_stats += [ '%s %s' % (line, int(stat.tsub * 1e6)) ]
-
-        # children functions stats
-        for child, callcount, tsub in stat.children:
-            func_stats += [ 'cfl=(%d)' % child,
-                            'cfn=(%d)' % child,
-                            'calls=%d 0' % callcount,
-                            '0 %d' % int(tsub * 1e6)
-                            ]
-
-        lines += func_stats
-
-    cstats += '\n'.join(lines)
-    return cstats
-
-
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == '--profile':
@@ -553,11 +505,10 @@ if __name__ == '__main__':
             print '\n\nTHREAD STATS'
             yappi.print_thread_stats()
 
-            stats = yappi.get_func_stats(sort_type=yappi.SORTTYPE_TSUB)
-
             filename = 'callgrind.out.%d' % os.getpid()
             with open(filename, 'w') as f:
-                f.write(yappi_to_callgrind(stats))
-                print '\nWrote callgrind output to %s' % filename
+                yappi.write_callgrind_stats(f)
+            print '\nWrote callgrind output to %s' % filename
+
     else:
         main()
