@@ -11,7 +11,7 @@ install_requires = [
     # For more details, see:
     # http://packages.python.org/distribute/setuptools.html#declaring-dependencies
     'pygoo>=0.1.4',
-    'guessit>=0.5.2',
+    'guessit>=0.5.3',
     'subliminal>=0.6.2',
     'mako>=0.7',
     'lxml',
@@ -20,7 +20,7 @@ install_requires = [
 ]
 
 
-datafiles_exts = [ '*.png', '*.svg', '*.tmpl', '*.css', '*.html', '*.js' ]
+datafiles_exts = [ '*.png', '*.svg', '*.mako', '*.css', '*.html', '*.js' ]
 
 
 args = dict(name = 'smewt',
