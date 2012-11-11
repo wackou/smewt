@@ -162,6 +162,11 @@ class SmewtGui(QMainWindow):
             t.daemon = True
             t.start()
 
+            self.feedsTimer = QTimer(self)
+            self.connect(self.feedsTimer, SIGNAL('timeout()'),
+                         self.mainWidget.checkAllFeeds)
+            self.feedsTimer.start(2*60*60*1000)
+
 
     def createWidgets(self):
         self.mainWidget = MainWidget()
