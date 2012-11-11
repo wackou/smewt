@@ -19,9 +19,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import unicode_literals
 from smewt.base import SolvingChain, Media, utils
-from smewt.base.textutils import toUtf8
-from smewt.media import Episode, Subtitle
+from smewt.base.textutils import u
+from smewt.media import Episode
 from smewt.taggers.tagger import Tagger
 from smewt.guessers import *
 from smewt.solvers import SimpleSolver
@@ -32,10 +33,10 @@ log = logging.getLogger('smewt.taggers.episodetagger')
 class EpisodeTagger(Tagger):
 
     def perform(self, query):
-        log.info('EpisodeTagger tagging episode: %s' % toUtf8(query.find_one(Media).filename))
+        log.info('EpisodeTagger tagging episode: %s' % u(query.find_one(Media).filename))
         filenameMetadata = SolvingChain(EpisodeFilename()).solve(query)
 
-        log.info('EpisodeTagger found info from filename: %s' % filenameMetadata.find_one(Episode))
+        log.info('EpisodeTagger found info: %s' % filenameMetadata.find_one(Episode))
         result = SolvingChain(EpisodeTVDB(), SimpleSolver(Episode)).solve(filenameMetadata)
 
         media = result.find_one(Media)
@@ -49,7 +50,7 @@ class EpisodeTagger(Tagger):
         if media.type() == 'subtitle':
             subs = []
             for language in utils.guessCountryCodes(media.filename):
-                log.info('Found %s sub in file %s' % (toUtf8(language.english_name), toUtf8(media.filename)))
+                log.info('Found %s sub in file %s' % (language.english_name, u(media.filename)))
                 subs += [ result.Subtitle(metadata = media.metadata,
                                           language = language.alpha2) ]
 

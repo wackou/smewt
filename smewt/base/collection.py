@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import unicode_literals
 import logging
 import time, os
 
@@ -26,7 +27,7 @@ from pygoo import MemoryObjectGraph, ontology
 
 from smewt.base import utils, Media, Metadata, ImportTask
 from smewt.taggers import EpisodeTagger, MovieTagger
-from smewt.base.textutils import toUtf8
+from smewt.base.textutils import u
 
 log = logging.getLogger('smewt.base.collection')
 
@@ -89,7 +90,7 @@ class Collection(object):
     def importFiles(self, files):
         for f in files:
             # new import task
-            log.info('Import in %s collection: %s' % (self.name, toUtf8(f)))
+            log.info('Import in %s collection: %s' % (u(self.name), u(f)))
             if self.taskManager:
                 importTask = ImportTask(self.graph, self.mediaTagger, f)
                 self.taskManager.add(importTask)

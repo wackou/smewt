@@ -18,9 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import unicode_literals
 from smewt.base import Media, utils
-from smewt.base.textutils import toUtf8
-from smewt.media import Movie, Subtitle
+from smewt.base.textutils import u
+from smewt.media import Movie
 from smewt.taggers.tagger import Tagger
 from smewt.guessers import *
 import logging
@@ -29,10 +30,11 @@ log = logging.getLogger('smewt.taggers.movietagger')
 
 class MovieTagger(Tagger):
     def perform(self, query):
-        log.info('MovieTagger tagging movie: %s' % toUtf8(query.find_one(Media).filename))
+        filename = u(query.find_one(Media).filename)
+        log.info('MovieTagger tagging movie: %s' % filename)
         filenameMetadata = MovieFilename().perform(query)
         filenameMovie = filenameMetadata.find_one(Movie)
-        log.info('MovieTagger found info from filename: %s' % filenameMovie)
+        log.info('MovieTagger found info: %s' % u(filenameMovie))
         result = MovieTMDB().perform(filenameMetadata)
 
         media = result.find_one(Media)
@@ -58,5 +60,5 @@ class MovieTagger(Tagger):
 
         self.cleanup(result)
 
-        log.debug('Finished tagging: %s' % media)
+        log.debug('Finished tagging: %s' % u(media))
         return result

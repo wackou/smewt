@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Nicolas Wack <wackou@smewt.com>
+# Copyright (c) 2008-2012 Nicolas Wack <wackou@smewt.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -94,6 +94,8 @@ def multipleMatchRegexp(string, regexp):
 
 #string-related functions
 
+from pygoo import BaseObject
+
 def between(s, left, right):
     return s.split(left)[1].split(right)[0]
 
@@ -115,6 +117,31 @@ def toUtf8(o):
     else:
         return o
 
+def toUnicode(o):
+    '''converts all strings found in the given object to unicode strings'''
+    if isinstance(o, QString):
+        return unicode(o)
+    elif isinstance(o, str):
+        return o.decode('utf-8')
+    elif isinstance(o, list):
+        return [ u(i) for i in o ]
+    elif isinstance(o, dict):
+        result = {}
+        for key, value in o.items():
+            result[u(key)] = u(value)
+        return result
+
+    else:
+        return o
+
+
+def u(o):
+    """Return a unicode string representation for the given object."""
+    result = toUnicode(o)
+    if isinstance(result, BaseObject):
+        return str(result).decode('utf-8')
+
+    return unicode(result)
 
 def levenshtein(a, b):
     if not a: return len(b)
