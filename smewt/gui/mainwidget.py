@@ -23,7 +23,7 @@ from smewt import SmewtException, SmewtUrl
 from smewt.gui.collectionfolderspage import CollectionFoldersPage
 from smewt.media import Series, Movie
 from smewt.base import ActionFactory, SmewtDaemon, EventServer
-from PyQt4.QtCore import pyqtSignal, SIGNAL, QVariant, QProcess, QSettings, pyqtSignature
+from PyQt4.QtCore import pyqtSignal, SIGNAL, QVariant, QProcess, QSettings, QUrl,  pyqtSignature
 from PyQt4.QtGui import QWidget, QVBoxLayout, QFileDialog, QMessageBox, QImage, QPainter, QApplication
 from PyQt4.QtWebKit import QWebView, QWebPage
 from smewt.media import series, movie, speeddial, tvu, feeds
@@ -181,8 +181,11 @@ class MainWidget(QWidget):
     def refreshCollectionView(self):
         surl = self.smewtUrl
 
-        html = self.renderSmewtUrl(self.smewtUrl)
-        self.collectionView.page().mainFrame().setHtml(html)
+        if surl.mediaType == 'amule':
+            self.collectionView.load(QUrl('http://localhost:4711'))
+        else:
+            html = self.renderSmewtUrl(self.smewtUrl)
+            self.collectionView.page().mainFrame().setHtml(html)
 
         # FIXME: looks like it isn't working, like for refreshing speeddial after thumbnails have been regenerated
         #self.collectionView.triggerPageAction(QWebPage.ReloadAndBypassCache)
@@ -335,9 +338,9 @@ class MainWidget(QWidget):
         EventServer.events.clear()
         self.refresh.emit()
 
-    def linkClicked(self,  url):
-        log.info('clicked on link %s', unicode(url.toString()))
-        url = url.toEncoded()
+    def linkClicked(self,  qurl):
+        log.info('clicked on link %s', unicode(qurl.toString()))
+        url = qurl.toEncoded()
 
         if url.startsWith('file://'):
             # FIXME: we should not use this anymore but a SmewtUrl with action = play
@@ -357,6 +360,9 @@ class MainWidget(QWidget):
 
             else:
                 log.warning('Unhandled URL: %s' % url)
+
+        elif url.startsWith('http://'):
+            self.collectionView.load(qurl)
 
         else:
             log.warning('Unhandled URL: %s' % url)

@@ -76,5 +76,9 @@ class AmuleCommand():
         success = '> Operation was successful.' in amuleReply
         if success:
             return (True, None)
-        else:
-            return (False, self.errmsg)
+
+        success = 'already on list' in amuleReply
+        if success:
+            return (True, None)
+
+        return (False, self.errmsg)

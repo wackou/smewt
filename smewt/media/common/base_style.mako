@@ -175,6 +175,7 @@ for i, p in enumerate(path[1:]):
         ${navlink('Speed dial', 'speeddial')}
         ${navlink('Tv Underground', 'tvu')}
         ${navlink('Feeds', 'feeds')}
+        ${navlink('aMule', 'amule')}
         <li class="nav-header">Movies</li>
         ${navlink('All', 'movie')}
         ${navlink('Table', 'movie/spreadsheet')}
