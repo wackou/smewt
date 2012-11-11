@@ -28,6 +28,9 @@ def render_mako(url, collection, smewtd):
         # FIXME: this definitely doesn't belong here...
         try:
             config = collection.find_one(Config)
+            ds = config.get('displaySynopsis')
+            if ds is None:
+                config.displaySynopsis = True
         except ValueError:
             config = collection.Config(displaySynopsis = True)
 

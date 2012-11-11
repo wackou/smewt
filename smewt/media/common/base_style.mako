@@ -82,7 +82,10 @@ langs_repr = '["' + '","'.join(langs) + '"]'
 
 <%
 from smewt.base import Config
-config = smewtd.database.find_one(Config)
+try:
+    config = smewtd.database.find_one(Config)
+except ValueError:
+    config = smewtd.database.Config()
 sublang = ''
 if config.get('defaultSubtitleLanguage'):
     sublang = Language(config.defaultSubtitleLanguage).english_name
