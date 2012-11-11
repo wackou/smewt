@@ -54,9 +54,6 @@ def smewt():
     """Run Smewt."""
     local(py_path + 'python bin/smewg')
 
-@task
-def make_release(version):
-    print 'Making release', version
 
 def replace_in_file(filename, rexps):
     with open(filename) as f:
@@ -129,7 +126,7 @@ def change_version_number(version, mode='dev'):
 def install(version):
     change_version_number(version, mode='release')
     # TODO: deactivate the virtualenv?
-    local('python setup.py install')
+    #local('python setup.py install')
 
 @task
 def make_release(version, commit=False):
