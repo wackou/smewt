@@ -29,9 +29,8 @@ py_path = 'PYTHONPATH=%s:$PYTHONPATH ' % (':'.join(py_path))
 @task
 def update_yappi():
     try:
-        import yappi
         local('pip uninstall --yes yappi')
-    except ImportError:
+    except:
         pass
 
     with lcd('../yappi'):
