@@ -56,8 +56,7 @@ class Subtitle(Metadata):
         return utils.matchFile(filename, extPatterns)
 
     def subtitleLink(self):
-        flag = utils.smewtMediaUrl('common', 'images', 'flags',
-                                   '%s.png' % guessit.Language(self.language).alpha2)
+        flag = '/static/images/flags/%s.png' % guessit.Language(self.language).alpha2
 
         sfiles = []
         for subfile in tolist(self.files):

@@ -136,12 +136,12 @@ class TVDBMetadataProvider(object):
         image.load(hiresFilename)
         image.scaledToHeight(80, Qt.SmoothTransformation).save(loresFilename)
 
-        return loresFilename, hiresFilename
+        return '/user/images/%s_lores.jpg' % localId, '/user/images/%s_hires.jpg' % localId
 
     @cachedmethod
     def getSeriesPoster(self, tvdbID):
         """Return the low- and high-resolution posters of a tvdb object."""
-        noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
+        noposter = '/static/images/noposter.png'
 
         urls = self.tvdb.get_show_image_choices(tvdbID)
         posters = [url for url in urls if url[1] == 'poster']
@@ -247,4 +247,3 @@ class TVDBMetadataProvider(object):
 
         except SmewtException, e:
             raise
-

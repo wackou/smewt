@@ -35,10 +35,6 @@ class Config(BaseObject):
 #  - Metadata: is the type used to represent a media entity independent
 #    of its physical location.
 #
-# Two MediaObject can point to the same AbstractMediaObject, such as the video and
-# the subtitle files for an episode will point to the same Episode AbstractMediaObject
-#
-# The job of a guesser is to map a MediaObject to its corresponding AbstractMediaObject
 
 
 class Metadata(BaseObject):

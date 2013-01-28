@@ -51,10 +51,9 @@ class MovieTMDB(GraphAction):
         except SmewtException, e:
             # movie could not be found, return a dummy Unknown movie instead so we can group them somewhere
             log.warning('Could not find info for movie: %s' % u(query.find_one(Media).filename))
-            noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
+            noposter = '/static/images/noposter.png'
             result = MemoryObjectGraph()
             result.Movie(title = 'Unknown', loresImage = noposter, hiresImage = noposter)
 
         result = foundMetadata(query, result.find_one(Movie))
         return result
-

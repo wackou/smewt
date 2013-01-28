@@ -58,6 +58,8 @@ class Collection(object):
         if collection:
             self.folders = dict((unicode(folder), recursive.toBool()) for folder, recursive in collection.toMap().items())
             log.info('loaded %s folders: %s' % (self.name, self.folders))
+        else:
+            log.warning('Could not load folders for collection %s' % self.name)
 
     def saveSettings(self):
         QSettings().setValue('collection_%s' % self.name, QVariant(self.folders))
@@ -106,5 +108,3 @@ class Collection(object):
     def rescan(self):
         log.info('Rescanning %s collection' % self.name)
         self.importFiles(self.collectionFiles())
-
-

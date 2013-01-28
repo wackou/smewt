@@ -4,6 +4,8 @@ Smewg.e4t
 logview.log
 callgrind.out.*
 
+*.egg
+
 .waf-*
 .ropeproject
 

@@ -16,8 +16,11 @@ install_requires = [
     'mako>=0.7',
     'lxml',
     'feedparser',
-    'guess-language>=0.2'
-]
+    'guess-language>=0.2',
+    'pyramid',
+    'pyramid_debugtoolbar',
+    'waitress',
+    ]
 
 
 datafiles_exts = [ '*.png', '*.svg', '*.mako', '*.css', '*.html', '*.js' ]
@@ -27,8 +30,13 @@ args = dict(name = 'smewt',
             version = '0.4-dev',
             description = 'Smewt - a smart media manager.',
             long_description = README + '\n\n' + NEWS,
-            classifiers = [], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
-            keywords = 'smewt pygoo media manager video collection',
+            classifiers = [ # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+                "Programming Language :: Python",
+                "Framework :: Pyramid",
+                "Topic :: Internet :: WWW/HTTP",
+                "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+            ],
+            keywords = 'smewt pygoo media manager video collection web pyramid pylons',
             author = 'Nicolas Wack, Ricard Marxer',
             author_email = 'wackou@smewt.com',
             url = 'http://www.smewt.com/',
@@ -36,8 +44,15 @@ args = dict(name = 'smewt',
             packages = find_packages(exclude = [ 'ez_setup', 'examples', 'tests', 'utils' ]),
             #package_data = dict((package, datafiles_exts) for package in find_packages()),
             include_package_data = True,
+            zip_safe=False,
             scripts = [ 'bin/smewg' ],
-            install_requires = install_requires
+            install_requires = install_requires,
+            tests_require=install_requires,
+            test_suite="smewt",
+            entry_points="""\
+            [paste.app_factory]
+            main = smewt:main
+            """,
             )
 
 

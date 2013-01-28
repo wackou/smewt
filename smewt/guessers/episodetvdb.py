@@ -59,7 +59,7 @@ class EpisodeTVDB(GraphAction):
         except SmewtException, e:
             # series could not be found, return a dummy Unknown series instead so we can group them somewhere
             log.warning('Could not find series for file: %s' % query.find_one(Media).filename)
-            noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
+            noposter = '/static/images/noposter.png'
             result = MemoryObjectGraph()
             result.Series(title = 'Unknown', loresImage = noposter, hiresImage = noposter)
 

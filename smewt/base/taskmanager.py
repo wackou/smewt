@@ -43,9 +43,21 @@ class Task(object):
         the collection needs to be passed as argument to the constructor."""
         raise NotImplementedError
 
+class FuncTask(Task):
+    def __init__(self, desc, func, *args, **kwargs):
+        super(FuncTask, self).__init__()
+        self.func = func
+        self.args = args
+        self.kwargs = kwargs
+        self.description = desc
+
+
+    def perform(self):
+        self.func(*self.args, **self.kwargs)
+
 
 def worker(taskManager):
-    log.info('Worker thread is: %d' % current_thread().ident)
+    log.info('Worker thread is: 0x%x' % current_thread().ident)
     while True:
         if taskManager.shouldFinish:
             log.info('Worker thread stopped working because TaskManager should finish now')
@@ -92,7 +104,7 @@ class TaskManager(QtCore.QObject):
 
         self.lock = Lock()
 
-        log.info('Main GUI thread is: %d' % current_thread().ident)
+        log.info('Main GUI thread is: 0x%x' % current_thread().ident)
 
         self.shouldFinish = False
 
@@ -109,7 +121,7 @@ class TaskManager(QtCore.QObject):
 
 
     def add(self, task):
-        log.debug('TaskManager add task')
+        log.debug('TaskManager add task: %s' % task.description)
         with self.lock:
             # -task.priority because it always gets the lowest one first
             # we need to put the time as well, because Queue uses heap sort which is not stable, so we

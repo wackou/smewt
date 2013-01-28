@@ -26,7 +26,7 @@ class Series(Metadata):
     #typename = 'Series'
 
     schema = { 'title': unicode,
-               'numberSeasons': int,
+               #'numberSeasons': int,
                #'episodeList': list
                }
 
@@ -53,6 +53,8 @@ class Episode(Metadata):
     reverse_lookup = { 'series': 'episodes' }
     #order = [ 'series', 'season', 'episodeNumber',  'title' ]
 
+    # TODO: should rather define it as a is_same_object_as(self, other) method
+    # or is_equivalent(self, other) ?
     unique = [ 'series', 'season', 'episodeNumber' ]
 
     converters = {}

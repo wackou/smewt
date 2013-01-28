@@ -18,16 +18,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import QSettings, QVariant
+from PyQt4.QtCore import QSettings, QVariant, QTimer
 from pygoo import MemoryObjectGraph, Equal, ontology
 import smewt
 from smewt import config
-from smewt.media import Series, Episode, Movie, Subtitle
-from smewt.base import utils, Collection, Media
-from smewt.base.taskmanager import Task, TaskManager
-from os.path import join, dirname, splitext, getsize
+from smewt.media import Episode, Movie, Subtitle
+from smewt.base import cache, utils, Collection, Media
+from smewt.base.taskmanager import TaskManager, FuncTask
+from os.path import join
 from smewt.taggers import EpisodeTagger, MovieTagger
-from guessit.patterns import subtitle_exts, video_exts
 from smewt.plugins.amulefeedwatcher import AmuleFeedWatcher
 import time, logging
 
@@ -65,6 +64,9 @@ class SmewtDaemon(object):
     def __init__(self, progressCallback = None):
         super(SmewtDaemon, self).__init__()
 
+        if smewt.config.PERSISTENT_CACHE:
+            self.loadCache()
+
         # get a TaskManager for all the import tasks
         self.taskManager = TaskManager()
         self.taskManager.progressChanged.connect(self.progressChanged)
@@ -90,9 +92,54 @@ class SmewtDaemon(object):
                                           dataGraph = self.database,
                                           taskManager = self.taskManager)
 
+
+        settings = QSettings()
+        thumbs = settings.value('thumbnailsInitialized').toBool()
+
+        if not thumbs:
+            #self.regenerateSpeedDialThumbnails()
+            settings.setValue('thumbnailsInitialized', True)
+        else:
+            pass
+            # regenerate thumbnails once everything is setup, otherwise it seems somehow
+            # we can't get the correct window size for taking the screenshot
+            #if config.REGENERATE_THUMBNAILS:
+            #    QTimer.singleShot(1000, self.regenerateSpeedDialThumbnails)
+
+            # only start the update of the collections once our GUI is fully setup
+            # do not rescan as it would be too long and we might delete some files that
+            # are on an unaccessible network share or an external HDD
+            #QTimer.singleShot(2000, self.updateCollections)
+            self.taskManager.add(FuncTask('Update collections', self.updateCollections))
+
         # load up the feed watcher
         if config.PLUGIN_TVU:
             self.feedWatcher = AmuleFeedWatcher()
+
+            # FIXME: this should go into a plugin.init() method
+
+            # Make sure we have TVU's show list cached, as it takes quite some
+            # time to download
+            from smewt.plugins.tvudatasource import get_show_mapping
+            from threading import Thread
+            t = Thread(target=get_show_mapping)
+            t.daemon = True
+            t.start()
+
+            #self.feedsTimer = QTimer(self)
+            #self.connect(self.feedsTimer, SIGNAL('timeout()'),
+            #             self.mainWidget.checkAllFeeds)
+            #self.feedsTimer.start(2*60*60*1000)
+
+    def quit(self):
+        log.info('SmewtDaemon quitting...')
+        self.taskManager.finishNow()
+        self.saveDB()
+
+        if smewt.config.PERSISTENT_CACHE:
+            self.saveCache()
+
+        log.info('SmewtDaemon quitting OK!')
 
 
     def progressChanged(self, current, total):
@@ -100,8 +147,12 @@ class SmewtDaemon(object):
             self.saveDB()
 
 
-    # TODO: def loadCache(filename = None), saveCache()
-    #       should be here, not in smewg.py (as it is atm)
+    def loadCache(self):
+        cache.load(utils.smewtUserPath(smewt.APP_NAME + '.cache'))
+
+    def saveCache(self):
+        cache.save(utils.smewtUserPath(smewt.APP_NAME + '.cache'))
+
 
     def loadDB(self):
         log.info('Loading database...')
@@ -126,12 +177,6 @@ class SmewtDaemon(object):
         self.database.clear()
         self.database.save(unicode(QSettings().value('database_file').toString()))
 
-
-    def quit(self):
-        log.info('SmewtDaemon quitting...')
-        self.taskManager.finishNow()
-        self.saveDB()
-        log.info('SmewtDaemon quitting OK!')
 
     def updateCollections(self):
         self.episodeCollection.update()

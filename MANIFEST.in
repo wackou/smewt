@@ -1,6 +1,8 @@
 prune utils
 prune smewt/test
-include *.txt
+include *.txt *.ini *.cfg *.rst
 recursive-include smewt/media *.png *.mako *.css *.html *.js
 recursive-include smewt/icons *.png *.svg
 include packaging/linux/falafelton-smewt.desktop
+
+recursive-include smewt *.ico *.png *.css *.gif *.jpg *.pt *.txt *.mak *.mako *.js *.html *.xml
