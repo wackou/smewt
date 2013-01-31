@@ -4,9 +4,11 @@ from pyramid.httpexceptions import HTTPFound
 from smewt import SMEWTD_INSTANCE
 from smewt.base import Config, EventServer
 from smewt.media import Movie, Series, Episode
+from smewt.plugins import mldonkey
 from guessit.textutils import reorder_title
 import threading
 import json
+
 
 @view_config(route_name='home')
 def my_view(request):
@@ -111,6 +113,7 @@ def series_suggestions_view(request):
 def feeds_view(request):
     return { 'title': 'FEEDS',
              'feedWatcher': SMEWTD_INSTANCE.feedWatcher,
+             'online': mldonkey.is_online(),
              'path': request.current_route_path()
              }
 
@@ -193,6 +196,12 @@ def action(request):
         return 'OK'
     elif action == 'clear_event_log':
         EventServer.events.clear()
+        return 'OK'
+    elif action == 'mldonkey_start':
+        mldonkey.start()
+        return 'OK'
+    elif action == 'mldonkey_stop':
+        mldonkey.stop()
         return 'OK'
     else:
         return 'Error: unknown action: %s' % action

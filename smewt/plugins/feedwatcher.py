@@ -27,10 +27,14 @@ import logging
 
 log = logging.getLogger(__name__)
 
+DOWNLOAD_AGENT = 'MLDonkey'
+import mldonkey as DownloadAgent
 
-class AmuleFeedWatcher(object):
+
+class FeedWatcher(object):
     def __init__(self):
         self.loadFeeds()
+        self._ed2kRexp = re.compile('href="(?P<url>ed2k://\|file.*?)">')
 
     def feedListToQVariant(self, feedList):
         return QVariant([ QVariant([ QVariant(f['url']),
@@ -146,19 +150,23 @@ class AmuleFeedWatcher(object):
             if list(ep.updated_parsed) > feed['lastUpdate']:
                 EventServer.publish('Found new episode: %s' % ep.title)
                 episodeHtml = urllib2.urlopen(ep.id).read()
-                ed2kLink = re.compile('href="(?P<url>ed2k://\|file.*?)">').search(episodeHtml).groups()[0]
-                EventServer.publish('Sending file to MLDonkey...')
+                ed2kLink = self._ed2kRexp.search(episodeHtml).groups()[0]
+                EventServer.publish('Sending link %s to %s...' %
+                                    (ed2kLink, DOWNLOAD_AGENT))
                 try:
-                    ok, msg = self.mldonkeyDownload(ed2kLink)
+                    ok, msg = DownloadAgent.download(ed2kLink)
                     if not ok:
-                        raise RuntimeError('Could not send link to MLDonkey: %s' % msg)
+                        raise RuntimeError('Could not send link to %r: %s' %
+                                           (DOWNLOAD_AGENT, msg))
 
-                    EventServer.publish('Successfully sent %s to MLDonkey!' % ed2kLink.split('|')[2])
+                    EventServer.publish('Successfully sent %s to %s!' %
+                                        (ed2kLink.split('|')[2], DOWNLOAD_AGENT))
                     if list(ep.updated_parsed) > lastUpdate:
                         lastUpdate = list(ep.updated_parsed)
                 except Exception as e:
-                    log.error('Error while sending to MLDonkey: %s' % e)
-                    EventServer.publish('Error while sending to MLDonkey. %s. Will try again next time...' % str(e))
+                    log.error('Error while sending to %s: %s' % (DOWNLOAD_AGENT, e))
+                    EventServer.publish('Error while sending to %s. %s. Will try again next time...' %
+                                        (DOWNLOAD_AGENT, e))
 
         if lastUpdate == feed['lastUpdate']:
             EventServer.publish('No new episodes...')

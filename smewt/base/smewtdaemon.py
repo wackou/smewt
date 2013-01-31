@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import QSettings, QVariant, QTimer
+from PyQt4.QtCore import QSettings, QVariant
 from pygoo import MemoryObjectGraph, Equal, ontology
 import smewt
 from smewt import config
@@ -27,7 +27,7 @@ from smewt.base import cache, utils, Collection, Media
 from smewt.base.taskmanager import TaskManager, FuncTask
 from os.path import join
 from smewt.taggers import EpisodeTagger, MovieTagger
-from smewt.plugins.amulefeedwatcher import AmuleFeedWatcher
+from smewt.plugins.feedwatcher import FeedWatcher
 import time, logging
 
 
@@ -114,7 +114,7 @@ class SmewtDaemon(object):
 
         # load up the feed watcher
         if config.PLUGIN_TVU:
-            self.feedWatcher = AmuleFeedWatcher()
+            self.feedWatcher = FeedWatcher()
 
             # FIXME: this should go into a plugin.init() method
 
@@ -127,20 +127,23 @@ class SmewtDaemon(object):
             t.start()
 
 
+        if config.PLUGIN_MLDONKEY:
             # FIXME: this should go into a plugin.init() method
             from smewt.plugins import mldonkey
             mldonkey.send_command('vm')
 
 
-            #from smewt.plugins import amulecommand
-            #print '*'*100
-            #amulecommand.recreateAmuleRemoteConf()
+        if config.PLUGIN_AMULE:
+            from smewt.plugins import amulecommand
+            print '*'*100
+            amulecommand.recreateAmuleRemoteConf()
 
 
-            #self.feedsTimer = QTimer(self)
-            #self.connect(self.feedsTimer, SIGNAL('timeout()'),
-            #             self.mainWidget.checkAllFeeds)
-            #self.feedsTimer.start(2*60*60*1000)
+        #self.feedsTimer = QTimer(self)
+        #self.connect(self.feedsTimer, SIGNAL('timeout()'),
+        #             self.mainWidget.checkAllFeeds)
+        #self.feedsTimer.start(2*60*60*1000)
+
 
     def quit(self):
         log.info('SmewtDaemon quitting...')

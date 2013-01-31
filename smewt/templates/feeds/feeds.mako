@@ -107,8 +107,21 @@ function clearEventServer() {
       </tbody>
     </table>
 
+    <div class="span4">
     <div class="btn" onclick="checkAllFeeds();">Check all feeds</div>
     <div class="btn" onclick="clearEventServer();">Clear log</div>
+    </div>
+
+    <div class="span6">
+    MLDonkey status:
+    %if context.get('online'):
+    <img src="/static/images/user-online.png"/> Online
+    <div class="btn" onclick="action('mldonkey_stop', undefined, 1000);">Stop MLDonkey</div>
+    %else:
+    <img src="/static/images/user-busy.png"/> Offline
+    <div class="btn" onclick="action('mldonkey_start', undefined, 2000);">Start MLDonkey</div>
+    %endif
+    </div>
 
 <br/><br/>
     <textarea readonly="true" rows="10" class="span12">
