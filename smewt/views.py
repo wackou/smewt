@@ -1,8 +1,8 @@
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
-from smewt import SMEWTD_INSTANCE, SmewtUrl
-from smewt.base import Config
+from smewt import SMEWTD_INSTANCE
+from smewt.base import Config, EventServer
 from smewt.media import Movie, Series, Episode
 from guessit.textutils import reorder_title
 import threading
@@ -190,6 +190,9 @@ def action(request):
         def bg_task():
             SMEWTD_INSTANCE.feedWatcher.checkAllFeeds()
         threading.Thread(target=bg_task).start()
+        return 'OK'
+    elif action == 'clear_event_log':
+        EventServer.events.clear()
         return 'OK'
     else:
         return 'Error: unknown action: %s' % action

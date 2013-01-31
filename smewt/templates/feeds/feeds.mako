@@ -24,10 +24,17 @@ feeds = feedWatcher.feedList
 
 <script>
 
-function action(action, args) {
+function refresh() {
+    location.reload(true);
+}
+
+function action(action, args, refreshTimeout) {
     $.post("/action/"+action, args)
     .done(function(data) {
-        if (data == "OK") { location.reload(); }
+        if (data == "OK") {
+            if (refreshTimeout) window.setTimeout(refresh, refreshTimeout);
+            else                refresh();
+        }
         else              { alert("ERROR: "+data); }
     })
     .fail(function(err)   { alert("HTTP error "+err.status+": "+err.statusText); })
@@ -46,8 +53,9 @@ function setLastUpdated(feedUrl, index) {
     action('set_last_update', { 'feed': feedUrl, 'index': index });
 }
 
+
 function checkAllFeeds() {
-    action('check_feeds');
+    action('check_feeds', undefined, refreshTimeout=4000);
 }
 
 function clearEventServer() {

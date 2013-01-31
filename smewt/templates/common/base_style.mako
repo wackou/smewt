@@ -81,6 +81,7 @@ langs_repr = '["' + '","'.join(langs) + '"]'
 %>
 
 <%
+# FIXME: This shouldn't have to go here...
 from smewt.base import Config
 try:
     config = smewtd.database.find_one(Config)
@@ -162,16 +163,20 @@ for i, p in enumerate(path[1:]):
   <a href="${sublink.url}"><img src="${sublink.languageImage}" /></a>
 </%def>
 
-<%def name="navlink(title, target)">
+<%def name="navlink(title, target, newtab=False)">
   <%
   targetlink = '/' + target
-  active = (context['path'] == targetlink)
+  active = (context['path'] == target)
   %>
   <li
       %if active:
       class="active"
       %endif:
-      ><a href="${targetlink}">${title}</a></li>
+      ><a href="${target}"
+      %if newtab:
+      target="_blank"
+      %endif:
+      >${title}</a></li>
 </%def>
 
 <div class="container-fluid" >
@@ -181,18 +186,18 @@ for i, p in enumerate(path[1:]):
       ## Main navigation list
       <ul class="nav nav-list span2 sidenav">
         <li class="nav-header">General</li>
-        ${navlink('Speed dial', 'speeddial')}
-        ${navlink('Tv Underground', 'tvu')}
-        ${navlink('Feeds', 'feeds')}
-        ${navlink('aMule', 'amule')}
+        ${navlink('Speed dial', '/speeddial')}
+        ${navlink('Tv Underground', '/tvu')}
+        ${navlink('Feeds', '/feeds')}
+        ${navlink('MLDonkey', 'http://127.0.0.1:4080', True)}
         <li class="nav-header">Movies</li>
-        ${navlink('All', 'movies')}
-        ${navlink('Table', 'movies/table')}
-        ${navlink('Recent', 'movies/recent')}
-        ${navlink('Unwatched', 'movies/unwatched')}
+        ${navlink('All', '/movies')}
+        ${navlink('Table', '/movies/table')}
+        ${navlink('Recent', '/movies/recent')}
+        ${navlink('Unwatched', '/movies/unwatched')}
         <li class="nav-header">Series</li>
-        ${navlink('All', 'series')}
-        ${navlink('Suggestions', 'series/suggestions')}
+        ${navlink('All', '/series')}
+        ${navlink('Suggestions', '/series/suggestions')}
       </ul>
 
     </div>
