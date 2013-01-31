@@ -83,12 +83,14 @@ class AmuleFeedWatcher(object):
 
         self.feedList.append(feed)
         self.saveFeeds()
+        log.info('Subscribed to feed: %s' % url)
 
     def removeFeed(self, url):
         for f in self.feedList:
             if f['url'] == url:
                 self.feedList.remove(f)
                 self.saveFeeds()
+                log.info('Unsubscribed from feed: %s' % url)
 
     def updateFeed(self, feed):
         try:
@@ -100,6 +102,7 @@ class AmuleFeedWatcher(object):
                           'entries': entries })
 
             self.saveFeeds()
+            log.info('Updated info for feed: %s' % feed['url'])
 
             return pfeed
         except:
@@ -130,28 +133,32 @@ class AmuleFeedWatcher(object):
         from amulecommand import AmuleCommand
         return AmuleCommand().download(ed2kLink)
 
+    def mldonkeyDownload(self, ed2kLink):
+        import mldonkey
+        return mldonkey.download(ed2kLink)
+
     def downloadNewEpisodes(self, feed):
         EventServer.publish('Checking new episodes for: %s' % feed['title'])
         f = self.updateFeed(feed)
         lastUpdate = feed['lastUpdate']
 
-        for ep in f.entries:
+        for ep in f.entries[::-1]:
             if list(ep.updated_parsed) > feed['lastUpdate']:
                 EventServer.publish('Found new episode: %s' % ep.title)
                 episodeHtml = urllib2.urlopen(ep.id).read()
                 ed2kLink = re.compile('href="(?P<url>ed2k://\|file.*?)">').search(episodeHtml).groups()[0]
-                EventServer.publish('Sending file to aMule...')
+                EventServer.publish('Sending file to MLDonkey...')
                 try:
-                    ok, msg = self.amuleDownload(ed2kLink)
+                    ok, msg = self.mldonkeyDownload(ed2kLink)
                     if not ok:
-                        raise RuntimeError('Could not send link to aMule: %s' % msg)
+                        raise RuntimeError('Could not send link to MLDonkey: %s' % msg)
 
-                    EventServer.publish('Successfully sent to aMule!')
+                    EventServer.publish('Successfully sent %s to MLDonkey!' % ed2kLink.split('|')[2])
                     if list(ep.updated_parsed) > lastUpdate:
                         lastUpdate = list(ep.updated_parsed)
                 except Exception as e:
-                    log.error('Error while sending to aMule: %s' % e)
-                    EventServer.publish('Error while sending to aMule. %s. Will try again next time...' % str(e))
+                    log.error('Error while sending to MLDonkey: %s' % e)
+                    EventServer.publish('Error while sending to MLDonkey. %s. Will try again next time...' % str(e))
 
         if lastUpdate == feed['lastUpdate']:
             EventServer.publish('No new episodes...')

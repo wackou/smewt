@@ -44,16 +44,14 @@ class ProcessTimeout(threading.Thread):
 
 def recreateAmuleRemoteConf():
     amuleConf = os.path.join(os.environ['HOME'], '.aMule', 'amule.conf')
-    amulecmd = os.path.join('/usr', 'bin', 'amulecmd')
-    if os.path.exists(amuleConf) and os.path.exists(amulecmd):
-        cmd = [ amulecmd, '--create-config-from=' + amuleConf ]
-        subprocess.Popen(cmd)
-    else:
+    try:
+        subprocess.call(['amulecmd', '--create-config-from='+amuleConf])
+        log.info('AmuleCommand: successfully initialized aMule integration!')
+
+    except OSError:
         log.warning('AmuleCommand: you need amule and amulecmd to be installed for aMule integration...')
         log.warning('AmuleCommand: on Debian/Ubuntu systems you can find the amulecmd in the "amule-utils" package')
 
-# try to regenerate remote.conf when we import that module
-recreateAmuleRemoteConf()
 
 class AmuleCommand():
     def __init__(self):

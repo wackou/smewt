@@ -5,7 +5,7 @@ shows = [ s.replace("'", "") for s in context['shows'] ]
 shows_repr = '["' + '","'.join(shows) + '"]'
 #print shows_repr
 
-series = context['url'].args.get('series', None)
+series = context['series']
 feeds = context.get('feeds', [])
 subscribedFeeds = context['subscribedFeeds']
 
@@ -14,8 +14,7 @@ from smewt.base import utils
 import guessit
 
 def flag_url(lang):
-    return utils.smewtMediaUrl('common', 'images', 'flags',
-                               '%s.png' % guessit.Language(lang).alpha2)
+    return '/static/images/flags/%s.png' % guessit.Language(lang).alpha2
 
 def list_langs(lang):
     if not lang:
@@ -28,14 +27,23 @@ def list_langs(lang):
 <script>
 function getFeeds() {
     var series = $('#tvshow').val();
-    mainWidget.feedsForSeries(series);
+    location.href = '/tvu?series='+series;
 }
 
 function subscribeToFeed(feedUrl) {
-    mainWidget.subscribeToFeed(feedUrl);
+    $.post('/action/subscribe', { 'feed': feedUrl })
+    .always(function(data) {
+        if (data == 'OK') { location.reload(); }
+        else              { alert(data); }
+    });
 }
+
 function unsubscribeFromFeed(feedUrl) {
-    mainWidget.unsubscribeFromFeed(feedUrl);
+    $.post('/action/unsubscribe', { 'feed': feedUrl })
+    .always(function(data) {
+        if (data == 'OK') { location.reload(); }
+        else              { alert(data); }
+    });
 }
 </script>
 

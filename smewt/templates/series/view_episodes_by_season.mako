@@ -57,14 +57,9 @@ $('#seasontabs a:first').tab('show');
 
 function toggleSynopsis() {
     toggleByName('synopsis');
-    //alert('OE');
-    alert('OE1'+$.get('http://localhost:6543/config/get/displaySynopsis/').text);
-    $.post('/config/set/displaySynopsis/',
-           { value: "123" }, //isToggled('synopsis') },
-          function(data) {
-              alert("Data Loaded: " + data);
-          });
-    alert('OE2');
+
+    $.post('/config/set/displaySynopsis',
+           { value: isToggled('synopsis') });
 }
 
 </script>

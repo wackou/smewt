@@ -41,3 +41,7 @@ MAKO_FILENAME = '/tmp/view.html'
 REGENERATE_THUMBNAILS = False
 
 PLUGIN_TVU = True
+
+PLUGIN_MLDONKEY = True
+
+PLUGIN_AMULE = False

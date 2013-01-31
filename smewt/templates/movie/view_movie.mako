@@ -12,11 +12,6 @@ import_dir = smewtMediaUrl()
 
 %>
 
-<%
-#poster = pathToUrl(movie.loresImage)
-poster = '/user/images/' + movie.loresImage.split('/')[-1]
-%>
-
 <%def name="make_subtitle_download_links(movie)">
 <% subsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'movie', 'title': movie.title }) %>
 
@@ -43,7 +38,7 @@ $('#movietabs a:first').tab('show');
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span2">
-      <img src="${poster}" height="130px" width:"auto"/>
+      <img src="${movie.loresImage}" height="130px" width:"auto"/>
     </div>
 %if movie.title != 'Unknown':
     <div class="span10">

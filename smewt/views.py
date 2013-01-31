@@ -5,7 +5,7 @@ from smewt import SMEWTD_INSTANCE, SmewtUrl
 from smewt.base import Config
 from smewt.media import Movie, Series, Episode
 from guessit.textutils import reorder_title
-
+import threading
 import json
 
 @view_config(route_name='home')
@@ -18,9 +18,12 @@ def my_view(request):
 def all_movies_view(request):
     return { 'title': 'MOVIES',
              'movies': SMEWTD_INSTANCE.database.find_all(Movie),
-             'url': SmewtUrl('media', request.current_route_path()),
              'path': request.current_route_path()
              }
+
+@view_config(route_name='no_movie')
+def no_movie(request):
+    return HTTPFound(location='/movies')
 
 
 @view_config(route_name='movie', renderer='smewt:templates/movie/view_movie.mako')
@@ -29,7 +32,6 @@ def single_movie_view(request):
     return { 'title': movie.title,
              'movie': movie,
              'smewtd': SMEWTD_INSTANCE,
-             'url': SmewtUrl('media', request.current_route_path()),
              'path': request.current_route_path()
              }
 
@@ -39,7 +41,6 @@ def single_movie_view(request):
 def movies_table_view(request):
     return { 'title': 'MOVIE LIST',
              'movies': SMEWTD_INSTANCE.database.find_all(Movie),
-             'url': SmewtUrl('media', request.current_route_path()),
              'path': request.current_route_path()
              }
 
@@ -49,7 +50,6 @@ def unwatched_movies_view(request):
     return { 'movies': [ m for m in SMEWTD_INSTANCE.database.find_all(node_type=Movie)
                          if not m.get('watched') and not m.get('lastViewed') ],
              'title': 'UNWATCHED',
-             'url': SmewtUrl('media', request.current_route_path()),
              'path': request.current_route_path()
              }
 
@@ -60,7 +60,6 @@ def recent_movies_view(request):
     return { 'title': 'RECENT',
              'movies': [ m for m in SMEWTD_INSTANCE.database.find_all(node_type=Movie)
                          if m.get('lastViewed') is not None ],
-             'url': SmewtUrl('media', request.current_route_path()),
              'path': request.current_route_path()
              }
 
@@ -70,7 +69,6 @@ def recent_movies_view(request):
 def series_view(request):
     return { 'title': 'SERIES',
              'series': SMEWTD_INSTANCE.database.find_all(Series),
-             'url': SmewtUrl('media', request.current_route_path()),
              'path': request.current_route_path()
              }
 
@@ -86,7 +84,6 @@ def media_view(request):
              renderer='smewt:templates/speeddial/speeddial.mako')
 def speeddial_view(request):
     return { 'title': 'SPEED DIAL',
-             'url': SmewtUrl('media', request.current_route_path()),
              'path': request.current_route_path()
              }
 
@@ -96,7 +93,6 @@ def single_series_view(request):
     return { 'title': series.title,
              'series': series,
              'smewtd': SMEWTD_INSTANCE,
-             'url': SmewtUrl('media', request.current_route_path()),
              'path': request.current_route_path()
              }
 
@@ -106,7 +102,6 @@ def series_suggestions_view(request):
     return { 'title': 'SUGGESTIONS',
              'episodes': [ ep for ep in SMEWTD_INSTANCE.database.find_all(Episode)
                            if 'lastViewed' in ep ],
-             'url': SmewtUrl('media', request.current_route_path()),
              'path': request.current_route_path()
              }
 
@@ -116,7 +111,6 @@ def series_suggestions_view(request):
 def feeds_view(request):
     return { 'title': 'FEEDS',
              'feedWatcher': SMEWTD_INSTANCE.feedWatcher,
-             'url': SmewtUrl('media', request.current_route_path()),
              'path': request.current_route_path()
              }
 
@@ -140,7 +134,7 @@ def tvu_view(request):
 
     return { 'title': 'TVU.ORG.RU',
              'shows': shows.keys(), 'feeds': feeds,
-             'url': SmewtUrl('media', request.current_route_path()),
+             'series': request.params.get('series', None),
              'path': request.current_route_path(),
              'subscribedFeeds': subscribedFeeds
              }
@@ -149,10 +143,6 @@ def tvu_view(request):
 @view_config(route_name='config_get', renderer='json')
 def config_get(request):
     config = SMEWTD_INSTANCE.database.find_one(Config)
-    print 'GGET', request.GET
-    print 'GPOST', request.POST
-    print 'GParams', request.params
-    print 'GBody', request.body
     return config.get(request.matchdict['name'])
 
 
@@ -160,13 +150,14 @@ def config_get(request):
              request_method='POST')
 def config_set(request):
     config = SMEWTD_INSTANCE.database.find_one(Config)
-    print 'GET', request.GET
-    print 'POST', request.POST
-    print 'Params', request.params
-    print 'Body', request.body
     try:
         value = (request.POST.get('value') or
                  json.loads(request.body).get('value'))
+        # FIXME: this is a hack
+        if value.lower() == 'true':
+            value = True
+        elif value.lower() == 'false':
+            value = False
         config[request.matchdict['name']] = value
         return config[request.matchdict['name']]
     except Exception as e:
@@ -175,19 +166,30 @@ def config_set(request):
 
 @view_config(route_name='action', renderer='json')
 def action(request):
-    #config = SMEWTD_INSTANCE.database.find_one(Config)
-    print 'GGET', request.GET
-    print 'GPOST', request.POST
-    print 'GParams', request.params
-    print 'GBody', request.body
-    print request.matchdict
     action = request.matchdict['action']
     if action == 'rescan':
         SMEWTD_INSTANCE.rescanCollections()
         return 'OK'
-    if action == 'clear':
+    elif action == 'clear':
         SMEWTD_INSTANCE.clearDB()
+        return 'OK'
+    elif action == 'subscribe':
+        SMEWTD_INSTANCE.feedWatcher.addFeed(request.params['feed'])
+        return 'OK'
+    elif action == 'unsubscribe':
+        SMEWTD_INSTANCE.feedWatcher.removeFeed(request.params['feed'])
+        return 'OK'
+    elif action == 'update_feed':
+        SMEWTD_INSTANCE.feedWatcher.updateFeedUrl(request.params['feed'])
+        return 'OK'
+    elif action == 'set_last_update':
+        SMEWTD_INSTANCE.feedWatcher.setLastUpdateUrlIndex(request.params['feed'],
+                                                          int(request.params['index']))
+        return 'OK'
+    elif action == 'check_feeds':
+        def bg_task():
+            SMEWTD_INSTANCE.feedWatcher.checkAllFeeds()
+        threading.Thread(target=bg_task).start()
         return 'OK'
     else:
         return 'Error: unknown action: %s' % action
-    #return config.get(request.matchdict['name'])

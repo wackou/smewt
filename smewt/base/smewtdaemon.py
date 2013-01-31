@@ -126,6 +126,17 @@ class SmewtDaemon(object):
             t.daemon = True
             t.start()
 
+
+            # FIXME: this should go into a plugin.init() method
+            from smewt.plugins import mldonkey
+            mldonkey.send_command('vm')
+
+
+            #from smewt.plugins import amulecommand
+            #print '*'*100
+            #amulecommand.recreateAmuleRemoteConf()
+
+
             #self.feedsTimer = QTimer(self)
             #self.connect(self.feedsTimer, SIGNAL('timeout()'),
             #             self.mainWidget.checkAllFeeds)

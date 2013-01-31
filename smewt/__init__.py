@@ -95,6 +95,7 @@ def main(global_config, **settings):
     config.add_route('unwatched_movies', '/movies/unwatched')
     config.add_route('all_movies', '/movies')
     config.add_route('movie', '/movie/{title}')
+    config.add_route('no_movie', '/movie')
 
     config.add_route('all_series', '/series')
     config.add_route('series_suggestions', '/series/suggestions')
