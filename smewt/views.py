@@ -198,8 +198,10 @@ def action(request):
         EventServer.events.clear()
         return 'OK'
     elif action == 'mldonkey_start':
-        mldonkey.start()
-        return 'OK'
+        if mldonkey.start():
+            return 'OK'
+        else:
+            return 'Could not find mldonkey executable...'
     elif action == 'mldonkey_stop':
         mldonkey.stop()
         return 'OK'

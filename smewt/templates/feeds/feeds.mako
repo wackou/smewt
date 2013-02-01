@@ -5,8 +5,6 @@ from guessit.textutils import clean_string
 from smewt.base.utils import smewtMediaUrl
 from smewt.base import EventServer
 
-refresh_icon = smewtMediaUrl('/static/images/view-refresh.png')
-delete_icon = smewtMediaUrl('/static/images/edit-delete.png')
 
 def clean_feedtitle(title):
     return title.replace('[ed2k]', '').replace('tvunderground.org.ru:', '')

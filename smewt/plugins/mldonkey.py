@@ -69,11 +69,16 @@ def _start():
 
 def start():
     if is_online():
-        return
+        return True
+
+    if subprocess.call(['which', 'mldonkey']) != 0:
+        return False
 
     t = Thread(target=_start)
     t.daemon = True
     t.start()
+
+    return True
 
 def stop():
     send_command('kill')
