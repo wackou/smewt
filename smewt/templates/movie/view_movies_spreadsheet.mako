@@ -14,7 +14,6 @@ dataTables = '/static/js/DataTables-1.9.2/media'
 allmovies = context['movies']
 
 movies = sorted([ SDict({ 'title': m.title,
-                    'qtitle': m.title,
                     'year': m.get('year', ''),
                     'rating': m.get('rating') or '-',
                     'genres': ', '.join(m.get('genres') or []) or '-',
@@ -35,13 +34,26 @@ movies = sorted([ SDict({ 'title': m.title,
     <script src="${dataTables}/js/jquery.dataTables.js"></script>
     <script src="${dataTables}/js/DT_bootstrap.js"></script>
     <script>
-        function updateAll(form, w, url) {
-            mainWidget.updateWatched(url, form[w].checked);
+        function action(name, args) {
+            $.post("/action/"+name, args)
+            .done(function(data) {
+                if (data == "OK") {}
+                else              { alert("ERROR: "+data); }
+            })
+            .fail(function(err)   { alert("HTTP error "+err.status+": "+err.statusText); })
+            .always(function(data) { /* alert("always: "+data); */ });
+        }
+
+        function updateWatched(form, w, title) {
+            action('set_watched', { "title": title, "watched": form[w].checked });
         }
     </script>
 </%block>
 
-
+<%!
+    def single_quote_escape(text):
+        return text.replace("'", "\\'")
+%>
 
 <div class="container-fluid">
 
@@ -59,7 +71,7 @@ movies = sorted([ SDict({ 'title': m.title,
           <td class="center">${m.rating}</td>
           <td>${m.genres}</td>
           <td class="center">
-            <input type="checkbox" id="w${loop.index}" name="watched"  onClick="updateAll(this.form, 'w${loop.index}', '${m.qtitle}')" ${m.watched} />
+            <input type="checkbox" id="w${loop.index}" name="watched"  onClick="updateWatched(this.form, 'w${loop.index}', '${single_quote_escape(m.title) | n}')" ${m.watched} />
           </td>
         </tr>
       %endfor

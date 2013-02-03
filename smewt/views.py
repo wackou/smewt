@@ -10,12 +10,21 @@ import threading
 import json
 
 
+def from_js(value):
+    # FIXME: this is a hack
+    if value.lower() == 'true':
+        return True
+    elif value.lower() == 'false':
+        return False
+    else:
+        return value
+
+
 @view_config(route_name='home')
-def my_view(request):
+def home_view(request):
     return HTTPFound(location='/speeddial')
 
 
-# FIXME: remove url, leave only path
 @view_config(route_name='all_movies', renderer='smewt:templates/movie/view_all_movies.mako')
 def all_movies_view(request):
     return { 'title': 'MOVIES',
@@ -75,7 +84,6 @@ def series_view(request):
              }
 
 
-# test redirect
 @view_config(route_name='media')
 def media_view(request):
     from pyramid.httpexceptions import HTTPFound
@@ -151,13 +159,8 @@ def config_get(request):
 def config_set(request):
     config = SMEWTD_INSTANCE.database.find_one(Config)
     try:
-        value = (request.POST.get('value') or
-                 json.loads(request.body).get('value'))
-        # FIXME: this is a hack
-        if value.lower() == 'true':
-            value = True
-        elif value.lower() == 'false':
-            value = False
+        value = from_js(request.POST.get('value') or
+                        json.loads(request.body).get('value'))
         config[request.matchdict['name']] = value
         return config[request.matchdict['name']]
     except Exception as e:
@@ -212,6 +215,12 @@ def action(request):
 
         elif action == 'mldonkey_stop':
             mldonkey.stop()
+            return 'OK'
+
+        elif action == 'set_watched':
+            title = unicode(request.params['title'])
+            watched = from_js(request.params['watched'])
+            SMEWTD_INSTANCE.database.find_one(Movie, title=title).watched = watched
             return 'OK'
 
         else:
