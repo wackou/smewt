@@ -46,10 +46,29 @@ class Feed(BaseObject):
                           lastTitle = d['lastTitle'],
                           entries = json.dumps(d['entries']))
 
+class CollectionSettings(BaseObject):
+    schema = { 'name': unicode,
+               'folders': unicode }
+    valid = []
+
+    def toDict(self):
+        return { 'name': self.name,
+                 'folders': json.loads(self.get('folders', '[]')) }
+
+    @staticmethod
+    def fromDict(d, graph):
+        return graph.CollectionSettings(name=d['name'],
+                                       folders=json.dumps(d['folders']))
+
 
 class Config(BaseObject):
     """Config class for representing the application configuration as an in-database object."""
     schema = { 'displaySynopsis': bool,
-               'feeds': Feed }
+               'subtitleLanguage': unicode,
+               'collections': CollectionSettings,
+               'feeds': Feed
+               }
     valid = []
-    reverse_lookup = { 'feeds': 'config' }
+    reverse_lookup = { 'feeds': 'config',
+                       'collections': 'config'
+                       }

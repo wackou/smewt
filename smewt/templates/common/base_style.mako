@@ -81,15 +81,12 @@ langs_repr = '["' + '","'.join(langs) + '"]'
 %>
 
 <%
-# FIXME: This shouldn't have to go here...
-from smewt.base import Config
-try:
-    config = smewtd.database.find_one(Config)
-except ValueError:
-    config = smewtd.database.Config()
+from smewt import SMEWTD_INSTANCE
+config = SMEWTD_INSTANCE.database.config
+
 sublang = ''
-if config.get('defaultSubtitleLanguage'):
-    sublang = Language(config.defaultSubtitleLanguage).english_name
+if config.get('subtitleLanguage'):
+    sublang = Language(config.subtitleLanguage).english_name
 
 %>
 
@@ -190,6 +187,7 @@ for i, p in enumerate(path[1:]):
         ${navlink('Tv Underground', '/tvu')}
         ${navlink('Feeds', '/feeds')}
         ${navlink('MLDonkey', 'http://127.0.0.1:4080', True)}
+        ${navlink('Preferences', '/preferences')}
         <li class="nav-header">Movies</li>
         ${navlink('All', '/movies')}
         ${navlink('Table', '/movies/table')}
@@ -222,7 +220,7 @@ for i, p in enumerate(path[1:]):
 
     function sublangChanged(t) {
         var s = $("#sublang");
-        mainWidget.setDefaultSubtitleLanguage(s.val());
+        $.post("/config/set/subtitleLanguage", { "value": s.val() });
     }
   </script>
 </%block>

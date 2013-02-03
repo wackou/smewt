@@ -20,6 +20,7 @@
 
 from smewt.base import SmewtException, EventServer, Feed
 from smewt.base.taskmanager import FuncTask
+from smewt.base.utils import tolist
 from smewt.plugins.tvu import get_show_mapping
 from threading import Thread, Timer
 import feedparser
@@ -63,7 +64,8 @@ class FeedWatcher(object):
 
     def loadFeeds(self):
         db = self._smewtd.database
-        self.feedList = [ f.toDict() for f in db.config.get('feeds', []) ]
+        fs = db.config.get('feeds', [])
+        self.feedList = [ f.toDict() for f in tolist(db.config.get('feeds')) ]
 
     def saveFeeds(self):
         db = self._smewtd.database

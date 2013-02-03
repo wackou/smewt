@@ -150,14 +150,14 @@ def tvu_view(request):
 
 @view_config(route_name='config_get', renderer='json')
 def config_get(request):
-    config = SMEWTD_INSTANCE.database.find_one(Config)
+    config = SMEWTD_INSTANCE.database.config
     return config.get(request.matchdict['name'])
 
 
 @view_config(route_name='config_set', renderer='json',
              request_method='POST')
 def config_set(request):
-    config = SMEWTD_INSTANCE.database.find_one(Config)
+    config = SMEWTD_INSTANCE.database.config
     try:
         value = from_js(request.POST.get('value') or
                         json.loads(request.body).get('value'))
@@ -223,6 +223,17 @@ def action(request):
             SMEWTD_INSTANCE.database.find_one(Movie, title=title).watched = watched
             return 'OK'
 
+        elif action == 'set_collection_folders':
+            collection = request.params['collection'].lower()
+            folders = dict(json.loads(request.params['folders']))
+            if collection == 'movie':
+                SMEWTD_INSTANCE.movieCollection.setFolders(folders)
+            elif collection == 'series':
+                SMEWTD_INSTANCE.episodeCollection.setFolders(folders)
+            else:
+                return 'Invalid collection name: %' % collection
+            return 'OK'
+
         else:
             return 'Error: unknown action: %s' % action
 
@@ -249,3 +260,14 @@ def info(request):
 
     else:
         return 'Error: unknown info: %s' % name
+
+
+@view_config(route_name='preferences',
+             renderer='smewt:templates/common/preferences.mako')
+def preferences_view(request):
+    config = SMEWTD_INSTANCE.database.config
+    return { 'title': 'PREFERENCES',
+             'smewtd': SMEWTD_INSTANCE,
+             'items': config.explicit_items(),
+             'path': request.current_route_path()
+             }

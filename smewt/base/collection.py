@@ -19,15 +19,18 @@
 #
 
 from __future__ import unicode_literals
-import logging
-import time, os
 
 from PyQt4.QtCore import QObject, SIGNAL, QVariant, QSettings
 from pygoo import MemoryObjectGraph, ontology
 
-from smewt.base import utils, Media, Metadata, ImportTask
+from smewt.base import utils, Media, ImportTask
+from smewt.base.configobject import CollectionSettings
 from smewt.taggers import EpisodeTagger, MovieTagger
 from smewt.base.textutils import u
+
+import json
+import os
+import logging
 
 log = logging.getLogger('smewt.base.collection')
 
@@ -53,6 +56,7 @@ class Collection(object):
 
 
     def loadSettings(self):
+        # FIXME: remove the qsettings
         settings = QSettings()
         collection = settings.value('collection_%s' % self.name)
         if collection:
@@ -60,13 +64,26 @@ class Collection(object):
             log.info('loaded %s folders: %s' % (self.name, self.folders))
         else:
             log.warning('Could not load folders for collection %s' % self.name)
+        #c = self.findOrCreate().toDict()
+        #self.folders = dict(c['folders'])
+
+    def findOrCreate(self):
+        for c in utils.tolist(self.graph.config.get('collections')):
+            if c.name == self.name:
+                return c
+        return CollectionSettings.fromDict({ 'name': self.name, 'folders': [] }, self.graph)
 
     def saveSettings(self):
+        # FIXME: remove the qsettings
         QSettings().setValue('collection_%s' % self.name, QVariant(self.folders))
+        c = self.findOrCreate()
+        if c not in utils.tolist(self.graph.config.get('collections')):
+            self.graph.config.append('collections', c)
+        c.folders = json.dumps(self.folders.items())
 
 
     def checkIntegrity():
-        # delete files in set(files) - set(dirwalk())
+        # TODO: delete files in set(files) - set(dirwalk())
         pass
 
 
@@ -74,7 +91,7 @@ class Collection(object):
         self.folders = folders
 
         self.saveSettings()
-        self.update()
+        #self.update()
 
 
     def collectionFiles(self):

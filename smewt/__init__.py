@@ -107,6 +107,8 @@ def main(global_config, **settings):
     config.add_route('action', '/action/{action}')
     config.add_route('info', '/info/{name}')
 
+    config.add_route('preferences', '/preferences')
+
 
     config.scan()
     return config.make_wsgi_app()

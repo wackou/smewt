@@ -36,6 +36,10 @@ log = logging.getLogger('smewt.base.smewtdaemon')
 
 class VersionedMediaGraph(MemoryObjectGraph):
 
+    def __init__(self, *args, **kwargs):
+        super(VersionedMediaGraph, self).__init__(*args, **kwargs)
+
+
     def add_object(self, node, recurse = Equal.OnIdentity, excluded_deps = list()):
         result = super(VersionedMediaGraph, self).add_object(node, recurse, excluded_deps)
         if isinstance(result, Media):
@@ -58,9 +62,13 @@ class VersionedMediaGraph(MemoryObjectGraph):
 
         raise AttributeError, name
 
+
     @property
     def config(self):
-        return self.find_one(Config)
+        try:
+            return self.find_one(Config)
+        except ValueError:
+            return self.Config()
 
 
 class SmewtDaemon(object):

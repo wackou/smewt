@@ -144,7 +144,7 @@ class ActionFactory(Singleton):
             if surl.args['type'] == 'episode':
                 title = surl.args['title']
                 series = db.find_one('Series', title=title)
-                language = surl.args.get('language') or db.find_one('Config').defaultSubtitleLanguage or 'en'
+                language = surl.args.get('language') or db.config.get('subtitleLanguage') or 'en'
 
                 seriesEpisodes, currentSubs = getEpisodesAndSubs(language, series, surl.args.get('season'))
 
@@ -160,7 +160,7 @@ class ActionFactory(Singleton):
 
             elif surl.args['type'] == 'movie':
                 title = surl.args['title']
-                language = surl.args.get('language') or db.find_one('Config').defaultSubtitleLanguage or 'en'
+                language = surl.args.get('language') or db.config.get('subtitleLanguage') or 'en'
 
                 movie = db.find_one('Movie', title = title)
 
