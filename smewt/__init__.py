@@ -105,6 +105,7 @@ def main(global_config, **settings):
     config.add_route('config_set', '/config/set/{name}')
 
     config.add_route('action', '/action/{action}')
+    config.add_route('info', '/info/{name}')
 
 
     config.scan()

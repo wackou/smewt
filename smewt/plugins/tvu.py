@@ -29,6 +29,15 @@ import logging
 log = logging.getLogger(__name__)
 
 
+def clean_feedtitle(title):
+    return title.replace('[ed2k]', '').replace('tvunderground.org.ru:', '')
+
+def clean_eptitle(title):
+    if not title:
+        return 'None'
+    return os.path.splitext(' - '.join(title.replace('[ed2k] ', '').split(' - ')[1:]))[0]
+
+
 @cachedfunc
 def get_showlist_for_letter(l):
     log.info('Looking for shows starting with letter: %s' % l)

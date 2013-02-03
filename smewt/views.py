@@ -2,9 +2,9 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
 from smewt import SMEWTD_INSTANCE
-from smewt.base import Config, EventServer
+from smewt.base import Config, EventServer, SmewtException
 from smewt.media import Movie, Series, Episode
-from smewt.plugins import mldonkey
+from smewt.plugins import mldonkey, tvu
 from guessit.textutils import reorder_title
 import threading
 import json
@@ -113,7 +113,6 @@ def series_suggestions_view(request):
 def feeds_view(request):
     return { 'title': 'FEEDS',
              'feedWatcher': SMEWTD_INSTANCE.feedWatcher,
-             'online': mldonkey.is_online(),
              'path': request.current_route_path()
              }
 
@@ -121,15 +120,13 @@ def feeds_view(request):
 @view_config(route_name='tvu',
              renderer='smewt:templates/tvu/tvu.mako')
 def tvu_view(request):
-    from smewt.plugins import tvudatasource
-
     # do not block if we don't have the full list of shows yet, show what we have
-    shows = dict(tvudatasource.get_show_mapping(only_cached=True))
+    shows = dict(tvu.get_show_mapping(only_cached=True))
 
     try:
         series = request.params['series']
         sid = shows[series]
-        feeds = tvudatasource.get_seasons_for_showid(sid, title=reorder_title(series))
+        feeds = tvu.get_seasons_for_showid(sid, title=reorder_title(series))
     except KeyError:
         feeds = []
 
@@ -170,40 +167,76 @@ def config_set(request):
 @view_config(route_name='action', renderer='json')
 def action(request):
     action = request.matchdict['action']
-    if action == 'rescan':
-        SMEWTD_INSTANCE.rescanCollections()
-        return 'OK'
-    elif action == 'clear':
-        SMEWTD_INSTANCE.clearDB()
-        return 'OK'
-    elif action == 'subscribe':
-        SMEWTD_INSTANCE.feedWatcher.addFeed(request.params['feed'])
-        return 'OK'
-    elif action == 'unsubscribe':
-        SMEWTD_INSTANCE.feedWatcher.removeFeed(request.params['feed'])
-        return 'OK'
-    elif action == 'update_feed':
-        SMEWTD_INSTANCE.feedWatcher.updateFeedUrl(request.params['feed'])
-        return 'OK'
-    elif action == 'set_last_update':
-        SMEWTD_INSTANCE.feedWatcher.setLastUpdateUrlIndex(request.params['feed'],
-                                                          int(request.params['index']))
-        return 'OK'
-    elif action == 'check_feeds':
-        def bg_task():
-            SMEWTD_INSTANCE.feedWatcher.checkAllFeeds()
-        threading.Thread(target=bg_task).start()
-        return 'OK'
-    elif action == 'clear_event_log':
-        EventServer.events.clear()
-        return 'OK'
-    elif action == 'mldonkey_start':
-        if mldonkey.start():
+
+    try:
+        if action == 'rescan':
+            SMEWTD_INSTANCE.rescanCollections()
             return 'OK'
+
+        elif action == 'clear':
+            SMEWTD_INSTANCE.clearDB()
+            return 'OK'
+
+        elif action == 'subscribe':
+            SMEWTD_INSTANCE.feedWatcher.addFeed(request.params['feed'])
+            return 'OK'
+
+        elif action == 'unsubscribe':
+            SMEWTD_INSTANCE.feedWatcher.removeFeed(request.params['feed'])
+            return 'OK'
+
+        elif action == 'update_feed':
+            SMEWTD_INSTANCE.feedWatcher.updateFeedUrl(request.params['feed'])
+            return 'OK'
+
+        elif action == 'set_last_update':
+            SMEWTD_INSTANCE.feedWatcher.setLastUpdateUrlIndex(request.params['feed'],
+                                                              int(request.params['index']))
+            return 'OK'
+
+        elif action == 'check_feeds':
+            def bg_task():
+                SMEWTD_INSTANCE.feedWatcher.checkAllFeeds()
+            threading.Thread(target=bg_task).start()
+            return 'OK'
+
+        elif action == 'clear_event_log':
+            EventServer.events.clear()
+            return 'OK'
+
+        elif action == 'mldonkey_start':
+            if mldonkey.start():
+                return 'OK'
+            else:
+                return 'Could not find mldonkey executable...'
+
+        elif action == 'mldonkey_stop':
+            mldonkey.stop()
+            return 'OK'
+
         else:
-            return 'Could not find mldonkey executable...'
-    elif action == 'mldonkey_stop':
-        mldonkey.stop()
-        return 'OK'
+            return 'Error: unknown action: %s' % action
+
+    except SmewtException as e:
+        return str(e)
+
+@view_config(route_name='info', renderer='json')
+def info(request):
+    name = request.matchdict['name']
+
+    if name == 'event_log':
+        return '\n'.join(str(ev) for ev in EventServer.events.events)
+
+    elif name == 'mldonkey_online':
+        return mldonkey.is_online()
+
+    elif name == 'feeds_status':
+        feeds = SMEWTD_INSTANCE.feedWatcher.feedList
+        return [ (f['url'],
+                  tvu.clean_feedtitle(f['title']),
+                  tvu.clean_eptitle(f['lastTitle']),
+                  [ tvu.clean_eptitle(fd['title']) for fd in f.get('entries', []) ]
+                  ) for f in feeds ]
+
     else:
-        return 'Error: unknown action: %s' % action
+        return 'Error: unknown info: %s' % name

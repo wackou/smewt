@@ -36,8 +36,12 @@ def _send_command(cmd):
     response = '\n'.join(tn.read_all().split('\n')[7:-2])
     tn.close()
 
-    log.debug('mldonkey cmd: %s' % cmd)
-    log.debug('response:\n%s' % response)
+    if cmd == 'q':
+        # do not pollute the log with calls for pinging mldonkey
+        pass
+    else:
+        log.debug('mldonkey cmd: %s' % cmd)
+        log.debug('response:\n%s' % response)
     return response
 
 def send_command(cmd):
@@ -50,10 +54,15 @@ def send_command(cmd):
 def download(ed2k_link):
     result = send_command('dllink ' + ed2k_link)
     if not result:
-        return False, 'no connect'
+        return False, 'no connection'
 
-    success = ('Added link' in result) or ('already' in result)
-    return success, result
+    if 'Added link' in result:
+        return True, 'Successfully sent %s to MLDonkey!' % ed2k_link.split('|')[2]
+    elif 'already' in result:
+        msg = result.strip().split('\n')[1][7:]
+        return True, 'Already in download list: %s' % msg
+    else:
+        return False, result.strip()
 
 
 def is_online():

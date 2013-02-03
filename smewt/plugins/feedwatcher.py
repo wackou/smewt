@@ -18,11 +18,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from smewt.base import SmewtException, EventServer, Feed
+from smewt.base.taskmanager import FuncTask
+from smewt.plugins.tvu import get_show_mapping
+from threading import Thread, Timer
 import feedparser
 import urllib2, re
-import json
-from PyQt4.QtCore import QSettings, QVariant
-from smewt.base import SmewtException, EventServer
 import logging
 
 log = logging.getLogger(__name__)
@@ -31,46 +32,49 @@ DOWNLOAD_AGENT = 'MLDonkey'
 import mldonkey as DownloadAgent
 
 
+
 class FeedWatcher(object):
-    def __init__(self):
-        self.loadFeeds()
+    def __init__(self, smewtd):
         self._ed2kRexp = re.compile('href="(?P<url>ed2k://\|file.*?)">')
+        self._smewtd = smewtd
+        self.loadFeeds()
 
-    def feedListToQVariant(self, feedList):
-        return QVariant([ QVariant([ QVariant(f['url']),
-                                     QVariant(f['title']),
-                                     QVariant([ QVariant(float(n)) for n in f['lastUpdate'] ]),
-                                     QVariant(f['lastTitle']),
-                                     QVariant(json.dumps(f['entries']))
-                                     ]) for f in feedList ])
+        # Make sure we have TVU's show list cached, as it takes quite some
+        # time to download
+        t = Thread(target=get_show_mapping)
+        t.daemon = True
+        t.start()
 
-    def variantToFeedList(self, v):
-        result = []
-        for f in v.toList():
-            feed = {}
-            feed['url'] = str(f.toList()[0].toString())
-            feed['title'] = str(f.toList()[1].toString())
-            feed['lastUpdate'] = [ n.toInt()[0] for n in f.toList()[2].toList() ]
-            feed['lastTitle'] = unicode(f.toList()[3].toString())
-            try:
-                feed['entries'] = json.loads(str(f.toList()[4].toString()))
-            except:
-                feed['entries'] = []
-            result.append(feed)
-        return result
+        # check feeds at a periodic interval
+        CHECK_FEEDS_INTERVAL = 2*60*60 # seconds
+        def checkFeeds():
+            self._smewtd.taskManager.add(FuncTask('Check feeds', self.checkAllFeeds))
+            t = Timer(CHECK_FEEDS_INTERVAL, checkFeeds)
+            t.daemon = True
+            self._checkFeedsTimer = t
+            t.start()
+
+        checkFeeds()
+
+
+    def quit(self):
+        self._checkFeedsTimer.cancel()
+        self.saveFeeds()
 
     def loadFeeds(self):
-        # TODO: store inside graph db instead of Qt settings
-        self.feedList = self.variantToFeedList(QSettings().value('feeds'))
+        db = self._smewtd.database
+        self.feedList = [ f.toDict() for f in db.config.get('feeds', []) ]
 
     def saveFeeds(self):
-        # TODO: store inside graph db instead of Qt settings
-        QSettings().setValue('feeds', self.feedListToQVariant(self.feedList))
+        db = self._smewtd.database
+        for f in db.find_all(Feed):
+            db.delete_node(f.node)
+        db.config.feeds = [ Feed.fromDict(f, db) for f in self.feedList ]
 
     def addFeed(self, url, lastUpdate = None):
         """Example:
         url = 'http://tvu.org.ru/rss.php?se_id=19934' # South Park season 12
-        lastUpdate = [2008, 10, 30, 2, 47, 39, 3, 304, 0]
+        lastUpdate = (2008, 10, 30, 2, 47, 39, 3, 304, 0)
         addFeed(url, lastUpdate)
 
         if lastUpdate is not specified, it will assume all episodes have already been downloaded"""
@@ -120,7 +124,11 @@ class FeedWatcher(object):
     def setLastUpdateUrlIndex(self, url, index):
         for feed in self.feedList:
             if feed['url'] == url:
-                lastUpdate = feed['entries'][index]['updated']
+                if index >= 0:
+                    lastUpdate = feed['entries'][index]['updated']
+                else:
+                    lastUpdate = list(feed['entries'][0]['updated'])
+                    lastUpdate[0] -= 1
                 self.setLastUpdate(feed, lastUpdate)
 
     def setLastUpdate(self, feed, lastUpdate):
@@ -130,16 +138,10 @@ class FeedWatcher(object):
             if lastUpdate == f['updated']:
                 feed['lastTitle'] = f['title']
                 break
+        else:
+            feed['lastTitle'] = ''
         self.saveFeeds()
 
-
-    def amuleDownload(self, ed2kLink):
-        from amulecommand import AmuleCommand
-        return AmuleCommand().download(ed2kLink)
-
-    def mldonkeyDownload(self, ed2kLink):
-        import mldonkey
-        return mldonkey.download(ed2kLink)
 
     def downloadNewEpisodes(self, feed):
         EventServer.publish('Checking new episodes for: %s' % feed['title'])
@@ -156,11 +158,10 @@ class FeedWatcher(object):
                 try:
                     ok, msg = DownloadAgent.download(ed2kLink)
                     if not ok:
-                        raise RuntimeError('Could not send link to %r: %s' %
+                        raise RuntimeError('Could not send link to %s: %s' %
                                            (DOWNLOAD_AGENT, msg))
 
-                    EventServer.publish('Successfully sent %s to %s!' %
-                                        (ed2kLink.split('|')[2], DOWNLOAD_AGENT))
+                    EventServer.publish(msg)
                     if list(ep.updated_parsed) > lastUpdate:
                         lastUpdate = list(ep.updated_parsed)
                 except Exception as e:

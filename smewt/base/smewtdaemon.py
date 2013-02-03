@@ -23,13 +23,13 @@ from pygoo import MemoryObjectGraph, Equal, ontology
 import smewt
 from smewt import config
 from smewt.media import Episode, Movie, Subtitle
-from smewt.base import cache, utils, Collection, Media
+from smewt.base import cache, utils, Collection, Media, Config
 from smewt.base.taskmanager import TaskManager, FuncTask
 from os.path import join
 from smewt.taggers import EpisodeTagger, MovieTagger
 from smewt.plugins.feedwatcher import FeedWatcher
-import time, logging
-
+import time
+import logging
 
 log = logging.getLogger('smewt.base.smewtdaemon')
 
@@ -58,6 +58,9 @@ class VersionedMediaGraph(MemoryObjectGraph):
 
         raise AttributeError, name
 
+    @property
+    def config(self):
+        return self.find_one(Config)
 
 
 class SmewtDaemon(object):
@@ -109,23 +112,11 @@ class SmewtDaemon(object):
             # only start the update of the collections once our GUI is fully setup
             # do not rescan as it would be too long and we might delete some files that
             # are on an unaccessible network share or an external HDD
-            #QTimer.singleShot(2000, self.updateCollections)
             self.taskManager.add(FuncTask('Update collections', self.updateCollections))
 
         # load up the feed watcher
         if config.PLUGIN_TVU:
-            self.feedWatcher = FeedWatcher()
-
-            # FIXME: this should go into a plugin.init() method
-
-            # Make sure we have TVU's show list cached, as it takes quite some
-            # time to download
-            from smewt.plugins.tvudatasource import get_show_mapping
-            from threading import Thread
-            t = Thread(target=get_show_mapping)
-            t.daemon = True
-            t.start()
-
+            self.feedWatcher = FeedWatcher(self)
 
         if config.PLUGIN_MLDONKEY:
             # FIXME: this should go into a plugin.init() method
@@ -139,15 +130,12 @@ class SmewtDaemon(object):
             amulecommand.recreateAmuleRemoteConf()
 
 
-        #self.feedsTimer = QTimer(self)
-        #self.connect(self.feedsTimer, SIGNAL('timeout()'),
-        #             self.mainWidget.checkAllFeeds)
-        #self.feedsTimer.start(2*60*60*1000)
 
 
     def quit(self):
         log.info('SmewtDaemon quitting...')
         self.taskManager.finishNow()
+        self.feedWatcher.quit()
         self.saveDB()
 
         if smewt.config.PERSISTENT_CACHE:
@@ -169,13 +157,13 @@ class SmewtDaemon(object):
 
 
     def loadDB(self):
-        log.info('Loading database...')
         settings = QSettings()
         dbfile = unicode(settings.value('database_file').toString())
         if not dbfile:
             dbfile = join(utils.smewtUserDirectory(), smewt.APP_NAME + '.database')
             settings.setValue('database_file', QVariant(dbfile))
 
+        log.info('Loading database from: %s', dbfile)
         self.database = VersionedMediaGraph()
         try:
             self.database.load(dbfile)
@@ -183,8 +171,9 @@ class SmewtDaemon(object):
             log.warning('Could not load database %s', dbfile)
 
     def saveDB(self):
-        log.info('Saving database...')
-        self.database.save(unicode(QSettings().value('database_file').toString()))
+        dbfile = unicode(QSettings().value('database_file').toString())
+        log.info('Saving database to %s', dbfile)
+        self.database.save(dbfile)
 
     def clearDB(self):
         log.info('Clearing database...')

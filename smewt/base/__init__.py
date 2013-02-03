@@ -23,7 +23,8 @@ from smewturl import SmewtUrl
 from solvingchain import SolvingChain
 from cache import cachedmethod
 from eventserver import EventServer
-from mediaobject import Config, Media, Metadata
+from configobject import Config, Feed
+from mediaobject import Media, Metadata
 from taskmanager import Task, TaskManager
 from importtask import ImportTask
 from actionfactory import ActionFactory
