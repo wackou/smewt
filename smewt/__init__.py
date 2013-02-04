@@ -108,6 +108,7 @@ def main(global_config, **settings):
     config.add_route('info', '/info/{name}')
 
     config.add_route('preferences', '/preferences')
+    config.add_route('controlpanel', '/controlpanel')
 
 
     config.scan()

@@ -52,7 +52,7 @@ function info(name, func) {
 }
 
 function updateFolders(collec) {
-    var nfolders = $("#collectionTable_" + collec + " tr").length
+    var nfolders = $("#collectionTable_" + collec + " tr").length - 1; // for the last line with the add button
     var folders = [];
     for (var i=0; i<nfolders; i++) {
         folders.push([ $("#folder_" + collec + "_" + i).val(),
@@ -90,7 +90,7 @@ function updateFolders(collec) {
             ${collec.name} collection:
             <table class="table table-striped table-bordered table-hover">
               <thead><tr>
-                %for h in ['Folder', 'Recursive']:
+                %for h in ['Folder', 'Recursive', 'Remove']:
                 <td>${h}</td>
                 %endfor
               </tr></thead>
@@ -109,8 +109,24 @@ function updateFolders(collec) {
                     <input type="checkbox" id="rec_${collec.name}_${loop.index}" name="watched"
                            onClick="updateFolders('${collec.name}')" ${checked} />
                  </td>
+                 <td>
+                   <div class="btn" onclick="action('delete_collection_folder',
+                                                    { 'collection': '${collec.name}',
+                                                      'index': ${loop.index} }, true);">
+                     <img src="/static/images/edit-delete.png" width="24" heigth="24"/>
+                   </div>
+                 </td>
                 </tr>
                 %endfor
+                <tr>
+                  <td>
+                   <div class="btn" onclick="action('add_collection_folder', {'collection': '${collec.name}' }, true);">
+                     <img src="/static/images/folder-new.png" width="24" heigth="24"/>
+                     Add new folder
+                   </div>
+                  </td>
+                  <td></td><td></td>
+                </tr>
               </tbody>
             </table>
             %endfor

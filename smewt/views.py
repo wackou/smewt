@@ -167,6 +167,15 @@ def config_set(request):
         return 'Error: %s' % e
 
 
+def get_collection(name):
+    collection = name.lower()
+    if collection == 'movie':
+        return SMEWTD_INSTANCE.movieCollection
+    elif collection == 'series':
+        return SMEWTD_INSTANCE.episodeCollection
+    else:
+        raise ValueError('Invalid collection name: %s' % name)
+
 @view_config(route_name='action', renderer='json')
 def action(request):
     action = request.matchdict['action']
@@ -224,14 +233,17 @@ def action(request):
             return 'OK'
 
         elif action == 'set_collection_folders':
-            collection = request.params['collection'].lower()
-            folders = dict(json.loads(request.params['folders']))
-            if collection == 'movie':
-                SMEWTD_INSTANCE.movieCollection.setFolders(folders)
-            elif collection == 'series':
-                SMEWTD_INSTANCE.episodeCollection.setFolders(folders)
-            else:
-                return 'Invalid collection name: %' % collection
+            folders = json.loads(request.params['folders'])
+            get_collection(request.params['collection']).setFolders(folders)
+            return 'OK'
+
+        elif action == 'add_collection_folder':
+            get_collection(request.params['collection']).addFolder()
+            return 'OK'
+
+        elif action == 'delete_collection_folder':
+            index = int(request.params['index'])
+            get_collection(request.params['collection']).deleteFolder(index)
             return 'OK'
 
         else:
@@ -269,5 +281,14 @@ def preferences_view(request):
     return { 'title': 'PREFERENCES',
              'smewtd': SMEWTD_INSTANCE,
              'items': config.explicit_items(),
+             'path': request.current_route_path()
+             }
+
+@view_config(route_name='controlpanel',
+             renderer='smewt:templates/common/controlpanel.mako')
+def controlpanel_view(request):
+    config = SMEWTD_INSTANCE.database.config
+    return { 'title': 'CONTROL PANEL',
+             'smewtd': SMEWTD_INSTANCE,
              'path': request.current_route_path()
              }

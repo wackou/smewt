@@ -20,19 +20,15 @@
 
 from __future__ import unicode_literals
 
-from PyQt4.QtCore import QObject, SIGNAL, QVariant, QSettings
-from pygoo import MemoryObjectGraph, ontology
-
 from smewt.base import utils, Media, ImportTask
 from smewt.base.configobject import CollectionSettings
-from smewt.taggers import EpisodeTagger, MovieTagger
 from smewt.base.textutils import u
-
 import json
 import os
 import logging
 
 log = logging.getLogger('smewt.base.collection')
+
 
 class Collection(object):
     """A Collection keeps track of the files in the folders for us. when any changes
@@ -49,53 +45,45 @@ class Collection(object):
         self.graph = dataGraph
         self.taskManager = taskManager
 
-        # folders is a dict of folder names to bool indicating whether they should be traversed recursively
+        # folders is a list of (folder name, bool) indicating whether they should be traversed recursively
         self.folders = folders
 
         self.loadSettings()
 
-
-    def loadSettings(self):
-        # FIXME: remove the qsettings
-        settings = QSettings()
-        collection = settings.value('collection_%s' % self.name)
-        if collection:
-            self.folders = dict((unicode(folder), recursive.toBool()) for folder, recursive in collection.toMap().items())
-            log.info('loaded %s folders: %s' % (self.name, self.folders))
-        else:
-            log.warning('Could not load folders for collection %s' % self.name)
-        #c = self.findOrCreate().toDict()
-        #self.folders = dict(c['folders'])
 
     def findOrCreate(self):
         for c in utils.tolist(self.graph.config.get('collections')):
             if c.name == self.name:
                 return c
         return CollectionSettings.fromDict({ 'name': self.name, 'folders': [] }, self.graph)
+    def loadSettings(self):
+        c = self.findOrCreate().toDict()
+        self.folders = c['folders']
 
     def saveSettings(self):
-        # FIXME: remove the qsettings
-        QSettings().setValue('collection_%s' % self.name, QVariant(self.folders))
         c = self.findOrCreate()
         if c not in utils.tolist(self.graph.config.get('collections')):
             self.graph.config.append('collections', c)
-        c.folders = json.dumps(self.folders.items())
-
+        c.folders = json.dumps(self.folders)
 
     def checkIntegrity():
         # TODO: delete files in set(files) - set(dirwalk())
         pass
 
-
     def setFolders(self, folders):
         self.folders = folders
-
         self.saveSettings()
-        #self.update()
 
+    def addFolder(self):
+        self.folders.append(['', True])
+        self.saveSettings()
+
+    def deleteFolder(self, index):
+        del self.folders[index]
+        self.saveSettings()
 
     def collectionFiles(self):
-        for folder, recursive in self.folders.items():
+        for folder, recursive in self.folders:
             for f in utils.dirwalk(folder, self.validFiles, recursive):
                 yield f
 
@@ -116,7 +104,6 @@ class Collection(object):
 
         # save newly imported files
         self.saveSettings()
-
 
     def update(self):
         log.info('Updating %s collection' % self.name)

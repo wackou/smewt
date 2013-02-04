@@ -188,6 +188,7 @@ for i, p in enumerate(path[1:]):
         ${navlink('Feeds', '/feeds')}
         ${navlink('MLDonkey', 'http://127.0.0.1:4080', True)}
         ${navlink('Preferences', '/preferences')}
+        ${navlink('Control Panel', '/controlpanel')}
         <li class="nav-header">Movies</li>
         ${navlink('All', '/movies')}
         ${navlink('Table', '/movies/table')}
