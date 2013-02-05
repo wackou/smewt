@@ -10,8 +10,7 @@ filename = tolist(ep.get('files'))[0].get('filename')
 title = '%s - %s' % (ep.get('episodeNumber', '?'),
                      ep.get('title', filename))
 
-displaySynopsis = context.get('displaySynopsis', True)
-if displaySynopsis:
+if context['smewtd'].database.config.get('displaySynopsis', True):
     displayStyle = 'inline'
 else:
     displayStyle = 'none'

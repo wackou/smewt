@@ -38,7 +38,7 @@ $('#movietabs a:first').tab('show');
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span2">
-      <img src="${movie.loresImage}" height="130px" width:"auto"/>
+      <img src="${movie.loresImage}" height="130px" width="auto"/>
     </div>
 %if movie.title != 'Unknown':
     <div class="span10">

@@ -59,7 +59,6 @@ log = logging.getLogger('smewt')
 # and a development version
 ORG_NAME = 'Falafelton'
 APP_NAME = 'Smewt-dev'
-SINGLE_APP_PORT = 8358
 
 SMEWTD_INSTANCE = None
 

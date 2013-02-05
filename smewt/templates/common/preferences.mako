@@ -119,13 +119,12 @@ function updateFolders(collec) {
                 </tr>
                 %endfor
                 <tr>
-                  <td>
+                  <td colspan="3">
                    <div class="btn" onclick="action('add_collection_folder', {'collection': '${collec.name}' }, true);">
                      <img src="/static/images/folder-new.png" width="24" heigth="24"/>
                      Add new folder
                    </div>
                   </td>
-                  <td></td><td></td>
                 </tr>
               </tbody>
             </table>

@@ -20,7 +20,7 @@
 
 from PyQt4.QtCore import QSettings, QVariant
 from pygoo import MemoryObjectGraph, Equal, ontology
-import smewt
+from guessit.slogging import setupLogging
 from smewt import config
 from smewt.media import Episode, Movie, Subtitle
 from smewt.base import cache, utils, Collection, Media, Config
@@ -28,7 +28,9 @@ from smewt.base.taskmanager import TaskManager, FuncTask
 from os.path import join
 from smewt.taggers import EpisodeTagger, MovieTagger
 from smewt.plugins.feedwatcher import FeedWatcher
+import smewt
 import time
+import os
 import logging
 
 log = logging.getLogger('smewt.base.smewtdaemon')
@@ -74,6 +76,10 @@ class VersionedMediaGraph(MemoryObjectGraph):
 class SmewtDaemon(object):
     def __init__(self, progressCallback = None):
         super(SmewtDaemon, self).__init__()
+
+        self.logfile = utils.smewtUserPath(smewt.APP_NAME + '.log')
+        setupLogging(filename=self.logfile, with_time=True, with_thread=True)
+
 
         if smewt.config.PERSISTENT_CACHE:
             self.loadCache()
@@ -162,6 +168,16 @@ class SmewtDaemon(object):
 
     def saveCache(self):
         cache.save(utils.smewtUserPath(smewt.APP_NAME + '.cache'))
+
+    def clearCache(self):
+        cache.clear()
+        cacheFile = utils.smewtUserPath(smewt.APP_NAME + '.cache')
+        log.info('Deleting cache file: %s' % cacheFile)
+        try:
+            os.remove(cacheFile)
+        except OSError:
+            pass
+
 
 
     def loadDB(self):

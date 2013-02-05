@@ -181,13 +181,21 @@ def action(request):
     action = request.matchdict['action']
 
     try:
-        if action == 'rescan':
+        if action == 'rescan_collections':
             SMEWTD_INSTANCE.rescanCollections()
             return 'OK'
 
-        elif action == 'clear':
-            SMEWTD_INSTANCE.clearDB()
+        elif action == 'update_collections':
+            SMEWTD_INSTANCE.updateCollections()
             return 'OK'
+
+        elif action == 'clear_collections':
+            SMEWTD_INSTANCE.clearDB()
+            return 'Collections cleared!'
+
+        elif action == 'clear_cache':
+            SMEWTD_INSTANCE.clearCache()
+            return 'Cache cleared!'
 
         elif action == 'subscribe':
             SMEWTD_INSTANCE.feedWatcher.addFeed(request.params['feed'])
@@ -269,6 +277,14 @@ def info(request):
                   tvu.clean_eptitle(f['lastTitle']),
                   [ tvu.clean_eptitle(fd['title']) for fd in f.get('entries', []) ]
                   ) for f in feeds ]
+
+    elif name == 'task_manager_status':
+        tm = SMEWTD_INSTANCE.taskManager
+        if tm.total == 0:
+            return 'idle'
+        else:
+            return 'Task %d/%d completed!' % (len(tm.finished), tm.total)
+
 
     else:
         return 'Error: unknown info: %s' % name

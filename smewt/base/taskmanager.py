@@ -156,7 +156,7 @@ class TaskManager(QtCore.QObject):
                 log.info('No currently running jobs')
                 return
 
-        # FIXME: need to stop worker, we can't always wait for him
+        # FIXME: need to stop worker, we can't always wait for it
         self.workerThread.join()
 
         log.info('TaskManager: last running task finished')
