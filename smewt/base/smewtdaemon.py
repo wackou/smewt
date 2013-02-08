@@ -33,7 +33,7 @@ import time
 import os
 import logging
 
-log = logging.getLogger('smewt.base.smewtdaemon')
+log = logging.getLogger(__name__)
 
 
 class VersionedMediaGraph(MemoryObjectGraph):
@@ -136,12 +136,6 @@ class SmewtDaemon(object):
             # FIXME: this should go into a plugin.init() method
             from smewt.plugins import mldonkey
             mldonkey.send_command('vm')
-
-
-        if config.PLUGIN_AMULE:
-            from smewt.plugins import amulecommand
-            print '*'*100
-            amulecommand.recreateAmuleRemoteConf()
 
 
 

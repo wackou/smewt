@@ -19,11 +19,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import GraphAction, Metadata
+from smewt.base import GraphAction, Metadata, SmewtException
 from smewt.base.mediaobject import foundMetadata
 import logging
 
-log = logging.getLogger('smewt.solvers.solver')
+log = logging.getLogger(__name__)
 
 class Solver(GraphAction):
     def __init__(self):

@@ -29,7 +29,7 @@ import subliminal
 import sys, os.path
 import logging
 
-log = logging.getLogger('smewt.subtitletask')
+log = logging.getLogger(__name__)
 
 
 

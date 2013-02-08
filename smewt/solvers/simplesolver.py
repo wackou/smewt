@@ -23,7 +23,7 @@ from smewt.solvers.solver import Solver
 from smewt.base.textutils import levenshtein
 import logging
 
-log = logging.getLogger('smewt.solvers.simplesolver')
+log = logging.getLogger(__name__)
 
 
 def exactMatch(baseGuess, md):

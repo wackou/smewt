@@ -18,16 +18,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import GraphAction, Media, Metadata, SmewtException
+from smewt.base import GraphAction, Media, SmewtException
 from smewt.base.mediaobject import foundMetadata
 from smewt.base.utils import tolist, guessitToPygoo
-from smewt.media import Movie
-from smewt.guessers.guesser import Guesser
 from guessit import guess_movie_info
-import re
 import logging
 
-log = logging.getLogger('smewt.guessers.moviefilename')
+log = logging.getLogger(__name__)
 
 
 class MovieFilename(GraphAction):

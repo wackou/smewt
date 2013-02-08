@@ -19,14 +19,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import GraphAction, Media, Metadata, SmewtException
+from smewt.base import GraphAction, Media, SmewtException
 from smewt.base.utils import guessitToPygoo
 from smewt.base.mediaobject import foundMetadata
-from smewt.media import Episode, Series
+from smewt.media import Episode
 from guessit import guess_episode_info
 import logging
 
-log = logging.getLogger('smewt.guessers.episodefilename')
+log = logging.getLogger(__name__)
 
 
 class EpisodeFilename(GraphAction):

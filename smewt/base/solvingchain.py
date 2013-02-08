@@ -21,7 +21,7 @@
 from smewtexception import SmewtException
 import logging
 
-log = logging.getLogger('smewt.base.solvingchain')
+log = logging.getLogger(__name__)
 
 class SolvingChain(object):
     def __init__(self, *args):
@@ -37,4 +37,3 @@ class SolvingChain(object):
             log.debug("SolvingChain: performing action %s" % action.__class__.__name__)
             result = action.perform(result)
         return result
-

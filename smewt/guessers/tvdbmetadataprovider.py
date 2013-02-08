@@ -18,26 +18,22 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import cachedmethod, utils, SmewtException, Media
-from smewt.guessers.guesser import Guesser
-from smewt.media import Episode, Series, Movie
+from smewt.base import cachedmethod, SmewtException
+from smewt.media import Series
 from smewt.base import textutils
 from smewt.base.utils import tolist, smewtDirectory, smewtUserDirectory
 from pygoo import MemoryObjectGraph
 import guessit
-
-from PyQt4.QtCore import SIGNAL, QObject, QUrl, Qt, QSettings
+from PyQt4.QtCore import Qt, QSettings
 from PyQt4.QtGui import QImage
-
-import os, sys, re, logging
+import os
 from urllib2 import urlopen
-
 import thetvdbapi
 import tmdb
-
 import datetime
+import logging
 
-log = logging.getLogger('smewt.guessers.tvdbmetadataprovider')
+log = logging.getLogger(__name__)
 
 def guiLanguage():
     language = str(QSettings().value('gui/language', 'en').toString())

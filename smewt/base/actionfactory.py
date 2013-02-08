@@ -19,7 +19,7 @@
 #
 
 from smewtexception import SmewtException
-from smewt.base.utils import tolist, toresult, readFile, extractText
+from smewt.base.utils import tolist, toresult, readFile
 from smewt.base.smewturl import SmewtUrl
 from mediaobject import Media
 from subtitletask import SubtitleTask
@@ -27,7 +27,7 @@ from guessit.language import Language, guess_language
 import os, sys, time, logging
 
 
-log = logging.getLogger('smewt.base.actionfactory')
+log = logging.getLogger(__name__)
 
 # Singleton pattern found at http://code.activestate.com/recipes/66531/
 class Singleton(object):

@@ -4,3 +4,4 @@ requests>=0.14
 subliminal>=0.6.2
 guessit>=0.5.3
 feedparser>=5.1
+appdirs>=1.2

@@ -45,6 +45,11 @@ def profile():
     local(py_path + 'python bin/smewg --profile')
 
 @task
+def clean_pyc():
+    """Removes all the *.pyc files found in the repository"""
+    local('find . -iname "*.pyc" -delete')
+
+@task
 def python(arg1):
     local(py_path + 'python ' + arg1)
 

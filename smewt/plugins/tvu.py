@@ -78,7 +78,7 @@ def get_seasons_for_showid(sid, title=None):
     r.encoding = 'utf-8'
 
     feeds = []
-    open('/tmp/tvub.html', 'w').write(r.text.encode('utf-8'))
+    #open('/tmp/tvub.html', 'w').write(r.text.encode('utf-8'))
     bs = BeautifulSoup(r.text)
     dubbed = bs.find(id='main').find_all('table')
     for d in dubbed:

@@ -20,14 +20,13 @@
 #
 
 from __future__ import with_statement
-from smewtexception import SmewtException
 from Queue import PriorityQueue
 from threading import Thread, Lock, current_thread
 from PyQt4 import QtCore
 import time
 import logging
 
-log = logging.getLogger('smewt.base.taskmanager')
+log = logging.getLogger(__name__)
 
 class Task(object):
     def __init__(self, priority = 5):

@@ -23,7 +23,7 @@ from pygoo import MemoryObjectGraph, Equal
 from smewt.base import Media, Task
 import logging
 
-log = logging.getLogger('smewt.importtask')
+log = logging.getLogger(__name__)
 
 class ImportTask(Task):
     def __init__(self, collection, taggerType, filename):
@@ -44,4 +44,3 @@ class ImportTask(Task):
         # import the data into our collection
         self.collection.add_object(result.find_one(Media),
                                    recurse = Equal.OnUnique)
-

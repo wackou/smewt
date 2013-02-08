@@ -19,7 +19,7 @@
 #
 
 from smewt.media import lookup, render_mako_template
-from smewt.plugins import tvudatasource
+from smewt.plugins import tvu
 from guessit.textutils import reorder_title
 import logging
 
@@ -29,11 +29,11 @@ def render_mako(url, collection, smewtd):
     t = lookup.get_template('tvu.mako')
 
     # do not block if we don't have the full list of shows yet, show what we have
-    shows = dict(tvudatasource.get_show_mapping(only_cached=True))
+    shows = dict(tvu.get_show_mapping(only_cached=True))
 
     try:
         sid = shows[url.args['series']]
-        feeds = tvudatasource.get_seasons_for_showid(sid, title=reorder_title(url.args['series']))
+        feeds = tvu.get_seasons_for_showid(sid, title=reorder_title(url.args['series']))
     except KeyError:
         feeds = []
 

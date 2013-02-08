@@ -27,7 +27,7 @@ import json
 import os
 import logging
 
-log = logging.getLogger('smewt.base.collection')
+log = logging.getLogger(__name__)
 
 
 class Collection(object):

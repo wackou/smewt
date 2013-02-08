@@ -19,6 +19,9 @@
 #
 
 
+ORG_NAME = 'Falafelton'
+APP_NAME = 'Smewt-dev'
+
 __version__ = '0.4-dev'
 
 import logging
@@ -52,13 +55,11 @@ from base import SmewtException, SmewtUrl, SolvingChain, cachedmethod, EventServ
 from base.mediaobject import Media, Metadata
 from PyQt4.QtCore import QCoreApplication
 
-log = logging.getLogger('smewt')
+log = logging.getLogger(__name__)
 
 
 # used to be able to store settings for different versions of Smewt installed on the same computer, ie: a stable
 # and a development version
-ORG_NAME = 'Falafelton'
-APP_NAME = 'Smewt-dev'
 
 SMEWTD_INSTANCE = None
 

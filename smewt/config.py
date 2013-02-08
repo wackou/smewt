@@ -24,16 +24,15 @@ import logging
 # Mininum severeness above which Smewt will report logging entries
 #MAIN_LOGGING_LEVEL = logging.INFO
 
-# TCP port used for logging to an external logging application
-#LOGGING_TCP_PORT = 9025
-
 # Whether to use a cache that is saved/restored between sessions
 PERSISTENT_CACHE = True
 
 # Whether to reload mako templates from file every time or use the cache
+# TODO: still used? should check with what pyramid does
 RELOAD_MAKO_TEMPLATES = True
 
 # Write mako output to an html file
+# TODO: still used? should check with what pyramid does
 DEBUG_MAKO_TEMPLATES = True
 MAKO_FILENAME = '/tmp/view.html'
 
@@ -43,5 +42,3 @@ REGENERATE_THUMBNAILS = False
 PLUGIN_TVU = True
 
 PLUGIN_MLDONKEY = True
-
-PLUGIN_AMULE = False

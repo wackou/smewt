@@ -24,11 +24,11 @@ from smewt.base import SolvingChain, Media, utils
 from smewt.base.textutils import u
 from smewt.media import Episode
 from smewt.taggers.tagger import Tagger
-from smewt.guessers import *
+from smewt.guessers import EpisodeFilename, EpisodeTVDB
 from smewt.solvers import SimpleSolver
 import logging
 
-log = logging.getLogger('smewt.taggers.episodetagger')
+log = logging.getLogger(__name__)
 
 class EpisodeTagger(Tagger):
 

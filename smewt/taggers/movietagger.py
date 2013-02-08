@@ -23,10 +23,10 @@ from smewt.base import Media, utils
 from smewt.base.textutils import u
 from smewt.media import Movie
 from smewt.taggers.tagger import Tagger
-from smewt.guessers import *
+from smewt.guessers import MovieFilename, MovieTMDB
 import logging
 
-log = logging.getLogger('smewt.taggers.movietagger')
+log = logging.getLogger(__name__)
 
 class MovieTagger(Tagger):
     def perform(self, query):

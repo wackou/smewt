@@ -19,18 +19,15 @@
 #
 
 from __future__ import unicode_literals
-from smewt.base import GraphAction, cachedmethod, utils, textutils, SmewtException, Media
-from smewt.base.utils import smewtDirectory
+from smewt.base import GraphAction, SmewtException, Media
 from smewt.base.textutils import u
 from smewt.base.mediaobject import foundMetadata
-from smewt.guessers.guesser import Guesser
 from smewt.media import Movie
 from pygoo import MemoryObjectGraph
-from urllib import urlopen,  urlencode
 from tvdbmetadataprovider import TVDBMetadataProvider
 import logging
 
-log = logging.getLogger('smewt.guessers.movietmdb')
+log = logging.getLogger(__name__)
 
 class MovieTMDB(GraphAction):
 
@@ -48,7 +45,7 @@ class MovieTMDB(GraphAction):
         try:
             mdprovider = TVDBMetadataProvider()
             result = mdprovider.startMovie(movie.title)
-        except SmewtException, e:
+        except SmewtException:
             # movie could not be found, return a dummy Unknown movie instead so we can group them somewhere
             log.warning('Could not find info for movie: %s' % u(query.find_one(Media).filename))
             noposter = '/static/images/noposter.png'

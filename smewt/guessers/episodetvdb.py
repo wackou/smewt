@@ -18,17 +18,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import GraphAction, cachedmethod, utils, SmewtException, Media
-from smewt.base.utils import smewtDirectory
-from smewt.guessers.guesser import Guesser
+from smewt.base import GraphAction, SmewtException, Media
 from smewt.media.series import Episode, Series
-from smewt.base.mediaobject import foundMetadata
 from pygoo import MemoryObjectGraph, Equal
-from urllib import urlopen,  urlencode
 from tvdbmetadataprovider import TVDBMetadataProvider
 import logging
 
-log = logging.getLogger('smewt.guessers.episodeimdb')
+log = logging.getLogger(__name__)
 
 
 class EpisodeTVDB(GraphAction):
