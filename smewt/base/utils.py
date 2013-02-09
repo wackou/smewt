@@ -22,7 +22,6 @@
 
 # filename- and network-related functions
 import sys, os, os.path, fnmatch,  errno
-from PyQt4.QtCore import QSettings, QVariant
 from guessit.language import Language, guess_language, UNDETERMINED
 from guessit.fileutils import split_path
 from pygoo.utils import tolist, toresult
@@ -109,17 +108,7 @@ def smewtMediaUrl(*args):
     return pathToUrl(smewtMedia(*args))
 
 def smewtUserPath(*args, **kwargs):
-    settings = QSettings()
-    userdir = unicode(settings.value('user_dir').toString())
-    if not userdir:
-        if sys.platform == 'win32':
-            userdir = os.path.join(os.environ['USERPROFILE'], 'Application Data', smewt.APP_NAME)
-        else:
-            userdir = os.path.join(os.path.dirname(unicode(settings.fileName())), smewt.APP_NAME)
-
-        settings.setValue('user_dir',  QVariant(userdir))
-
-    result = os.path.join(userdir, *args)
+    result = os.path.join(smewt.dirs.user_data_dir, *args)
 
     if kwargs.get('createdir', None) == True:
         makedir(result)

@@ -36,16 +36,19 @@ class Collection(object):
     deleted files."""
 
     def __init__(self, name, validFiles, mediaTagger, dataGraph, taskManager, folders = {}):
+        log.debug('Initializing %s Collection', name)
         # identifies the collection
         self.name = name
-        # validFiles is a list of conditions a file should meet to be considered to belong to this collection
+        # validFiles is a list of conditions a file should meet to be
+        # considered to belong to this collection
         self.validFiles = validFiles
         self.mediaTagger = mediaTagger
 
         self.graph = dataGraph
         self.taskManager = taskManager
 
-        # folders is a list of (folder name, bool) indicating whether they should be traversed recursively
+        # folders is a list of (folder name, bool) indicating whether
+        # they should be traversed recursively
         self.folders = folders
 
         self.loadSettings()
@@ -55,15 +58,21 @@ class Collection(object):
         for c in utils.tolist(self.graph.config.get('collections')):
             if c.name == self.name:
                 return c
-        return CollectionSettings.fromDict({ 'name': self.name, 'folders': [] }, self.graph)
+        result = CollectionSettings.fromDict({ 'name': self.name, 'folders': [] }, self.graph)
+        self.addToConfig(result)
+        return result
+
     def loadSettings(self):
         c = self.findOrCreate().toDict()
         self.folders = c['folders']
 
-    def saveSettings(self):
-        c = self.findOrCreate()
+    def addToConfig(self, c):
         if c not in utils.tolist(self.graph.config.get('collections')):
             self.graph.config.append('collections', c)
+
+
+    def saveSettings(self):
+        c = self.findOrCreate()
         c.folders = json.dumps(self.folders)
 
     def checkIntegrity():

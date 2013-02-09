@@ -3,6 +3,7 @@
 #
 # Smewt - A smart collection manager
 # Copyright (c) 2008 Ricard Marxer <rikrd@smewt.com>
+# Copyright (c) 2013 Nicolas Wack <wackou@smewt.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +21,7 @@
 
 
 ORG_NAME = 'Falafelton'
-APP_NAME = 'Smewt-dev'
+APP_NAME = 'Smewt'
 
 __version__ = '0.4-dev'
 
@@ -29,6 +30,10 @@ import logging
 MAIN_LOGGING_LEVEL = logging.INFO
 LOGGING_LEVELS = [ ('smewt.base.cache', logging.INFO)
                    ]
+
+
+from appdirs import AppDirs
+dirs = AppDirs(APP_NAME, ORG_NAME, version=__version__)
 
 class NullHandler(logging.Handler):
     def emit(self, record):
@@ -62,6 +67,7 @@ log = logging.getLogger(__name__)
 # and a development version
 
 SMEWTD_INSTANCE = None
+
 
 import atexit
 from pyramid.config import Configurator

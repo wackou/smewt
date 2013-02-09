@@ -23,8 +23,9 @@ from smewt.media import Series
 from smewt.base import textutils
 from smewt.base.utils import tolist, smewtDirectory, smewtUserDirectory
 from pygoo import MemoryObjectGraph
+import smewt.settings
 import guessit
-from PyQt4.QtCore import Qt, QSettings
+from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QImage
 import os
 from urllib2 import urlopen
@@ -36,7 +37,7 @@ import logging
 log = logging.getLogger(__name__)
 
 def guiLanguage():
-    language = str(QSettings().value('gui/language', 'en').toString())
+    language = smewt.settings.get('gui/language', 'en')
     return guessit.Language(language)
 
 

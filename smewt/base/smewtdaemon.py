@@ -18,7 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import QSettings, QVariant
 from pygoo import MemoryObjectGraph, Equal, ontology
 from guessit.slogging import setupLogging
 from smewt import config
@@ -110,23 +109,17 @@ class SmewtDaemon(object):
                                           taskManager = self.taskManager)
 
 
-        settings = QSettings()
-        thumbs = settings.value('thumbnailsInitialized').toBool()
+        thumbs = smewt.settings.get('thumbnailsInitialized')
 
         if not thumbs:
             #self.regenerateSpeedDialThumbnails()
-            settings.setValue('thumbnailsInitialized', True)
+            smewt.settings.set('thumbnailsInitialized', True)
         else:
             pass
             # regenerate thumbnails once everything is setup, otherwise it seems somehow
             # we can't get the correct window size for taking the screenshot
             #if config.REGENERATE_THUMBNAILS:
             #    QTimer.singleShot(1000, self.regenerateSpeedDialThumbnails)
-
-            # only start the update of the collections once our GUI is fully setup
-            # do not rescan as it would be too long and we might delete some files that
-            # are on an unaccessible network share or an external HDD
-            self.taskManager.add(FuncTask('Update collections', self.updateCollections))
 
         # load up the feed watcher
         if config.PLUGIN_TVU:
@@ -137,13 +130,17 @@ class SmewtDaemon(object):
             from smewt.plugins import mldonkey
             mldonkey.send_command('vm')
 
+        # do not rescan as it would be too long and we might delete some files that
+        # are on an unaccessible network share or an external HDD
+        self.taskManager.add(FuncTask('Update collections', self.updateCollections))
 
 
 
     def quit(self):
         log.info('SmewtDaemon quitting...')
         self.taskManager.finishNow()
-        self.feedWatcher.quit()
+        if config.PLUGIN_TVU:
+            self.feedWatcher.quit()
         self.saveDB()
 
         if smewt.config.PERSISTENT_CACHE:
@@ -175,11 +172,10 @@ class SmewtDaemon(object):
 
 
     def loadDB(self):
-        settings = QSettings()
-        dbfile = unicode(settings.value('database_file').toString())
+        dbfile = smewt.settings.get('database_file')
         if not dbfile:
             dbfile = join(utils.smewtUserDirectory(), smewt.APP_NAME + '.database')
-            settings.setValue('database_file', QVariant(dbfile))
+            smewt.settings.set('database_file', dbfile)
 
         log.info('Loading database from: %s', dbfile)
         self.database = VersionedMediaGraph()
@@ -189,14 +185,14 @@ class SmewtDaemon(object):
             log.warning('Could not load database %s', dbfile)
 
     def saveDB(self):
-        dbfile = unicode(QSettings().value('database_file').toString())
+        dbfile = smewt.settings.get('database_file')
         log.info('Saving database to %s', dbfile)
         self.database.save(dbfile)
 
     def clearDB(self):
         log.info('Clearing database...')
         self.database.clear()
-        self.database.save(unicode(QSettings().value('database_file').toString()))
+        self.database.save(smewt.settings.get('database_file'))
 
 
     def updateCollections(self):

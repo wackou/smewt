@@ -56,7 +56,7 @@ class FuncTask(Task):
 
 
 def worker(taskManager):
-    log.info('Worker thread is: 0x%x' % current_thread().ident)
+    log.debug('Worker thread is: 0x%x' % current_thread().ident)
     while True:
         if taskManager.shouldFinish:
             log.info('Worker thread stopped working because TaskManager should finish now')
@@ -103,7 +103,7 @@ class TaskManager(QtCore.QObject):
 
         self.lock = Lock()
 
-        log.info('Main GUI thread is: 0x%x' % current_thread().ident)
+        log.debug('Main GUI thread is: 0x%x' % current_thread().ident)
 
         self.shouldFinish = False
 
