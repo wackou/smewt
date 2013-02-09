@@ -38,7 +38,6 @@ def cleanString(s):
 # regexps-related functions
 import re
 from smewtexception import SmewtException
-from PyQt4.QtCore import QString
 
 def simpleMatch(string, regexp):
     try:
@@ -101,9 +100,6 @@ def between(s, left, right):
 
 def toUtf8(o):
     '''converts all unicode strings found in the given object to utf-8 strings'''
-    if isinstance(o, QString):
-        o = unicode(o)
-
     if isinstance(o, unicode):
         return o.encode('utf-8')
     elif isinstance(o, list):
@@ -119,9 +115,7 @@ def toUtf8(o):
 
 def toUnicode(o):
     '''converts all strings found in the given object to unicode strings'''
-    if isinstance(o, QString):
-        return unicode(o)
-    elif isinstance(o, str):
+    if isinstance(o, str):
         return o.decode('utf-8')
     elif isinstance(o, list):
         return [ u(i) for i in o ]

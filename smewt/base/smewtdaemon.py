@@ -85,7 +85,6 @@ class SmewtDaemon(object):
 
         # get a TaskManager for all the import tasks
         self.taskManager = TaskManager()
-        self.taskManager.progressChanged.connect(self.progressChanged)
 
         # get our main graph DB
         self.loadDB()

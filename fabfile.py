@@ -56,7 +56,7 @@ def python(arg1):
 @task(default=True)
 def smewt():
     """Run Smewt."""
-    local(py_path + 'python bin/smewg')
+    local(py_path + 'python -c "import smewt; smewt.main()"')
 
 
 def replace_in_file(filename, rexps):

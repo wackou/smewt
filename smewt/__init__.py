@@ -28,7 +28,9 @@ __version__ = '0.4-dev'
 import logging
 
 MAIN_LOGGING_LEVEL = logging.INFO
-LOGGING_LEVELS = [ ('smewt.base.cache', logging.INFO)
+
+LOGGING_LEVELS = [ ('smewt.base.cache', logging.INFO),
+                   ('pygoo', logging.INFO)
                    ]
 
 
@@ -58,7 +60,6 @@ sys.path = [ spath ] + sys.path
 
 from base import SmewtException, SmewtUrl, SolvingChain, cachedmethod, EventServer, cache, utils, textutils
 from base.mediaobject import Media, Metadata
-from PyQt4.QtCore import QCoreApplication
 
 log = logging.getLogger(__name__)
 
@@ -73,12 +74,8 @@ import atexit
 from pyramid.config import Configurator
 
 
-def main(global_config, **settings):
-    """ This function returns a Pyramid WSGI application.
-    """
-    QCoreApplication.setOrganizationName(ORG_NAME)
-    QCoreApplication.setOrganizationDomain('smewt.com')
-    QCoreApplication.setApplicationName(APP_NAME)
+def main(**settings):
+    """ This function returns a Pyramid WSGI application."""
 
     global SMEWTD_INSTANCE
     from smewt.base import SmewtDaemon
@@ -118,4 +115,8 @@ def main(global_config, **settings):
 
 
     config.scan()
-    return config.make_wsgi_app()
+    app = config.make_wsgi_app()
+
+
+    from waitress import serve
+    serve(app, host='0.0.0.0', port=6543)

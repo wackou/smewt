@@ -25,8 +25,6 @@ from smewt.base.utils import tolist, smewtDirectory, smewtUserDirectory
 from pygoo import MemoryObjectGraph
 import smewt.settings
 import guessit
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QImage
 import os
 from urllib2 import urlopen
 import thetvdbapi
@@ -128,10 +126,13 @@ class TVDBMetadataProvider(object):
         open(hiresFilename, 'wb').write(urlopen(posterUrl).read())
 
         # lores = 80px high
+        # FIXME: implement me
         loresFilename = os.path.join(imageDir, '%s_lores.jpg' % localId)
-        image = QImage()
-        image.load(hiresFilename)
-        image.scaledToHeight(80, Qt.SmoothTransformation).save(loresFilename)
+        #image = QImage()
+        #image.load(hiresFilename)
+        #image.scaledToHeight(80, Qt.SmoothTransformation).save(loresFilename)
+        import shutil
+        shutil.copyfile(hiresFilename, loresFilename)
 
         return '/user/images/%s_lores.jpg' % localId, '/user/images/%s_hires.jpg' % localId
 

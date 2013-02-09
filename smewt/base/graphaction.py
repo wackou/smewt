@@ -19,7 +19,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import SIGNAL, QObject
 from smewt.base import SmewtException
 from smewt.base.mediaobject import Media
 

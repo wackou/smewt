@@ -22,7 +22,6 @@
 from __future__ import with_statement
 from Queue import PriorityQueue
 from threading import Thread, Lock, current_thread
-from PyQt4 import QtCore
 import time
 import logging
 
@@ -69,10 +68,9 @@ def worker(taskManager):
 
             # TODO: need to have timeout on the tasks, eg: 5 seconds
             # TODO: need to be able to stop task immediately
-            taskManager.displayStatusBar.emit(task.description)
             task.perform()
 
-        except Exception, e:
+        except Exception:
             import sys, traceback
             log.warning('TaskManager: task failed with error: %s' % ''.join(traceback.format_exception(*sys.exc_info())))
 
@@ -80,16 +78,13 @@ def worker(taskManager):
             taskManager.taskDone(taskId)
 
 
-class TaskManager(QtCore.QObject):
+class TaskManager(object):
     """The TaskManager is a stable priority queue of tasks. It takes them one by one, the
     one with the highest priority first, and call its perform() method, then repeat until no tasks are left.
 
     If two or more tasks have the same priority, it will take the one that was added first to the queue.
 
     The TaskManager can be controlled asynchronously, as it runs the tasks in a separate thread."""
-
-    displayStatusBar = QtCore.pyqtSignal(QtCore.QString)
-    progressChanged = QtCore.pyqtSignal(int, int)
 
     def __init__(self):
         super(TaskManager, self).__init__()
@@ -113,12 +108,6 @@ class TaskManager(QtCore.QObject):
         self.workerThread.start()
 
 
-    def callback(self):
-        # we need to send a signal here so that it can be dealt with properly by the gui thread
-        # (we don't want to execute a gui callback using a worker thread)
-        self.progressChanged.emit(len(self.finished), self.total)
-
-
     def add(self, task):
         log.debug('TaskManager add task: %s' % task.description)
         with self.lock:
@@ -127,8 +116,6 @@ class TaskManager(QtCore.QObject):
             # had to find a way to make it look stable ;-)
             self.queue.put(( (-task.priority, time.time()), task ))
             self.total += 1
-
-            self.callback()
 
 
     def taskDone(self, taskId):
@@ -144,7 +131,6 @@ class TaskManager(QtCore.QObject):
                 self.total = 0
 
             self.queue.task_done()
-            self.callback()
 
     def finishNow(self):
         log.info('TaskManager should finish ASAP, waiting for currently running tasks to finish')

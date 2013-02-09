@@ -19,11 +19,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from PyQt4.QtCore import SIGNAL, QObject
 from smewt.base import SmewtException
 from smewt.base.mediaobject import Media
 
-class Guesser(QObject):
+class Guesser(object):
     """Abstract class from which all guessers must inherit.  Guessers are objects
     that implement a slot called start(self, query) that returns immediately, and
     begins the process of guessing metadata of the first element of the given
@@ -54,4 +53,5 @@ class Guesser(QObject):
 
 
     def start(self, query):
-        self.emit(SIGNAL('finished'), query)
+        # TODO: deprecate
+        pass

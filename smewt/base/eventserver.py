@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Nicolas Wack <wackou@smewt.com>
+# Copyright (c) 2008-2013 Nicolas Wack <wackou@smewt.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 #
 
 import datetime
-from PyQt4.QtCore import Qt, QVariant, QAbstractListModel
 import logging
 
 log = logging.getLogger(__name__)
@@ -35,28 +34,16 @@ class Event:
     def __repr__(self):
         return str(self)
 
-class EventList(QAbstractListModel):
+
+class EventList(object):
     def __init__(self):
-        super(EventList, self).__init__()
         self.events = []
-
-    def rowCount(self, parent):
-        return len(self.events)
-
-    def data(self, index, role = Qt.DisplayRole):
-        if role != Qt.DisplayRole:
-            return QVariant()
-
-        return QVariant(str(self.events[index.row()]))
-
 
     def clear(self):
         self.events = []
 
     def add(self, event):
         self.events.append(event)
-        # TODO: use dataChanged instead
-        self.reset()
 
 
 class EventServer:
