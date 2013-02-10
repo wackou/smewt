@@ -109,7 +109,7 @@ class TaskManager(object):
 
 
     def add(self, task):
-        log.debug('TaskManager add task: %s' % task.description)
+        log.info('TaskManager add task: %s' % task.description)
         with self.lock:
             # -task.priority because it always gets the lowest one first
             # we need to put the time as well, because Queue uses heap sort which is not stable, so we
@@ -119,7 +119,6 @@ class TaskManager(object):
 
 
     def taskDone(self, taskId):
-        log.debug('TaskManager task done')
         with self.lock:
             self.finished.append(taskId)
 

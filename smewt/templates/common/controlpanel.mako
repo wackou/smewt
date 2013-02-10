@@ -16,42 +16,6 @@ config = context.get('items')
 
 <script>
 
-function refreshFunc() {
-    location.reload(true);
-}
-
-function action(actn, args, refresh, refreshTimeout, refreshCallback) {
-    refresh = (typeof refresh !== 'undefined') ? refresh : false;
-    refreshCallback = (typeof refreshCallback !== 'undefined') ? refreshCallback : refreshFunc;
-    $.post("/action/"+actn, args)
-    .done(function(data) {
-        if (data == "OK") {
-            if (refresh) {
-                if (refreshTimeout) window.setTimeout(refreshCallback, refreshTimeout);
-                else                refreshCallback();
-            }
-        }
-        else              { alert(data); }
-    })
-    .fail(function(err)   { alert("HTTP error "+err.status+": "+err.statusText); })
-    .always(function(data) { /* alert("always: "+data); */ });
-}
-
-function actionRefresh(actn, args, refreshTimeout) {
-    return action(actn, args, true, refreshTimeout);
-}
-
-
-function info(name, func) {
-    $.get("/info/"+name)
-    .done(function(data) {
-        func(data);
-    })
-    //.fail(function(err)   { alert("HTTP error "+err.status+": "+err.statusText); })
-    .always(function(data) { /* alert("always: "+data); */ });
-}
-
-
 function refreshTaskManagerStatus() {
     info("task_manager_status", function(data) {
         $("#tmstatus").html(data);

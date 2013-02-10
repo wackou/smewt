@@ -152,16 +152,20 @@ class SmewtDaemon(object):
         if total == 0:
             self.saveDB()
 
+    def _cacheFilename(self):
+        return utils.path(smewt.dirs.user_cache_dir,
+                          smewt.APP_NAME + '.cache',
+                          createdir=True)
 
     def loadCache(self):
-        cache.load(utils.smewtUserPath(smewt.APP_NAME + '.cache'))
+        cache.load(self._cacheFilename())
 
     def saveCache(self):
-        cache.save(utils.smewtUserPath(smewt.APP_NAME + '.cache'))
+        cache.save(self._cacheFilename())
 
     def clearCache(self):
         cache.clear()
-        cacheFile = utils.smewtUserPath(smewt.APP_NAME + '.cache')
+        cacheFile = self._cacheFilename()
         log.info('Deleting cache file: %s' % cacheFile)
         try:
             os.remove(cacheFile)

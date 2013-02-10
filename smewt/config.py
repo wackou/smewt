@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2012 Nicolas Wack <wackou@smewt.com>
+# Copyright (c) 2012, 2013 Nicolas Wack <wackou@smewt.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,21 +20,23 @@
 
 import logging
 
-# FIXME: these need to be defined before importing smewt
 # Mininum severeness above which Smewt will report logging entries
-#MAIN_LOGGING_LEVEL = logging.INFO
+MAIN_LOGGING_LEVEL = logging.INFO
+
+# Individual levels for specific modules
+LOGGING_LEVELS = [ ('smewt.base.cache', logging.INFO),
+                   ('pygoo', logging.INFO)
+                   ]
 
 # Whether to use a cache that is saved/restored between sessions
 PERSISTENT_CACHE = True
 
+# Whether to use the http debug toolbar plugin for pyramid
+PYRAMID_DEBUGTOOLBAR = False
+
 # Whether to reload mako templates from file every time or use the cache
 # TODO: still used? should check with what pyramid does
 RELOAD_MAKO_TEMPLATES = True
-
-# Write mako output to an html file
-# TODO: still used? should check with what pyramid does
-DEBUG_MAKO_TEMPLATES = True
-MAKO_FILENAME = '/tmp/view.html'
 
 # Whether to regenerate the thumbnails for the speeddial at app startup
 REGENERATE_THUMBNAILS = False

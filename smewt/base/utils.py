@@ -76,10 +76,16 @@ def currentPath():
 def makedir(path):
     try:
         os.makedirs(path)
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.EEXIST:
             pass
         else: raise
+
+def path(*args, **kwargs):
+    p = os.path.join(*args)
+    if kwargs.get('createdir'):
+        makedir(os.path.dirname(p))
+    return p
 
 def pathToUrl(path):
     if sys.platform == 'win32':

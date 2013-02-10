@@ -50,7 +50,6 @@ body {
   </div>
 </%def>
 
-
 <%def name="make_poster_title(img, title, url)">
     <table><tbody><tr><td>
       <div class="poster"><img src="${img}" /></div>
@@ -61,15 +60,12 @@ body {
     </td></tr></tbody></table>
 </%def>
 
-
 <%def name="make_title_box(img, title, url)">
-
 <div class="well">
   <div class="row-fluid">
     ${make_poster_title(img, title, url)}
   </div>
 </div>
-
 </%def>
 
 <%def name="make_lang_selector(smewtd)">
@@ -90,9 +86,7 @@ if config.get('subtitleLanguage'):
 
 %>
 
-
 <input id="sublang" type="text" class="span2" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='${langs_repr}' onKeyUp="return sublangChanged()" onChange="return sublangChanged()" value="${sublang}" />
-
 </%def>
 
 <%def name="make_media_box(f)">
@@ -103,7 +97,6 @@ from smewt.base import SmewtUrl
   <a href="${SmewtUrl('action', 'play', {'filename1': f.filename })}">${f.filename}</a>
 </div>
 </%def>
-
 
 <%def name="make_navbar(path, title=None)">
 <%
@@ -119,7 +112,6 @@ for i, p in enumerate(path[1:]):
     crumbs += [ (urllib2.unquote(p), '/' + '/'.join(path[1:2+i])) ]
 
 %>
-
 <div class="row-fluid">
   <div class="span4">
     %if title:
@@ -150,8 +142,6 @@ for i, p in enumerate(path[1:]):
   </div>
 </div>
 </%def>
-
-
 
 <%def name="make_subtitle_link(subtitle)">
   <%
@@ -216,12 +206,45 @@ for i, p in enumerate(path[1:]):
 
 <%block name="scripts">
   ${parent.scripts()}
-  <script type="text/javascript">
+
+  <script>
     $('.sidenav').affix();
 
     function sublangChanged(t) {
         var s = $("#sublang");
         $.post("/config/set/subtitleLanguage", { "value": s.val() });
     }
+
+    function refreshFunc() {
+        location.reload(true);
+    }
+
+    function action(actn, args, refresh, refreshTimeout, refreshCallback) {
+        refresh = (typeof refresh !== 'undefined') ? refresh : false;
+        refreshCallback = (typeof refreshCallback !== 'undefined') ? refreshCallback : refreshFunc;
+        $.post("/action/"+actn, args)
+        .done(function(data) {
+            if (data == "OK") {
+                if (refresh) {
+                    if (refreshTimeout) window.setTimeout(refreshCallback, refreshTimeout);
+                    else                refreshCallback();
+                }
+            }
+            else              { alert(data); }
+        })
+        .fail(function(err)   { alert("HTTP error "+err.status+": "+err.statusText); })
+        .always(function(data) { /* alert("always: "+data); */ });
+    }
+
+    function info(name, func) {
+        $.get("/info/"+name)
+        .done(function(data) {
+            func(data);
+        })
+        //.fail(function(err)   { alert("HTTP error "+err.status+": "+err.statusText); })
+        //.always(function(data) { alert("always: "+data); })
+        ;
+    }
+
   </script>
 </%block>

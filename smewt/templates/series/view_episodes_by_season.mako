@@ -1,7 +1,6 @@
 <%inherit file="smewt:templates/series/base_episode.mako"/>
 
 <%!
-from itertools import groupby
 from collections import defaultdict
 from smewt import SmewtUrl, Media
 from smewt.media import Episode, Series, Subtitle

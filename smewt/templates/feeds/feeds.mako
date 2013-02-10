@@ -15,32 +15,6 @@ feeds = feedWatcher.feedList
 
 <script>
 
-function refreshFunc() {
-    location.reload(true);
-}
-
-function action(actn, args, refresh, refreshTimeout, refreshCallback) {
-    refresh = (typeof refresh !== 'undefined') ? refresh : false;
-    refreshCallback = (typeof refreshCallback !== 'undefined') ? refreshCallback : refreshFunc;
-    $.post("/action/"+actn, args)
-    .done(function(data) {
-        if (data == "OK") {
-            if (refresh) {
-                if (refreshTimeout) window.setTimeout(refreshCallback, refreshTimeout);
-                else                refreshCallback();
-            }
-        }
-        else              { alert("ERROR: "+data); }
-    })
-    .fail(function(err)   { alert("HTTP error "+err.status+": "+err.statusText); })
-    .always(function(data) { /* alert("always: "+data); */ });
-}
-
-function actionRefresh(actn, args, refreshTimeout) {
-    return action(actn, args, true, refreshTimeout);
-}
-
-
 function updateFeed(feedUrl) {
     action("update_feed", { "feed": feedUrl }, true, 1000, refreshFeedsStatus);
 }
@@ -51,32 +25,6 @@ function unsubscribeFromFeed(feedUrl) {
 
 function setLastUpdated(feedUrl, index) {
     action("set_last_update", { "feed": feedUrl, "index": index }, true, 0, refreshFeedsStatus);
-}
-
-function mldonkeyStart() {
-    action("mldonkey_start");
-}
-
-function mldonkeyStop() {
-    action("mldonkey_stop");
-}
-
-function checkAllFeeds() {
-    action("check_feeds");
-}
-
-function clearEventServer() {
-    action("clear_event_log");
-}
-
-
-function info(name, func) {
-    $.get("/info/"+name)
-    .done(function(data) {
-        func(data);
-    })
-    //.fail(function(err)   { alert("HTTP error "+err.status+": "+err.statusText); })
-    .always(function(data) { /* alert("always: "+data); */ });
 }
 
 
@@ -101,10 +49,10 @@ function refreshEventLog() {
 function refreshMLDonkeyStatus() {
     info("mldonkey_online", function(data) {
         var status = '<img src="/static/images/user-busy.png"/> Offline ' +
-            '<div class="btn" onclick="mldonkeyStart();">Start MLDonkey</div>';
+            '<div class="btn" onclick="action(\'mldonkey_start\');">Start MLDonkey</div>';
         if (data) {
             status = '<img src="/static/images/user-online.png"/> Online ' +
-            '<div class="btn" onclick="mldonkeyStop();">Stop MLDonkey</div>';
+            '<div class="btn" onclick="action(\'mldonkey_stop\');">Stop MLDonkey</div>';
         }
         $("#mldonkeyStatus").html("MLDonkey status:" + status);
     });
@@ -193,8 +141,8 @@ setInterval(refreshMLDonkeyStatus, 2000);
     </table>
 
     <div class="span4">
-      <div class="btn" onclick="checkAllFeeds();">Check all feeds</div>
-      <div class="btn" onclick="clearEventServer();">Clear log</div>
+      <div class="btn" onclick="action('check_feeds');">Check all feeds</div>
+      <div class="btn" onclick="action('clear_event_log');">Clear log</div>
     </div>
 
     <div class="span6" id="mldonkeyStatus">

@@ -66,7 +66,7 @@ if sys.platform == 'linux2':
             install.run(self)
             print 'Processing triggers for menu...'
             subprocess.call(['xdg-desktop-menu', 'install', 'packaging/linux/falafelton-smewt.desktop'])
-            subprocess.call(['xdg-icon-resource', 'install', '--size', '128', 'smewt/icons/falafelton-smewt_128x128.png', 'falafelton-smewt'])
+            subprocess.call(['xdg-icon-resource', 'install', '--size', '128', 'static/images/falafelton-smewt_128x128.png', 'falafelton-smewt'])
             if os.path.exists('/usr/bin/update-menus'):
                 # Debian
                 subprocess.call(['update-menus'])
@@ -83,7 +83,7 @@ if sys.platform == 'linux2':
 if sys.platform == 'darwin':
     # py2app data
     OPTIONS = { 'argv_emulation': True,
-                'iconfile': 'smewt/icons/smewt.icns',
+                'iconfile': 'static/images/smewt.icns',
                 'packages': [ 'smewt', 'mako', 'lxml', 'guessit' ],
                 'frameworks': [ '/Developer/Applications/Qt/plugins/iconengines/libqsvgicon.dylib' ],
                 'includes': [ 'sip', 'PyQt4', 'PyQt4.QtCore', 'PyQt4.QtGui', 'PyQt4.QtNetwork', 'PyQt4.QtWebKit',  'PyQt4.QtXml', 'PyQt4.QtSvg', 'ntpath' ],

@@ -48,7 +48,7 @@ def send_command(cmd):
     try:
         return _send_command(cmd)
     except:
-        log.error('Could not connect to %s:%d to execute command: %s' % (HOST, PORT, cmd))
+        log.warning('Could not connect to %s:%d to execute command: %s' % (HOST, PORT, cmd))
 
 
 def download(ed2k_link):
