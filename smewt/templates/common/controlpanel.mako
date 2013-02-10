@@ -45,7 +45,7 @@ $('#paneltabs a:first').tab('show');
 </div>
 <div class="well">
   Maintenance
-  <div class="btn" onclick="window.open('/user/${smewt.APP_NAME}.log');">show log</div>
+  <div class="btn" onclick="window.open('/user/Smewt.log');">show log</div>
   <div class="btn" onclick="action('clear_cache');">clear cache</div>
 </div>
 <hr>

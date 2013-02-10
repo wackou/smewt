@@ -19,13 +19,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import Task, SmewtException, Metadata
-from smewt.base.utils import tolist, smewtUserPath
-from smewt.media import Movie, Episode
+from smewt.base import Task, SmewtException
+from smewt.base.utils import tolist, path
+from smewt.ontology import Movie, Episode, Metadata
 from guessit import Language
 from subliminal.core import get_defaults, key_subtitles, create_download_tasks
 from subliminal.language import language_list
 import subliminal
+import smewt
 import sys, os.path
 import logging
 
@@ -70,7 +71,7 @@ class SubtitleTask(Task):
             paths, languages, services, order = get_defaults(requested.keys(),
                                                              [lang], self.services, None,
                                                              languages_as=language_list)
-            cache_dir = smewtUserPath('subliminal_cache', createdir=True)
+            cache_dir = path(smewt.dirs.user_cache_dir, 'subliminal_cache/', createdir=True)
 
             subs = p.list_subtitles(requested.keys(), languages,
                                     services = services,

@@ -18,7 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import Media, Metadata, SmewtException
+from smewt.base import SmewtException
+from smewt.ontology import Media, Metadata
 from smewt.solvers.solver import Solver
 from smewt.base.textutils import levenshtein
 import logging

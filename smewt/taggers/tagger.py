@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import Media, Metadata
+from smewt.ontology import Media, Metadata
 
 class Tagger(object):
     def __init__(self):

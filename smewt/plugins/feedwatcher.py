@@ -18,10 +18,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import SmewtException, EventServer, Feed
+from smewt.base import SmewtException, EventServer
 from smewt.base.taskmanager import FuncTask
 from smewt.base.utils import tolist
 from smewt.plugins.tvu import get_show_mapping
+from smewt.ontology import Feed
 from threading import Thread, Timer
 import feedparser
 import urllib2, re

@@ -19,8 +19,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import GraphAction, Metadata, SmewtException
-from smewt.base.mediaobject import foundMetadata
+from smewt.base import GraphAction, SmewtException
+from smewt.ontology import Metadata, foundMetadata
 import logging
 
 log = logging.getLogger(__name__)

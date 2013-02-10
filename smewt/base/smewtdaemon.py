@@ -21,8 +21,8 @@
 from pygoo import MemoryObjectGraph, Equal, ontology
 from guessit.slogging import setupLogging
 from smewt import config
-from smewt.media import Episode, Movie, Subtitle
-from smewt.base import cache, utils, Collection, Media, Config
+from smewt.ontology import Episode, Movie, Subtitle, Media, Config
+from smewt.base import cache, utils, Collection
 from smewt.base.taskmanager import TaskManager, FuncTask
 from os.path import join
 from smewt.taggers import EpisodeTagger, MovieTagger
@@ -76,7 +76,9 @@ class SmewtDaemon(object):
     def __init__(self, progressCallback = None):
         super(SmewtDaemon, self).__init__()
 
-        self.logfile = utils.smewtUserPath(smewt.APP_NAME + '.log')
+        # Note: put log file in data dir instead of log dir so that it is
+        #       accessible through the user/ folder static view
+        self.logfile = utils.path(smewt.dirs.user_data_dir, 'Smewt.log')
         setupLogging(filename=self.logfile, with_time=True, with_thread=True)
 
 

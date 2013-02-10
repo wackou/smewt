@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Smewt - A smart collection manager
-# Copyright (c) 2008 Ricard Marxer <rikrd@smewt.com>
+# Copyright (c) 2013 Nicolas Wack <wackou@smewt.com>
 #
 # Smewt is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,14 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewtexception import SmewtException
-from smewturl import SmewtUrl
-from solvingchain import SolvingChain
-from cache import cachedmethod
-from eventserver import EventServer
-from taskmanager import Task, TaskManager
-from importtask import ImportTask
-from actionfactory import ActionFactory
-from graphaction import GraphAction
-from collection import Collection
-from smewtdaemon import SmewtDaemon
+from .media import Media, Metadata, foundMetadata
+from .config import Feed, CollectionSettings, Config
+from .series import Series, Episode
+from .movie import Movie, Comment
+from .subtitle import Subtitle

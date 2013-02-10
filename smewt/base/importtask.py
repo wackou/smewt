@@ -20,7 +20,8 @@
 #
 
 from pygoo import MemoryObjectGraph, Equal
-from smewt.base import Media, Task
+from smewt.base import Task
+from smewt.ontology import Media
 import logging
 
 log = logging.getLogger(__name__)

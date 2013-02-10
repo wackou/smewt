@@ -20,8 +20,8 @@
 
 from __future__ import unicode_literals
 
-from smewt.base import utils, Media, ImportTask
-from smewt.base.configobject import CollectionSettings
+from smewt.base import utils, ImportTask
+from smewt.ontology import Media, CollectionSettings
 from smewt.base.textutils import u
 import json
 import os

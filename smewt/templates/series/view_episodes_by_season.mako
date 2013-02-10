@@ -2,8 +2,8 @@
 
 <%!
 from collections import defaultdict
-from smewt import SmewtUrl, Media
-from smewt.media import Episode, Series, Subtitle
+from smewt import SmewtUrl
+from smewt.ontology import Episode, Series, Subtitle
 from smewt.base.utils import pathToUrl, smewtMediaUrl, tolist, SDict
 from smewt.base import SmewtException
 from smewt.base.actionfactory import PlayAction

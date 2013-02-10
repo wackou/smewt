@@ -19,7 +19,7 @@
 #
 
 from smewt.base import cachedmethod, SmewtException
-from smewt.media import Series
+from smewt.ontology import Series
 from smewt.base import textutils
 from smewt.base.utils import tolist, smewtDirectory, smewtUserDirectory
 from pygoo import MemoryObjectGraph

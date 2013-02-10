@@ -20,7 +20,7 @@
 #
 
 from smewt.base import SmewtException
-from smewt.base.mediaobject import Media
+from smewt.ontology import Media
 
 class Guesser(object):
     """Abstract class from which all guessers must inherit.  Guessers are objects

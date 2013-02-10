@@ -2,8 +2,8 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
 from smewt import SMEWTD_INSTANCE
-from smewt.base import Config, EventServer, SmewtException
-from smewt.media import Movie, Series, Episode
+from smewt.base import EventServer, SmewtException
+from smewt.ontology import Movie, Series, Episode
 from smewt.plugins import mldonkey, tvu
 from guessit.textutils import reorder_title
 import threading

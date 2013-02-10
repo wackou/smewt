@@ -18,8 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import GraphAction, Media, SmewtException
-from smewt.base.mediaobject import foundMetadata
+from smewt.base import GraphAction, SmewtException
+from smewt.ontology import Media, foundMetadata
 from smewt.base.utils import tolist, guessitToPygoo
 from guessit import guess_movie_info
 import logging

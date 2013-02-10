@@ -83,7 +83,7 @@ def makedir(path):
 
 def path(*args, **kwargs):
     p = os.path.join(*args)
-    if kwargs.get('createdir'):
+    if kwargs.get('createdir', False):
         makedir(os.path.dirname(p))
     return p
 
@@ -114,12 +114,7 @@ def smewtMediaUrl(*args):
     return pathToUrl(smewtMedia(*args))
 
 def smewtUserPath(*args, **kwargs):
-    result = os.path.join(smewt.dirs.user_data_dir, *args)
-
-    if kwargs.get('createdir', None) == True:
-        makedir(result)
-
-    return result
+    return path(smewt.dirs.user_data_dir, *args, **kwargs)
 
 def smewtUserDirectory(*args):
     return smewtUserPath(*args, createdir=True)

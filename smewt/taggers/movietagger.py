@@ -19,9 +19,9 @@
 #
 
 from __future__ import unicode_literals
-from smewt.base import Media, utils
+from smewt.base import utils
 from smewt.base.textutils import u
-from smewt.media import Movie
+from smewt.ontology import Media, Movie
 from smewt.taggers.tagger import Tagger
 from smewt.guessers import MovieFilename, MovieTMDB
 import logging

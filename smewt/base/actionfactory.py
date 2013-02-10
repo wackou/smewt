@@ -21,7 +21,7 @@
 from smewtexception import SmewtException
 from smewt.base.utils import tolist, toresult, readFile
 from smewt.base.smewturl import SmewtUrl
-from mediaobject import Media
+from smewt.ontology import Media
 from subtitletask import SubtitleTask
 from guessit.language import Language, guess_language
 import os, sys, time, logging

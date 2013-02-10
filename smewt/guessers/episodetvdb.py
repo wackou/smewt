@@ -18,8 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from smewt.base import GraphAction, SmewtException, Media
-from smewt.media.series import Episode, Series
+from smewt.base import GraphAction, SmewtException
+from smewt.ontology import Episode, Series, Media
 from pygoo import MemoryObjectGraph, Equal
 from tvdbmetadataprovider import TVDBMetadataProvider
 import logging

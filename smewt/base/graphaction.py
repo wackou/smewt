@@ -20,7 +20,7 @@
 #
 
 from smewt.base import SmewtException
-from smewt.base.mediaobject import Media
+from smewt.ontology import Media
 
 class GraphAction(object):
     """A GraphAction operates a transformation of a graph containing one Media object.

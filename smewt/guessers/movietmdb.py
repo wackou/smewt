@@ -19,10 +19,9 @@
 #
 
 from __future__ import unicode_literals
-from smewt.base import GraphAction, SmewtException, Media
+from smewt.base import GraphAction, SmewtException
 from smewt.base.textutils import u
-from smewt.base.mediaobject import foundMetadata
-from smewt.media import Movie
+from smewt.ontology import Media, foundMetadata, Movie
 from pygoo import MemoryObjectGraph
 from tvdbmetadataprovider import TVDBMetadataProvider
 import logging

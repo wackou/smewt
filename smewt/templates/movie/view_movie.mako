@@ -2,8 +2,8 @@
 
 <%!
 from collections import defaultdict
-from smewt import SmewtUrl, Media
-from smewt.media import Movie
+from smewt import SmewtUrl
+from smewt.ontology import Movie
 from smewt.base.utils import pathToUrl, smewtMediaUrl, tolist
 from smewt.base import SmewtException
 import os

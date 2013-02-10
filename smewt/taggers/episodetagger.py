@@ -20,9 +20,9 @@
 #
 
 from __future__ import unicode_literals
-from smewt.base import SolvingChain, Media, utils
+from smewt.base import SolvingChain, utils
 from smewt.base.textutils import u
-from smewt.media import Episode
+from smewt.ontology import Media, Episode
 from smewt.taggers.tagger import Tagger
 from smewt.guessers import EpisodeFilename, EpisodeTVDB
 from smewt.solvers import SimpleSolver
