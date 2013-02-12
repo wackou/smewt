@@ -68,6 +68,7 @@ class Episode(Metadata):
         extPatterns = [ '*.' + ext for ext in video_exts ]
         return utils.matchFile(filename, extPatterns) #and getsize(filename) < 600 * 1024 * 1024
 
+    # FIXME: remove me
     def playUrl(self):
         # FIXME: we should do sth smarter here, such as ask the user, or at least warn him
         files = self.get('files')

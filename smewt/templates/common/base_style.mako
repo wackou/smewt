@@ -143,11 +143,11 @@ for i, p in enumerate(path[1:]):
 </div>
 </%def>
 
-<%def name="make_subtitle_link(subtitle)">
+<%def name="make_subtitle_flag(subtitle)">
   <%
   sublink = subtitle.subtitleLink()
   %>
-  <a href="${sublink.url}"><img src="${sublink.languageImage}" /></a>
+  <img src="${sublink.languageImage}" />
 </%def>
 
 <%def name="navlink(title, target, newtab=False)">

@@ -6,6 +6,8 @@ from smewt.base import EventServer, SmewtException
 from smewt.ontology import Movie, Series, Episode
 from smewt.plugins import mldonkey, tvu
 from guessit.textutils import reorder_title
+import urllib2
+import time
 import threading
 import json
 
@@ -254,6 +256,28 @@ def action(request):
             get_collection(request.params['collection']).deleteFolder(index)
             return 'OK'
 
+        elif action == 'regenerate_thumbnails':
+            SMEWTD_INSTANCE.regenerateSpeedDialThumbnails()
+            return 'OK'
+
+        elif action == 'play_movie':
+            print 'RPARAMS', request.params
+            title = urllib2.unquote(request.params['title'])
+            from smewt.base.actionfactory import play_video
+            movie = SMEWTD_INSTANCE.database.find_one(Movie, title=title)
+            play_video(movie, sublang=request.params['sublang'])
+            return 'OK'
+
+        elif action == 'post_comment':
+            db = SMEWTD_INSTANCE.database
+            movie = db.find_one(Movie, title = urllib2.unquote(request.params['title']))
+            db.Comment(metadata = movie,
+                       author = request.params['author'],
+                       date = int(time.time()),
+                       text = request.params['contents'])
+            return 'OK'
+
+
         else:
             return 'Error: unknown action: %s' % action
 
@@ -303,7 +327,6 @@ def preferences_view(request):
 @view_config(route_name='controlpanel',
              renderer='smewt:templates/common/controlpanel.mako')
 def controlpanel_view(request):
-    config = SMEWTD_INSTANCE.database.config
     return { 'title': 'CONTROL PANEL',
              'smewtd': SMEWTD_INSTANCE,
              'path': request.current_route_path()

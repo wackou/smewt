@@ -21,6 +21,13 @@ series = sorted([ SDict(title = s.title,
 
 %else:
 
-  <p>There are no episodes in your library. Make sure you go into <b>Collection -> Select series folders</b> to tell Smewt where to look for them.</p>
+<p>There are no episodes in your library. Make sure you go into <b>Preferences</b>
+and select one or more folders for your <b>series collection</b>,
+then proceed to the <b>Control panel</b> and <b>update your collection</b>.
+</p>
+
+<p>
+Your series should start appearing here shortly after!
+</p>
 
 %endif

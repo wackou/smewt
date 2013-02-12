@@ -41,12 +41,12 @@ import_dir = smewtUserDirectoryUrl('speeddial')
 
     <div class="span4"><div class="well">
       <a href="/movies/table">
-      <img src="/user/speeddial/moviespreadsheet.png" width="200" /></a>
+      <img src="/user/speeddial/moviestable.png" width="200" /></a>
       <p>Movie List</p>
     </div></div>
 
     <div class="span4"><div class="well">
-      <a href="/movie/recent">
+      <a href="/movies/recent">
       <img src="/user/speeddial/recentmovies.png" width="200" /></a>
       <p>Recently Watched Movies</p>
     </div></div>

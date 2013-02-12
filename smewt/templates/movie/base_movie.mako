@@ -2,6 +2,7 @@
 
 <%!
 import datetime, time
+import urllib
 from smewt.base.utils import tolist
 from smewt import SmewtUrl
 %>
@@ -57,8 +58,11 @@ genres = getAll('genres')
 ${parent.scripts()}
 
   <script type="text/javascript" charset="utf-8">
-    function addComment(form, id, url) {
-        mainWidget.addComment(url, 'Me', form[id].value);
+    function addComment(form, id, title) {
+        action("post_comment", { title: title,
+                                 author: 'Me',
+                                 contents: form[id].value },
+               true);
     }
   </script>
 </%block>
@@ -78,13 +82,13 @@ def getComments(md):
 comments = getComments(movie)
 
 # FIXME: need to quote (or do we? TODO: check)
-qtitle = movie.title
+qtitle = urllib.quote(movie.title)
 
 %>
 
 %if comments:
   %for author, atime, comment in comments:
-    <p>Comment by <b>${author}</b> at ${atime}:<br/>
+    <p>Comment by <b>${author}</b> at ${atime}<br/>
     <pre>${comment}</pre> </p>
   %endfor
 %else:

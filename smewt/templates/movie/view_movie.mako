@@ -7,6 +7,7 @@ from smewt.ontology import Movie
 from smewt.base.utils import pathToUrl, smewtMediaUrl, tolist
 from smewt.base import SmewtException
 import os
+import urllib
 
 import_dir = smewtMediaUrl()
 
@@ -31,6 +32,10 @@ ${parent.scripts()}
 // TODO: should select the one for lastSeasonWatched
 $('#movietabs a:first').tab('show');
 
+function playMovie(title, language) {
+    action("play_movie", { title: title, sublang: language });
+}
+
 </script>
 
 </%block>
@@ -44,10 +49,10 @@ $('#movietabs a:first').tab('show');
     <div class="span10">
       <br>
       Movie:
-      <div class="btn"><a href="${movie.playUrl()}">Play</a></div>
+      <div class="btn" onclick="playMovie('${urllib.quote(movie.title)}');">Play</div>
 
       %for subtitle in sorted(tolist(movie.get('subtitles')), key=lambda s: s.language):
-        <div class="btn">${parent.make_subtitle_link(subtitle)}</div>
+        <div class="btn" onclick="playMovie('${urllib.quote(movie.title)}', '${subtitle.language}');">${parent.make_subtitle_flag(subtitle)}</div>
       %endfor
 
     </div>

@@ -27,6 +27,13 @@ movies = sorted([ SDict(title = m.title,
 
 %else:
 
-  <p>There are no movies in your library. Make sure you go into <b>Collection -> Select movies folders</b> to tell Smewt where to look for them.</p>
+<p>There are no movies in your library. Make sure you go into <b>Preferences</b>
+and select one or more folders for your <b>movie collection</b>,
+then proceed to the <b>Control panel</b> and <b>update your collection</b>.
+</p>
+
+<p>
+Your movies should start appearing here shortly after!
+</p>
 
 %endif

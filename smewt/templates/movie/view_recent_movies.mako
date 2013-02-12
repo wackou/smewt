@@ -29,7 +29,7 @@ movies = sorted([ SDict({ 'title': m.title,
                           'movie': m,
                           'lastViewed': m.lastViewed,
                           'url': SmewtUrl('media', 'movie/single', { 'title': m.title }),
-                          'poster': pathToUrl(m.loresImage) })
+                          'poster': m.loresImage })
                   for m in context['movies'] ],
                 key = lambda x: -x['lastViewed'])
 
@@ -44,7 +44,7 @@ movies = movies[:4]
       <div class="well">
         ${parent.make_poster_title(m.poster, m.title, m.url)}
 
-        <p>Last viewed ${lastViewedString(m.movie)}</p>
+        <p>Last viewed ${lastViewedString(m.movie) | n}</p>
 
         ${parent.make_movie_comments(m.movie, comment_box_width='98%')}
       </div>

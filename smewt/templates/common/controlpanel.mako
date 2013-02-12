@@ -47,6 +47,7 @@ $('#paneltabs a:first').tab('show');
   Maintenance
   <div class="btn" onclick="window.open('/user/Smewt.log');">show log</div>
   <div class="btn" onclick="action('clear_cache');">clear cache</div>
+  <div class="btn" onclick="action('regenerate_thumbnails');">regenerate speed dial thumbnails</div>
 </div>
 <hr>
 <div class="well">

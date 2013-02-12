@@ -24,9 +24,10 @@ from smewt import config
 from smewt.ontology import Episode, Movie, Subtitle, Media, Config
 from smewt.base import cache, utils, Collection
 from smewt.base.taskmanager import TaskManager, FuncTask
-from os.path import join
 from smewt.taggers import EpisodeTagger, MovieTagger
 from smewt.plugins.feedwatcher import FeedWatcher
+from threading import Timer
+from os.path import join
 import smewt
 import time
 import os
@@ -73,7 +74,7 @@ class VersionedMediaGraph(MemoryObjectGraph):
 
 
 class SmewtDaemon(object):
-    def __init__(self, progressCallback = None):
+    def __init__(self):
         super(SmewtDaemon, self).__init__()
 
         # Note: put log file in data dir instead of log dir so that it is
@@ -110,17 +111,10 @@ class SmewtDaemon(object):
                                           taskManager = self.taskManager)
 
 
-        thumbs = smewt.settings.get('thumbnailsInitialized')
+        # launch the regeneration of the thumbnails, but only after everything
+        # is setup and we are able to serve requests
+        Timer(3, self.regenerateSpeedDialThumbnails).start()
 
-        if not thumbs:
-            #self.regenerateSpeedDialThumbnails()
-            smewt.settings.set('thumbnailsInitialized', True)
-        else:
-            pass
-            # regenerate thumbnails once everything is setup, otherwise it seems somehow
-            # we can't get the correct window size for taking the screenshot
-            #if config.REGENERATE_THUMBNAILS:
-            #    QTimer.singleShot(1000, self.regenerateSpeedDialThumbnails)
 
         # load up the feed watcher
         if config.PLUGIN_TVU:
@@ -150,10 +144,6 @@ class SmewtDaemon(object):
         log.info('SmewtDaemon quitting OK!')
 
 
-    def progressChanged(self, current, total):
-        if total == 0:
-            self.saveDB()
-
     def _cacheFilename(self):
         return utils.path(smewt.dirs.user_cache_dir,
                           smewt.APP_NAME + '.cache',
@@ -173,7 +163,6 @@ class SmewtDaemon(object):
             os.remove(cacheFile)
         except OSError:
             pass
-
 
 
     def loadDB(self):
@@ -207,3 +196,34 @@ class SmewtDaemon(object):
     def rescanCollections(self):
         self.episodeCollection.rescan()
         self.movieCollection.rescan()
+
+
+    def _regenerateSpeedDialThumbnails(self):
+        import shlex, subprocess
+        from PIL import Image
+        from StringIO import StringIO
+        webkit2png = (subprocess.call(['which', 'webkit2png'], stdout=subprocess.PIPE) == 0)
+        if not webkit2png:
+            log.warning('webkit2png not found. please run: pip install git+https://github.com/adamn/python-webkit2png.git@6488a1fbd06d5479f8592af47acc73834647e837')
+            return
+
+        def gen(path, filename):
+            width, height = 200, 150
+            log.info('Creating %dx%d screenshot for %s...' % (width, height, path))
+            filename = utils.path(smewt.dirs.user_data_dir, 'speeddial', filename)
+            cmd = 'webkit2png -g 1000 600 "http://localhost:6543%s"' % path
+            screenshot, _ = subprocess.Popen(shlex.split(cmd),
+                                             stdout=subprocess.PIPE).communicate()
+            im = Image.open(StringIO(screenshot))
+            im.thumbnail((width, height), Image.ANTIALIAS)
+            im.save(filename, "PNG")
+
+        gen('/movies', 'allmovies.png')
+        gen('/movies/table', 'moviestable.png')
+        gen('/movies/recent', 'recentmovies.png')
+        gen('/series', 'allseries.png')
+        gen('/series/suggestions', 'episodesuggestions.png')
+
+    def regenerateSpeedDialThumbnails(self):
+        self.taskManager.add(FuncTask('Regenerate thumbnails',
+                                      self._regenerateSpeedDialThumbnails))

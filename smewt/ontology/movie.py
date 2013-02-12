@@ -49,6 +49,7 @@ class Movie(Metadata):
         extPatterns = [ '*.' + ext for ext in video_exts ]
         return utils.matchFile(filename, extPatterns) #and getsize(filename) > 600 * 1024 * 1024
 
+    # FIXME: remove me
     def playUrl(self):
         files = utils.tolist(self.get('files'))
         # prepare link for playing movie without subtitles
