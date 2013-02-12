@@ -49,6 +49,13 @@ class VersionedMediaGraph(MemoryObjectGraph):
 
         return result
 
+    def clear(self):
+        # we want to keep our config object untouched
+        tmp = MemoryObjectGraph()
+        tmp.add_object(self.config)
+        super(VersionedMediaGraph, self).clear()
+        self.add_object(tmp.find_one(Config))
+
     def __getattr__(self, name):
         # if attr is not found and starts with an upper case letter, it might be the name
         # of one of the registered classes. In that case, return a function that would instantiate
@@ -111,9 +118,10 @@ class SmewtDaemon(object):
                                           taskManager = self.taskManager)
 
 
-        # launch the regeneration of the thumbnails, but only after everything
-        # is setup and we are able to serve requests
-        Timer(3, self.regenerateSpeedDialThumbnails).start()
+        if config.REGENERATE_THUMBNAILS:
+            # launch the regeneration of the thumbnails, but only after everything
+            # is setup and we are able to serve requests
+            Timer(3, self.regenerateSpeedDialThumbnails).start()
 
 
         # load up the feed watcher

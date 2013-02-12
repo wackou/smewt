@@ -53,6 +53,10 @@ def clean_pyc():
 def python(arg1):
     local(py_path + 'python ' + arg1)
 
+@task
+def ipython():
+    local(py_path + 'ipython')
+
 @task(default=True)
 def smewt():
     """Run Smewt."""

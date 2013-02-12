@@ -21,8 +21,6 @@
 from guessit.patterns import subtitle_exts
 from smewt.base import utils
 from .media import Metadata
-from pygoo.utils import tolist
-import os.path
 import guessit
 
 class Subtitle(Metadata):
@@ -56,26 +54,5 @@ class Subtitle(Metadata):
         extPatterns = [ '*.' + ext for ext in subtitle_exts ]
         return utils.matchFile(filename, extPatterns)
 
-    def subtitleLink(self):
-        flag = '/static/images/flags/%s.png' % guessit.Language(self.language).alpha2
-
-        sfiles = []
-        for subfile in tolist(self.files):
-            subtitleFilename = subfile.filename
-            videoFiles = tolist(self.metadata.get('files'))
-            # we shouldn't need to check that they start with the same prefix anymore, as
-            # the taggers/guessers should have mapped them correctly
-            mediaFilename = [ f.filename for f in videoFiles
-                              if subtitleFilename.startswith(os.path.splitext(f.filename)[0])
-                              ]
-            mediaFilename = mediaFilename[0] if mediaFilename else ''
-
-            sfiles += [ (mediaFilename, subtitleFilename) ]
-
-
-        # FIXME: cannot put this import above otherwise we create an infinite
-        # import recursion loop...
-        from smewt.base.actionfactory import PlayAction
-
-        return utils.SDict({ 'languageImage': flag,
-                             'url': PlayAction(sfiles).url()})
+    def languageFlagLink(self):
+        return '/static/images/flags/%s.png' % guessit.Language(self.language).alpha2

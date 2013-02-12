@@ -13,16 +13,6 @@ import_dir = smewtMediaUrl()
 
 %>
 
-<%def name="make_subtitle_download_links(movie)">
-<% subsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'movie', 'title': movie.title }) %>
-
-Look for subtitles in
-${parent.make_lang_selector(context['smewtd'])}
-
-<div class="btn"><a href="${subsLink}">Download!</a></div>
-
-</%def>
-
 
 <%block name="scripts">
 ${parent.scripts()}
@@ -36,9 +26,24 @@ function playMovie(title, language) {
     action("play_movie", { title: title, sublang: language });
 }
 
+function getSubtitles(type, title) {
+    action("get_subtitles", { type: type, title: title });
+}
+
 </script>
 
 </%block>
+
+
+<%def name="make_subtitle_download_links(movie)">
+
+Look for subtitles in
+${parent.make_lang_selector(context['smewtd'])}
+
+<div class="btn" onclick="getSubtitles('movie', '${urllib.quote(movie.title)}')">Download!</div>
+
+</%def>
+
 
 <div class="container-fluid">
   <div class="row-fluid">
@@ -52,7 +57,9 @@ function playMovie(title, language) {
       <div class="btn" onclick="playMovie('${urllib.quote(movie.title)}');">Play</div>
 
       %for subtitle in sorted(tolist(movie.get('subtitles')), key=lambda s: s.language):
-        <div class="btn" onclick="playMovie('${urllib.quote(movie.title)}', '${subtitle.language}');">${parent.make_subtitle_flag(subtitle)}</div>
+        <div class="btn" onclick="playMovie('${urllib.quote(movie.title)}', '${subtitle.language}');">
+          <img src="${subtitle.languageFlagLink()}" />
+        </div>
       %endfor
 
     </div>

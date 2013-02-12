@@ -5,6 +5,7 @@ from smewt import SMEWTD_INSTANCE
 from smewt.base import EventServer, SmewtException
 from smewt.ontology import Movie, Series, Episode
 from smewt.plugins import mldonkey, tvu
+from smewt.actions import get_subtitles, play_video
 from guessit.textutils import reorder_title
 import urllib2
 import time
@@ -260,12 +261,15 @@ def action(request):
             SMEWTD_INSTANCE.regenerateSpeedDialThumbnails()
             return 'OK'
 
-        elif action == 'play_movie':
-            print 'RPARAMS', request.params
+        elif action == 'get_subtitles':
             title = urllib2.unquote(request.params['title'])
-            from smewt.base.actionfactory import play_video
+            get_subtitles(request.params['type'], title)
+            return 'OK'
+
+        elif action == 'play_movie':
+            title = urllib2.unquote(request.params['title'])
             movie = SMEWTD_INSTANCE.database.find_one(Movie, title=title)
-            play_video(movie, sublang=request.params['sublang'])
+            play_video(movie, sublang=request.params.get('sublang'))
             return 'OK'
 
         elif action == 'post_comment':

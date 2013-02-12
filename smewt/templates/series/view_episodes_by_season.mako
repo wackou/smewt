@@ -6,7 +6,6 @@ from smewt import SmewtUrl
 from smewt.ontology import Episode, Series, Subtitle
 from smewt.base.utils import pathToUrl, smewtMediaUrl, tolist, SDict
 from smewt.base import SmewtException
-from smewt.base.actionfactory import PlayAction
 from guessit.language import ALL_LANGUAGES
 import os.path
 import guessit

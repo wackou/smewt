@@ -25,7 +25,6 @@ from cache import cachedmethod
 from eventserver import EventServer
 from taskmanager import Task, TaskManager
 from importtask import ImportTask
-from actionfactory import ActionFactory
 from graphaction import GraphAction
 from collection import Collection
 from smewtdaemon import SmewtDaemon

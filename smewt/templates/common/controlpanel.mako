@@ -83,6 +83,15 @@ $('#paneltabs a:first').tab('show');
 
 </div>
 
+<div class="well">
+
+  Smewt uses the following libraries:
+  <dl>
+    <dt><b>TODO</b></dt>
+  </dl>
+
+</div>
+
 
 <div class="well">
   Special thanks go to:<br/>
