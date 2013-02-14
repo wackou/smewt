@@ -20,7 +20,7 @@
 
 from pygoo import BaseObject
 from guessit.patterns import video_exts
-from smewt.base import utils, SmewtUrl
+from smewt.base import utils
 from .media import Metadata
 
 
@@ -48,21 +48,6 @@ class Movie(Metadata):
     def isValidMovie(filename):
         extPatterns = [ '*.' + ext for ext in video_exts ]
         return utils.matchFile(filename, extPatterns) #and getsize(filename) > 600 * 1024 * 1024
-
-    # FIXME: remove me
-    def playUrl(self):
-        files = utils.tolist(self.get('files'))
-        # prepare link for playing movie without subtitles
-        nfile = 1
-        args = {}
-        for f in sorted(files, key=lambda f: f.get('filename')):
-            args['filename%d' % nfile] = f.filename
-            nfile += 1
-
-        if not args:
-            args['filename1'] = '' # FIXME: doesn't make sense...
-
-        return SmewtUrl('action', 'play', args)
 
 
 

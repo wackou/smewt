@@ -1,7 +1,12 @@
 <%inherit file="base.mako"/>
+<%!
+from guessit.language import ALL_LANGUAGES, Language
+from guessit.fileutils import split_path
+import urllib
+%>
+
 
 <style>
-
 body {
     padding-top: 10px;
 }
@@ -70,8 +75,6 @@ body {
 
 <%def name="make_lang_selector(smewtd)">
 <%!
-from guessit.language import ALL_LANGUAGES, Language
-
 langs = sorted(l.english_name.replace("'", "") for l in ALL_LANGUAGES)
 langs_repr = '["' + '","'.join(langs) + '"]'
 %>
@@ -90,28 +93,21 @@ if config.get('subtitleLanguage'):
 </%def>
 
 <%def name="make_media_box(f)">
-<%
-from smewt.base import SmewtUrl
-%>
 <div class="well">
-  <a href="${SmewtUrl('action', 'play', {'filename1': f.filename })}">${f.filename}</a>
+  <a href="javascript:void(0);" onclick="play_file('${urllib.quote(f.filename)}');">${f.filename}</a>
 </div>
 </%def>
 
 <%def name="make_navbar(path, title=None)">
 <%
-from guessit.fileutils import split_path
-from smewt import SmewtUrl
-import urllib2
-
 path = path.split('/')
 
 crumbs = []
 
 for i, p in enumerate(path[1:]):
-    crumbs += [ (urllib2.unquote(p), '/' + '/'.join(path[1:2+i])) ]
-
+    crumbs += [ (urllib.unquote(p), '/' + '/'.join(path[1:2+i])) ]
 %>
+
 <div class="row-fluid">
   <div class="span4">
     %if title:
@@ -227,7 +223,8 @@ for i, p in enumerate(path[1:]):
             else              { alert(data); }
         })
         .fail(function(err)   { alert("HTTP error "+err.status+": "+err.statusText); })
-        .always(function(data) { /* alert("always: "+data); */ });
+        //.always(function(data) { alert("always: "+data); })
+        ;
     }
 
     function info(name, func) {

@@ -1,9 +1,7 @@
 <%inherit file="smewt:templates/common/base_list_view.mako"/>
 
 <%!
-from smewt import SmewtUrl
-from smewt.base.utils import SDict, pathToUrl
-
+from smewt.base.utils import SDict
 %>
 
 <%

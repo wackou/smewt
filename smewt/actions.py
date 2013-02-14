@@ -81,6 +81,45 @@ def get_subtitles(media_type, title, season=None, language=None):
 
 
 
+def _play(files, subs):
+    # launch external player
+    args = files
+
+    if sys.platform == 'linux2':
+        action = 'xdg-open'
+        # FIXME: xdg-open only accepts 1 argument, this will break movies split in multiple files...
+        args = args[:1]
+
+        # if we have mplayer installed, use it with subtitles support
+        if os.system('which mplayer') == 0:
+            action = 'mplayer'
+            args = []
+            for video, subfile in zip(files, subs):
+                args.append(video)
+                if subfile:
+                    args += [ '-sub', subfile ]
+
+        # if we have smplayer installed, use it with subtitles support
+        if os.system('which smplayer') == 0:
+            action = 'smplayer'
+            args = [ '-fullscreen', '-close-at-end' ]
+            for video, subfile in zip(files, subs):
+                args.append(video)
+                if subfile:
+                    args += [ '-sub', subfile ]
+
+    elif sys.platform == 'darwin':
+        action = 'open'
+
+    elif sys.platform == 'win32':
+        action = 'open'
+
+
+
+    log.info('launching %s with args = %s' % (action, str(args)))
+    subprocess.call([action]+args)
+
+
 
 def play_video(metadata, sublang=None):
     # FIXME: this should be handled properly with media player plugins
@@ -93,6 +132,12 @@ def play_video(metadata, sublang=None):
 
     # find list of all files to be played
     # returns a list of (video_filename, sub_filename)
+
+    if sublang:
+        msg = 'Playing %s with %s subtitles' % (metadata, Language(sublang).english_name)
+    else:
+        msg = 'Playing %s with no subtitles' % metadata
+    log.info(msg)
 
     # FIXME: we assume that sorting alphanumerically is good enough, but that is
     #        not necessarily the case...
@@ -114,40 +159,9 @@ def play_video(metadata, sublang=None):
     # update last viewed info
     metadata.lastViewed = time.time()
 
-
-    # launch external player
-    args = [ f.filename for f in files ]
-
-    if sys.platform == 'linux2':
-        action = 'xdg-open'
-        # FIXME: xdg-open only accepts 1 argument, this will break movies split in multiple files...
-        args = args[:1]
-
-    elif sys.platform == 'darwin':
-        action = 'open'
-
-    elif sys.platform == 'win32':
-        action = 'open'
+    _play([ f.filename for f in files],
+          [ s.filename for s in subs if s ])
 
 
-    # if we have mplayer installed, use it with subtitles support
-    if os.system('which mplayer') == 0:
-        action = 'mplayer'
-        args = []
-        for video, subfile in zip(files, subs):
-            args.append(video.filename)
-            if subfile:
-                args += [ '-sub', subfile.filename ]
-
-    # if we have smplayer installed, use it with subtitles support
-    if os.system('which smplayer') == 0:
-        action = 'smplayer'
-        args = [ '-fullscreen', '-close-at-end' ]
-        for video, subfile in zip(files, subs):
-            args.append(video.filename)
-            if subfile:
-                args += [ '-sub', subfile.filename ]
-
-
-    log.info('launching %s with args = %s' % (action, str(args)))
-    subprocess.call([action]+args)
+def play_file(filename):
+    _play([filename], [None])

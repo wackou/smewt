@@ -2,14 +2,11 @@
 
 <%!
 from collections import defaultdict
-from smewt import SmewtUrl
 from smewt.ontology import Movie
-from smewt.base.utils import pathToUrl, smewtMediaUrl, tolist
+from smewt.base.utils import pathToUrl, tolist
 from smewt.base import SmewtException
 import os
 import urllib
-
-import_dir = smewtMediaUrl()
 
 %>
 
@@ -18,9 +15,16 @@ import_dir = smewtMediaUrl()
 ${parent.scripts()}
 
 <script type="text/javascript">
-// Select first tab by default
-// TODO: should select the one for lastSeasonWatched
-$('#movietabs a:first').tab('show');
+// Select last viewed tab
+$("#movietabs li:eq(${movie.get('lastViewedTab', 0)}) a").tab("show");
+
+$('#movietabs a').click(function (e) {
+    e.preventDefault();
+    $(this).tab('show');
+    var url = e.target.href.split('#');
+    var tab = url[url.length-1].slice(3);
+    action("set_last_viewed_tab", {title: '${movie.title}', 'tab': tab});
+})
 
 function playMovie(title, language) {
     action("play_movie", { title: title, sublang: language });
@@ -83,7 +87,7 @@ ${parent.make_lang_selector(context['smewtd'])}
 
 %else:
 
-<div class="tabbable"> <!-- Only required for left/right tabs -->
+<div class="tabbable">
 
   <ul class="nav nav-tabs" id="movietabs">
     <li><a href="#tab0" data-toggle="tab">Overview</a></li>

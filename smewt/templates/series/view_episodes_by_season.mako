@@ -2,7 +2,6 @@
 
 <%!
 from collections import defaultdict
-from smewt import SmewtUrl
 from smewt.ontology import Episode, Series, Subtitle
 from smewt.base.utils import pathToUrl, smewtMediaUrl, tolist, SDict
 from smewt.base import SmewtException
@@ -49,9 +48,16 @@ ${parent.scripts()}
 <script type="text/javascript" src="/static/js/styler.js"></script>
 
 <script type="text/javascript">
-// Select first tab by default
-// TODO: should select the one for lastSeasonWatched
-$('#seasontabs a:first').tab('show');
+// Select last viewed tab
+$("#seasontabs li:eq(${series.get('lastViewedTab', 0)}) a").tab("show");
+
+$('#seasontabs a').click(function (e) {
+    e.preventDefault();
+    $(this).tab('show');
+    var url = e.target.href.split('#');
+    var tab = url[url.length-1].slice(3);
+    action("set_last_viewed_tab", {title: '${series.title}', 'tab': tab});
+})
 
 function toggleSynopsis() {
     toggleByName('synopsis');
@@ -66,19 +72,13 @@ function toggleSynopsis() {
 
 
 <%def name="make_subtitle_download_links(series)">
-<%
-subsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': series })
-%>
-
- <div class="row-fluid">
-
+<div class="row-fluid">
    Look for subtitles in
    ${parent.make_lang_selector(context['smewtd'])}
 
-   <div class="btn"><a href="${subsLink}">Download!</a></div>
+   <div class="btn" onclick="action('get_subtitles', {'type': 'episode', 'title': series});">Download!</div>
    <br><br>
- </div>
-
+</div>
 </%def>
 
 <div class="container-fluid">
@@ -97,15 +97,12 @@ subsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': seri
     </div>
 %endif
   </div>
-
   <br>
-
 
 
 <%def name="make_season_tab_header(tabid, season)">
     <li><a href="#tab${tabid}" data-toggle="tab">Season ${season}</a></li>
 </%def>
-
 
 <%def name="make_season_tab(tabid, series, season, eps, extras)">
     <div class="tab-pane" id="tab${tabid}">
@@ -129,8 +126,7 @@ subsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': seri
 
 %if series.title != 'Unknown':
 
-## TODO: activate tab for which seasonNumber == lastSeasonWatched:
-<div class="tabbable"> <!-- Only required for left/right tabs -->
+<div class="tabbable">
   <ul class="nav nav-tabs" id="seasontabs">
     <% seasons = sorted(set(episodes.keys()) | set(extras.keys())) %>
     %for season in seasons:
@@ -146,7 +142,7 @@ subsLink = SmewtUrl('action', 'getsubtitles', { 'type': 'episode', 'title': seri
 
 %else: ## series.title == 'Unknown'
 
-<div class="tabbable"> <!-- Only required for left/right tabs -->
+<div class="tabbable">
   <ul class="nav nav-tabs" id="seasontabs">
     ${make_season_tab_header(0, '??')}
   </ul>

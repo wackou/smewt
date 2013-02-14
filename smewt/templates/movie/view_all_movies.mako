@@ -1,21 +1,14 @@
 <%inherit file="smewt:templates/common/base_list_view.mako"/>
 
 <%!
-from smewt import SmewtUrl
-from smewt.base.utils import SDict, pathToUrl
+from smewt.base.utils import SDict
 
 %>
 
 <%
 
-def posterUrl(p):
-    if p.endswith('noposter.png'):
-        return '/static/images/noposter.png'
-    return '/user/images/' + p.split('/')[-1]
-
 movies = sorted([ SDict(title = m.title,
                         url = '/movie/%s' % m.title,
-                        #poster = posterUrl(m.loresImage))
                         poster = m.loresImage)
                   for m in context['movies'] ],
                 key = lambda x: x.title)

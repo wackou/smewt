@@ -1,9 +1,7 @@
 <%inherit file="base_movie.mako"/>
 
 <%!
-from smewt import SmewtUrl
-from smewt.base.utils import tolist, pathToUrl, SDict, smewtDirectoryUrl
-from smewt.base.textutils import toUtf8
+from smewt.base.utils import tolist, SDict
 import datetime
 
 def lastViewedString(m):
@@ -20,22 +18,19 @@ def lastViewedString(m):
 
     return 'on ' + datestr
 
-
-import_dir = smewtDirectoryUrl('smewt', 'media')
 %>
 
 <%
 movies = sorted([ SDict({ 'title': m.title,
                           'movie': m,
                           'lastViewed': m.lastViewed,
-                          'url': SmewtUrl('media', 'movie/single', { 'title': m.title }),
+                          'url': '/movie/' + m.title,
                           'poster': m.loresImage })
                   for m in context['movies'] ],
                 key = lambda x: -x['lastViewed'])
 
 # keep only the 4 most recent movies
 movies = movies[:4]
-
 
 %>
 

@@ -4,14 +4,10 @@
 import datetime, time
 import urllib
 from smewt.base.utils import tolist
-from smewt import SmewtUrl
 %>
 
-
 <%def name="make_movie_overview(movie)">
-
 <%
-
 def getAll(prop):
     return ', '.join(movie.get(prop) or [])
 
@@ -20,7 +16,6 @@ rating = movie.get('rating', '')
 director = getAll('director')
 writer = getAll('writer')
 genres = getAll('genres')
-
 %>
 
 <div class="well">
@@ -38,12 +33,9 @@ genres = getAll('genres')
     %endif
   </div>
 </div>
-
 </%def>
 
-
 <%def name="make_movie_cast(movie)">
-
 <div class="well">
   %if 'cast' in movie:
     %for person_role in movie.cast:
@@ -52,7 +44,6 @@ genres = getAll('genres')
   %endif
 </div>
 </%def>
-
 
 <%block name="scripts">
 ${parent.scripts()}
@@ -80,10 +71,7 @@ def getComments(md):
     return sorted(results, key = lambda x: x[1])
 
 comments = getComments(movie)
-
-# FIXME: need to quote (or do we? TODO: check)
 qtitle = urllib.quote(movie.title)
-
 %>
 
 %if comments:
@@ -114,17 +102,16 @@ for sub in tolist(movie.get('subtitles')):
 # languages such as .idx/.sub files
 allfiles = set(allfiles)
 
-
-files = [ (f,
-           SmewtUrl('action', 'play', { 'filename1': f.filename }),
-           time.ctime(f.lastModified)) for f in allfiles ]
-
+files = [ (f, time.ctime(f.lastModified)) for f in allfiles ]
 %>
 
-%for f, url, mtime in files:
+%for f, mtime in files:
 <div class="well">
   <div class="singlefile">
-    <p><a href="${url}">${f.filename}</a></p>
+    <p><a href="javascript:void(0);"
+          onclick="action('play_file', { filename: '${f.filename}' });">
+       ${f.filename}
+    </a></p>
     %for k, v in f.items():
       %if k == 'lastModified':
         <p><b>last scanned on</b>: ${mtime}</p>

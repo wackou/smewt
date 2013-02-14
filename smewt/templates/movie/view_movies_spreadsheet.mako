@@ -2,12 +2,9 @@
 
 
 <%!
-from smewt import SmewtUrl
-from smewt.base.utils import SDict, pathToUrl
+from smewt.base.utils import SDict
 
 dataTables = '/static/js/DataTables-1.9.2/media'
-
-
 %>
 
 <%
@@ -31,19 +28,11 @@ movies = sorted([ SDict({ 'title': m.title,
 </%block>
 
 <%block name="scripts">
+${parent.scripts()}
+
     <script src="${dataTables}/js/jquery.dataTables.js"></script>
     <script src="${dataTables}/js/DT_bootstrap.js"></script>
     <script>
-        function action(name, args) {
-            $.post("/action/"+name, args)
-            .done(function(data) {
-                if (data == "OK") {}
-                else              { alert("ERROR: "+data); }
-            })
-            .fail(function(err)   { alert("HTTP error "+err.status+": "+err.statusText); })
-            .always(function(data) { /* alert("always: "+data); */ });
-        }
-
         function updateWatched(form, w, title) {
             action('set_watched', { "title": title, "watched": form[w].checked });
         }

@@ -51,5 +51,5 @@ for name, level in smewt.config.LOGGING_LEVELS:
     logging.getLogger(name).setLevel(level)
 
 
-from smewt.base import SmewtException, SmewtUrl, SolvingChain, cachedmethod, EventServer, cache, utils, textutils
+from smewt.base import SmewtException, SolvingChain, cachedmethod, EventServer, cache, utils, textutils
 from smewt.ontology import Media, Metadata

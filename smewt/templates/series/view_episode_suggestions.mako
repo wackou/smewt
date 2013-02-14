@@ -1,9 +1,7 @@
 <%inherit file="smewt:templates/series/base_episode.mako"/>
 
 <%!
-from smewt import SmewtUrl
-from smewt.base.utils import tolist, pathToUrl
-from smewt.base.textutils import toUtf8
+from smewt.base.utils import tolist
 from itertools import groupby
 import datetime
 %>

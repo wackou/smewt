@@ -3,9 +3,9 @@ from pyramid.httpexceptions import HTTPFound
 
 from smewt import SMEWTD_INSTANCE
 from smewt.base import EventServer, SmewtException
-from smewt.ontology import Movie, Series, Episode
+from smewt.ontology import Metadata, Movie, Series, Episode
 from smewt.plugins import mldonkey, tvu
-from smewt.actions import get_subtitles, play_video
+from smewt.actions import get_subtitles, play_video, play_file
 from guessit.textutils import reorder_title
 import urllib2
 import time
@@ -270,6 +270,27 @@ def action(request):
             title = urllib2.unquote(request.params['title'])
             movie = SMEWTD_INSTANCE.database.find_one(Movie, title=title)
             play_video(movie, sublang=request.params.get('sublang'))
+            return 'OK'
+
+        elif action == 'play_episode':
+            db = SMEWTD_INSTANCE.database
+            series_name = urllib2.unquote(request.params['series'])
+            series = db.find_one(Series, title=series_name)
+            ep = db.find_one(Episode, series=series,
+                             season=int(request.params['season']),
+                             episodeNumber=int(request.params['episodeNumber']))
+            play_video(ep, sublang=request.params.get('sublang'))
+            return 'OK'
+
+        elif action == 'play_file':
+            filename = urllib2.unquote(request.params['filename'])
+            play_file(filename)
+            return 'OK'
+
+        elif action == 'set_last_viewed_tab':
+            title = urllib2.unquote(request.params['title'])
+            video = SMEWTD_INSTANCE.database.find_one(Metadata, title=title)
+            video.lastViewedTab = int(request.params['tab'])
             return 'OK'
 
         elif action == 'post_comment':

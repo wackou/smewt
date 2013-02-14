@@ -19,7 +19,6 @@
 #
 
 from smewtexception import SmewtException
-from smewturl import SmewtUrl
 from solvingchain import SolvingChain
 from cache import cachedmethod
 from eventserver import EventServer

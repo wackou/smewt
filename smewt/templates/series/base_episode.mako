@@ -1,8 +1,22 @@
 <%inherit file="smewt:templates/common/base_style.mako"/>
+<%!
+import urllib
+%>
+
+<%block name="scripts">
+${parent.scripts()}
+
+<script type="text/javascript">
+function playEpisode(series, season, episodeNumber, sublang) {
+    action("play_episode", { series: series, season: season,
+                             episodeNumber: episodeNumber, sublang: sublang });
+}
+</script>
+
+</%block>
 
 
 <%def name="make_episode_box(ep, displayStyle='inline')">
-
 <%
 from smewt.base.utils import tolist
 
@@ -14,13 +28,15 @@ if context['smewtd'].database.config.get('displaySynopsis', True):
     displayStyle = 'inline'
 else:
     displayStyle = 'none'
-
 %>
+
 <div class="well">
-  <a href="${ep.playUrl()}">${title}</a>
+  <a href="javascript:void(0);"
+          onclick="playEpisode('${urllib.quote(ep.series.title)}', ${ep.season}, ${ep.episodeNumber});">${title}</a>
 
   %for subtitle in sorted(tolist(ep.get('subtitles')), key=lambda s: s.language):
-    ${parent.make_subtitle_link(subtitle)}
+    <img src="${subtitle.languageFlagLink()}"
+         onclick="playEpisode('${urllib.quote(ep.series.title)}', ${ep.season}, ${ep.episodeNumber}, '${subtitle.language}');" />
   %endfor
 
   %if 'synopsis' in ep:
@@ -29,6 +45,5 @@ else:
 </div>
 
 </%def>
-
 
 ${next.body()}
