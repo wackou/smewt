@@ -3,7 +3,7 @@
 <%!
 from collections import defaultdict
 from smewt.ontology import Movie
-from smewt.base.utils import pathToUrl, tolist
+from smewt.base.utils import tolist
 from smewt.base import SmewtException
 import os
 import urllib

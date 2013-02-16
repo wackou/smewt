@@ -21,11 +21,10 @@
 from smewt.base import cachedmethod, SmewtException
 from smewt.ontology import Series
 from smewt.base import textutils
-from smewt.base.utils import tolist, smewtDirectory, smewtUserDirectory
+from smewt.base.utils import tolist, path
 from pygoo import MemoryObjectGraph
 import smewt.settings
 import guessit
-import os
 from urllib2 import urlopen
 import thetvdbapi
 import tmdb
@@ -120,21 +119,27 @@ class TVDBMetadataProvider(object):
         return result
 
     def savePoster(self, posterUrl, localId):
-        imageDir = smewtUserDirectory('images')
+        hiresFilename = path(smewt.dirs.user_data_dir, 'images', '%s_hires.jpg' % localId,
+                             createdir=True)
 
-        hiresFilename = os.path.join(imageDir, '%s_hires.jpg' % localId)
+        loresFilename = path(smewt.dirs.user_data_dir, 'images', '%s_lores.jpg' % localId)
+
+        # TODO: use requests instead of urlopen
         open(hiresFilename, 'wb').write(urlopen(posterUrl).read())
 
+        # NOTE: we do the resizing here because if we leave it to the browser,
+        #       it will use a fast resampling algorithm, which will be of lower
+        #       quality than what we achieve here
         # lores = 80px high
-        # FIXME: implement me
-        loresFilename = os.path.join(imageDir, '%s_lores.jpg' % localId)
-        #image = QImage()
-        #image.load(hiresFilename)
-        #image.scaledToHeight(80, Qt.SmoothTransformation).save(loresFilename)
-        import shutil
-        shutil.copyfile(hiresFilename, loresFilename)
+        from PIL import Image
+        width, height = 60, 80
+        log.info('Creating %dx%d screenshot for %s...' % (width, height, path))
+        im = Image.open(hiresFilename)
+        im.thumbnail((width, height), Image.ANTIALIAS)
+        im.save(loresFilename, "PNG")
 
-        return '/user/images/%s_lores.jpg' % localId, '/user/images/%s_hires.jpg' % localId
+        return ('/user/images/%s_lores.jpg' % localId,
+                '/user/images/%s_hires.jpg' % localId)
 
     @cachedmethod
     def getSeriesPoster(self, tvdbID):
@@ -154,7 +159,7 @@ class TVDBMetadataProvider(object):
     @cachedmethod
     def getMoviePoster(self, movieId):
         """Return the low- and high-resolution posters (if available) of an tvdb object."""
-        noposter = smewtDirectory('smewt', 'media', 'common', 'images', 'noposter.png')
+        noposter = '/static/images/noposter.png'
 
         m = self.tmdb.getMovieInfo(movieId)
 
@@ -180,7 +185,7 @@ class TVDBMetadataProvider(object):
         tmdb.update_config()
 
         if episode.get('series') is None:
-            raise SmewtException("TVDBMetadataProvider: Episode doesn't contain 'series' field: %s", md)
+            raise SmewtException("TVDBMetadataProvider: Episode doesn't contain 'series' field: %s", episode)
 
         name = episode.series.title
         name = name.replace(',', ' ')

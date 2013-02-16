@@ -23,13 +23,6 @@ p {
 </style>
 </%block>
 
-
-<%!
-from smewt.base.utils import smewtDirectoryUrl, smewtUserDirectoryUrl
-smewt_dir = smewtDirectoryUrl('smewt', 'media', 'speeddial')
-import_dir = smewtUserDirectoryUrl('speeddial')
-%>
-
 <div class="container-fluid">
   <div class="row-fluid">
 
@@ -66,12 +59,11 @@ import_dir = smewtUserDirectoryUrl('speeddial')
       <p>Episode Suggestions</p>
     </div></div>
 
-    <!--
     <div class="span4"><div class="well">
       <a href="/feeds">
-      <img src="/user/speeddial/feedwatcher_200x150.png" width="200" /></a>
+      <img src="/user/speeddial/feeds.png" width="200" /></a>
       <p>Feed Watcher</p>
     </div></div>
-    -->
+
     </div>
 </div>

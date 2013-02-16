@@ -153,8 +153,7 @@ class SmewtDaemon(object):
 
 
     def _cacheFilename(self):
-        return utils.path(smewt.dirs.user_cache_dir,
-                          smewt.APP_NAME + '.cache',
+        return utils.path(smewt.dirs.user_cache_dir, 'Smewt.cache',
                           createdir=True)
 
     def loadCache(self):
@@ -176,7 +175,8 @@ class SmewtDaemon(object):
     def loadDB(self):
         dbfile = smewt.settings.get('database_file')
         if not dbfile:
-            dbfile = join(utils.smewtUserDirectory(), smewt.APP_NAME + '.database')
+            dbfile = utils.path(smewt.dirs.user_data_dir, 'Smewt.database',
+                                createdir=True)
             smewt.settings.set('database_file', dbfile)
 
         log.info('Loading database from: %s', dbfile)
@@ -231,6 +231,7 @@ class SmewtDaemon(object):
         gen('/movies/recent', 'recentmovies.png')
         gen('/series', 'allseries.png')
         gen('/series/suggestions', 'episodesuggestions.png')
+        gen('/feeds', 'feeds.png')
 
     def regenerateSpeedDialThumbnails(self):
         self.taskManager.add(FuncTask('Regenerate thumbnails',

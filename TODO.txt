@@ -80,9 +80,6 @@ An friend/emule download consists in duplicating the smewt:// or ed2k:// URL in 
 
 ----------------
 
-tvu.org.ru plugin that is a view on a http:// url, and scans the page and embeds a qt widget or some jquery thing to
-download the corresponding rss with ed2k:// file (ie: youtube downloader but for tvu.org.ru)
-
 in the UI, there should always be a combobox allowing to choose from which currently loaded graphs (collections) we
 should display the data (ie: All, Main, friend, ...)
 -> for media in Main graph, display a play button
@@ -90,20 +87,11 @@ should display the data (ie: All, Main, friend, ...)
 
 ------------------
 
-Notes when merging the task manager branch:
-- we need to remove gui tasks from there, as the task manager belongs to the headless smewt daemon.
-  the changes in the collection should be notified using signals from the collection itself rather than by tasks
-  informing of their completion. (thus we can listen only to signals that concern the view that is currently active)
 - the task manager needs to also deal with download tasks, which cannot be expected to be synchronous (it is ok to wait
   10 seconds for downloading a subtitle but irrealistic to wait 10 hours for a file download)
 - as asynchronous tasks then take very little time to submit, they should be treated with priority (we can submit right
   away to emule without waiting for the 200 metadata import tasks to finish)
 
-
--> there are 2 types of tasks for the task manager:
-  - synchronous, which have a single process() method that is called by the TM
-  - asynchronous, which return immediately but signal when they are finished. This signal is only intended for the TM
-    bookkeeping, views should be based on graph status update rather.
 
 class RemoteGraph(MemoryObjectGraph):
     """a graph which can update itself with the data from a remote source"""
@@ -138,30 +126,20 @@ note for pygoo:
 
 TODO: need to move the release data to the media object (right now it is in the metadata object)
 
-- for logview: it would be nice to have
-  - multiline cells (ie: stack trace)
-  - load/save to be able to send bug reports
-
-
-
 
 
 
 BUGFIXES:
 ---------
 
-- collection folder is ugly slow on windows (some only?)
-- taskbar icon doesn't appear in all windows (confirmed?)
-- moviefilename and episodefilename should add some MD to media, not metadata (eg: guessit.video info)
 - in Tagger.cleanup(), the check to matches should be unnecesary, we shouldn't use that anymore
-- refresh speed dial recreates the thumbnails but doesn't manage to tell the view to reload by bypassing cache
 
 
 MISCELLANEOUS:
 --------------
 
 - delete old stuff
-- clean python imports (ie: no 'from PyQt4.QtCore import *')
+- clean python imports (ie: no 'from xxx import *')
 - make smewt pylint and pychecker (http://www.blog.pythonlibrary.org/2011/01/26/pychecker-python-code-analysis/) compliant, as much as possible
 
 
@@ -178,8 +156,13 @@ MISCELLANEOUS:
 
 ----------------------
 
-move Config object out of mediaobject.py, add Qt capabilities directly
-
 Bootstrap themes: http://bootswatch.com/
 
 - remove tabber.js and other unused css/js files
+
+
+PYRAMID
+
+update fabfile
+is graphaction still needed?
+correctly refresh after get_subtitles

@@ -3,7 +3,7 @@
 <%!
 from collections import defaultdict
 from smewt.ontology import Episode, Series, Subtitle
-from smewt.base.utils import pathToUrl, smewtMediaUrl, tolist, SDict
+from smewt.base.utils import tolist, SDict
 from smewt.base import SmewtException
 from guessit.language import ALL_LANGUAGES
 import os.path

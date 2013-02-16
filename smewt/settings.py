@@ -18,17 +18,22 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from smewt.base.utils import path
 import smewt
 import json
-import os.path
 import atexit
 import logging
 
 log = logging.getLogger(__name__)
 
+"""This module automatically loads (resp. saves) a single python dictionary
+when it is loaded (resp. when the python interpreter exits).
 
-SETTINGS_FILENAME = os.path.join(smewt.dirs.user_data_dir,
-                                 '%s_preferences.json' % smewt.APP_NAME)
+This dictionary can contain anything, but it needs to be JSON-serializable.
+"""
+
+SETTINGS_FILENAME = path(smewt.dirs.user_data_dir, 'Smewt_preferences.json',
+                         createdir=True)
 
 settings = {}
 

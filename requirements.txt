@@ -7,3 +7,4 @@ feedparser>=5.1
 appdirs>=1.2
 pyramid>=1.4
 pygoo>=0.1.4
+pillow

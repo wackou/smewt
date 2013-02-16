@@ -22,7 +22,6 @@
 import atexit
 import smewt
 import smewt.config
-from smewt.base import utils
 from pyramid.config import Configurator
 
 
@@ -43,7 +42,7 @@ def main():
 
     config = Configurator(settings=settings)
     config.add_static_view('static', 'smewt:static', cache_max_age=3600)
-    config.add_static_view('user', utils.smewtUserPath(), cache_max_age=3600)
+    config.add_static_view('user', smewt.dirs.user_data_dir, cache_max_age=3600)
 
     config.add_route('home', '/')
     config.add_route('speeddial', '/speeddial')
@@ -82,3 +81,35 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+""" TODO: profiling
+    if len(sys.argv) > 1 and sys.argv[1] == '--profile':
+        try:
+            import yappi
+
+        except ImportError:
+            print 'You need to install the yappi python module to profile Smewt!'
+            sys.exit(1)
+
+        try:
+            yappi.start(True)
+            main()
+
+        finally:
+            yappi.stop()
+
+            print '\n\nSORTED BY SUB TIME'
+            yappi.print_func_stats(sort_type=yappi.SORTTYPE_TSUB,
+                                   limit=20)
+            print '\n\nSORTED BY TOTAL TIME'
+            yappi.print_func_stats(sort_type=yappi.SORTTYPE_TTOT,
+                                   limit=20)
+            print '\n\nTHREAD STATS'
+            yappi.print_thread_stats()
+
+            filename = 'callgrind.out.%d' % os.getpid()
+            with open(filename, 'w') as f:
+                yappi.write_callgrind_stats(f)
+            print '\nWrote callgrind output to %s' % filename
+"""

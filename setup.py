@@ -20,7 +20,8 @@ install_requires = [
     'pyramid',
     'pyramid_debugtoolbar',
     'waitress',
-    'appdirs>=1.2'
+    'appdirs>=1.2',
+    'pillow'
     ]
 
 

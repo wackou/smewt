@@ -26,7 +26,6 @@ from guessit.language import Language, guess_language, UNDETERMINED
 from guessit.fileutils import split_path
 from pygoo.utils import tolist, toresult
 from smewt.base.smewtexception import SmewtException
-import smewt
 import logging
 
 log = logging.getLogger(__name__)
@@ -42,6 +41,7 @@ class SDict(dict):
             return self[attr]
 
 
+# TODO: implement as NamedTuple
 class MethodID(object):
     def __init__(self, filename, module, className, methodName):
         self.filename = filename
@@ -86,41 +86,6 @@ def path(*args, **kwargs):
     if kwargs.get('createdir', False):
         makedir(os.path.dirname(p))
     return p
-
-def pathToUrl(path):
-    if sys.platform == 'win32':
-        # perform some drive letter trickery
-        path = 'localhost/%s:/%s' % (path[0], path[3:])
-        path = path.replace('\\', '/')
-
-    return 'file://' + path
-
-def smewtDirectory(*args):
-    result = os.path.join(currentPath(), '..', '..', *args)
-
-    # big fat hack so that smewt still works when "compiled" with py2exe
-    result = result.replace('library.zip\\', '')
-
-    return os.path.abspath(result)
-
-def smewtDirectoryUrl(*args):
-    return pathToUrl(smewtDirectory(*args))
-
-def smewtMedia(*args):
-    args = ('smewt', 'media') + args
-    return smewtDirectory(*args)
-
-def smewtMediaUrl(*args):
-    return pathToUrl(smewtMedia(*args))
-
-def smewtUserPath(*args, **kwargs):
-    return path(smewt.dirs.user_data_dir, *args, **kwargs)
-
-def smewtUserDirectory(*args):
-    return smewtUserPath(*args, createdir=True)
-
-def smewtUserDirectoryUrl(*args):
-    return pathToUrl(smewtUserDirectory(*args))
 
 
 def commonRoot(pathlist):
