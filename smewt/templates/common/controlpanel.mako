@@ -87,7 +87,46 @@ $('#paneltabs a:first').tab('show');
 
   Smewt uses the following libraries:
   <dl>
-    <dt><b>TODO</b></dt>
+    <dt><b><a href="http://www.pylonsproject.org/">Pyramid</a></b></dt>
+    <dd>Author: Chris McDonough, Agendaless Consulting</dd>
+    <dd>License: BSD-derived (http://www.repoze.org/LICENSE.txt)</dd>
+
+    <dt><b><a href="http://www.makotemplates.org/">Mako</a></b></dt>
+    <dd>Author: Mike Bayer</dd>
+    <dd>License: MIT</dd>
+
+    <dt><b><a href="https://github.com/Pylons/waitress">Waitress</a></b></dt>
+    <dd>Author: Chris McDonough</dd>
+    <dd>License: ZPL 2.1</dd>
+
+    <dt><b><a href="https://github.com/wackou/pygoo">PyGoo</a></b></dt>
+    <dd>Author: Nicolas Wack</dd>
+    <dd>License: GPLv3</dd>
+
+    <dt><b><a href="http://guessit.readthedocs.org/">GuessIt</a></b></dt>
+    <dd>Author: Nicolas Wack</dd>
+    <dd>License: LGPLv3</dd>
+
+    <dt><b><a href="https://github.com/Diaoul/subliminal">Subliminal</a></b></dt>
+    <dd>Author: Antoine Bertin</dd>
+    <dd>License: LGPLv3</dd>
+
+    <dt><b><a href="http://python-requests.org/">Requests</a></b></dt>
+    <dd>Author: Kenneth Reitz</dd>
+    <dd>License: http://www.apache.org/licenses/LICENSE-2.0</dd>
+
+    <dt><b><a href="http://code.google.com/p/feedparser/">feedparser</a></b></dt>
+    <dd>Author: Kurt McKee</dd>
+    <dd>License: MIT</dd>
+
+    <dt><b><a href="http://github.com/ActiveState/appdirs">appdirs</a></b></dt>
+    <dd>Author: Trent Mick; Sridhar Ratnakumar</dd>
+    <dd>License: MIT</dd>
+
+    <dt><b><a href="http://github.com/AdamN/python-webkit2png">webkit2png</a></b></dt>
+    <dd>Author: Roland Tapken</dd>
+    <dd>License: LGPL</dd>
+
   </dl>
 
 </div>
@@ -102,6 +141,7 @@ $('#paneltabs a:first').tab('show');
     <dd>for the <a href="http://www.openclipart.org/detail/23677">Fried egg</a> icon</dd>
     <dt><b><a href="http://famfamfam.com/">Mark James</a></b></dt>
     <dd>for the <a href="http://famfamfam.com/lab/icons/flags/">flag icons</a></dd>
+  </dl>
 </div>
 
 </%def>

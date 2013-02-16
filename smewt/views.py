@@ -115,6 +115,7 @@ def series_suggestions_view(request):
     return { 'title': 'SUGGESTIONS',
              'episodes': [ ep for ep in SMEWTD_INSTANCE.database.find_all(Episode)
                            if 'lastViewed' in ep ],
+             'smewtd': SMEWTD_INSTANCE,
              'path': request.current_route_path()
              }
 

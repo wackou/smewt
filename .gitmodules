@@ -7,3 +7,6 @@
 [submodule "3rdparty/pygoo"]
 	path = 3rdparty/pygoo
 	url = git@github.com:wackou/pygoo.git
+[submodule "3rdparty/webkit2png"]
+	path = 3rdparty/webkit2png
+	url = git://github.com/adamn/python-webkit2png.git
