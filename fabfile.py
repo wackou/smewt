@@ -18,13 +18,17 @@ SMEWT_ROOT_PARENT = up(SMEWT_ROOT)
 import_modules = [ '.',
                    '3rdparty/pygoo',
                    '3rdparty/guessit',
-                   '3rdparty/subliminal'
+                   '3rdparty/subliminal',
+                   '3rdparty/webkit2png'
                    ]
 
 py_path = [ os.path.join(SMEWT_ROOT, module)
             for module in import_modules ]
 
 py_path = 'PYTHONPATH=%s:$PYTHONPATH ' % (':'.join(py_path))
+
+# add path for webkit2png
+py_path = 'PATH=3rdparty/webkit2png/scripts:$PATH ' + py_path
 
 @task
 def update_yappi():

@@ -1,10 +1,13 @@
 fabric>=1.5
+pyramid>=1.4
 mako>=0.7
+waitress
 requests>=0.14
-subliminal>=0.6.2
-guessit>=0.5.4
+# those are git submodules in 3rdparty/
+#subliminal>=0.6.2
+#guessit>=0.5.4
+#pygoo>=0.1.4
+#pyramid_debugtoolbar
 feedparser>=5.1
 appdirs>=1.2
-pyramid>=1.4
-pygoo>=0.1.4
 pillow

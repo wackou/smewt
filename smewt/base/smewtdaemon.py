@@ -27,7 +27,6 @@ from smewt.base.taskmanager import TaskManager, FuncTask
 from smewt.taggers import EpisodeTagger, MovieTagger
 from smewt.plugins.feedwatcher import FeedWatcher
 from threading import Timer
-from os.path import join
 import smewt
 import time
 import os
@@ -49,7 +48,7 @@ class VersionedMediaGraph(MemoryObjectGraph):
 
         return result
 
-    def clear(self):
+    def clear_keep_config(self):
         # we want to keep our config object untouched
         tmp = MemoryObjectGraph()
         tmp.add_object(self.config)
@@ -193,7 +192,7 @@ class SmewtDaemon(object):
 
     def clearDB(self):
         log.info('Clearing database...')
-        self.database.clear()
+        self.database.clear_keep_config()
         self.database.save(smewt.settings.get('database_file'))
 
 
@@ -212,13 +211,13 @@ class SmewtDaemon(object):
         from StringIO import StringIO
         webkit2png = (subprocess.call(['which', 'webkit2png'], stdout=subprocess.PIPE) == 0)
         if not webkit2png:
-            log.warning('webkit2png not found. please run: pip install git+https://github.com/adamn/python-webkit2png.git@6488a1fbd06d5479f8592af47acc73834647e837')
+            log.warning('webkit2png not found. please run: "python setup.py install" from within the 3rdparty/webkit2png folder')
             return
 
         def gen(path, filename):
             width, height = 200, 150
             log.info('Creating %dx%d screenshot for %s...' % (width, height, path))
-            filename = utils.path(smewt.dirs.user_data_dir, 'speeddial', filename)
+            filename = utils.path(smewt.dirs.user_data_dir, 'speeddial', filename, createdir=True)
             cmd = 'webkit2png -g 1000 600 "http://localhost:6543%s"' % path
             screenshot, _ = subprocess.Popen(shlex.split(cmd),
                                              stdout=subprocess.PIPE).communicate()

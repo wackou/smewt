@@ -39,7 +39,7 @@ PYRAMID_DEBUGTOOLBAR = False
 RELOAD_MAKO_TEMPLATES = True
 
 # Whether to regenerate the thumbnails for the speeddial at app startup
-REGENERATE_THUMBNAILS = False
+REGENERATE_THUMBNAILS = True
 
 PLUGIN_TVU = True
 
