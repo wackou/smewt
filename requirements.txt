@@ -5,6 +5,8 @@ waitress
 requests>=0.14
 # those are git submodules in 3rdparty/
 #subliminal>=0.6.2
+beautifulsoup4>=4.1 # for subliminal
+enzyme>=0.2         # for subliminal
 #guessit>=0.5.4
 #pygoo>=0.1.4
 #pyramid_debugtoolbar
