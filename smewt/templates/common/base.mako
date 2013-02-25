@@ -1,10 +1,15 @@
+<%!
+import socket
+%>
 <!doctype html>
 <html class="no-js" lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <link rel="icon" type="image/png" href="/static/images/smewt_16x16.png">
 
-	<title></title>
+	<title>Smewt (on ${socket.gethostname().split('.')[0]}) - a smart media manager</title>
+
 	<meta name="description" content="">
 	<meta name="author" content="">
 
