@@ -3,9 +3,8 @@ The following should get you started with Smewt on RaspberryPi:
 
   $ git submodule init
   $ git submodule update
-  $ chmod a+x 3rdparty/webkit2png/scripts/webkit2png
 
-  $ sudo apt-get install python-dev python-imaging python-qt4 python-virtualenv virtualenvwrapper
+  $ sudo apt-get install python-dev python-imaging python-virtualenv virtualenvwrapper
 
 Then start a new shell and execute the following:
 

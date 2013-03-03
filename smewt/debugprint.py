@@ -24,6 +24,7 @@
 import inspect
 import sys
 import os
+import smewt.config
 
 
 class DebugPrint(object):
@@ -40,5 +41,5 @@ class DebugPrint(object):
         else:
             self.f.write(prefix + text)
 
-if not isinstance(sys.stdout, DebugPrint):
+if smewt.config.DEBUG_PRINT and not isinstance(sys.stdout, DebugPrint):
     sys.stdout = DebugPrint(sys.stdout)

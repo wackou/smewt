@@ -46,7 +46,7 @@ def update_yappi():
 @task
 def profile():
     """Run Smewt and profile it, print the resulting data to stdout."""
-    local(py_path + 'python bin/smewg --profile')
+    local(py_path + 'python -m smewt.main --profile')
 
 @task
 def clean_pyc():

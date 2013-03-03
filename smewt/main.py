@@ -22,6 +22,8 @@
 import atexit
 import smewt
 import smewt.config
+import sys
+import os
 from pyramid.config import Configurator
 
 
@@ -80,10 +82,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
-
-
-""" TODO: profiling
     if len(sys.argv) > 1 and sys.argv[1] == '--profile':
         try:
             import yappi
@@ -99,17 +97,14 @@ if __name__ == '__main__':
         finally:
             yappi.stop()
 
-            print '\n\nSORTED BY SUB TIME'
-            yappi.print_func_stats(sort_type=yappi.SORTTYPE_TSUB,
-                                   limit=20)
-            print '\n\nSORTED BY TOTAL TIME'
-            yappi.print_func_stats(sort_type=yappi.SORTTYPE_TTOT,
-                                   limit=20)
+            #yappi.get_func_stats().print_all()
+
             print '\n\nTHREAD STATS'
-            yappi.print_thread_stats()
+            yappi.get_thread_stats().print_all()
 
             filename = 'callgrind.out.%d' % os.getpid()
-            with open(filename, 'w') as f:
-                yappi.write_callgrind_stats(f)
+            yappi.get_func_stats().save(filename, type='callgrind')
             print '\nWrote callgrind output to %s' % filename
-"""
+
+    else:
+        main()
