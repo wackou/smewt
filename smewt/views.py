@@ -165,10 +165,15 @@ def config_get(request):
 def config_set(request):
     config = SMEWTD_INSTANCE.database.config
     try:
+        name = request.matchdict['name']
         value = from_js(request.POST.get('value') or
                         json.loads(request.body).get('value'))
-        config[request.matchdict['name']] = value
-        return config[request.matchdict['name']]
+        config[name] = value
+
+        if name == 'incomingFolder':
+            return os.path.exists(value)
+
+        return config[name]
     except Exception as e:
         return 'Error: %s' % e
 
@@ -353,6 +358,9 @@ def info(request):
     elif name == 'mldonkey_online':
         return mldonkey.is_online()
 
+    elif name == 'exists_path':
+        return os.path.exists(request.params['path'])
+
     elif name == 'feeds_status':
         feeds = SMEWTD_INSTANCE.feedWatcher.feedList
         return [ (f['url'],
@@ -385,6 +393,11 @@ def preferences_view(request):
     # checks for some required fields and add them if missing
     if config.get('tvuMldonkeyPlugin') is None:
         config.tvuMldonkeyPlugin = False
+
+    if config.get('incomingFolder') is None:
+        config.incomingFolder = os.path.join(os.environ['HOME'],
+                                             '.mldonkey', 'incoming', 'files')
+
 
     return { 'title': 'PREFERENCES',
              'smewtd': SMEWTD_INSTANCE,

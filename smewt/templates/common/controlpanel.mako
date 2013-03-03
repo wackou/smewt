@@ -14,10 +14,10 @@ config = context.get('items')
 <%block name="scripts">
   ${parent.scripts()}
 
-<script>
+<script type="text/javascript">
 
 function refreshTaskManagerStatus() {
-    info("task_manager_status", function(data) {
+    info("task_manager_status", undefined, function(data) {
         $("#tmstatus").html(data);
     });
 }

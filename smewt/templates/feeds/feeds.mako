@@ -29,7 +29,7 @@ function setLastUpdated(feedUrl, index) {
 
 
 function refreshEventLog() {
-    info("event_log", function(data) {
+    info("event_log", undefined, function(data) {
         var newlog = data.substring($("#eventLog").text().length);\
         if (newlog.indexOf('Already') >= 0 ||
             newlog.indexOf('Successfully') >= 0) {
@@ -47,7 +47,7 @@ function refreshEventLog() {
 
 
 function refreshMLDonkeyStatus() {
-    info("mldonkey_online", function(data) {
+    info("mldonkey_online", undefined, function(data) {
         var status = '<img src="/static/images/user-busy.png"/> Offline ' +
             '<div class="btn" onclick="action(\'mldonkey_start\');">Start MLDonkey</div>';
         if (data) {
@@ -59,7 +59,7 @@ function refreshMLDonkeyStatus() {
 }
 
 function refreshFeedsStatus() {
-    info("feeds_status", function(data) {
+    info("feeds_status", undefined, function(data) {
         var rows = $("#feedTable tr");
         if (data.length != rows.length) {
             // not the same number of feeds as rows in our table

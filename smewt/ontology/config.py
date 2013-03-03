@@ -65,6 +65,7 @@ class Config(BaseObject):
     """Config class for representing the application configuration as an in-database object."""
     schema = { 'displaySynopsis': bool,
                'tvuMldonkeyPlugin': bool,
+               'incomingFolder': unicode,
                'subtitleLanguage': unicode,
                'collections': CollectionSettings,
                'feeds': Feed

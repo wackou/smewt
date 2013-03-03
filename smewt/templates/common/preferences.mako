@@ -15,14 +15,35 @@ config = context.get('items')
 
 <script type="text/javascript">
 
-function updateFolders(collec) {
+function updateFolders(collec, index) {
     var nfolders = $("#collectionTable_" + collec + " tr").length - 1; // for the last line with the add button
+    var modifiedFolder = null;
     var folders = [];
     for (var i=0; i<nfolders; i++) {
-        folders.push([ $("#folder_" + collec + "_" + i).val(),
+        var folder_name = $("#folder_" + collec + "_" + i).val()
+        if (i == index) modifiedFolder = folder_name;
+        folders.push([ folder_name,
                        $("#rec_"    + collec + "_" + i)[0].checked ]);
     }
-    action("set_collection_folders", { "collection": collec, "folders": JSON.stringify(folders) });
+    action("set_collection_folders", { "collection": collec, "folders": JSON.stringify(folders) },
+           true, false, function() { info("exists_path", { path: modifiedFolder }, function(data) {
+               if (data) $("#folder_"+collec+"_"+index).css('color', 'green');
+               else      $("#folder_"+collec+"_"+index).css('color', 'red');
+           }); });
+}
+
+function updateBoolProperty(form, w, prop) {
+    $.post('/config/set/' + prop,
+           { value: form[w].checked });
+}
+
+function updateIncomingFolder() {
+    $.post('/config/set/incomingFolder',
+           { value: $("#incomingFolder").val() },
+           function(data) {
+               if (data) $("#incomingFolder").css('color', 'green');
+               else      $("#incomingFolder").css('color', 'red');
+           });
 }
 
 </script>
@@ -63,7 +84,7 @@ function updateFolders(collec) {
                 <tr>
                   <td>
                     <input id="folder_${collec.name}_${loop.index}" type="text" class="span12"
-                           onKeyUp="return updateFolders('${collec.name}')" onChange="return updateFolders(${collec.name})"
+                           onKeyUp="updateFolders('${collec.name}', ${loop.index});" onChange="updateFolders('${collec.name}', ${loop.index});"
                            value="${f}" />
 
                   </td>
@@ -71,7 +92,7 @@ function updateFolders(collec) {
                     <% checked = 'checked' if rec else '' %>
 
                     <input type="checkbox" id="rec_${collec.name}_${loop.index}" name="watched"
-                           onClick="updateFolders('${collec.name}')" ${checked} />
+                           onClick="updateFolders('${collec.name}', ${loop.index})" ${checked} />
                  </td>
                  <td>
                    <div class="btn" onclick="action('delete_collection_folder',
@@ -110,12 +131,17 @@ function updateFolders(collec) {
 
             %elif isinstance(value, bool):
             <input type="checkbox" id="w${loop.index}"
-              onClick="$.post('/config/set/${prop}',
-                              { value: this.form['w${loop.index}'].checked });" ${'checked' if value else ''} />
+              onClick="updateBoolProperty(this.form, 'w${loop.index}', '${prop}');" ${'checked' if value else ''} />
 
                 %if prop == 'tvuMldonkeyPlugin':
                 &nbsp;&nbsp;&nbsp;&nbsp;(requires restarting SmewtDaemon)
                 %endif
+
+
+            %elif prop == 'incomingFolder':
+            <input id="incomingFolder" type="text" class="span12"
+                           onKeyUp="updateIncomingFolder();" onChange="updateIncomingFolder();"
+                           value="${value}" />
 
 
             %elif type(value) is types.GeneratorType:

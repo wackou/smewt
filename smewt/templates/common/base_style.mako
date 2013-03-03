@@ -253,8 +253,8 @@ config = SMEWTD_INSTANCE.database.config
         ;
     }
 
-    function info(name, func) {
-        $.get("/info/"+name)
+    function info(name, args, func) {
+        $.get("/info/"+name, args)
         .done(function(data) {
             func(data);
         })
@@ -264,7 +264,7 @@ config = SMEWTD_INSTANCE.database.config
     }
 
     function refreshVideoPos() {
-        info("video_position", function(data) {
+        info("video_position", undefined, function(data) {
             $("#videoPos").html(data);
         });
     }
