@@ -33,10 +33,10 @@ log = logging.getLogger(__name__)
 class EpisodeTagger(Tagger):
 
     def perform(self, query):
-        log.info('EpisodeTagger tagging episode: %s' % u(query.find_one(Media).filename))
+        log.info('EpisodeTagger tagging episode: %s', u(query.find_one(Media).filename))
         filenameMetadata = SolvingChain(EpisodeFilename()).solve(query)
 
-        log.info('EpisodeTagger found info: %s' % filenameMetadata.find_one(Episode))
+        log.info('EpisodeTagger found info: %s', u(filenameMetadata.find_one(Episode)))
         result = SolvingChain(EpisodeTVDB(), SimpleSolver(Episode)).solve(filenameMetadata)
 
         media = result.find_one(Media)
@@ -59,5 +59,5 @@ class EpisodeTagger(Tagger):
 
         self.cleanup(result)
 
-        log.debug('Finished tagging: %s' % media.filename)
+        log.debug('Finished tagging: %s', u(media.filename))
         return result

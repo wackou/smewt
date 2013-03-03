@@ -39,7 +39,7 @@ class MovieTagger(Tagger):
 
         media = result.find_one(Media)
         if not media.metadata:
-            log.warning('Could not find any tag for: %s' % media)
+            log.warning('Could not find any tag for: %s' % u(media))
 
         # import the info we got from the filename if nothing better came in with MovieTMDB
         for prop in filenameMovie.keys():

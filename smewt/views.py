@@ -381,6 +381,11 @@ def info(request):
              renderer='smewt:templates/common/preferences.mako')
 def preferences_view(request):
     config = SMEWTD_INSTANCE.database.config
+
+    # checks for some required fields and add them if missing
+    if config.get('tvuMldonkeyPlugin') is None:
+        config.tvuMldonkeyPlugin = False
+
     return { 'title': 'PREFERENCES',
              'smewtd': SMEWTD_INSTANCE,
              'items': config.explicit_items(),

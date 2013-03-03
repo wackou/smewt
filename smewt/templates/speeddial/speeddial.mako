@@ -23,6 +23,11 @@ p {
 </style>
 </%block>
 
+<%
+from smewt import SMEWTD_INSTANCE
+config = SMEWTD_INSTANCE.database.config
+%>
+
 <div class="container-fluid">
   <div class="row-fluid">
 
@@ -64,12 +69,15 @@ p {
       <p>Episode Suggestions</p>
     </div></div>
 
+
+    %if config.get('tvuMldonkeyPlugin'):
     <div class="span4"><div class="well">
       <a href="/feeds">
       <!-- <img src="/user/speeddial/feeds.png" width="200" /></a> -->
       <img src="/static/images/speeddial/network-wireless.png" /></a>
       <p>Feed Watcher</p>
     </div></div>
+    %endif
 
     </div>
 </div>

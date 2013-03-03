@@ -34,7 +34,7 @@ PERSISTENT_CACHE = True
 # Whether to use the http debug toolbar plugin for pyramid
 PYRAMID_DEBUGTOOLBAR = False
 
-# Whethed to add file and line info to all print statements
+# Whether to add file and line info to all print statements
 DEBUG_PRINT = False
 
 # Whether to reload mako templates from file every time or use the cache
@@ -43,7 +43,3 @@ RELOAD_MAKO_TEMPLATES = True
 
 # Whether to regenerate the thumbnails for the speeddial at app startup
 REGENERATE_THUMBNAILS = False
-
-PLUGIN_TVU = True
-
-PLUGIN_MLDONKEY = True

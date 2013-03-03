@@ -172,6 +172,11 @@ Video Control:
 
 </%def>
 
+<%
+from smewt import SMEWTD_INSTANCE
+config = SMEWTD_INSTANCE.database.config
+%>
+
 <div class="container-fluid" >
   <div class="row-fluid">
     <div class="span2 sidebar">
@@ -180,9 +185,11 @@ Video Control:
       <ul class="nav nav-list span2 sidenav">
         <li class="nav-header">General</li>
         ${navlink('Speed dial', '/speeddial')}
+        %if config.get('tvuMldonkeyPlugin'):
         ${navlink('Tv Underground', '/tvu')}
         ${navlink('Feeds', '/feeds')}
         ${navlink('MLDonkey', 'http://127.0.0.1:4080', True)}
+        %endif
         ${navlink('Preferences', '/preferences')}
         ${navlink('Control Panel', '/controlpanel')}
         <li class="nav-header">Movies</li>

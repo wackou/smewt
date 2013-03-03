@@ -36,7 +36,7 @@ class Feed(BaseObject):
                  'title': self.title,
                  'lastUpdate': tuple(f for f in json.loads(self.lastUpdate)),
                  'lastTitle': self.lastTitle,
-                 'entries': [ f for f in json.loads(self.get('entries', '[]')) ] }
+                 'entries': [ e for e in json.loads(self.get('entries', '[]')) ] }
 
     @staticmethod
     def fromDict(d, graph):
@@ -64,6 +64,7 @@ class CollectionSettings(BaseObject):
 class Config(BaseObject):
     """Config class for representing the application configuration as an in-database object."""
     schema = { 'displaySynopsis': bool,
+               'tvuMldonkeyPlugin': bool,
                'subtitleLanguage': unicode,
                'collections': CollectionSettings,
                'feeds': Feed

@@ -32,7 +32,7 @@ ${parent.scripts()}
 
     <script src="${dataTables}/js/jquery.dataTables.js"></script>
     <script src="${dataTables}/js/DT_bootstrap.js"></script>
-    <script>
+    <script type="text/javascript">
         function updateWatched(form, w, title) {
             action('set_watched', { "title": title, "watched": form[w].checked });
         }

@@ -13,7 +13,7 @@ config = context.get('items')
 <%block name="scripts">
   ${parent.scripts()}
 
-<script>
+<script type="text/javascript">
 
 function updateFolders(collec) {
     var nfolders = $("#collectionTable_" + collec + " tr").length - 1; // for the last line with the add button
@@ -25,13 +25,13 @@ function updateFolders(collec) {
     action("set_collection_folders", { "collection": collec, "folders": JSON.stringify(folders) });
 }
 
-
 </script>
 </%block>
 
 
 <div class="container-fluid">
   <div class="row-fluid">
+    <form>
 
     <table class="table table-striped table-bordered table-hover">
       <thead><tr>
@@ -108,6 +108,15 @@ function updateFolders(collec) {
               </tbody>
             </table>
 
+            %elif isinstance(value, bool):
+            <input type="checkbox" id="w${loop.index}"
+              onClick="$.post('/config/set/${prop}',
+                              { value: this.form['w${loop.index}'].checked });" ${'checked' if value else ''} />
+
+                %if prop == 'tvuMldonkeyPlugin':
+                &nbsp;&nbsp;&nbsp;&nbsp;(requires restarting SmewtDaemon)
+                %endif
+
 
             %elif type(value) is types.GeneratorType:
               ${list(value)}
@@ -121,6 +130,7 @@ function updateFolders(collec) {
         %endfor
       </tbody>
     </table>
+    </form>
 
   </div>
 </div>

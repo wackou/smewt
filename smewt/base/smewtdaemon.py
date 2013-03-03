@@ -122,15 +122,14 @@ class SmewtDaemon(object):
             # is setup and we are able to serve requests
             Timer(3, self.regenerateSpeedDialThumbnails).start()
 
-
-        # load up the feed watcher
-        if config.PLUGIN_TVU:
+        if self.database.config.get('tvuMldonkeyPlugin'):
+            # load up the feed watcher
             self.feedWatcher = FeedWatcher(self)
 
-        if config.PLUGIN_MLDONKEY:
             # FIXME: this should go into a plugin.init() method
             from smewt.plugins import mldonkey
             mldonkey.send_command('vm')
+
 
         # do not rescan as it would be too long and we might delete some files that
         # are on an unaccessible network share or an external HDD
@@ -141,8 +140,11 @@ class SmewtDaemon(object):
     def quit(self):
         log.info('SmewtDaemon quitting...')
         self.taskManager.finishNow()
-        if config.PLUGIN_TVU:
+        try:
             self.feedWatcher.quit()
+        except AttributeError:
+            pass
+
         self.saveDB()
 
         if smewt.config.PERSISTENT_CACHE:
