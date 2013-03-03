@@ -34,6 +34,7 @@ function getSubtitles(type, title) {
     action("get_subtitles", { type: type, title: title });
 }
 
+
 </script>
 
 </%block>
@@ -52,13 +53,13 @@ ${parent.make_lang_selector(context['smewtd'])}
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span2">
-      <img src="${movie.loresImage}" height="130px" width="auto"/>
+      <img src="${movie.hiresImage}" height="250px;" width="auto"/>
     </div>
 %if movie.title != 'Unknown':
     <div class="span10">
       <br>
       Movie:
-      <div class="btn" onclick="playMovie('${urllib.quote(movie.title)}');">Play</div>
+      <div class="btn" onclick="playMovie('${urllib.quote(movie.title)}');"> <i class="icon-play"></i> </div>
 
       %for subtitle in sorted(tolist(movie.get('subtitles')), key=lambda s: s.language):
         <div class="btn" onclick="playMovie('${urllib.quote(movie.title)}', '${subtitle.language}');">
@@ -66,9 +67,13 @@ ${parent.make_lang_selector(context['smewtd'])}
         </div>
       %endfor
 
+      <br><br>
+        ${parent.video_control()}
+      <br>
     </div>
-    <br><br><br>
+
     <div class="span10">
+      <br>
       ${make_subtitle_download_links(movie)}
     </div>
 %endif

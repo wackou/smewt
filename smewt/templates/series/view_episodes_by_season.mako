@@ -66,6 +66,7 @@ function toggleSynopsis() {
            { value: isToggled('synopsis') });
 }
 
+
 </script>
 
 </%block>
@@ -90,9 +91,13 @@ function toggleSynopsis() {
     <div class="span10">
       <br>
       Display: <div class="btn" onclick="toggleSynopsis()">Toggle synopsis</div>
+      <br>
+      <br>
+        ${parent.video_control()}
+      <br>
     </div>
-    <br><br><br>
     <div class="span10">
+      <br>
       ${make_subtitle_download_links(series.title)}
     </div>
 %endif

@@ -43,6 +43,10 @@ suggest = sorted(suggest.items(), key = lambda eps: -tolist(eps[1][0].files)[0].
 <div class="container-fluid">
 
     %if suggest:
+        <div class="row-fluid"><div class="span12">
+          ${parent.video_control()}
+          <br><br>
+        </div></div>
         %for s, eps in suggest:
             <div class="row-fluid"><div class="span12">
             <%

@@ -4,11 +4,13 @@ from pyramid.httpexceptions import HTTPFound
 from smewt import SMEWTD_INSTANCE
 from smewt.base import EventServer, SmewtException
 from smewt.ontology import Metadata, Movie, Series, Episode
-from smewt.plugins import mldonkey, tvu
+from smewt.plugins import mldonkey, tvu, mplayer
 from smewt.actions import get_subtitles, play_video, play_file
 from guessit.textutils import reorder_title
 import urllib2
 import time
+import os
+import subprocess
 import threading
 import json
 
@@ -303,6 +305,37 @@ def action(request):
                        text = request.params['contents'])
             return 'OK'
 
+        elif action == 'video_pause':
+            mplayer.pause()
+            return 'OK'
+
+        elif action == 'video_stop':
+            mplayer.stop()
+            return 'OK'
+
+        elif action == 'video_fback':
+            mplayer.fast_back()
+            return 'OK'
+
+        elif action == 'video_back':
+            mplayer.back()
+            return 'OK'
+
+        elif action == 'video_fwd':
+            mplayer.forward()
+            return 'OK'
+
+        elif action == 'video_ffwd':
+            mplayer.fast_forward()
+            return 'OK'
+
+        elif action == 'quit':
+            # surely there's a better way to do this...
+            def timebomb():
+                time.sleep(1)
+                subprocess.call(['kill', '-2', str(os.getpid())])
+            threading.Thread(target=timebomb).start()
+            return 'OK'
 
         else:
             return 'Error: unknown action: %s' % action
@@ -335,6 +368,10 @@ def info(request):
         else:
             return 'Task %d/%d completed!' % (len(tm.finished), tm.total)
 
+    elif name == 'video_position':
+        return '%02d:%02d:%02d' % (int(mplayer.pos / 3600),
+                                   int(mplayer.pos / 60) % 60,
+                                   int(mplayer.pos) % 60)
 
     else:
         return 'Error: unknown info: %s' % name

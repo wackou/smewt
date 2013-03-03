@@ -48,7 +48,12 @@ $('#paneltabs a:first').tab('show');
   <div class="btn" onclick="window.open('/user/Smewt.log');">show log</div>
   <div class="btn" onclick="action('clear_cache');">clear cache</div>
   <div class="btn" onclick="action('regenerate_thumbnails');">regenerate speed dial thumbnails</div>
+</div>
+<div class="well">
+  Actions
   <div class="btn" onclick="action('classify_incoming_files');">move incoming files into collection</div>
+  <div class="btn" onclick="action('quit');">quit SmewtDaemon</div>
+
 </div>
 <hr>
 <div class="well">

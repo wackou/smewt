@@ -4,12 +4,12 @@ mako>=0.7
 waitress
 requests>=0.14
 # those are git submodules in 3rdparty/
+#guessit>=0.5.4
+#pygoo>=0.1.4
 #subliminal>=0.6.2
 beautifulsoup4>=4.1 # for subliminal
 enzyme>=0.2         # for subliminal
-#guessit>=0.5.4
-#pygoo>=0.1.4
 #pyramid_debugtoolbar
 feedparser>=5.1
 appdirs>=1.2
-pillow
+#pillow  # raspberrypi needs python-imaging instead

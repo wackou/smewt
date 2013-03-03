@@ -156,6 +156,22 @@ for i, p in enumerate(path[1:]):
       >${title}</a></li>
 </%def>
 
+<%def name="video_control()">
+
+Video Control:
+<div class="btn" onclick="action('video_fback');"> <i class="icon-fast-backward"></i> </div>
+<div class="btn" onclick="action('video_back');"> <i class="icon-backward"></i> </div>
+
+<div class="btn" onclick="action('video_pause');"> <i class="icon-pause"></i> </div>
+<div class="btn" onclick="action('video_stop');"> <i class="icon-stop"></i> </div>
+
+<div class="btn" onclick="action('video_fwd');"> <i class="icon-forward"></i> </div>
+<div class="btn" onclick="action('video_ffwd');"> <i class="icon-fast-forward"></i> </div>
+
+&nbsp;&nbsp;&nbsp; Pos: <span id="videoPos"></span>
+
+</%def>
+
 <div class="container-fluid" >
   <div class="row-fluid">
     <div class="span2 sidebar">
@@ -197,7 +213,7 @@ for i, p in enumerate(path[1:]):
 <%block name="scripts">
   ${parent.scripts()}
 
-  <script>
+  <script type="text/javascript">
     $('.sidenav').affix();
 
     function sublangChanged(t) {
@@ -220,9 +236,12 @@ for i, p in enumerate(path[1:]):
                     else                refreshCallback();
                 }
             }
-            else              { alert(data); }
+            else { alert(data); }
         })
-        .fail(function(err)   { alert("HTTP error "+err.status+": "+err.statusText); })
+        .fail(function(err) {
+            if (err.status == 0) alert("SmewtDaemon doesn't seem to be running...");
+            else alert("HTTP error "+err.status+": "+err.statusText);
+        })
         //.always(function(data) { alert("always: "+data); })
         ;
     }
@@ -236,6 +255,18 @@ for i, p in enumerate(path[1:]):
         //.always(function(data) { alert("always: "+data); })
         ;
     }
+
+    function refreshVideoPos() {
+        info("video_position", function(data) {
+            $("#videoPos").html(data);
+        });
+    }
+
+    $(function() {
+        refreshVideoPos();
+        setInterval(refreshVideoPos, 1000);
+    });
+
 
   </script>
 </%block>

@@ -13,7 +13,7 @@ feeds = feedWatcher.feedList
 <%block name="scripts">
   ${parent.scripts()}
 
-<script>
+<script type="text/javascript">
 
 function updateFeed(feedUrl) {
     action("update_feed", { "feed": feedUrl }, true, 1000, refreshFeedsStatus);

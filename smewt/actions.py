@@ -20,6 +20,7 @@
 
 from smewt.base.utils import tolist, toresult
 from smewt.base.subtitletask import SubtitleTask
+from smewt.plugins import mplayer
 from guessit.language import Language
 import smewt
 import os, sys, time
@@ -84,20 +85,37 @@ def get_subtitles(media_type, title, season=None, language=None):
 def _play(files, subs):
     # launch external player
     args = files
+    subs = subs + [None] * (len(files) - len(subs))
+
+    # if we have mplayer installed, use it with subtitles support
+    if os.system('which mplayer') == 0:
+        action = 'mplayer'
+        args = []
+        for video, subfile in zip(files, subs):
+            args.append(video)
+            if subfile:
+                args += [ '-sub', subfile ]
+
+        log.info('launching %s with args = %s' % (action, str(args)))
+        return mplayer.play(args)
+
+    # RaspberryPi: use omxplayer
+    if os.system('which omxplayer') == 0:
+        action = 'omxplayer'
+        args = []
+        for video, subfile in zip(files, subs):
+            args.append(video)
+            if subfile:
+                args += [ '-sub', subfile ]
+
+        log.info('launching %s with args = %s' % (action, str(args)))
+        return mplayer.play(args)
+
 
     if sys.platform == 'linux2':
         action = 'xdg-open'
         # FIXME: xdg-open only accepts 1 argument, this will break movies split in multiple files...
         args = args[:1]
-
-        # if we have mplayer installed, use it with subtitles support
-        if os.system('which mplayer') == 0:
-            action = 'mplayer'
-            args = []
-            for video, subfile in zip(files, subs):
-                args.append(video)
-                if subfile:
-                    args += [ '-sub', subfile ]
 
         # if we have smplayer installed, use it with subtitles support
         if os.system('which smplayer') == 0:
@@ -113,7 +131,6 @@ def _play(files, subs):
 
     elif sys.platform == 'win32':
         action = 'open'
-
 
 
     log.info('launching %s with args = %s' % (action, str(args)))
