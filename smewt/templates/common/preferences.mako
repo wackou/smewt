@@ -46,6 +46,15 @@ function updateIncomingFolder() {
            });
 }
 
+function deleteFolder(collection, index) {
+    action('delete_collection_folder', { 'collection': collection,
+                                         'index': index }, true);
+}
+
+function addFolder(collection) {
+    action('add_collection_folder', {'collection': collection }, true);
+}
+
 </script>
 </%block>
 
@@ -95,9 +104,7 @@ function updateIncomingFolder() {
                            onClick="updateFolders('${collec.name}', ${loop.index})" ${checked} />
                  </td>
                  <td>
-                   <div class="btn" onclick="action('delete_collection_folder',
-                                                    { 'collection': '${collec.name}',
-                                                      'index': ${loop.index} }, true);">
+                   <div class="btn" onclick="deleteFolder('${collec.name}', ${loop.index});">
                      <img src="/static/images/edit-delete.png" width="24" heigth="24"/>
                    </div>
                  </td>
@@ -105,7 +112,7 @@ function updateIncomingFolder() {
                 %endfor
                 <tr>
                   <td colspan="3">
-                   <div class="btn" onclick="action('add_collection_folder', {'collection': '${collec.name}' }, true);">
+                   <div class="btn" onclick="addFolder('${collec.name}');">
                      <img src="/static/images/folder-new.png" width="24" heigth="24"/>
                      Add new folder
                    </div>
