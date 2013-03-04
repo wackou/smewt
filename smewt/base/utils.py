@@ -186,7 +186,7 @@ def guessitToPygoo(guess):
 
 
 
-def matchFile(filename, validFiles = ['*']):
+def matchFile(filename, validFiles=['*']):
     for validFile in validFiles:
         # if validFile is a string pattern, do filename matching
         if isinstance(validFile, basestring):
@@ -202,13 +202,13 @@ def matchFile(filename, validFiles = ['*']):
     return False
 
 
-def dirwalk(directory, validFiles = ['*'], recursive = True):
+def dirwalk(directory, validFiles=['*'], recursive=True):
     """A generator that goes through all the files in the given directory that matches
     at least one of the patterns.
 
     Patterns can either be strings used for globbing or filter functions that return
     True if the file needs to be considered."""
-    for root, dirs, files in os.walk(directory, followlinks = True):
+    for root, dirs, files in os.walk(directory, followlinks=True):
         for f in files:
             filename = os.path.join(root, f)
             if matchFile(filename, validFiles):

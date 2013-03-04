@@ -29,6 +29,19 @@ video_info = ''
 pos = 0.0
 _stdout = ''
 
+variant = 'mplayer'
+
+def detect():
+    global variant
+    if subprocess.Popen(['which', 'omxplayer'], stdout=subprocess.PIPE) == 0:
+        variant = 'omxplayer'
+    elif subprocess.call(['which', 'smplayer'], stdout=subprocess.PIPE) == 0:
+        variant = 'smplayer'
+    elif subprocess.call(['which', 'mplayer'], stdout=subprocess.PIPE) == 0:
+        variant = 'mplayer'
+
+detect()
+
 def _send_command(cmd):
     p.stdin.write(cmd)
     log.debug('mplayer cmd: %s' % cmd)
@@ -61,10 +74,17 @@ def _run(cmd=None, args=None):
         elif l.startswith('AUDIO:'):
             video_info += l
         else:
-            for ll in (_stdout + l).split('\r'):
+            for ll in (_stdout + l).split('\r')[:-1]:
                 if ll.startswith('A:'):
+                    # mplayer
                     try:
                         pos = float(ll.strip().split()[1])
+                    except (IndexError, ValueError):
+                        pass
+                elif ll.startswith('V :'):
+                    # omxplayer
+                    try:
+                        pos = float(ll.strip().split()[2]) / 1e6
                     except (IndexError, ValueError):
                         pass
 
@@ -79,7 +99,7 @@ def play(args):
     log.info('mplayer play: %s' % args)
 
     def run():
-        _run('mplayer', args)
+        _run(variant, args)
 
     t = Thread(target=run)
     t.daemon = True

@@ -19,6 +19,7 @@
 #
 
 from smewt.base.utils import tolist, toresult
+from smewt.base.textutils import u
 from smewt.base.subtitletask import SubtitleTask
 from smewt.plugins import mplayer
 from guessit.language import Language
@@ -102,11 +103,11 @@ def _play(files, subs):
     # RaspberryPi: use omxplayer
     if os.system('which omxplayer') == 0:
         action = 'omxplayer'
-        args = []
+        args = ['-s']
         for video, subfile in zip(files, subs):
             args.append(video)
             if subfile:
-                args += [ '-sub', subfile ]
+                args += [ '--subtitles', subfile ]
 
         log.info('launching %s with args = %s' % (action, str(args)))
         return mplayer.play(args)
@@ -154,7 +155,7 @@ def play_video(metadata, sublang=None):
         msg = 'Playing %s with %s subtitles' % (metadata, Language(sublang).english_name)
     else:
         msg = 'Playing %s with no subtitles' % metadata
-    log.info(msg)
+    log.info(u(msg))
 
     # FIXME: we assume that sorting alphanumerically is good enough, but that is
     #        not necessarily the case...
