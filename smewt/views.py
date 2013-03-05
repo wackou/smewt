@@ -2,17 +2,22 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
 from smewt import SMEWTD_INSTANCE
-from smewt.base import EventServer, SmewtException
+from smewt.base import EventServer, SmewtException, utils
 from smewt.ontology import Metadata, Movie, Series, Episode
 from smewt.plugins import mldonkey, tvu, mplayer
 from smewt.actions import get_subtitles, play_video, play_file
 from guessit.textutils import reorder_title
+import guessit
 import urllib2
 import time
 import os
+import shutil
 import subprocess
 import threading
 import json
+import logging
+
+log = logging.getLogger(__name__)
 
 
 def from_js(value):
@@ -264,6 +269,38 @@ def action(request):
             index = int(request.params['index'])
             get_collection(request.params['collection']).deleteFolder(index)
             return 'OK'
+
+        elif action == 'classify_incoming_files':
+            config = SMEWTD_INSTANCE.database.config
+            incoming = config.get('incomingFolder', '')
+            if not os.path.exists(incoming):
+                log.warning('Incoming folder doesn\'t exist: %s', incoming)
+                return 'OK'
+
+            # find the root folder for moving episodes
+            for c in config.collections:
+                if c.name == 'Series':
+                    try:
+                        series_folder = json.loads(c.folders)[0][0]
+                    except IndexError:
+                        return 'OK'
+
+            result = []
+            for f in utils.dirwalk(incoming):
+                info = guessit.guess_file_info(f, 'autodetect')
+                if info['type'].startswith('episode'):
+                    path = utils.path(series_folder, info['series'],
+                                      'Season %d' % info['season'], os.path.basename(f),
+                                      createdir=True)
+
+                    log.info('Moving %s to %s...', os.path.basename(f), path)
+                    shutil.copy(f, path)
+                    os.remove(f)
+                    result.append('Moved %s' % os.path.basename(f))
+
+            return '\n'.join(result) or 'OK'
+
+
 
         elif action == 'regenerate_thumbnails':
             SMEWTD_INSTANCE.regenerateSpeedDialThumbnails()

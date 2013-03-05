@@ -94,7 +94,7 @@ if config.get('subtitleLanguage'):
 
 <%def name="make_media_box(f)">
 <div class="well">
-  <a href="javascript:void(0);" onclick="play_file('${urllib.quote(f.filename)}');">${f.filename}</a>
+  <a href="javascript:void(0);" onclick="action('play_file', { filename: '${f.filename}' });">${f.filename}</a>
 </div>
 </%def>
 
