@@ -45,7 +45,7 @@ function getSubtitles(type, title) {
 Look for subtitles in
 ${parent.make_lang_selector(context['smewtd'])}
 
-<div class="btn" onclick="getSubtitles('movie', '${urllib.quote(movie.title)}')">Download!</div>
+<div class="btn" onclick="getSubtitles('movie', '${urllib.quote(movie.title.encode('utf-8'))}')">Download!</div>
 
 </%def>
 
@@ -59,19 +59,25 @@ ${parent.make_lang_selector(context['smewtd'])}
     <div class="span10">
       <br>
       Movie:
-      <div class="btn" onclick="playMovie('${urllib.quote(movie.title)}');"> <i class="icon-play"></i> </div>
+      <div class="btn" onclick="playMovie('${movie.title}');"> <i class="icon-play"></i> </div>
 
       %for subtitle in sorted(tolist(movie.get('subtitles')), key=lambda s: s.language):
-        <div class="btn" onclick="playMovie('${urllib.quote(movie.title)}', '${subtitle.language}');">
+        <div class="btn" onclick="playMovie('${movie.title}', '${subtitle.language}');">
           <img src="${subtitle.languageFlagLink()}" />
         </div>
       %endfor
 
-      <br><br>
-        ${parent.video_control()}
+    </div>
+%else:
+<br><br>
+%endif
+
+    <div class="span10">
       <br>
+        ${parent.video_control()}
     </div>
 
+%if movie.title != 'Unknown':
     <div class="span10">
       <br>
       ${make_subtitle_download_links(movie)}

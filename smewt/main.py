@@ -26,6 +26,11 @@ import sys
 import os
 from pyramid.config import Configurator
 
+# bit of a hack, but solves a lot of unicode issues which we won't have anyway
+# once we switch to python3, so there...
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 
 def main():
     """ This function returns a Pyramid WSGI application."""

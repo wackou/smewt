@@ -248,5 +248,5 @@ class TVDBMetadataProvider(object):
             #result.display_graph()
             return result
 
-        except SmewtException, e:
+        except SmewtException:
             raise

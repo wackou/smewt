@@ -71,7 +71,7 @@ def getComments(md):
     return sorted(results, key = lambda x: x[1])
 
 comments = getComments(movie)
-qtitle = urllib.quote(movie.title)
+qtitle = urllib.quote(movie.title.encode('utf-8'))
 %>
 
 %if comments:

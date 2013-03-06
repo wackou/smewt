@@ -150,7 +150,8 @@ def guessCountryCodes(filename):
 
     # try to autodetect the language using the content of the subtitle
     if langs[-1] in ('srt', 'ssa'):
-        lang = guess_language(extractText(readFile(filename)))
+        text = extractText(readFile(filename))
+        lang = guess_language(text)
         if lang != UNDETERMINED:
             return [ lang ]
 

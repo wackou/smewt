@@ -29,7 +29,7 @@ video_info = ''
 pos = 0.0
 _stdout = ''
 
-variant = 'mplayer'
+variant = 'undefined'
 
 def detect():
     global variant

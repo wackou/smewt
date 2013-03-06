@@ -15,3 +15,11 @@ Then run Smewt using:
 
   $ workon smewt # if your virtualenv is not active yet
   $ fab smewt
+
+You can then access Smewt by navigating with your favorite browser to:
+
+http://<smewt_host>:6543/
+
+NOTE: When you play a video, it plays on the computer on which smewt is running,
+      so if you connect to your raspberry pi using your laptop, you can use your
+      laptop as a remote control.

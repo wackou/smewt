@@ -271,11 +271,13 @@ def action(request):
             return 'OK'
 
         elif action == 'classify_incoming_files':
+            # add as task to the task manager to be able to see progress
             config = SMEWTD_INSTANCE.database.config
             incoming = config.get('incomingFolder', '')
             if not os.path.exists(incoming):
-                log.warning('Incoming folder doesn\'t exist: %s', incoming)
-                return 'OK'
+                msg = 'Incoming folder doesn\'t exist: %s' % incoming
+                log.warning(msg)
+                return msg
 
             # find the root folder for moving episodes
             for c in config.collections:
@@ -293,6 +295,7 @@ def action(request):
                                       'Season %d' % info['season'], os.path.basename(f),
                                       createdir=True)
 
+                    # FIXME: add as task in the task manager
                     log.info('Moving %s to %s...', os.path.basename(f), path)
                     shutil.copy(f, path)
                     os.remove(f)

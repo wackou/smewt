@@ -2,6 +2,7 @@
 <%!
 from guessit.language import ALL_LANGUAGES, Language
 from guessit.fileutils import split_path
+from smewt.plugins import mplayer
 import urllib
 %>
 
@@ -157,7 +158,7 @@ for i, p in enumerate(path[1:]):
 </%def>
 
 <%def name="video_control()">
-
+%if mplayer.variant != 'undefined':
 Video Control:
 <div class="btn" onclick="action('video_fback');"> <i class="icon-fast-backward"></i> </div>
 <div class="btn" onclick="action('video_back');"> <i class="icon-backward"></i> </div>
@@ -169,7 +170,7 @@ Video Control:
 <div class="btn" onclick="action('video_ffwd');"> <i class="icon-fast-forward"></i> </div>
 
 &nbsp;&nbsp;&nbsp; Pos: <span id="videoPos"></span>
-
+%endif
 </%def>
 
 <%
@@ -263,11 +264,13 @@ config = SMEWTD_INSTANCE.database.config
         ;
     }
 
+    %if mplayer.variant != 'undefined':
     function refreshVideoPos() {
         info("video_position", undefined, function(data) {
             $("#videoPos").html(data);
         });
     }
+    %endif
 
     $(function() {
         refreshVideoPos();
