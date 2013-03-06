@@ -33,12 +33,23 @@ variant = 'undefined'
 
 def detect():
     global variant
-    if subprocess.Popen(['which', 'omxplayer'], stdout=subprocess.PIPE) == 0:
+
+    def is_exe(cmd):
+        p = subprocess.Popen(['which', cmd], stdout=subprocess.PIPE)
+        p.communicate()
+        return p.returncode == 0
+
+    if is_exe('omxplayer'):
+        log.info('Video player: detected omxplayer (RaspberryPi)')
         variant = 'omxplayer'
-    elif subprocess.call(['which', 'smplayer'], stdout=subprocess.PIPE) == 0:
+    elif is_exe('smplayer'):
+        log.info('Video player: detected smplayer')
         variant = 'smplayer'
-    elif subprocess.call(['which', 'mplayer'], stdout=subprocess.PIPE) == 0:
+    elif is_exe('mplayer'):
+        log.info('Video player: detected mplayer')
         variant = 'mplayer'
+    else:
+        log.info('Video player: mplayer not detected, video controls will not be available...')
 
 detect()
 

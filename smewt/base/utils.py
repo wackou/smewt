@@ -125,7 +125,7 @@ def readFile(filename):
     try:
         text = unicode(text, 'utf-8')
     except UnicodeDecodeError:
-        log.info('Subtitle not utf-8, trying latin-1...')
+        log.debug('Subtitle not utf-8, trying latin-1...')
         text = unicode(text, 'latin-1')
     except UnicodeDecodeError:
         log.warn('Error: can\'t find codec for decoding file: %s' % filename)
