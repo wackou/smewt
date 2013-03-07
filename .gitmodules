@@ -1,12 +1,9 @@
 [submodule "3rdparty/subliminal"]
 	path = 3rdparty/subliminal
-	url = git@github.com:wackou/subliminal.git
+	url = git://github.com/wackou/subliminal.git
 [submodule "3rdparty/guessit"]
 	path = 3rdparty/guessit
-	url = git@github.com:wackou/guessit.git
+	url = git://github.com/wackou/guessit.git
 [submodule "3rdparty/pygoo"]
 	path = 3rdparty/pygoo
-	url = git@github.com:wackou/pygoo.git
-[submodule "3rdparty/webkit2png"]
-	path = 3rdparty/webkit2png
-	url = git://github.com/adamn/python-webkit2png.git
+	url = git://github.com/wackou/pygoo.git
