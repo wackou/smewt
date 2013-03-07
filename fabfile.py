@@ -18,8 +18,7 @@ SMEWT_ROOT_PARENT = up(SMEWT_ROOT)
 import_modules = [ '.',
                    '3rdparty/pygoo',
                    '3rdparty/guessit',
-                   '3rdparty/subliminal',
-                   '3rdparty/webkit2png'
+                   '3rdparty/subliminal'
                    ]
 
 py_path = [ os.path.join(SMEWT_ROOT, module)
