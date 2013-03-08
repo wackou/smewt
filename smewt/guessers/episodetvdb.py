@@ -67,8 +67,9 @@ class EpisodeTVDB(GraphAction):
         series = ep.series
         # and add all the potential episodes
         for found_ep in result.find_all(Episode):
-            ep = query.Episode(found_ep)
-            ep.series = series
+            data = { 'series': series }
+            data.update(found_ep.literal_items())
+            ep = query.Episode(**data)
 
 
         return query
