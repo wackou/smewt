@@ -14,7 +14,7 @@ import guessit
 <%
 series = context['series']
 
-poster = '/user/images/' + series.get('hiresImage').split('/')[-1]
+poster = series.get('hiresImage')
 
 # First prepare the episodes, grouping them by season
 episodes = defaultdict(list)

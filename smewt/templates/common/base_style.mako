@@ -233,9 +233,10 @@ config = SMEWTD_INSTANCE.database.config
         location.reload(true);
     }
 
-    function action(actn, args, refresh, refreshTimeout, refreshCallback) {
+    function action(actn, args, refresh, refreshTimeout, refreshCallback, warnOnFail) {
         refresh = (typeof refresh !== 'undefined') ? refresh : false;
         refreshCallback = (typeof refreshCallback !== 'undefined') ? refreshCallback : refreshFunc;
+        warnOnFail = (typeof warnOnFail !== 'undefined') ? warnOnFail : true;
         $.post("/action/"+actn, args)
         .done(function(data) {
             if (data == "OK") {
@@ -246,9 +247,11 @@ config = SMEWTD_INSTANCE.database.config
             }
             else { alert(data); }
         })
-        .fail(function(err) {
-            if (err.status == 0) alert("SmewtDaemon doesn't seem to be running...");
-            else alert("HTTP error "+err.status+": "+err.statusText);
+        .fail(function(err, textStatus) {
+            if (warnOnFail) {
+                if (err.status == 0) alert("SmewtDaemon doesn't seem to be running...");
+                else                 alert("HTTP error "+err.status+": "+err.statusText);
+            }
         })
         //.always(function(data) { alert("always: "+data); })
         ;

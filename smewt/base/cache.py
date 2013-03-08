@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import unicode_literals
 from functools import wraps
 import cPickle
 import logging
@@ -59,9 +60,9 @@ def log_cache(key, result=None):
         res = unicode(result)
         if len(res) > 200:
             res = res[:100] + '   ...   ' + res[-100:]
-        log.debug(u'Using cached value for %s(%s,%s), returns: %s' % (key + (res,)))
+        log.debug('Using cached value for %s(%s,%s), returns: %s' % (key + (res,)))
     else:
-        log.debug(u'Computing value for %s(%s,%s)' % key)
+        log.debug('Computing value for %s(%s,%s)' % key)
 
 def cachedfunc(function):
     """Make a function (not a class method) use the global cache."""

@@ -26,8 +26,6 @@ py_path = [ os.path.join(SMEWT_ROOT, module)
 
 py_path = 'PYTHONPATH=%s:$PYTHONPATH ' % (':'.join(py_path))
 
-# add path for webkit2png
-py_path = 'PATH=3rdparty/webkit2png/scripts:$PATH ' + py_path
 
 @task
 def update_yappi():

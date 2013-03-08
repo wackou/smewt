@@ -23,9 +23,10 @@ from smewt.ontology import Series
 from smewt.base import textutils
 from smewt.base.utils import tolist, path
 from pygoo import MemoryObjectGraph
+from PIL import Image
+from urllib2 import urlopen
 import smewt.settings
 import guessit
-from urllib2 import urlopen
 import thetvdbapi
 import tmdb
 import datetime
@@ -131,12 +132,15 @@ class TVDBMetadataProvider(object):
         #       it will use a fast resampling algorithm, which will be of lower
         #       quality than what we achieve here
         # lores = 80px high
-        from PIL import Image
         width, height = 60, 80
-        log.info('Creating %dx%d screenshot for %s...' % (width, height, path))
+        header_msg = 'Creating %dx%d screenshot' % (width, height)
+        log.info('%s for %s...', header_msg, hiresFilename)
         im = Image.open(hiresFilename)
+        log.debug('%s: resizing...', header_msg)
         im.thumbnail((width, height), Image.ANTIALIAS)
+        log.debug('%s: saving to png...', header_msg)
         im.save(loresFilename, "PNG")
+        log.debug('%s: done!', header_msg)
 
         return ('/user/images/%s_lores.jpg' % localId,
                 '/user/images/%s_hires.jpg' % localId)

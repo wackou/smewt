@@ -52,20 +52,23 @@ class EpisodeTVDB(GraphAction):
             mdprovider = TVDBMetadataProvider()
             result = mdprovider.startEpisode(ep)
 
-        except SmewtException, e:
-            # series could not be found, return a dummy Unknown series instead so we can group them somewhere
+        except SmewtException:
+            # series could not be found, return a dummy Unknown series instead
+            # so we can group them somewhere
             log.warning('Could not find series for file: %s' % query.find_one(Media).filename)
             noposter = '/static/images/noposter.png'
             result = MemoryObjectGraph()
-            result.Series(title = 'Unknown', loresImage = noposter, hiresImage = noposter)
+            result.Series(title = 'Unknown', loresImage=noposter, hiresImage=noposter)
 
         # update the series
         query.delete_node(ep.series.node)
         ep.series = query.add_object(result.find_one(Series)) # this add_object should be unnecessary
 
+        series = ep.series
         # and add all the potential episodes
-        for ep in result.find_all(Episode):
-            query.add_object(ep, recurse = Equal.OnLiterals)
+        for found_ep in result.find_all(Episode):
+            ep = query.Episode(found_ep)
+            ep.series = series
 
 
         return query

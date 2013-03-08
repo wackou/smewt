@@ -29,7 +29,7 @@ function updateFolders(collec, index) {
            true, false, function() { info("exists_path", { path: modifiedFolder }, function(data) {
                if (data) $("#folder_"+collec+"_"+index).css('color', 'green');
                else      $("#folder_"+collec+"_"+index).css('color', 'red');
-           }); });
+           }); }, false);
 }
 
 function updateBoolProperty(form, w, prop) {
