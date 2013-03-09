@@ -56,7 +56,7 @@ $('#seasontabs a').click(function (e) {
     $(this).tab('show');
     var url = e.target.href.split('#');
     var tab = url[url.length-1].slice(3);
-    action("set_last_viewed_tab", {title: '${series.title}', 'tab': tab});
+    action("set_last_viewed_tab", {title: '${self.attr.Q_sq(series.title)}', 'tab': tab});
 })
 
 function toggleSynopsis() {

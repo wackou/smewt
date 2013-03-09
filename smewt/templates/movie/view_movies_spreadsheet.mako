@@ -14,8 +14,8 @@ movies = sorted([ SDict({ 'title': m.title,
                     'year': m.get('year', ''),
                     'rating': m.get('rating') or '-',
                     'genres': ', '.join(m.get('genres') or []) or '-',
-                    'watched': 'checked' if m.get('watched') or m.get('lastViewed') else '',
-                    'url': '/movie/' + m.title,
+                    'watched': 'checked' if m.get('watched') else '',
+                    'url': '/movie/' + self.attr.Q(m.title),
                     'poster': m.loresImage })
                     for m in allmovies ],
                     key = lambda x: x['title'])
@@ -39,13 +39,7 @@ ${parent.scripts()}
     </script>
 </%block>
 
-<%!
-    def single_quote_escape(text):
-        return text.replace("'", "\\'")
-%>
-
 <div class="container-fluid">
-
   <form>
 
     <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="example">
@@ -60,7 +54,7 @@ ${parent.scripts()}
           <td class="center">${m.rating}</td>
           <td>${m.genres}</td>
           <td class="center">
-            <input type="checkbox" id="w${loop.index}" name="watched"  onClick="updateWatched(this.form, 'w${loop.index}', '${single_quote_escape(m.title) | n}')" ${m.watched} />
+            <input type="checkbox" id="w${loop.index}" name="watched"  onClick="updateWatched(this.form, 'w${loop.index}', '${self.attr.SQ(m.title)}');" ${m.watched} />
           </td>
         </tr>
       %endfor

@@ -4,6 +4,17 @@ from guessit.language import ALL_LANGUAGES, Language
 from guessit.fileutils import split_path
 from smewt.plugins import mplayer
 import urllib
+
+def Q(string):
+    return string.replace('?', '%3F')
+
+def SQ(string):
+    return string.replace("'", "\\'")
+
+def Q_sq(string):
+    """For use within single quotes"""
+    return SQ(Q(string))
+
 %>
 
 

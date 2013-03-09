@@ -6,7 +6,7 @@ from smewt.base.utils import SDict
 
 <%
 series = sorted([ SDict(title = s.title,
-                        url = '/series/%s' % s.title,
+                        url = '/series/%s' % self.attr.Q(s.title),
                         poster = s.loresImage)
                   for s in context['series'] ],
                 key = lambda x: x.title)

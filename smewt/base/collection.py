@@ -94,6 +94,11 @@ class Collection(object):
     def collectionFiles(self):
         for folder, recursive in self.folders:
             for f in utils.dirwalk(folder, self.validFiles, recursive):
+                p = os.path.split(f)
+                if '.AppleDouble' in p:
+                    continue
+                if p[-1].startswith('._'):
+                    continue
                 yield f
 
     def modifiedFiles(self):

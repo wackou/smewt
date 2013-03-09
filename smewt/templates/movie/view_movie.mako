@@ -49,7 +49,6 @@ ${parent.make_lang_selector(context['smewtd'])}
 
 </%def>
 
-
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span2">
@@ -59,10 +58,10 @@ ${parent.make_lang_selector(context['smewtd'])}
     <div class="span10">
       <br>
       Movie:
-      <div class="btn" onclick="playMovie('${movie.title}');"> <i class="icon-play"></i> </div>
+      <div class="btn" onclick="playMovie('${self.attr.Q_sq(movie.title)}');"> <i class="icon-play"></i> </div>
 
       %for subtitle in sorted(tolist(movie.get('subtitles')), key=lambda s: s.language):
-        <div class="btn" onclick="playMovie('${movie.title}', '${subtitle.language}');">
+        <div class="btn" onclick="playMovie('${self.attr.Q_sq(movie.title)}', '${subtitle.language}');">
           <img src="${subtitle.languageFlagLink()}" />
         </div>
       %endfor

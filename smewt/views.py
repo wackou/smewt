@@ -69,7 +69,7 @@ def movies_table_view(request):
              renderer='smewt:templates/movie/view_movies_spreadsheet.mako')
 def unwatched_movies_view(request):
     return { 'movies': [ m for m in SMEWTD_INSTANCE.database.find_all(node_type=Movie)
-                         if not m.get('watched') and not m.get('lastViewed') ],
+                         if not m.get('watched') ],
              'title': 'UNWATCHED',
              'path': request.current_route_path()
              }
@@ -195,6 +195,8 @@ def get_collection(name):
 @view_config(route_name='action', renderer='json')
 def action(request):
     action = request.matchdict['action']
+
+    log.info('Action: %s - params = %s', action, request.params)
 
     try:
         if action == 'rescan_collections':

@@ -176,6 +176,7 @@ def play_video(metadata, sublang=None):
 
     # update last viewed info
     metadata.lastViewed = time.time()
+    metadata.watched = True
 
     _play([ f.filename for f in files],
           [ s.filename for s in subs if s ])

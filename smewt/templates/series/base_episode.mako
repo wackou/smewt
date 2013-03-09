@@ -1,7 +1,4 @@
 <%inherit file="smewt:templates/common/base_style.mako"/>
-<%!
-import urllib
-%>
 
 <%block name="scripts">
 ${parent.scripts()}
@@ -32,11 +29,11 @@ else:
 
 <div class="well">
   <a href="javascript:void(0);"
-          onclick="playEpisode('${urllib.quote(ep.series.title)}', ${ep.season}, ${ep.episodeNumber});">${title}</a>
+          onclick="playEpisode('${self.attr.Q_sq(ep.series.title)}', ${ep.season}, ${ep.episodeNumber});">${title}</a>
 
   %for subtitle in sorted(tolist(ep.get('subtitles')), key=lambda s: s.language):
     <img src="${subtitle.languageFlagLink()}"
-         onclick="playEpisode('${urllib.quote(ep.series.title)}', ${ep.season}, ${ep.episodeNumber}, '${subtitle.language}');" />
+         onclick="playEpisode('${self.attr.Q_sq(ep.series.title)}', ${ep.season}, ${ep.episodeNumber}, '${subtitle.language}');" />
   %endfor
 
   %if 'synopsis' in ep:

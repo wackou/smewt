@@ -50,8 +50,8 @@ suggest = sorted(suggest.items(), key = lambda eps: -tolist(eps[1][0].files)[0].
         %for s, eps in suggest:
             <div class="row-fluid"><div class="span12">
             <%
-              url = '/series/' + s.title
-              poster = '/user/images/' + s.get('loresImage').split('/')[-1]
+              url = '/series/' + self.attr.Q(s.title)
+              poster = s.get('loresImage')
             %>
             ${parent.make_title_box(poster, s.title, url)}
             </div></div>

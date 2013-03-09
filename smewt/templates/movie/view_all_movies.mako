@@ -2,13 +2,12 @@
 
 <%!
 from smewt.base.utils import SDict
-
+import urllib
 %>
 
 <%
-
 movies = sorted([ SDict(title = m.title,
-                        url = '/movie/%s' % m.title,
+                        url = '/movie/%s' % self.attr.Q(m.title),
                         poster = m.loresImage)
                   for m in context['movies'] ],
                 key = lambda x: x.title)
