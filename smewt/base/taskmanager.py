@@ -68,6 +68,7 @@ def worker(taskManager):
 
             # TODO: need to have timeout on the tasks, eg: 5 seconds
             # TODO: need to be able to stop task immediately
+            taskManager.taskDesc = task.description
             task.perform()
 
         except Exception:
@@ -95,6 +96,7 @@ class TaskManager(object):
         self.taskId = 0    # ID for the next task that will be generated
         self.total = 0     # used to keep track of the total jobs that have been submitted (queue size decreases as we process tasks)
         self.finished = [] # list of task IDs which have finished
+        self.taskDesc = '' # description of the task started last
 
         self.lock = Lock()
 

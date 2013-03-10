@@ -196,7 +196,7 @@ def get_collection(name):
 def action(request):
     action = request.matchdict['action']
 
-    log.info('Action: %s - params = %s', action, request.params)
+    log.debug('Action: %s - params = %s', action, request.params)
 
     try:
         if action == 'rescan_collections':
@@ -416,7 +416,7 @@ def info(request):
         if tm.total == 0:
             return 'idle'
         else:
-            return 'Task %d/%d completed!' % (len(tm.finished), tm.total)
+            return 'Task %d/%d completed!<br>Currently: %s' % (len(tm.finished), tm.total, tm.taskDesc)
 
     elif name == 'video_position':
         return '%02d:%02d:%02d' % (int(mplayer.pos / 3600),

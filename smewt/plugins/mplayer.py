@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from smewt.base import SmewtException
 from threading import Thread
 import subprocess
 import logging
@@ -27,6 +28,11 @@ log = logging.getLogger(__name__)
 p = None
 video_info = ''
 pos = 0.0
+
+# list of lines output on stdout by the mplayer process
+STDOUT = []
+
+# memory for stdout last (possibly incomplete) line
 _stdout = ''
 
 variant = 'undefined'
@@ -65,49 +71,81 @@ def send_command(cmd):
 
 
 def _run(cmd=None, args=None):
-    global p, video_info, pos, _stdout
+    global p, video_info, pos, STDOUT, _stdout
     command = []
     if cmd:
         command.extend(cmd.split(' '))
     if args:
         command.extend(args)
+
+    if p is not None:
+        raise RuntimeError('%s is already running!' % variant)
+
+    STDOUT = []
+    _stdout = ''
+    has_run = False
     p = subprocess.Popen(command,
                          stdin=subprocess.PIPE,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE)
 
-    l = True
+    l = p.stdout.readline(512)
+
     while l:
-        l = p.stdout.readline(1024)
-        #p.stderr.readline(1024)
-        if l.startswith('VIDEO:'):
-            video_info += l
-        elif l.startswith('AUDIO:'):
-            video_info += l
+        l = _stdout + l
+
+        info_lines = [ # mplayer
+                       'VIDEO:', 'AUDIO:',
+                       # omxplayer
+                       'Video codec ', 'Audio codec ', 'file : ' ]
+
+        for info in info_lines:
+            if l.startswith(info):
+                log.debug('mplayer info: %s', l.strip())
+                video_info += l
+                _stdout = ''
+                break
+
         else:
-            for ll in (_stdout + l).split('\r')[:-1]:
+            for ll in l.split('\r')[:-1]:
+                ll = ll.strip()
                 if ll.startswith('A:'):
                     # mplayer
                     try:
-                        pos = float(ll.strip().split()[1])
+                        pos = float(ll.split()[1])
+                        has_run = True
                     except (IndexError, ValueError):
                         pass
                 elif ll.startswith('V :'):
                     # omxplayer
                     try:
-                        pos = float(ll.strip().split()[2]) / 1e6
+                        pos = float(ll.split()[2]) / 1e6
+                        has_run = True
                     except (IndexError, ValueError):
                         pass
+                else:
+                    log.debug('mplayer stdout: %s', ll)
+                    STDOUT.append(ll)
 
-            _stdout = l.split('\r')[-1]
+            _stdout = l.split('\r')[-1] if '\r' in l else ''
+
+        l = p.stdout.readline(512)
 
     pos = 0.0
+    p = None
     log.info('mplayer process ended')
 
+    if variant in ['mplayer', 'omxplayer'] and not has_run:
+        raise SmewtException('Error while playing file: %s', '\n'.join(STDOUT))
 
 
 def play(args):
     log.info('mplayer play: %s' % args)
+    if p is not None:
+        raise SmewtException('%s is already running!' % variant)
+
+    # TODO: check if we don't die because of a timeout
+    return _run(variant, args)
 
     def run():
         _run(variant, args)

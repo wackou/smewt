@@ -23,7 +23,7 @@ $('#movietabs a').click(function (e) {
     $(this).tab('show');
     var url = e.target.href.split('#');
     var tab = url[url.length-1].slice(3);
-    action("set_last_viewed_tab", {title: '${movie.title}', 'tab': tab});
+    action("set_last_viewed_tab", {title: '${self.attr.SQ(movie.title) | n}', 'tab': tab});
 })
 
 function playMovie(title, language) {
@@ -45,7 +45,7 @@ function getSubtitles(type, title) {
 Look for subtitles in
 ${parent.make_lang_selector(context['smewtd'])}
 
-<div class="btn" onclick="getSubtitles('movie', '${urllib.quote(movie.title.encode('utf-8'))}')">Download!</div>
+<div class="btn" onclick="getSubtitles('movie', '${self.attr.Q_sq(movie.title)}')">Download!</div>
 
 </%def>
 
