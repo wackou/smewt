@@ -143,7 +143,7 @@ def _run(cmd=None, args=None):
     log.info('mplayer process ended')
 
     if variant in ['mplayer', 'omxplayer'] and not has_run:
-        raise SmewtException('Error while playing file: %s', '\n'.join(STDOUT))
+        raise SmewtException('Error while playing file: %s' % '\n'.join(STDOUT))
 
 
 def play(args):
