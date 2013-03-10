@@ -107,27 +107,34 @@ def _run(cmd=None, args=None):
                 break
 
         else:
-            for ll in l.split('\r')[:-1]:
-                ll = ll.strip()
-                if ll.startswith('A:'):
-                    # mplayer
-                    try:
-                        pos = float(ll.split()[1])
-                        has_run = True
-                    except (IndexError, ValueError):
-                        pass
-                elif ll.startswith('V :'):
-                    # omxplayer
-                    try:
-                        pos = float(ll.split()[2]) / 1e6
-                        has_run = True
-                    except (IndexError, ValueError):
-                        pass
-                else:
-                    log.debug('mplayer stdout: %s', ll)
-                    STDOUT.append(ll)
+            if '\r' in l:
+                for ll in l.split('\r')[:-1]:
+                    ll = ll.strip()
+                    if ll.startswith('A:'):
+                        # mplayer
+                        try:
+                            pos = float(ll.split()[1])
+                            has_run = True
+                        except (IndexError, ValueError):
+                            pass
+                    elif ll.startswith('V :'):
+                        # omxplayer
+                        try:
+                            pos = float(ll.split()[2]) / 1e6
+                            has_run = True
+                        except (IndexError, ValueError):
+                            pass
+                    else:
+                        log.debug('mplayer stdout: %s', ll)
+                        STDOUT.append(ll)
 
-            _stdout = l.split('\r')[-1] if '\r' in l else ''
+                _stdout = l.split('\r')[-1]
+
+            else:
+                log.debug('mplayer stdout: %s', l.strip())
+                STDOUT.append(l.strip())
+                _stdout = ''
+
 
         l = p.stdout.readline(512)
 
