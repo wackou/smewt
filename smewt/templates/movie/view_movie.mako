@@ -30,10 +30,6 @@ function playMovie(title, language) {
     action("play_movie", { title: title, sublang: language });
 }
 
-function getSubtitles(type, title) {
-    action("get_subtitles", { type: type, title: title });
-}
-
 
 </script>
 

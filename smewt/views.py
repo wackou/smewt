@@ -313,8 +313,7 @@ def action(request):
 
         elif action == 'get_subtitles':
             title = urllib2.unquote(request.params['title'])
-            get_subtitles(request.params['type'], title)
-            return 'OK'
+            return get_subtitles(request.params['type'], title)
 
         elif action == 'play_movie':
             title = urllib2.unquote(request.params['title'])

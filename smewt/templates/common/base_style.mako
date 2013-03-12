@@ -284,13 +284,27 @@ config = SMEWTD_INSTANCE.database.config
             $("#videoPos").html(data);
         });
     }
-    %endif
 
     $(function() {
         refreshVideoPos();
         setInterval(refreshVideoPos, 1000);
     });
+    %endif
 
+    function whenTaskManagerIdleExecute(func) {
+        info("task_manager_status", undefined, function(data) {
+            if (data === 'idle') func();
+            else setTimeout(function() { whenTaskManagerIdleExecute(func); }, 2000);
+        });
+    }
+
+    function getSubtitles(type, title) {
+        action("get_subtitles", { type: type, title: title }, true, false, function() {
+            whenTaskManagerIdleExecute(function() {
+                alert('Subtitles downloaded!'); refreshFunc();
+            });
+        });
+    }
 
   </script>
 </%block>

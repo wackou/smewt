@@ -32,16 +32,15 @@ log = logging.getLogger(__name__)
 
 
 def get_episodes_and_subs(language, series, season=None):
-    db = smewt.SMEWTD_INSTANCE.database
     if season:
         episodes = set(ep for ep in tolist(series.episodes) if ep.season == int(season))
     else:
         episodes = set(tolist(series.episodes))
 
-    subs = db.find_all(node_type='Subtitle',
-                       # FIXME: we shouldn't have to go to the node, but if we don't, the valid_node lambda doesn't return anything...
-                       valid_node=lambda x: toresult(list(x.metadata)) in set(ep.node for ep in episodes),
-                       language=language)
+    subs = []
+    for ep in episodes:
+        subs.extend(tolist(ep.get('subtitles')))
+
     return episodes, subs
 
 
@@ -61,8 +60,11 @@ def get_subtitles(media_type, title, season=None, language=None):
         if episodes:
             subtask = SubtitleTask(episodes, language)
             smewt.SMEWTD_INSTANCE.taskManager.add(subtask)
+            return 'OK'
         else:
-            log.info('All episodes already have %s subtitles!' % Language(language).english_name)
+            msg = 'All episodes already have %s subtitles!' % Language(language).english_name
+            log.info(msg)
+            return msg
 
     elif media_type == 'movie':
         movie = db.find_one('Movie', title=title)
@@ -70,15 +72,18 @@ def get_subtitles(media_type, title, season=None, language=None):
         # check if we already have it
         for sub in tolist(movie.get('subtitles')):
             if sub.language == language:
-                log.info('Movie already has a %s subtitle' % Language(language).english_name)
-                return
+                msg = 'Movie already has a %s subtitle' % Language(language).english_name
+                log.info(msg)
+                return msg
 
         subtask = SubtitleTask(movie, language)
         smewt.SMEWTD_INSTANCE.taskManager.add(subtask)
-
+        return 'OK'
 
     else:
-        log.error('Don\'t know how to fetch subtitles for type: %s' % media_type)
+        msg = 'Don\'t know how to fetch subtitles for type: %s' % media_type
+        log.error(msg)
+        return msg
 
 
 

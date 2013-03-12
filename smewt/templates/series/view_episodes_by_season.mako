@@ -77,7 +77,7 @@ function toggleSynopsis() {
    Look for subtitles in
    ${parent.make_lang_selector(context['smewtd'])}
 
-   <div class="btn" onclick="action('get_subtitles', {'type': 'episode', 'title': '${series}' });">Download!</div>
+   <div class="btn" onclick="getSubtitles('episode', '${series}');">Download!</div>
    <br><br>
 </div>
 </%def>

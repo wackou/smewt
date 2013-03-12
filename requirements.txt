@@ -2,7 +2,7 @@ fabric>=1.5
 pyramid>=1.4
 mako>=0.7
 waitress
-requests>=0.14
+requests==0.14.2
 # those are git submodules in 3rdparty/
 #pygoo>=0.1.4
 #guessit>=0.5.4
