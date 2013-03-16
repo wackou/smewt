@@ -98,7 +98,7 @@ def _play(files, subs):
         # if we have mplayer (or one of its variant) installed, use it with
         # subtitles support
         opts = []
-        mplayer.play(files, subs, opts)
+        return mplayer.play(files, subs, opts)
 
     elif sys.platform == 'linux2':
         action = 'xdg-open'

@@ -160,7 +160,7 @@ def play(files, subs=None, opts=None):
     if isinstance(opts, basestring):
         opts = opts.split(' ') # TODO: isn't there some shell args quoting function?
     subs = subs or [None] * len(files)
-    # make sure subs is as long as args so as to not cut it when zipping them together
+    # make sure subs is as long as args so as to not cut args when zipping them together
     subs = subs + [None] * (len(files) - len(subs))
 
     args = list(opts)
