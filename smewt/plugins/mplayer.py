@@ -48,9 +48,6 @@ def detect():
     if is_exe('omxplayer'):
         log.info('Video player: detected omxplayer (RaspberryPi)')
         variant = 'omxplayer'
-    elif is_exe('smplayer'):
-        log.info('Video player: detected smplayer')
-        variant = 'smplayer'
     elif is_exe('mplayer'):
         log.info('Video player: detected mplayer')
         variant = 'mplayer'
@@ -61,14 +58,17 @@ detect()
 
 def _send_command(cmd):
     p.stdin.write(cmd)
-    log.debug('mplayer cmd: %s' % cmd)
+    log.debug('%s cmd: %s', variant, cmd)
 
 def send_command(cmd):
     try:
         return _send_command(cmd)
     except:
-        log.warning('Could not connect to mplayer to execute command: %s' % cmd)
+        log.warning('Could not connect to %s to execute command: %s', variant, cmd)
 
+
+def _readsome(p):
+    return p.stdout.readline(512)
 
 def _run(cmd=None, args=None):
     global p, video_info, pos, STDOUT, _stdout
@@ -84,12 +84,15 @@ def _run(cmd=None, args=None):
     STDOUT = []
     _stdout = ''
     has_run = False
+
+    log.debug('Running: %s', command)
+
     p = subprocess.Popen(command,
                          stdin=subprocess.PIPE,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE)
 
-    l = p.stdout.readline(512)
+    l = _readsome(p)
 
     while l:
         l = _stdout + l
@@ -101,7 +104,7 @@ def _run(cmd=None, args=None):
 
         for info in info_lines:
             if l.startswith(info):
-                log.debug('mplayer info: %s', l.strip())
+                log.debug('%s info: %s', variant, l.strip())
                 video_info += l
                 _stdout = ''
                 break
@@ -116,75 +119,99 @@ def _run(cmd=None, args=None):
                             pos = float(ll.split()[1])
                             has_run = True
                         except (IndexError, ValueError):
+                            log.debug('wrong pos info: %s', ll)
                             pass
                     elif ll.startswith('V :'):
                         # omxplayer
                         try:
-                            pos = float(ll.split()[2]) / 1e6
+                            pos = float(ll.split()[7])
                             has_run = True
                         except (IndexError, ValueError):
+                            log.debug('wrong pos info: %s', ll)
                             pass
                     else:
-                        log.debug('mplayer stdout: %s', ll)
+                        log.debug('%s stdout: %s', variant, ll)
                         STDOUT.append(ll)
 
                 _stdout = l.split('\r')[-1]
 
             else:
-                log.debug('mplayer stdout: %s', l.strip())
+                log.debug('%s stdout: %s', variant, l.strip())
                 STDOUT.append(l.strip())
                 _stdout = ''
 
 
-        l = p.stdout.readline(512)
+        l = _readsome(p)
 
     pos = 0.0
     p = None
-    log.info('mplayer process ended')
+    log.info('%s process ended', variant)
 
     if variant in ['mplayer', 'omxplayer'] and not has_run:
         raise SmewtException('Error while playing file: %s' % '\n'.join(STDOUT))
 
 
-def play(args):
-    log.info('mplayer play: %s' % args)
+def play(files, subs=None, opts=None):
+    log.info('%s play - opts: %s', variant, opts)
     if p is not None:
         raise SmewtException('%s is already running!' % variant)
 
-    # TODO: check if we don't die because of a timeout
-    return _run(variant, args)
+    opts = opts or []
+    if isinstance(opts, basestring):
+        opts = opts.split(' ') # TODO: isn't there some shell args quoting function?
+    subs = subs or [None] * len(files)
+    # make sure subs is as long as args so as to not cut it when zipping them together
+    subs = subs + [None] * (len(files) - len(subs))
 
+    args = list(opts)
+
+    if variant == 'mplayer':
+        for video, subfile in zip(files, subs):
+            args.append(video)
+            if subfile:
+                args += [ '-sub', subfile ]
+    elif variant == 'omxplayer': # RaspberryPi
+        args.append('-s') # needed for getting the video pos info
+        for video, subfile in zip(files, subs):
+            args.append(video)
+            if subfile:
+                args += [ '--subtitles', subfile ]
+
+    # TODO: check if we don't die because of a timeout in the wsgi request
+    return _run(variant, args)
+    """
     def run():
         _run(variant, args)
 
     t = Thread(target=run)
     t.daemon = True
     t.start()
+    """
 
 def pause():
-    log.info('mplayer pause')
+    log.info('%s pause', variant)
     send_command(' ')
 
 
 def stop():
     global pos
-    log.info('mplayer stop')
+    log.info('%s stop', variant)
     send_command('q')
     pos = 0.0
 
 
 def fast_back():
-    log.info('mplayer fast back')
+    log.info('%s fast back', variant)
     send_command('\x1B[B') # down
 
 def back():
-    log.info('mplayer back')
+    log.info('%s back', variant)
     send_command('\x1B[D') # left
 
 def forward():
-    log.info('mplayer forward')
+    log.info('%s forward', variant)
     send_command('\x1B[C') # right
 
 def fast_forward():
-    log.info('mplayer fast forward')
+    log.info('%s fast forward', variant)
     send_command('\x1B[A') # up

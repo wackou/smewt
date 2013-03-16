@@ -91,34 +91,16 @@ def get_subtitles(media_type, title, season=None, language=None):
 def _play(files, subs):
     # launch external player
     args = files
+    # make sure subs is as long as args so as to not cut it when zipping them together
     subs = subs + [None] * (len(files) - len(subs))
 
-    # if we have mplayer installed, use it with subtitles support
-    if os.system('which mplayer') == 0:
-        action = 'mplayer'
-        args = []
-        for video, subfile in zip(files, subs):
-            args.append(video)
-            if subfile:
-                args += [ '-sub', subfile ]
+    if mplayer.variant != 'undefined':
+        # if we have mplayer (or one of its variant) installed, use it with
+        # subtitles support
+        opts = []
+        mplayer.play(files, subs, opts)
 
-        log.info('launching %s with args = %s' % (action, str(args)))
-        return mplayer.play(args)
-
-    # RaspberryPi: use omxplayer
-    if os.system('which omxplayer') == 0:
-        action = 'omxplayer'
-        args = ['-s']
-        for video, subfile in zip(files, subs):
-            args.append(video)
-            if subfile:
-                args += [ '--subtitles', subfile ]
-
-        log.info('launching %s with args = %s' % (action, str(args)))
-        return mplayer.play(args)
-
-
-    if sys.platform == 'linux2':
+    elif sys.platform == 'linux2':
         action = 'xdg-open'
         # FIXME: xdg-open only accepts 1 argument, this will break movies split in multiple files...
         args = args[:1]

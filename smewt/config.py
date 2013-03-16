@@ -25,7 +25,7 @@ MAIN_LOGGING_LEVEL = logging.INFO
 
 # Individual levels for specific modules
 LOGGING_LEVELS = [ ('smewt.base.cache', logging.INFO),
-                   #('smewt.plugins.mplayer', logging.DEBUG),
+                   ('smewt.plugins.mplayer', logging.DEBUG),
                    ('pygoo', logging.INFO)
                    ]
 
