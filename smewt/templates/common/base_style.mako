@@ -4,6 +4,7 @@ from guessit.language import ALL_LANGUAGES, Language
 from guessit.fileutils import split_path
 from smewt.plugins import mplayer
 import urllib
+import socket
 
 def Q(string):
     return string.replace('?', '%3F')
@@ -187,6 +188,9 @@ Video Control:
 <%
 from smewt import SMEWTD_INSTANCE
 config = SMEWTD_INSTANCE.database.config
+
+def local_ip():
+    return socket.gethostbyname(socket.gethostname())
 %>
 
 <div class="container-fluid" >
@@ -200,7 +204,7 @@ config = SMEWTD_INSTANCE.database.config
         %if config.get('tvuMldonkeyPlugin'):
         ${navlink('Tv Underground', '/tvu')}
         ${navlink('Feeds', '/feeds')}
-        ${navlink('MLDonkey', 'http://127.0.0.1:4080', True)}
+        ${navlink('MLDonkey', 'http://%s:4080' % local_ip(), True)}
         %endif
         ${navlink('Preferences', '/preferences')}
         ${navlink('Control Panel', '/controlpanel')}
