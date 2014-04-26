@@ -168,18 +168,12 @@ class TVDBMetadataProvider(object):
     def getMoviePoster(self, movieId):
         """Return the low- and high-resolution posters (if available) of an tvdb object."""
         noposter = '/static/images/noposter.png'
-        resp = self.tmdb.Movies(movieId).images({'language': self.tmdb.lang,
-                               'include_image_language': self.tmdb.lang + ',null'})
+        resp = self.tmdb.Movies(movieId).info({'language': self.tmdb.lang})
         image_size = 'original'
         image_base = self.tmdb.server_config.images['base_url'] + '/' + image_size + '/'
         
-        posters = []
-        for poster in resp['posters']:
-            posters.append(image_base + poster['file_path'])
-
-
-        if posters:
-            return self.savePoster(posters[0], 'movie_%s' % movieId)
+        if resp['poster_path']:
+            return self.savePoster(image_base + resp['poster_path'], 'movie_%s' % movieId)
 
         else:
             log.warning('Could not find poster for tmdb ID %s' % movieId)
