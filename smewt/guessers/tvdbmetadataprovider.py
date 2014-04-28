@@ -28,7 +28,7 @@ from urllib2 import urlopen
 import smewt.settings
 import guessit
 import thetvdbapi
-import tmdb
+import tmdbsimple
 import datetime
 import logging
 
@@ -44,7 +44,10 @@ class TVDBMetadataProvider(object):
         super(TVDBMetadataProvider, self).__init__()
 
         self.tvdb = thetvdbapi.TheTVDB("65D91F0290476F3E")
-        self.tmdb = tmdb.MovieDb()
+        self.tmdb = tmdbsimple.TMDB('a8b9f96dde091408a03cb4c78477bd14')
+        self.tmdb.server_config = self.tmdb.Configuration()
+        self.tmdb.server_config.info()
+        self.tmdb.lang = 'en'
 
     @cachedmethod
     def getSeries(self, name):
@@ -87,7 +90,7 @@ class TVDBMetadataProvider(object):
         if not name:
             raise SmewtException('You need to specify at least a probable name for the movie...')
         log.debug('MovieTMDB: looking for movie %s', name)
-        results = self.tmdb.search(name)
+        results = self.tmdb.Search().movie({'query': name})['results']
         for r in results:
           return r['id']
 
@@ -96,23 +99,24 @@ class TVDBMetadataProvider(object):
     @cachedmethod
     def getMovieData(self, movieId):
         """From a given TVDBPy movie object, return a graph containing its information."""
-        m = self.tmdb.getMovieInfo(movieId)
+        m = self.tmdb.Movies(movieId)
+        resp = m.info({'language': self.tmdb.lang})
 
         result = MemoryObjectGraph()
-        movie = result.Movie(title = unicode(m['name']))
-        movie.original_title = m['original_name']
+        movie = result.Movie(title = unicode(resp['title']))
+        movie.original_title = resp['original_title']
 
-        if m.get('released'):
-            movie.set('year', datetime.datetime.strptime(m['released'], '%Y-%m-%d').year)
-
-        movie.set('director', [unicode(d['name']) for d in m['cast'].get('director', [])])
-        movie.set('writer', [unicode(d['name']) for d in m['cast'].get('author', [{'name': ''}])])
-        movie.set('genres', [unicode(g) for g in m['categories'].get('genre', {}).keys()])
-        movie.set('rating', m['rating'])
-        movie.set('plot', [unicode(m['overview'])])
-
+        if resp.get('release_date'):
+            movie.set('year', datetime.datetime.strptime(resp['release_date'], '%Y-%m-%d').year)
+        movie.set('genres', [ unicode(g['name']) for g in resp['genres'] ])
+        movie.set('rating', resp['vote_average'])
+        movie.set('plot', [unicode(resp['overview'])])
+        resp = m.credits()
+        movie.set('director', [ unicode(c['name']) for c in resp['crew'] if c['job'] == 'Director' ])
+        movie.set('writer', [ unicode(c['name']) for c in resp['crew'] if c['job'] == 'Author' ])
+        
         try:
-            movie.cast = [ unicode(actor['name']) + ' -- ' + unicode(actor['character']) for actor in m['cast']['actor'][:15] ]
+            movie.cast = [ unicode(actor['name']) + ' -- ' + unicode(actor['character']) for actor in resp['cast'] ]
         except KeyError:
             movie.cast = []
 
@@ -164,19 +168,12 @@ class TVDBMetadataProvider(object):
     def getMoviePoster(self, movieId):
         """Return the low- and high-resolution posters (if available) of an tvdb object."""
         noposter = '/static/images/noposter.png'
-
-        m = self.tmdb.getMovieInfo(movieId)
-
-        posters = []
-        for poster in m['images'].posters:
-            for key, value in poster.items():
-                if key not in ['id', 'type']:
-                    if value.startswith("http://"):
-                      posters.append(value)
-
-
-        if posters:
-            return self.savePoster(posters[0], 'movie_%s' % movieId)
+        resp = self.tmdb.Movies(movieId).info({'language': self.tmdb.lang})
+        image_size = 'original'
+        image_base = self.tmdb.server_config.images['base_url'] + '/' + image_size + '/'
+        
+        if resp['poster_path']:
+            return self.savePoster(image_base + resp['poster_path'], 'movie_%s' % movieId)
 
         else:
             log.warning('Could not find poster for tmdb ID %s' % movieId)
@@ -185,8 +182,7 @@ class TVDBMetadataProvider(object):
 
 
     def startEpisode(self, episode):
-        tmdb.config['lang'] = guiLanguage().alpha2
-        tmdb.update_config()
+        self.tmdb.lang = guiLanguage().alpha2
 
         if episode.get('series') is None:
             raise SmewtException("TVDBMetadataProvider: Episode doesn't contain 'series' field: %s", episode)
@@ -237,8 +233,7 @@ class TVDBMetadataProvider(object):
             return MemoryObjectGraph()
 
     def startMovie(self, movieName):
-        tmdb.config['lang'] = guiLanguage().alpha2
-        tmdb.update_config()
+        self.tmdb.lang = guiLanguage().alpha2
 
         try:
             movieTvdb = self.getMovie(movieName)
